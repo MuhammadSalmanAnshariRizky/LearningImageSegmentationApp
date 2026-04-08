@@ -1,0 +1,198 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <!-- proggress -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">8%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 8%">8%
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- page 1 -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body">
+                <h4 class="fw-bold mb-4">Rangkuman</h4>
+
+                <!-- 1 -->
+                <h5 class="fw-bold">1. Pengertian Citra Digital</h5>
+                <ul class="custom-list">
+                    <li>Representasi visual dunia nyata dalam bentuk digital</li>
+                    <li>Dapat diolah oleh komputer</li>
+                    <li>Tersusun dari elemen kecil bernama piksel (pixel)</li>
+                    <li>Setiap piksel memiliki:
+                        <ul>
+                            <li>Koordinat (x, y)</li>
+                            <li>Nilai intensitas (kecerahan/warna)</li>
+                        </ul>
+                    </li>
+                    <li>Representasi matematis: f(x, y)</li>
+                </ul>
+
+                <!-- 2 -->
+                <h5 class="fw-bold mt-4">2. Representasi Citra</h5>
+                <ul class="custom-list">
+                    <li>Berbentuk matriks M × N
+                        <ul>
+                            <li>M = jumlah baris</li>
+                            <li>N = jumlah kolom</li>
+                        </ul>
+                    </li>
+                    <li>Koordinat dimulai dari (0,0) (pojok kiri atas)</li>
+                    <li>Setiap elemen matriks = nilai piksel</li>
+                    <li>Bersifat diskrit (hasil discretization)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- page 2 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <!-- 3 -->
+                <h5 class="fw-bold mt-4">3. Jenis-Jenis Citra</h5>
+
+                <div class="mb-3">
+                    <b>a. Citra Grayscale</b>
+                    <ul class="custom-list">
+                        <li>1 kanal (intensitas saja)</li>
+                        <li>Tidak memiliki warna</li>
+                        <li>Rentang nilai (8-bit): 0 – 255
+                            <ul>
+                                <li>0 = hitam</li>
+                                <li>255 = putih</li>
+                            </ul>
+                        </li>
+                        <li>Lebih sederhana untuk pengolahan</li>
+                    </ul>
+                </div>
+
+                <div class="mb-3">
+                    <b>b. Citra Biner</b>
+                    <ul class="custom-list">
+                        <li>Hanya 2 nilai:
+                            <ul>
+                                <li>0 = hitam</li>
+                                <li>1 = putih</li>
+                            </ul>
+                        </li>
+                        <li>Menggunakan 1 bit/piksel</li>
+                        <li>Lebih hemat penyimpanan</li>
+                        <li>Digunakan pada:
+                            <ul>
+                                <li>Scan dokumen</li>
+                                <li>Fax</li>
+                                <li>Grafik sederhana</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mb-3">
+                    <b>c. Citra RGB</b>
+                    <ul class="custom-list">
+                        <li>3 kanal warna:
+                            <ul>
+                                <li>Red (R)</li>
+                                <li>Green (G)</li>
+                                <li>Blue (B)</li>
+                            </ul>
+                        </li>
+                        <li>Tiap kanal: 0 – 255</li>
+                        <li>Total: 24-bit/piksel</li>
+                        <li>Contoh:
+                            <ul>
+                                <li>(255,0,0) = merah</li>
+                                <li>(0,255,0) = hijau</li>
+                                <li>(0,0,255) = biru</li>
+                                <li>(255,255,255) = putih</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- page 3 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <!-- 4 -->
+                <h5 class="fw-bold mt-4">4. Bit Depth</h5>
+                <ul class="custom-list">
+                    <li>Jumlah bit untuk menyimpan nilai piksel</li>
+                    <li>Rumus kemungkinan nilai: 2<sup>k</sup></li>
+                    <li>Contoh:
+                        <ul>
+                            <li>1 bit → 2 nilai</li>
+                            <li>8 bit → 256 nilai</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- 5 -->
+                <h5 class="fw-bold mt-4">5. Konversi Citra</h5>
+
+                <div class="mb-3">
+                    <b>a. RGB → Grayscale</b>
+                    <ul class="custom-list">
+                        <li>Tujuan: menyederhanakan pengolahan</li>
+                        <li>Metode:
+                            <ul>
+                                <li>Lightness</li>
+                                <li>Average</li>
+                                <li>Luminosity</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <b>b. Grayscale → Biner (Thresholding)</b>
+                    <ul class="custom-list">
+                        <li>Menggunakan nilai ambang T</li>
+                        <li>Aturan:
+                            <ul>
+                                <li>f(x,y) > T → putih (1)</li>
+                                <li>f(x,y) ≤ T → hitam (0)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+{% endblock %}
+{% endblock %}

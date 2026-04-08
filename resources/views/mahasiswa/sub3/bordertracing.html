@@ -1,0 +1,878 @@
+{% extends 'layouts/base.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- PROGRESS -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">8%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 8%">
+                    8%
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 1 -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h2 class="bi bi-bezier2 me-2  text-primary"> 3.3 Border Tracing</h2>
+                <p>
+                    Jika batas suatu wilayah (region) belum diketahui, tetapi wilayah tersebut sudah terlihat atau sudah
+                    dipisahkan dalam gambar, maka batasnya sebenarnya bisa ditemukan dengan jelas. Pada awalnya,
+                    diasumsikan bahwa gambar tersebut berbentuk biner (misalnya 0 dan 1) atau setiap wilayah sudah
+                    diberi label tertentu
+                </p>
+
+                <p>
+                    Tujuan utama dari proses ini adalah untuk menentukan batas wilayah bagian dalam (inner boundary).
+                    Batas wilayah dalam didefinisikan sebagai himpunan piksel yang termasuk dalam wilayah tersebut,
+                    sedangkan batas luar (outer boundary) bukan merupakan bagian dari wilayah tersebut.
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 2 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <h4 class="fw-bold mb-4 text-primary">
+                    Algoritma Inner Boundary Tracing
+                </h4>
+
+                <p><strong>Langkah-langkah yang dilakukan yaitu:</strong></p>
+
+                <ol>
+
+                    <!-- LANGKAH 1 -->
+                    <li class="mb-4">
+                        <b>Menentukan Titik Awal (Starting Pixel Initialization)</b>
+                        <p class="mt-2">
+                            Cari citra mulai dari kiri atas hingga ditemukan sebuah piksel \( P_0 \) dari suatu region
+                            baru;
+                            piksel ini memiliki nilai kolom terkecil di antara semua piksel pada region tersebut yang
+                            juga
+                            memiliki nilai baris terkecil. Definisikan variabel <i>dir</i> yang menyimpan arah
+                            pergerakan
+                            sebelumnya sepanjang batas, dari elemen batas sebelumnya ke elemen batas saat ini.
+                        </p>
+
+                        <p><b>Keterangan :</b></p>
+                        <ul>
+                            <li>\( P_0 \) adalah piksel awal dari batas region.</li>
+                            <li><i>dir</i> = 3 jika batas dideteksi dengan 4-connectivity</li>
+                            <li><i>dir</i> = 7 jika batas dideteksi dengan 8-connectivity</li>
+                        </ul>
+
+                        <p>
+                            Berikut adalah gambar dari dir untuk 4 connectivity dan 8 connectivity
+                        </p>
+
+                        <div class="text-center my-4">
+                            <img src="{{ url_for('static', filename='img/sub3/contoh arah dir.png') }}"
+                                class="img-fluid rounded shadow-sm" style="max-width: 600px;">
+                            <p class="mt-2 text-muted">
+                                <em>Gambar 3.11 Konektivitas pada citra</em>
+                            </p>
+                        </div>
+                    </li>
+
+                    <!-- LANGKAH 2 -->
+                    <li class="mb-4">
+                        <b>Pencarian Tetangga (Neighborhood Searching / Boundary Following)</b>
+                        <p class="mt-2">
+                            Cari pada lingkungan tetangga 3×3 dari piksel saat ini dengan arah berlawanan jarum jam
+                            (anti-clockwise), dimulai dari piksel yang posisinya ditentukan oleh:
+                        </p>
+
+                        <ul>
+                            <li>\((dir+3) \bmod 4\) (untuk 4-connectivity)</li>
+                            <li>\((dir+7) \bmod 8\) jika dir genap,</li>
+                            <li>\((dir+6) \bmod 8\) jika dir ganjil</li>
+                        </ul>
+
+                        <p>
+                            Piksel pertama yang ditemukan dengan nilai yang sama seperti piksel saat ini dianggap
+                            sebagai
+                            elemen batas baru \( P_n \).
+                        </p>
+                    </li>
+
+                    <!-- LANGKAH 3 -->
+                    <li class="mb-4">
+                        <b>Pengecekan Kondisi Berhenti (Stopping Condition Check)</b>
+                        <p class="mt-2">
+                            Jika elemen batas saat ini \( P_n \) sama dengan elemen batas kedua \( P_1 \), dan elemen
+                            batas sebelumnya
+                            \( P_{n-1} \) sama dengan \( P_0 \), maka hentikan proses.
+                        </p>
+                    </li>
+
+                    <!-- LANGKAH 4 -->
+                    <li>
+                        <b>Pembentukan Hasil Batas (Boundary Extraction Result)</b>
+                        <p class="mt-2">
+                            Piksel \( P_0, \dots, P_{n-2} \) sekarang merupakan batas dalam (inner boundary) yang telah
+                            terdeteksi.
+                        </p>
+                    </li>
+
+                </ol>
+
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 3 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <p>
+                    Perhatikan contoh berikut untuk penerapan inner boundary
+                </p>
+
+                <p>
+                    Berdasarkan penjelasan border tracing sebelumnya, diasumsikan bahwa citra yang diproses merupakan
+                    citra biner, yaitu citra yang hanya terdiri dari dua nilai piksel, yaitu 0 sebagai background dan 1
+                    sebagai objek. Berikut adalah citra yang digunakan
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/citra awal inner border.png') }}"
+                        class="img-fluid rounded" style="max-width: 350px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.12 Nilai citra untuk Inner Boundary</em>
+                    </p>
+                </div>
+
+                <p><b>Langkah Pertama : Menentukan P0</b></p>
+                <p>
+                    P0 adalah piksel yang memiliki nilai kolom terkecil di antara semua piksel pada region tersebut yang
+                    juga memiliki nilai baris terkecil. Berdasarkan langkah pertama P0 didapatkan pada koordinat (1,1)
+                </p>
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/P0.png') }}" class="img-fluid rounded"
+                        style="max-width: 350px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.13 Posisi P<sub>0</sub> berdasarkan citra awal</em>
+                    </p>
+                </div>
+                <p><b>Langkah Kedua : Pencarian tetangga</b></p>
+                <p>
+                    Pencarian tetangga dapat dilakukan dengan 2 pendekatan yaitu 4-connectivity dan 8-connectivity. Pada
+                    contoh ini akan digunakan Adalah 8-connectivity. Maka dir awal Adalah 7 dan akan menggunakan rumus
+                    (dir+6) mod 8
+                </p>
+
+                <p>
+                    Berdasarkan rumus tersebut maka arah pencarian berikutnya akan dilakukan dari arah :
+                </p>
+
+                <div class="bg-light p-2 rounded text-center mb-3">
+                    (7+6) mod 8 = 13 mod 8 = 5
+                </div>
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/proses pencarian.png') }}"
+                        class="img-fluid rounded" style="max-width: 700px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.14 Iterasi 1 pencarian Inner Boundary</em>
+                    </p>
+                </div>
+
+                <p>
+                    Berdasarkan perhitungan tersebut, maka pencarian akan dilakukan dari arah 5 dan berlawanan arah
+                    jarum jam yaitu dari arah sebagai berikut
+                </p>
+
+                <div class="bg-light p-2 rounded text-center mb-3">
+                    5 → 6 → 7 → 0 → 1 → 2 → 3 → 4
+                </div>
+                <p>
+                    Perhatikan gambar dibawah ini sebagai ilustrasi dari langkah tersebut
+                </p>
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/proses iterasi 1.png') }}"
+                        class="img-fluid rounded" style="max-width: 700px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.15 Ilustrasi dari iterasi 1</em>
+                    </p>
+                </div>
+                <p>
+                    Pada iterasi 1 elemen batas baru ditemukan pada koordinat \( (2,1) \),
+                    maka koordinat tersebut dianggap sebagai \( P_1 \).
+                    Proses akan dilanjutkan sampai memenuhi kondisi pada Langkah ketiga.
+                </p>
+                <p><b>Langkah ketiga : Pengecekan Kondisi Berhenti (Stopping Condition Check)</b></p>
+                <p>
+                    Ketika piksel saat ini (Pn) sama dengan piksel kedua (P₁) dan piksel sebelumnya (Pn-1) sama dengan
+                    piksel awal (P₀).
+                </p>
+                <p>
+                    Pada iterasi ke-9, diperoleh P₉ = P₁ dan P₈ = P₀, sehingga proses penelusuran
+                    dihentikan dan boundary dinyatakan lengkap.
+                </p>
+                <p>
+                    Perhatikan tabel berikut untuk hasil lengkap dari iterasi pencariannya
+                </p>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Iterasi</th>
+                                <th>P_current</th>
+                                <th>dir</th>
+                                <th>start</th>
+                                <th>Pengecekan Arah</th>
+                                <th>Piksel Terpilih</th>
+                                <th>dir baru</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>P0 (1,1)</td>
+                                <td>7</td>
+                                <td>5</td>
+                                <td>5: (2,0)=0 ❌ <br> 6: (2,1)=1 ✅</td>
+                                <td>(2,1)=P₁</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>P1 (2,1)</td>
+                                <td>6</td>
+                                <td>5</td>
+                                <td>5: (3,0)=0 ❌ <br> 6: (3,1)=1 ✅</td>
+                                <td>(3,1)=P₂</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>P2 (3,1)</td>
+                                <td>6</td>
+                                <td>5</td>
+                                <td>5:(4,0)=0 ❌ <br>6:(4,1)=0 ❌ <br>7:(4,2)=0 ❌ <br>0:(3,2)=1 ✅</td>
+                                <td>(3,2)=P₃</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>P3 (3,2)</td>
+                                <td>0</td>
+                                <td>7</td>
+                                <td>7:(4,3)=0 ❌ <br>0:(3,3)=1 ✅</td>
+                                <td>(3,3)=P₄</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>P4 (3,3)</td>
+                                <td>0</td>
+                                <td>7</td>
+                                <td>7:(4,4)=0 ❌ <br>0:(3,4)=0 ❌ <br>1:(2,4)=0 ❌ <br>2:(2,3)=1 ✅</td>
+                                <td>(2,3)=P₅</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>P5 (2,3)</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>1:(1,4)=0 ❌ <br>2:(1,3)=1 ✅</td>
+                                <td>(1,3)=P₆</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>P6 (1,3)</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>1:(0,4)=0 ❌ <br>2:(0,3)=0 ❌ <br>3:(0,2)=0 ❌ <br>4:(1,2)=1 ✅</td>
+                                <td>(1,2)=P₇</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>P7 (1,2)</td>
+                                <td>4</td>
+                                <td>3</td>
+                                <td>3:(0,1)=0 ❌ <br>4:(1,1)=1 ✅</td>
+                                <td>(1,1)=P₈</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>P8 (1,1)</td>
+                                <td>4</td>
+                                <td>3</td>
+                                <td>3:(0,0)=0 ❌ <br>4:(1,0)=0 ❌ <br>5:(2,0)=0 ❌ <br>6:(2,1)=1 ✅</td>
+                                <td>(2,1)=P₉</td>
+                                <td>6</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p><b>Pembentukan Hasil Batas (Boundary Extraction Result)</b></p>
+                    <p>
+                        Berdasarkan Langkah ketiga maka boundary terbentuk berada pada titik sebagai berikut :
+                    </p>
+
+                    <ul>
+                        <li>P0(1,1)</li>
+                        <li>P1(2,1)</li>
+                        <li>P2(3,1)</li>
+                        <li>P3(3,2)</li>
+                        <li>P4(3,3)</li>
+                        <li>P5(2,3)</li>
+                        <li>P6(1,3)</li>
+                        <li>P7(1,2)</li>
+                    </ul>
+                    <p>
+                        Berikut adalah visualisasi inner boundary yang didapatkan
+                    </p>
+                    <div class="text-center my-4">
+                        <img src="{{ url_for('static', filename='img/sub3/inner border hasil.png') }}"
+                            class="img-fluid rounded" style="max-width: 350px;">
+                        <p class="mt-2">
+                            <em>Gambar 3.16 Hasil visualisasi inner boundary</em>
+                        </p>
+                    </div>
+                    <p>
+                        Algoritma inner boundary tracing dapat digunakan untuk semua objek yang memiliki ukuran lebih
+                        dari
+                        satu piksel. Algoritma ini bisa menemukan batas objek, tetapi belum bisa mendeteksi batas lubang
+                        yang ada di dalam objek tersebut. Untuk menemukan batas lubang, kita perlu mencari piksel batas
+                        lain
+                        yang belum digunakan dalam proses sebelumnya.
+                    </p>
+
+                    <p>
+                        Setelah satu batas objek selesai ditelusuri (sudah kembali ke titik awal), kita bisa melanjutkan
+                        pencarian batas lainnya dengan cara yang sama seperti saat mencari titik awal pertama. Perlu
+                        diperhatikan bahwa jika objek hanya setebal satu piksel, maka algoritma ini memerlukan aturan
+                        tambahan agar tetap bekerja dengan benar. Selain itu, jika menggunakan 4-connectivity, algoritma
+                        ini
+                        juga dapat diubah untuk menemukan batas luar (outer boundary) dari suatu objek.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- page 5 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <h4 class="fw-bold mb-3 text-primary">
+                    Algoritma Outer Boundary Tracing
+                </h4>
+
+                <p><strong>Langkah-langkah yang dilakukan yaitu:</strong></p>
+
+                <p><b>1. Menelusuri Batas Dalam (Inner Boundary Tracing)</b></p>
+                <p>
+                    Telusuri terlebih dahulu batas dalam (inner boundary) dari suatu region menggunakan 4-connectivity
+                    hingga seluruh batas dalam objek selesai ditemukan.
+                </p>
+
+                <p><b>2. Menentukan Batas Luar (Outer Boundary Identification)</b></p>
+                <p>
+                    Batas luar (outer boundary) adalah piksel-piksel di luar objek yang ikut diperiksa saat proses
+                    pencarian. Jika ada piksel yang dicek lebih dari sekali, maka piksel tersebut juga akan dicatat
+                    lebih dari satu kali.
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 6 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <p>
+                    Perhatikan contoh berikut untuk penerapan inner boundary
+                </p>
+
+                <p>
+                    Berdasarkan penjelasan sebelumnya, diasumsikan inner boundary jika ditelusuri menggunakan pendekatan
+                    4-connectivity akan mendapatkan batas luar dari objek. Citra yang digunakan sama seperti gambar
+                    sebelumnya
+                </p>
+
+                <p><b>1. Langkah Pertama : Menentukan Batas dalam</b></p>
+                <p>
+                    Masih sama dengan aturan yang sebelumnya, maka didapatkan hasil inner boundary dengan pendekatan
+                    4-connectivity pada tabel berikut
+                </p>
+
+                <p><b>Tabel 3.2 Pencarian titik untuk batas dalam (inner boundary)</b></p>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Iterasi</th>
+                                <th>P_current</th>
+                                <th>dir</th>
+                                <th>start</th>
+                                <th>Pengecekan Arah</th>
+                                <th>Piksel Terpilih</th>
+                                <th>dir baru</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>P₀ (1,1)</td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td>2:(0,1)=0 ❌ 3:(1,0)=0 ❌ 0:(2,1)=1 ✅</td>
+                                <td>P₁ (2,1)</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>P₁ (2,1)</td>
+                                <td>0</td>
+                                <td>3</td>
+                                <td>3:(2,0)=0 ❌ 0:(3,1)=1 ✅</td>
+                                <td>P₂ (3,1)</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>P₂ (3,1)</td>
+                                <td>0</td>
+                                <td>3</td>
+                                <td>3:(3,0)=0 ❌ 0:(4,1)=0 ❌ 1:(3,2)=1 ✅</td>
+                                <td>P₃ (3,2)</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>P₃ (3,2)</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0:(4,2)=0 ❌ 1:(3,3)=1 ✅</td>
+                                <td>P₄ (3,3)</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>P₄ (3,3)</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0:(4,3)=0 ❌ 1:(3,4)=0 ❌ 2:(2,3)=1 ✅</td>
+                                <td>P₅ (2,3)</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>P₅ (2,3)</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>1:(2,4)=0 ❌ 2:(1,3)=1 ✅</td>
+                                <td>P₆ (1,3)</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>P₆ (1,3)</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>1:(1,4)=0 ❌ 2:(0,3)=0 ❌ 3:(1,2)=1 ✅</td>
+                                <td>P₇ (1,2)</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>P₇ (1,2)</td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td>2:(0,2)=0 ❌ 3:(1,1)=1 ✅</td>
+                                <td>P₈ (1,1)</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>P₈ (1,1)</td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td>2:(0,1)=0 ❌ 3:(1,0)=0 ❌ 0:(2,1)=1 ✅</td>
+                                <td>P₉ (2,1)</td>
+                                <td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>
+                    Berdasarkan tabel tersebut maka boundary terbentuk berada pada titik sebagai berikut :
+                </p>
+
+                <ul>
+                    <li>a) P0(1,1)</li>
+                    <li>b) P1(2,1)</li>
+                    <li>c) P2(3,1)</li>
+                    <li>d) P3(3,2)</li>
+                    <li>e) P4(3,3)</li>
+                    <li>f) P5(2,3)</li>
+                    <li>g) P6(1,3)</li>
+                    <li>h) P7(1,2)</li>
+                </ul>
+                <p><b>2. Langkah Kedua : Menentukan batas luar</b></p>
+
+                <p>
+                    Berdasarkan hasil penelusuran inner boundary, yaitu dari P₀ hingga P₇, piksel-piksel tetangga yang
+                    bernilai 0 yang diperiksa selama proses tersebut merupakan outer boundary dari citra.
+                </p>
+
+                <p><b>Tabel 3.3 Penentuan titik untuk nilai batas luar (outer boundary)</b></p>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Pn</th>
+                                <th>Piksel Background (0) yang Ditemukan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>P0 (1,1)</td>
+                                <td>(0,1), (1,0)</td>
+                            </tr>
+                            <tr>
+                                <td>P1 (2,1)</td>
+                                <td>(2,0)</td>
+                            </tr>
+                            <tr>
+                                <td>P2 (3,1)</td>
+                                <td>(3,0), (4,1)</td>
+                            </tr>
+                            <tr>
+                                <td>P3 (3,2)</td>
+                                <td>(4,2)</td>
+                            </tr>
+                            <tr>
+                                <td>P4 (3,3)</td>
+                                <td>(4,3), (3,4)</td>
+                            </tr>
+                            <tr>
+                                <td>P5 (2,3)</td>
+                                <td>(2,4)</td>
+                            </tr>
+                            <tr>
+                                <td>P6 (1,3)</td>
+                                <td>(1,4), (0,3)</td>
+                            </tr>
+                            <tr>
+                                <td>P7 (1,2)</td>
+                                <td>(0,2)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>
+                    Berdasarkan hasil identifikasi piksel background (0) pada setiap iterasi dari P₀ hingga P₇, maka
+                    outer boundary yang diperoleh adalah kumpulan piksel yang mengelilingi objek, yaitu (0,1), (1,0),
+                    (2,0), (3,0), (4,1), (4,2), (4,3), (3,4), (2,4), (1,4), (0,3), dan (0,2). Berikut adalah
+                    visualisasinya dalam bentuk gambar
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/hasil outer border.png') }}"
+                        class="img-fluid rounded" style="max-width: 350px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.17 Hasil dari pencarian outer boundary</em>
+                    </p>
+                </div>
+
+                <p>
+                    Batas dalam (inner border) selalu merupakan bagian dari suatu region, sedangkan batas luar (outer
+                    border) tidak pernah menjadi bagian dari region tersebut. Oleh karena itu, jika dua region saling
+                    bersebelahan, keduanya tidak akan memiliki batas yang sama. Hal ini dapat menimbulkan kesulitan pada
+                    proses lanjutan, seperti deskripsi region, penggabungan region, dan analisis lainnya.
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <!-- page 7 -->
+
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <p>
+                    Batas yang diperluas (extended boundary) memiliki keunggulan dibandingkan batas dalam dan batas luar
+                    (Pavlidis, 1977). Keunggulan utamanya adalah mampu mendefinisikan satu batas bersama antara region
+                    yang saling bersebelahan, yang dapat dinyatakan menggunakan koordinat piksel standar. Selain itu,
+                    semua kelebihan dari batas luar tetap dipertahankan. Bentuk batas yang dihasilkan juga sama persis
+                    dengan bentuk sebenarnya di antara piksel (inter-pixel), namun posisinya bergeser setengah piksel ke
+                    bawah dan setengah piksel ke kanan.
+                </p>
+
+                <p>
+                    Batas yang diperluas (extended boundary) didefinisikan menggunakan hubungan 8-neighborhood, dan
+                    piksel-pikselnya diklasifikasikan menjadi empat jenis piksel batas dalam suatu region. Lihatlah
+                    gambar berikut sebagai ilustrasi dari 8-neigborhood
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/koordinat P.png') }}" class="img-fluid rounded"
+                        style="max-width: 350px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.18 ilustrasi arah dari 8-neighborhood dengan posisi koordinat</em>
+                    </p>
+                </div>
+
+                <p>
+                    Berdasarkan gambar tersebut maka P(i,j) dinyatakan memiliki hubungan dengan 8 tetangga yang
+                    dinyatakan dalam bentuk himpunan sebagai berikut
+                </p>
+
+                <div class="bg-light p-3 rounded text-center mb-3">
+                    \[
+                    P(i,j) = {(i,j+1),(i−1,j+1),(i−1,j),(i−1,j−1),(i,j−1),(i+1,j−1),(i+1,j),(i+1,j+1)}
+                    \]
+                </div>
+
+                <p>
+                    Kedelapan tetangga tersebut tidak ditulis langsung sebagai koordinat, melainkan dinotasikan sebagai:
+                </p>
+
+                <div class="bg-light p-2 rounded text-center mb-3">
+                    \[
+                    P_0(P),\; P_1(P),\; \ldots,\; P_7(P)
+                    \]
+                </div>
+
+                <p>
+                    Maka hubungan antara notasi dan posisi spasial dapat dipahami sebagai berikut:
+                </p>
+
+                <ul>
+                    <li>P₀(P) = (i, j + 1)</li>
+                    <li>P₁(P) = (i − 1, j + 1)</li>
+                    <li>P₂(P) = (i − 1, j)</li>
+                    <li>P₃(P) = (i − 1, j − 1)</li>
+                    <li>P₄(P) = (i, j − 1)</li>
+                    <li>P₅(P) = (i + 1, j − 1)</li>
+                    <li>P₆(P) = (i + 1, j)</li>
+                    <li>P₇(P) = (i + 1, j + 1)</li>
+                </ul>
+
+                <p>
+                    Dalam konsep extended boundary, informasi dari 8-neighborhood ini digunakan untuk mengklasifikasikan
+                    jenis piksel batas Misalkan:
+                </p>
+
+                <ul>
+                    <li>R = region</li>
+                    <li>Q = himpunan piksel di luar region</li>
+                </ul>
+
+                <p>
+                    Setiap piksel P ∈ R diklasifikasikan berdasarkan hubungan dengan tetangganya:
+                </p>
+
+                <ul>
+                    <li>Piksel LEFT jika P₄(P) ∈ Q</li>
+                    <li>Piksel RIGHT jika P₀(P) ∈ Q</li>
+                    <li>Piksel UPPER jika P₂(P) ∈ Q</li>
+                    <li>Piksel LOWER jika P₆(P) ∈ Q</li>
+                </ul>
+
+                <p>
+                    Berdasarkan klasifikasi tersebut, Extended boundary dari region R didefinisikan sebagai gabungan
+                    tiga himpunan berikut:
+                </p>
+
+                <div class="bg-light p-3 rounded mb-3">
+                    <p>{P | P ∈ LEFT(R) atau P ∈ UPPER(R)}</p>
+                    <p>{P₅(P) | P ∈ LOWER(R) atau P ∈ LEFT(R)}</p>
+                    <p>{P₀(P), P₇(P) | P ∈ RIGHT(R)}</p>
+                </div>
+
+                <p>
+                    Batas yang diperluas (Extended Boundary) ini pada dasarnya dibentuk dari kombinasi piksel-piksel
+                    batas tersebut, dengan beberapa di antaranya mengalami pergeseran posisi agar menghasilkan batas
+                    yang lebih akurat. Secara praktis, extended boundary dapat dibentuk dari batas luar (outer boundary)
+                    dengan cara:
+                </p>
+
+                <ul>
+                    <li>Piksel UPPER digeser satu piksel ke bawah dan ke kanan (i+1, j+1)</li>
+                    <li>Piksel LEFT digeser satu piksel ke kanan (i, j+1)</li>
+                    <li>Piksel RIGHT digeser satu piksel ke bawah (i+1, j)</li>
+                    <li>Piksel LOWER tidak mengalami perubahan (i, j)</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 8 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <p>
+                    Lihatlah gambar dibawah ini sebagai contoh outer boundary jadi extended boundary
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/extended boundary dari outer.png') }}"
+                        class="img-fluid rounded" style="max-width: 700px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.19 Outer boundary menjadi extended boundary</em>
+                    </p>
+                </div>
+
+                <p>
+                    Metode yang lebih canggih dan algoritma yang efisien untuk ekstraksi extended boundary diperkenalkan
+                    oleh Liow (1991). Pendekatan ini didasarkan pada pendeteksian segmen batas yang sama (common
+                    boundary segments) antara region yang bersebelahan, serta titik-titik sudut (vertex points) pada
+                    sambungan antar segmen batas. Proses deteksi tersebut menggunakan tabel pencarian (look-up table),
+                    yang mendefinisikan 12 kemungkinan konfigurasi lokal dari jendela piksel berukuran 2×2.
+                </p>
+
+                <p>
+                    Konfigurasi ini ditentukan berdasarkan:
+                </p>
+
+                <ol>
+                    <li>Arah boundary sebelumnya yang telah terdeteksi, dan</li>
+                    <li>Status setiap piksel dalam jendela, apakah berada di dalam (inside) atau di luar (outside) suatu
+                        region</li>
+                </ol>
+
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 9 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <h4 class="fw-bold mb-4 text-primary">
+                    Algoritma Extended Boundary Tracing
+                </h4>
+
+                <p>
+                    Berikut adalah algoritma yang diperkenalkan oleh Liow (1991).
+                </p>
+
+                <p><strong>Langkah-langkah yang dilakukan yaitu:</strong></p>
+
+                <ol class="mb-4">
+
+                    <li class="mb-2">
+                        Tentukan sebuah piksel awal dari <i>extended boundary</i> dengan menggunakan metode standar
+                        tertentu.
+                    </li>
+
+                    <li class="mb-2">
+                        Langkah pertama sepanjang boundary yang ditelusuri dari piksel awal berada pada arah
+                        \( \text{dir} = 6 \) (ke bawah), sesuai dengan kondisi (i) pada gambar di bawah ini.
+                    </li>
+
+                    <li>
+                        Telusuri <i>extended boundary</i> menggunakan tabel pencarian (<i>look-up table</i>) berikut
+                        hingga terbentuk sebuah boundary tertutup (<i>closed extended boundary</i>).
+                    </li>
+
+                </ol>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/12 kemungkinan.png') }}"
+                        class="img-fluid rounded shadow-sm" style="max-width: 600px;">
+                    <p class="mt-2 text-muted">
+                        <em>
+                            Gambar 3.20 Look-up table 12 kemungkinan arah dari extended boundary
+                        </em>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="page-section">
+        <div class="card-mb-4 shadow-sm">
+            <div class="card-body">
+                <!-- aktivitas -->
+                <div class="quiz-card">
+
+                    <h5 class="quiz-title">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+                    </h5>
+                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
+                    </p>
+
+                    <!-- PROGRESS -->
+                    <div class="quiz-progress" id="quizProgress"></div>
+
+                    <!-- SOAL -->
+                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+                    <!-- FEEDBACK -->
+                    <div id="feedback" class="mt-3 fw-bold"></div>
+
+                    <!-- BUTTON -->
+                    <div class="quiz-nav">
+                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
+                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(3)">4</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(4)">5</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(5)">6</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(6)">7</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(7)">8</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(8)">9</a></li>
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+{% endblock %}
+
+{% endblock %}

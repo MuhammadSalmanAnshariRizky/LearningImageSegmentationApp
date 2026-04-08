@@ -1,0 +1,243 @@
+{% extends 'layouts/base.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- PROGRESS -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">8%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 8%">
+                    8%
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- page edge based -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h2 class="fw-bold mb-3 text-primary">
+                    <i class="bi bi-grid me-2"></i> 2.2 Metode Segmentasi Citra
+                </h2>
+                <h4 class="fw-bold mb-3">
+                    1. Segmentasi Berbasis Tepi (Edge-Based Segmentation)
+                </h4>
+
+                <p>
+                    Pada citra grayscale (hitam-putih), proses segmentasi biasanya dilakukan dengan dua cara utama
+                    yaitu:
+                </p>
+
+                <p>
+                    Cara pertama adalah melihat perbedaan intensitas yang jelas, misalnya perubahan dari terang ke gelap
+                    secara tajam.
+                    Pendekatan ini disebut segmentasi berbasis tepi (<i>edge-based segmentation</i>). Perhatikan gambar
+                    dibawah ini!
+                </p>
+
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub2/contoh proses edgebased.png') }}"
+                        class="img-fluid rounded" style="max-width: 700px;">
+                    <p class="mt-2"><em>
+                            Gambar 2.9 Contoh segmentasi citra dengan metode edge-based
+                            Sumber: Sonka, M., Hlavac, V., & Boyle, R. (2014).
+                            <i>Image Processing, Analysis, and Machine Vision</i> (4th ed.). Cengage Learning.
+                        </em></p>
+                </div>
+
+                <p>
+                    Gambar (A) menunjukkan sebuah citra yang terdiri dari dua wilayah, yaitu objek dengan intensitas
+                    konstan
+                    yang berada di atas latar belakang yang lebih gelap, yang juga memiliki intensitas konstan.
+                    Kedua wilayah ini bersama-sama membentuk keseluruhan citra.
+                </p>
+
+                <p>
+                    Gambar (B) menunjukkan hasil pendeteksian batas wilayah berdasarkan adanya perbedaan intensitas
+                    (diskontinuitas).
+                    Pada gambar ini, piksel yang berada di dalam dan di luar batas berwarna hitam (bernilai nol),
+                    karena tidak terjadi perubahan intensitas pada wilayah tersebut.
+                    Hanya bagian batas yang terlihat karena di sanalah terjadi perubahan intensitas.
+                </p>
+
+                <p>
+                    Gambar (C) menunjukkan hasil segmentasi menggunakan pendekatan edge-based segmentation.
+                    Pada tahap ini, piksel yang berada di dalam atau pada batas objek diberi nilai tertentu (misalnya
+                    putih),
+                    sedangkan piksel di luar objek diberi nilai lain (misalnya hitam).
+                </p>
+
+                <div class="bg-light p-3 rounded text-center mb-3">
+                    \[
+                    Q(R_i)=TRUE,\mathrm{untuk\ }i=1,2,\ldots,n
+                    \]
+                </div>
+
+                <p>
+                    Hal ini sesuai dengan konsep predikat tersebut, yang berarti setiap wilayah hasil segmentasi harus
+                    memenuhi
+                    kriteria tertentu. Dalam konteks ini, kriteria tersebut adalah pemisahan yang jelas antara objek dan
+                    latar belakang
+                    berdasarkan batas (edge).
+                </p>
+
+                <p>
+                    Dengan demikian, setiap wilayah yang terbentuk (objek dan latar belakang) memenuhi syarat
+                    homogenitas
+                    sesuai kriteria
+                    yang ditentukan, sehingga segmentasi dianggap valid.
+                </p>
+
+                <div class="alert alert-info">
+                    Untuk melakukan segmentasi citra, kita memberikan satu tingkat nilai (misalnya putih) pada piksel
+                    yang
+                    berada
+                    di dalam atau pada batas, dan tingkat nilai lain (misalnya hitam) pada semua titik di luar batas.
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- page 2 region based -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h4 class="fw-bold mb-3">
+                    2. Segmentasi Berbasis Wilayah (Region-Based Segmentation)
+                </h4>
+
+                <p>
+                    Cara kedua adalah mengelompokkan piksel yang memiliki intensitas yang mirip atau sama.
+                    Pendekatan ini disebut segmentasi berbasis wilayah (<i>region-based segmentation</i>),
+                    karena citra dibagi menjadi wilayah-wilayah yang seragam sesuai kriteria tertentu.
+                    Perhatikan gambar dibawah ini!
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub2/contoh proses region based.png') }}"
+                        class="img-fluid rounded" style="max-width: 700px;">
+                    <p class="mt-2">
+                        <em>
+                            Gambar 2.10 Contoh segmentasi citra dengan metode region-based segmentation
+                            Sumber: Sonka, M., Hlavac, V., & Boyle, R. (2014).
+                            <i>Image Processing, Analysis, and Machine Vision</i> (4th ed.). Cengage Learning.
+                        </em>
+                    </p>
+                </div>
+
+                <p>
+                    Gambar (A) menunjukkan citra yang mirip dengan contoh sebelumnya, tetapi pada bagian dalam objek
+                    memiliki
+                    pola bertekstur, bukan intensitas yang seragam.
+                </p>
+
+                <p>
+                    Gambar (B) menunjukkan hasil perhitungan diskontinuitas intensitas pada citra tersebut.
+                    Namun, karena terdapat banyak perubahan intensitas kecil yang tidak relevan, menjadi sulit untuk
+                    menentukan
+                    satu batas yang jelas. Hal ini terjadi karena banyaknya perubahan intensitas yang saling terhubung
+                    di
+                    sekitar batas,
+                    sehingga pendekatan berbasis tepi (edge-based segmentation) tidak cocok digunakan pada kasus ini.
+                </p>
+
+                <p>
+                    Meskipun demikian, dapat diamati bahwa wilayah luar memiliki intensitas yang relatif konstan.
+                    Oleh karena itu, diperlukan suatu kriteria (predikat) yang mampu membedakan antara wilayah
+                    bertekstur
+                    dan wilayah dengan intensitas konstan.
+                </p>
+
+                <p>
+                    Gambar (C) menunjukkan hasil segmentasi dengan cara membagi citra menjadi subwilayah berukuran 8×8
+                    piksel.
+                    Setiap subwilayah kemudian dianalisis menggunakan standar deviasi.
+                </p>
+
+                <ul>
+                    <li>Jika nilai standar deviasi pada subwilayah lebih dari nol (artinya terdapat variasi intensitas),
+                        maka subwilayah tersebut diberi label putih (TRUE).</li>
+                    <li>Sebaliknya, jika nilainya nol, maka diberi label hitam.</li>
+                </ul>
+
+                <p>
+                    Hasil segmentasi terlihat agak “kotak-kotak” di sekitar batas wilayah karena setiap blok 8×8 piksel
+                    diberi nilai yang sama.
+                    Jika ukuran subwilayah diperkecil, maka batas yang dihasilkan akan terlihat lebih halus.
+                </p>
+
+                <div class="alert alert-success">
+                    Standar deviasi nilai piksel merupakan ukuran yang sesuai untuk tujuan ini, karena nilainya tidak
+                    nol
+                    pada area bertekstur dan nol pada area tanpa tekstur.
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- AKTIVITAS Page 3 -->
+    <div class="page-section">
+        <div class="card-mb-4 shadow-sm">
+            <div class="card-body">
+                <!-- aktivitas -->
+                <div class="quiz-card">
+
+                    <h5 class="quiz-title">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+                    </h5>
+                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
+                    </p>
+
+                    <!-- PROGRESS -->
+                    <div class="quiz-progress" id="quizProgress"></div>
+
+                    <!-- SOAL -->
+                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+                    <!-- FEEDBACK -->
+                    <div id="feedback" class="mt-3 fw-bold"></div>
+
+                    <!-- BUTTON -->
+                    <div class="quiz-nav">
+                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
+                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PAGINATION -->
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <!-- proggress -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">8%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 8%">8%
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- page 1 -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body">
+                <h4 class="fw-bold mb-4">Rangkuman</h4>
+
+                <!-- 1 -->
+                <h5 class="fw-bold">1. Pengertian Segmentasi Citra</h5>
+                <ul class="custom-list">
+                    <li>Segmentasi citra adalah proses membagi citra R menjadi beberapa wilayah (region): R₁, R₂, ...,
+                        Rₙ</li>
+                    <li>Tujuan: mempermudah analisis dengan membagi citra menjadi bagian bermakna</li>
+                    <li>Dilakukan pada ruang spasial (x, y)</li>
+                </ul>
+
+                <!-- 2 -->
+                <h5 class="fw-bold mt-4">2. Aturan Segmentasi Citra</h5>
+                <p>Misalkan citra dibagi menjadi R₁, R₂, ..., Rₙ, maka harus memenuhi:</p>
+
+                <div class="mb-3">
+                    <b>(1) Cakupan Seluruh Citra</b>
+                    <ul class="custom-list">
+                        <li>R = ⋃ (i = 1 s.d. n) Rᵢ</li>
+                        <li>Semua region jika digabung membentuk citra asli</li>
+                        <li>Tidak ada piksel yang tertinggal</li>
+                    </ul>
+                </div>
+
+                <div class="mb-3">
+                    <b>(2) Keterhubungan (Connected Set)</b>
+                    <ul class="custom-list">
+                        <li>Rᵢ adalah connected set</li>
+                        <li>Setiap region harus terhubung</li>
+                        <li>Piksel dalam satu region tidak boleh terpisah</li>
+                    </ul>
+                </div>
+
+                <div class="mb-3">
+                    <b>(3) Tidak Tumpang Tindih</b>
+                    <ul class="custom-list">
+                        <li>Rᵢ ∩ Rⱼ = ∅, untuk i ≠ j</li>
+                        <li>Satu piksel hanya boleh berada pada satu region</li>
+                        <li>Tidak boleh ada irisan antar region</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- page 2 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <div class="mb-3">
+                    <b>(4) Memenuhi Predikat (Kriteria)</b>
+                    <ul class="custom-list">
+                        <li>Q(Rᵢ) = TRUE</li>
+                        <li>Setiap region harus memenuhi kriteria tertentu</li>
+                        <li>Contoh kriteria (Q):
+                            <ul>
+                                <li>Intensitas sama</li>
+                                <li>Warna sama</li>
+                                <li>Tekstur sama</li>
+                                <li>Standar deviasi</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mb-3">
+                    <b>(5) Region Bertetangga Harus Berbeda</b>
+                    <ul class="custom-list">
+                        <li>Q(Rᵢ ∪ Rⱼ) = FALSE, untuk region bertetangga</li>
+                        <li>Dua region bertetangga harus memiliki karakteristik berbeda</li>
+                        <li>Jika digabung masih memenuhi Q → sebenarnya satu region</li>
+                    </ul>
+                </div>
+
+                <!-- 3 -->
+                <h5 class="fw-bold mt-4">3. Konsep Penting</h5>
+                <ul class="custom-list">
+                    <li>Segmentasi = pembagian citra berdasarkan kesamaan karakteristik</li>
+                    <li>Setiap region harus:
+                        <ul>
+                            <li>Homogen (seragam)</li>
+                            <li>Terhubung</li>
+                            <li>Tidak overlap</li>
+                        </ul>
+                    </li>
+                    <li>Jika satu region tidak seragam → segmentasi tidak valid</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- page 3 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <!-- 4 -->
+                <h5 class="fw-bold mt-4">4. Metode Segmentasi Citra</h5>
+
+                <div class="mb-3">
+                    <b>a. Edge-Based Segmentation</b>
+                    <ul class="custom-list">
+                        <li>Berdasarkan perubahan intensitas yang tajam (tepi)</li>
+                        <li>Digunakan untuk mendeteksi batas objek</li>
+                        <li>Cocok untuk citra dengan kontras tinggi</li>
+                        <li>Kelemahan: sensitif terhadap noise dan tekstur</li>
+                    </ul>
+                </div>
+
+                <div class="mb-3">
+                    <b>b. Region-Based Segmentation</b>
+                    <ul class="custom-list">
+                        <li>Berdasarkan kesamaan nilai piksel</li>
+                        <li>Mengelompokkan piksel menjadi wilayah homogen</li>
+                        <li>Menggunakan kriteria seperti:
+                            <ul>
+                                <li>Intensitas</li>
+                                <li>Tekstur</li>
+                                <li>Standar deviasi</li>
+                            </ul>
+                        </li>
+                        <li>Cocok untuk citra dengan banyak tekstur</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,81 @@
+.quiz-card {
+    background: #f3f4f6;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.quiz-title {
+    font-weight: 600;
+}
+
+.quiz-desc {
+    color: #555;
+    font-size: 14px;
+}
+
+/* PROGRESS */
+.quiz-progress {
+    background: linear-gradient(to right, #1E293B, #94A3B8);
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 15px 0;
+    font-weight: 600;
+}
+
+/* OPTION (INI YANG PALING PENTING) */
+.option-box {
+    background: #eeeeee;
+    border: 1px solid #d1d5db;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* hover ringan (tidak lebay) */
+.option-box:hover {
+    background: #e5e7eb;
+}
+
+/* BENAR */
+.option-box.correct {
+    background: #d1fae5;
+    border-color: #22c55e;
+}
+
+/* SALAH */
+.option-box.wrong {
+    background: #fee2e2;
+    border-color: #ef4444;
+}
+
+/* BUTTON */
+.quiz-nav {
+    margin-top: 15px;
+}
+
+.btn-lanjut {
+    background: #1E293B;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.btn-lanjut:disabled {
+    background: #1E293B;
+}
+
+.btn-kembali {
+    background: #1E293B;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-left: 10px;
+}

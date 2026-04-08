@@ -1,0 +1,424 @@
+{% extends 'layouts/base.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- PROGRESS -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">0%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 0%">
+                    0%
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 1 -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body p-4">
+
+                <!-- Judul -->
+                <h4 class="fw-bold mb-3 text-primary">
+                    <i class="bi bi-sliders me-2"></i> 4.2 Penerapan Thresholding pada Citra
+                </h4>
+
+                <!-- Paragraf pembuka -->
+                <p class="text-justify">
+                    Dalam penerapan thresholding, terdapat dua pendekatan utama, yaitu
+                    <strong>global thresholding</strong> dan
+                    <strong>adaptive thresholding</strong>.
+                </p>
+
+                <!-- Global thresholding -->
+                <p class="text-justify">
+                    Pada global thresholding, digunakan satu nilai threshold untuk seluruh citra,
+                    yang ditentukan dari keseluruhan citra \( f \), yaitu:
+                </p>
+
+                <!-- Rumus global -->
+                <div class="bg-light rounded p-3 text-center mb-3">
+                    \[
+                    T = T(f)
+                    \]
+                </div>
+
+                <p class="text-justify">
+                    Semua piksel dibandingkan dengan nilai threshold yang sama. Metode ini bekerja
+                    dengan baik jika pencahayaan citra seragam dan perbedaan antara objek dan
+                    latar belakang jelas.
+                </p>
+
+                <p class="text-justify">
+                    Namun, pada banyak kasus, citra memiliki variasi tingkat keabuan akibat
+                    pencahayaan yang tidak merata atau faktor lain. Dalam kondisi seperti ini,
+                    penggunaan satu threshold saja seringkali tidak menghasilkan segmentasi
+                    yang baik.
+                </p>
+
+                <!-- Adaptive thresholding -->
+                <p class="text-justify">
+                    Untuk mengatasi hal tersebut, digunakan <strong>adaptive thresholding</strong>,
+                    yaitu metode di mana nilai threshold bergantung pada posisi piksel dan bagian
+                    citra tertentu, yang dinyatakan sebagai:
+                </p>
+
+                <!-- Rumus adaptive -->
+                <div class="bg-light rounded p-3 text-center mb-3">
+                    \[
+                    T = T(f, f_c)
+                    \]
+                </div>
+
+                <p class="text-justify">
+                    dengan \( f_c \) merupakan bagian lokal dari citra tempat threshold ditentukan.
+                </p>
+
+                <p class="text-justify mb-0">
+                    Pada metode ini, citra dapat dibagi menjadi beberapa sub-citra, kemudian nilai
+                    threshold ditentukan secara independen pada masing-masing sub-citra. Jika pada
+                    suatu sub-citra nilai threshold sulit ditentukan, maka nilai tersebut dapat
+                    diperkirakan (diinterpolasi) dari sub-citra di sekitarnya. Selanjutnya, setiap
+                    sub-citra diproses menggunakan threshold lokal yang telah ditentukan.
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-body p-4">
+
+                <!-- Pengantar -->
+                <p class="text-justify">
+                    Selain itu, terdapat variasi lain dari thresholding, seperti berikut:
+                </p>
+
+                <!-- Band Thresholding -->
+                <h5 class="fw-bold mt-3 text-primary">Band Thresholding</h5>
+
+                <!-- Rumus Band -->
+                <div class="bg-light rounded p-3 text-center mb-3">
+                    \[
+                    g(i,j) =
+                    \begin{cases}
+                    1 & \text{untuk } f(i,j) \in D \\
+                    0 & \text{lainnya}
+                    \end{cases}
+                    \]
+                </div>
+
+                <p class="text-justify">
+                    Band thresholding adalah metode segmentasi citra berdasarkan rentang nilai
+                    keabuan tertentu. Metode ini berguna untuk mengekstraksi bagian citra yang
+                    memiliki karakteristik intensitas tertentu, sementara bagian lainnya dianggap
+                    sebagai latar belakang.
+                </p>
+
+                <p class="text-justify">
+                    Sebagai contoh, pada segmentasi citra sel darah mikroskopis, suatu rentang
+                    tingkat keabuan tertentu dapat merepresentasikan bagian sitoplasma, sedangkan
+                    latar belakang memiliki tingkat keabuan yang lebih terang dan inti sel memiliki
+                    tingkat keabuan yang lebih gelap. Dengan memilih rentang nilai keabuan yang sesuai,
+                    bagian yang diinginkan dapat dipisahkan secara efektif dari bagian lainnya.
+                </p>
+
+                <p class="text-justify">
+                    Selain itu, band thresholding juga dapat digunakan sebagai detektor batas
+                    (border detector). Pada kondisi objek gelap dengan latar belakang terang,
+                    nilai keabuan yang berada di antara keduanya umumnya hanya muncul pada batas objek.
+                    Jika rentang nilai tersebut dipilih, maka hasil segmentasi akan menampilkan batas objek.
+                </p>
+
+                <!-- Multi Thresholding -->
+                <h5 class="fw-bold mt-4 text-primary">Multi-Thresholding</h5>
+
+                <!-- Rumus Multi -->
+                <div class="bg-light rounded p-3 text-center mb-3">
+                    \[
+                    g(i,j) =
+                    \begin{cases}
+                    1 & \text{untuk } f(i,j) \in D_1 \\
+                    2 & \text{untuk } f(i,j) \in D_2 \\
+                    \vdots & \\
+                    n & \text{untuk } f(i,j) \in D_n \\
+                    0 & \text{lainnya}
+                    \end{cases}
+                    \]
+                </div>
+
+                <p class="text-justify mb-0">
+                    Multi-thresholding adalah metode yang menggunakan lebih dari satu nilai threshold.
+                    Pada metode ini, citra tidak hanya dibagi menjadi dua kelas (objek dan latar belakang),
+                    tetapi menjadi beberapa kelas berdasarkan kelompok tingkat keabuan tertentu.
+                    Setiap kelompok nilai keabuan direpresentasikan sebagai kelas yang berbeda.
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 3 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-body p-4">
+
+                <!-- Pengantar -->
+                <p class="text-justify">
+                    Berikut adalah contoh dari beberapa variasi metode thresholding, yaitu
+                    global thresholding, local (adaptive) thresholding, band thresholding,
+                    dan multi-thresholding.
+                </p>
+
+                <p class="fw-semibold text-center">
+                    Tabel 4.1 Contoh berbagai metode thresholding
+                </p>
+
+                <!-- Tabel -->
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle text-center">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 15%;">Metode</th>
+                                <th style="width: 30%;">Citra Input</th>
+                                <th style="width: 25%;">Ketentuan</th>
+                                <th style="width: 30%;">Hasil</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <!-- Global -->
+                            <tr>
+                                <td class="fw-semibold">Global Thresholding</td>
+
+                                <td>
+                                    \[
+                                    \begin{bmatrix}
+                                    90&100&110&180&190\\
+                                    95&105&115&185&195\\
+                                    100&110&120&190&200\\
+                                    105&115&125&195&205\\
+                                    110&120&130&200&210
+                                    \end{bmatrix}
+                                    \]
+                                </td>
+
+                                <td class="text-start">
+                                    \( T = 130 \)
+                                    <br><br>
+                                    \[
+                                    g(i,j)=
+                                    \begin{cases}
+                                    1 & f(i,j) \geq 130 \\
+                                    0 & f(i,j) < 130 \end{cases} \] </td>
+
+                                <td>
+                                    \[
+                                    \begin{bmatrix}
+                                    0&0&0&1&1\\
+                                    0&0&0&1&1\\
+                                    0&0&0&1&1\\
+                                    0&0&0&1&1\\
+                                    0&0&1&1&1
+                                    \end{bmatrix}
+                                    \]
+                                </td>
+                            </tr>
+
+                            <!-- Local -->
+                            <tr>
+                                <td class="fw-semibold">Local (Adaptive)</td>
+
+                                <td>
+                                    \[
+                                    \begin{bmatrix}
+                                    90&100&110&180&190\\
+                                    95&105&115&185&195\\
+                                    100&110&120&190&200\\
+                                    105&115&125&195&205\\
+                                    110&120&130&200&210
+                                    \end{bmatrix}
+                                    \]
+                                </td>
+
+                                <td class="text-start">
+                                    \[
+                                    g(i,j)=
+                                    \begin{cases}
+                                    1 & f(i,j) \geq T_k \\
+                                    0 & f(i,j) < T_k \end{cases} \] \( T_k=[110, 190] \) </td>
+
+                                <td>
+                                    \[
+                                    \begin{bmatrix}
+                                    0&0&1&0&0\\
+                                    0&0&1&0&1\\
+                                    0&1&1&1&1\\
+                                    0&1&1&1&1\\
+                                    1&1&1&1&1
+                                    \end{bmatrix}
+                                    \]
+                                </td>
+                            </tr>
+
+                            <!-- Band -->
+                            <tr>
+                                <td class="fw-semibold">Band Thresholding</td>
+
+                                <td>
+                                    \[
+                                    \begin{bmatrix}
+                                    90&110&130&180&200\\
+                                    95&115&140&175&195\\
+                                    100&120&150&170&190\\
+                                    105&130&160&165&185\\
+                                    110&140&170&180&210
+                                    \end{bmatrix}
+                                    \]
+                                </td>
+
+                                <td class="text-start">
+                                    \[
+                                    g(i,j)=
+                                    \begin{cases}
+                                    1 & f(i,j) \in D \\
+                                    0 & \text{lainnya}
+                                    \end{cases}
+                                    \]
+                                    \( D = [110, 180] \)
+                                </td>
+
+                                <td>
+                                    \[
+                                    \begin{bmatrix}
+                                    0&1&1&1&0\\
+                                    0&1&1&1&0\\
+                                    0&1&1&1&0\\
+                                    0&1&1&1&0\\
+                                    1&1&1&1&0
+                                    \end{bmatrix}
+                                    \]
+                                </td>
+                            </tr>
+
+                            <!-- Multi -->
+                            <tr>
+                                <td class="fw-semibold">Multi Thresholding</td>
+
+                                <td>
+                                    \[
+                                    \begin{bmatrix}
+                                    90&120&150&180&210\\
+                                    100&130&160&190&220\\
+                                    110&140&170&200&230\\
+                                    80&125&155&185&215\\
+                                    70&115&145&175&205
+                                    \end{bmatrix}
+                                    \]
+                                </td>
+
+                                <td class="text-start">
+                                    \[
+                                    g(i,j)=
+                                    \begin{cases}
+                                    1 & f(i,j) \in D_1 \\
+                                    2 & f(i,j) \in D_2 \\
+                                    3 & f(i,j) \in D_3 \\
+                                    0 & \text{lainnya}
+                                    \end{cases}
+                                    \]
+                                    \( D_1 = [0,110] \) <br>
+                                    \( D_2 = [111,170] \) <br>
+                                    \( D_3 = [171,255] \)
+                                </td>
+
+                                <td>
+                                    \[
+                                    \begin{bmatrix}
+                                    1&2&2&3&3\\
+                                    1&2&2&3&3\\
+                                    1&2&2&3&3\\
+                                    1&2&2&3&3\\
+                                    1&2&2&3&3
+                                    \end{bmatrix}
+                                    \]
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="page-section">
+        <div class="card-mb-4 shadow-sm">
+            <div class="card-body">
+                <!-- aktivitas -->
+                <div class="quiz-card">
+
+                    <h5 class="quiz-title">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+                    </h5>
+                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
+                    </p>
+
+                    <!-- PROGRESS -->
+                    <div class="quiz-progress" id="quizProgress"></div>
+
+                    <!-- SOAL -->
+                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+                    <!-- FEEDBACK -->
+                    <div id="feedback" class="mt-3 fw-bold"></div>
+
+                    <!-- BUTTON -->
+                    <div class="quiz-nav">
+                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
+                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PAGINATION -->
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item active"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(3)">4</a></li>
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+{% endblock %}
+
+{% endblock %}

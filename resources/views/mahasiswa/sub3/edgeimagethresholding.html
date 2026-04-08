@@ -1,0 +1,572 @@
+{% extends 'layouts/base.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- PROGRESS -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">8%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 8%">
+                    8%
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 1 -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h2 class="bi bi-bezier2 me-2  text-primary"> 3.2 Edge Image Thresholding</h2>
+                <p>
+                    Pada citra hasil deteksi tepi, hampir semua piksel memiliki nilai (tidak nol). Nilai tepi yang kecil
+                    biasanya muncul karena perubahan intensitas yang sangat kecil, misalnya akibat noise atau perbedaan
+                    pencahayaan. Untuk menghilangkan nilai-nilai kecil tersebut, digunakan thresholding, yaitu hanya
+                    mempertahankan tepi yang cukup kuat dan membuang yang lemah. Lihatlah gambar 3.2 dibawah ini sebagai
+                    contoh
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/citraedgeimagethreshold.png') }}"
+                        class="img-fluid rounded" style="max-width: 650px;">
+                    <p class="mt-2">
+                        <em>
+                            Gambar 3.2 Contoh citra edge-image thresholding
+                            Sumber: Sonka, M., Hlavac, V., & Boyle, R. (2014).
+                            Image Processing, Analysis, and Machine Vision (4th ed.). Cengage Learning.
+                        </em>
+                    </p>
+                </div>
+
+                <p>
+                    Namun, hasil deteksi tepi sederhana sering terlihat tebal, padahal seharusnya hanya berupa satu
+                    garis tipis sebagai batas objek. Masalah ini dapat diatasi dengan non-maximal suppression, yaitu
+                    proses untuk menipiskan tepi dengan cara hanya mempertahankan piksel tepi yang paling kuat dan
+                    menghapus yang lainnya.
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <!-- page 2 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <h4 class="fw-bold mb-3 text-primary">
+                    Algoritma Non-maximal suppression of directional edge data
+                </h4>
+
+                <p><strong>Langkah-langkah yang dilakukan yaitu:</strong></p>
+
+                <div class="mb-3">
+                    <b>1. Tentukan arah tepi</b>
+                    <p>
+                        Setiap piksel tepi ditentukan arah gradiennya, lalu disederhanakan menjadi 8 arah utama
+                        (8-connectivity).
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <b>2. Periksa dan bandingkan dengan dua piksel tetangga</b>
+                    <p>
+                        Untuk setiap piksel yang memiliki nilai tepi (tidak nol), bandingkan dengan dua piksel tetangga
+                        yang berada searah dengan arah tepinya.
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <b>3. Tandai piksel untuk dihapus jika bukan maksimum</b>
+                    <p>
+                        Jika salah satu dari dua piksel tetangga memiliki nilai lebih besar, maka piksel tersebut bukan
+                        maksimum lokal dan harus ditandai untuk dihapus.
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <b>4. Hapus piksel yang ditandai</b>
+                    <p>
+                        Setelah semua piksel diperiksa, ubah semua piksel yang ditandai menjadi nol sehingga hanya
+                        tersisa tepi yang paling kuat.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- page 3 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <p>
+                    Setelah nilai gradien \( G_x \) dan \( G_y \) diperoleh, arah gradien setiap piksel terlebih dahulu
+                    ditentukan
+                    menggunakan pembagian 8 arah seperti yang ditunjukkan pada diagram pembagian arah gradien. Pembagian
+                    ini didasarkan pada:
+                </p>
+
+                <ul>
+                    <li>Nilai dari \( G_x \) dan \( G_y \), serta</li>
+                    <li>Perbandingan \( |G_x| \) dan \( |G_y| \)</li>
+                </ul>
+
+                <p>
+                    Sehingga setiap piksel dapat diklasifikasikan ke dalam salah satu dari 8 sektor arah
+                    (\(0^\circ\), \(45^\circ\), \(90^\circ\), \(135^\circ\), \(180^\circ\), \(225^\circ\),
+                    \(270^\circ\), dan \(315^\circ\)).
+                    Lihatlah gambar dibawah ini untuk melihat visualisasi dari aturan tersebut
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/8 arah dalam derajat.png') }}"
+                        class="img-fluid rounded" style="max-width: 500px;">
+                    <p class="mt-2">
+                        <em>
+                            Gambar 3.3 Klasifikasi 8 arah dalam citra digital
+                            Sumber: López-Portilla Vigil (tahun), “Accelerating the Canny Edge Detection Algorithm with
+                            CUDA/GPU”
+                        </em>
+                    </p>
+                </div>
+
+                <p>
+                    Dalam praktiknya, arah gradien yang diperoleh tersebut tidak digunakan secara langsung dalam bentuk
+                    8 arah atau sudut kontinu, melainkan disederhanakan (dikuantisasi) ke dalam beberapa rentang sudut
+                    tertentu agar mempermudah proses perbandingan piksel pada tahap Non-Maximal Suppression. Arah
+                    tersebut kemudian dikelompokkan menjadi empat arah utama sebagai berikut:
+                </p>
+
+                <ul>
+                    <li>
+                        0° (horizontal edge):<br>
+                        \( \theta \in [-22.5^\circ, 22.5^\circ] \cup [157.5^\circ, 180^\circ] \cup [-180^\circ,
+                        -157.5^\circ] \)
+                    </li>
+                    <li>
+                        45° (diagonal edge):<br>
+                        \( \theta \in [22.5^\circ, 67.5^\circ] \cup [-157.5^\circ, -112.5^\circ] \)
+                    </li>
+                    <li>
+                        90° (vertical edge):<br>
+                        \( \theta \in [67.5^\circ, 112.5^\circ] \cup [-112.5^\circ, -67.5^\circ] \)
+                    </li>
+                    <li>
+                        135° (diagonal edge):<br>
+                        \( \theta \in [112.5^\circ, 157.5^\circ] \cup [-67.5^\circ, -22.5^\circ] \)
+                    </li>
+                </ul>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/4 arah tepi utama.png') }}"
+                        class="img-fluid rounded" style="max-width: 500px;">
+                    <p class="mt-2">
+                        <em>
+                            Gambar 3.4 Arah tepi
+                            Sumber: Ambarwati et al. (2016), “Segmentasi Citra Digital Menggunakan Thresholding Otsu
+                            untuk Analisa Perbandingan Deteksi Tepi”
+                        </em>
+                    </p>
+                </div>
+
+                <p>
+                    Berdasarkan arah tersebut, setiap piksel hanya dibandingkan dengan dua piksel tetangga yang berada
+                    pada satu garis yang sesuai dengan arah tepi (tegak lurus terhadap arah gradien), yaitu:
+                </p>
+
+                <ul>
+                    <li>Untuk arah \(0^\circ\), dibandingkan dengan piksel kiri dan kanan (west – east)</li>
+                    <li>Untuk arah \(45^\circ\), dibandingkan dengan piksel kanan atas dan kiri bawah (northeast –
+                        southwest)</li>
+                    <li>Untuk arah \(90^\circ\), dibandingkan dengan piksel atas dan bawah (north – south)</li>
+                    <li>Untuk arah \(135^\circ\), dibandingkan dengan piksel kiri atas dan kanan bawah (northwest –
+                        southeast)</li>
+                </ul>
+
+                <p>
+                    Dengan pendekatan ini, proses Non-Maximal Suppression hanya mempertahankan piksel yang merupakan
+                    maksimum lokal pada arah tepinya, sehingga menghasilkan tepi yang lebih tipis dan jelas.
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <!-- page 4 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <p class="mb-3">
+                    Perhatikan contoh berikut dari penerapan algoritma <b>Non-Maximal Suppression</b>.
+                </p>
+
+                <!-- Gambar -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/citra grayscale_non maxima.png') }}"
+                        class="img-fluid rounded shadow-sm" style="max-width: 500px;">
+                    <p class="mt-2 text-muted">
+                        <em>Gambar 3.5 Nilai citra untuk contoh Non-Maximal Suppression</em>
+                    </p>
+                </div>
+
+                <p>
+                    Piksel yang dianalisis adalah nilai <b>60</b> pada koordinat \( f(2,2) \).
+                </p>
+
+                <!-- SOBEL -->
+                <h5 class="mt-4"><b>1. Perhitungan Gradien (Operator Sobel)</b></h5>
+
+                <p class="mb-2"><b>Kernel Sobel</b></p>
+                <div class="bg-light p-3 rounded text-center mb-4 shadow-sm">
+                    \[
+                    G_x=\begin{bmatrix}-1&0&1\\-2&0&2\\-1&0&1\end{bmatrix}
+                    \quad
+                    G_y=\begin{bmatrix}-1&-2&-1\\0&0&0\\1&2&1\end{bmatrix}
+                    \]
+                </div>
+
+                <!-- GX -->
+                <p><b>Hitung \( G_x \)</b></p>
+                <div class="bg-light p-3 rounded mb-4 shadow-sm">
+                    \[
+                    G_x = (-1)(40)+(0)(50)+(1)(45)+(-2)(55)+(0)(60)+(2)(70)+(-1)(48)+(0)(65)+(1)(80)
+                    \]
+                    \[
+                    = (-40+45)+(-110+140)+(-48+80)
+                    \]
+                    \[
+                    = 5+30+32 = 67
+                    \]
+                </div>
+
+                <!-- GY -->
+                <p><b>Hitung \( G_y \)</b></p>
+                <div class="bg-light p-3 rounded mb-4 shadow-sm">
+                    \[
+                    G_y = (-1)(40)+(-2)(50)+(-1)(45)+(0)(55)+(0)(60)+(0)(70)+(1)(48)+(2)(65)+(1)(80)
+                    \]
+                    \[
+                    = (-40-100-45) + (48+130+80)
+                    \]
+                    \[
+                    = -185 + 258 = 73
+                    \]
+                </div>
+
+                <!-- MAGNITUDE -->
+                <h5 class="mt-4"><b>2. Magnitudo dan Arah Gradien</b></h5>
+
+                <p><b>Magnitudo</b></p>
+                <div class="bg-light p-2 rounded text-center mb-3 shadow-sm">
+                    \[
+                    |G| = \sqrt{67^2 + 73^2} \approx 99
+                    \]
+                </div>
+
+                <p><b>Arah Gradien</b></p>
+                <div class="bg-light p-2 rounded text-center mb-4 shadow-sm">
+                    \[
+                    \theta = \tan^{-1}\left(\frac{73}{67}\right) \approx 47^\circ
+                    \]
+                </div>
+
+                <!-- NMS -->
+                <h5 class="mt-4"><b>3. Proses Non-Maximal Suppression</b></h5>
+
+                <div class="border rounded p-3 mb-3 bg-white shadow-sm">
+                    <p><b>Langkah 1: Kuantisasi arah</b></p>
+                    <p>
+                        \( \theta = 47^\circ \Rightarrow \) dibulatkan menjadi <b>45°</b>
+                    </p>
+                </div>
+
+                <div class="border rounded p-3 mb-3 bg-white shadow-sm">
+                    <p><b>Langkah 2: Ambil piksel tetangga</b></p>
+                    <p>
+                        Untuk arah \(45^\circ\):<br>
+                        ↗ kanan atas = 45 \((i-1, j+1)\)<br>
+                        ↙ kiri bawah = 48 \((i+1, j-1)\)
+                    </p>
+                </div>
+
+                <div class="border rounded p-3 mb-3 bg-white shadow-sm">
+                    <p><b>Langkah 3: Perbandingan</b></p>
+                    <p>
+                        \(60 > 45\) (True)<br>
+                        \(60 > 48\) (True)
+                    </p>
+                </div>
+
+                <div class="border rounded p-3 mb-4 bg-white shadow-sm">
+                    <p><b>Langkah 4: Keputusan</b></p>
+                    <p>
+                        Karena merupakan maksimum lokal, maka:
+                        <br>
+                        <b>\( f(2,2) = 60 \) dipertahankan</b>
+                    </p>
+                </div>
+                <div class="highlight-box mt-3">
+                    <i class="fa-solid fa-circle-info me-2"></i>
+                    Walaupun sudah dilakukan penyaringan, hasil deteksi tepi masih dapat mengandung noise.
+                </div>
+                <!-- HYSTERESIS -->
+                <p class="mt-3">
+                    Oleh karena itu, digunakan metode <b>Hysteresis Thresholding</b> untuk menyaring tepi yang valid
+                    dan menghilangkan noise, dengan dua ambang:
+                </p>
+
+                <ul>
+                    <li>
+                        <b>High Threshold (\( t_1 \))</b>: jika nilai lebih besar → tepi kuat (dipertahankan)
+                    </li>
+                    <li>
+                        <b>Low Threshold (\( t_0 \))</b>: jika nilai lebih kecil → dianggap noise (dihapus)
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <p><strong>Langkah-langkah yang dilakukan yaitu:</strong></p>
+
+                <ol>
+                    <li class="mb-3">
+                        <b>
+                            Tandai semua tepi dengan magnitudo lebih besar dari \( t_1 \) sebagai tepi yang benar;
+                        </b>
+
+                        <p>Biasanya dalam hysteresis:</p>
+                        <ul>
+                            <li>\( t_1 \) (threshold tinggi) dipilih untuk menangkap tepi yang sangat kuat.</li>
+                            <li>\( t_0 \) (threshold rendah) dipilih untuk membedakan noise dari tepi lemah.</li>
+                        </ul>
+                    </li>
+
+                    <li class="mb-3">
+                        <b>
+                            Pindai semua piksel dengan magnitudo tepi dalam rentang \( [t_0, t_1] \)
+                        </b>
+                        <ul>
+                            <li>
+                                <p>
+                                    Piksel dengan nilai di antara kedua threshold dianggap sebagai tepi lemah dan belum
+                                    pasti,
+                                    sehingga perlu diperiksa hubungannya dengan tepi kuat.
+                                </p>
+                            </li>
+                        </ul>
+
+                    </li>
+
+                    <li class="mb-3">
+                        <b>
+                            Jika sebuah piksel memiliki tetangga yang sudah ditandai sebagai tepi, maka piksel tersebut
+                            juga ditandai sebagai tepi. Tetangga yang dimaksud Adalah 4-connectivity dan 8-connectivity
+                        </b>
+                        <ul>
+                            <li>
+                                <p>
+                                    Piksel lemah akan dipertahankan jika terhubung dengan tepi kuat, karena kemungkinan
+                                    besar
+                                    merupakan bagian dari objek yang sama.
+                                </p>
+                            </li>
+                        </ul>
+
+                    </li>
+
+                    <li>
+                        <b>
+                            Ulangi Langkah ke-2 hingga stabil
+                        </b>
+                        <p>
+                            Piksel lemah akan dipertahankan jika terhubung dengan tepi kuat, karena kemungkinan besar
+                            merupakan bagian dari objek yang sama.
+                        </p>
+                    </li>
+                </ol>
+
+            </div>
+        </div>
+    </div>
+    <!-- page 6 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <p>
+                    Perhatikan Contoh Berikut dari penerapan algoritma hysteresis thresholding
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/magnitudo hysteresis.png') }}"
+                        class="img-fluid rounded" style="max-width: 550px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.6 Nilai citra yang digunakan untuk hysteresis thresholding</em>
+                    </p>
+                </div>
+
+                <p>
+                    Gambar diatas adalah contoh hasil magnitudo edge detection pada kernel sobel, dengan asumsi bahwa
+                    nilai t<sub>1</sub> = 80 dan t<sub>0</sub>= 40
+                </p>
+
+                <p><b>Tandai semua tepi yang nilai magnitudo lebih besar dari t1</b></p>
+
+                <p>
+                    Artinya tepi yang ditandai adalah tepi yang kuat, berdasarkan gambar tersebut tepi yang kuat ialah
+                    terletak pada koordinat sebagai berikut :
+                </p>
+
+                <ul>
+                    <li>g(1,2)</li>
+                    <li>g(2,3)</li>
+                    <li>g(3,2)</li>
+                    <li>g(3,5)</li>
+                    <li>g(4,3)</li>
+                </ul>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/Menandai tepi kuat.png') }}"
+                        class="img-fluid rounded" style="max-width: 550px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.7 Nilai piksel yang ditandai sebagai tepi yang kuat</em>
+                    </p>
+                </div>
+
+                <p><b>Pindai semua piksel dengan magnitudo tepi dalam rentang t0t1</b></p>
+
+                <p>
+                    Artinya akan mencari tepi yang lemah dalam rentang [40, 80], berdasarkan kriteria tersebut maka
+                    didapatkan tepi lemah terletak pada koordinat sebagai berikut :
+                </p>
+
+                <ul>
+                    <li>g(1,4)</li>
+                    <li>g(2,1)</li>
+                    <li>g(2,4)</li>
+                    <li>g(2,5)</li>
+                    <li>g(3,3)</li>
+                    <li>g(4,1)</li>
+                    <li>g(4,5)</li>
+                    <li>g(5,2)</li>
+                    <li>g(5,4)</li>
+                </ul>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/menandai tepi lemah.png') }}"
+                        class="img-fluid rounded" style="max-width: 550px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.8 Nilai Piksel yang ditandai sebagai tepi lemah</em>
+                    </p>
+                </div>
+
+                <p><b>Pemeriksaan konektivitas dengan pendekatan 8-connectivity</b></p>
+
+                <p>
+                    Ambil contoh kita akan memeriksa pada g(2,4)
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/pemeriksaan tepi.png') }}"
+                        class="img-fluid rounded" style="max-width: 700px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.9 Pemeriksaan konektivitas pada piksel tepi lemah</em>
+                    </p>
+                </div>
+
+                <p>
+                    Nilai g(2,4) dianggap sebagai tepi lemah akan tetapi memiliki tetangga yang merupakan tepi kuat
+                    yaitu g(2,3)
+                </p>
+
+                <p><b>Ulangi Langkah ke-2 hingga stabil</b></p>
+
+                <p>
+                    Berdasarkan pendeteksian tepi kuat dan tepi lemah maka didapatlah hasil sebagai berikut
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub3/Hasil.png') }}" class="img-fluid rounded"
+                        style="max-width: 550px;">
+                    <p class="mt-2">
+                        <em>Gambar 3.10 Hasil dari algoritma hysteresis thresholding</em>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="page-section">
+        <div class="card-mb-4 shadow-sm">
+            <div class="card-body">
+                <!-- aktivitas -->
+                <div class="quiz-card">
+
+                    <h5 class="quiz-title">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+                    </h5>
+                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
+                    </p>
+
+                    <!-- PROGRESS -->
+                    <div class="quiz-progress" id="quizProgress"></div>
+
+                    <!-- SOAL -->
+                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+                    <!-- FEEDBACK -->
+                    <div id="feedback" class="mt-3 fw-bold"></div>
+
+                    <!-- BUTTON -->
+                    <div class="quiz-nav">
+                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
+                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(3)">4</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(4)">5</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(5)">6</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(6)">7</a></li>
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+{% endblock %}
+{% endblock %}

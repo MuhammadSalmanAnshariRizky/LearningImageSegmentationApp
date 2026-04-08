@@ -1,0 +1,645 @@
+{% extends 'layouts/base.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- PROGRESS -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">0%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 0%">
+                    0%
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 1 -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body p-4">
+
+                <!-- Judul -->
+                <h4 class="fw-bold mb-3 text-primary">
+                    <i class="bi bi-sliders me-2"></i>4.3 Cara Menentukan Nilai Threshold
+                </h4>
+
+                <!-- Paragraf pembuka -->
+                <p class="text-justify">
+                    Dalam proses segmentasi citra, menentukan nilai threshold akan menjadi lebih mudah
+                    jika kita sudah mengetahui beberapa informasi tentang citra tersebut. Misalnya, kita
+                    mengetahui bahwa suatu objek hanya menempati sebagian kecil dari gambar.
+                </p>
+
+                <p class="text-justify">
+                    Sebagai contoh, pada sebuah halaman teks yang dicetak, kita bisa memperkirakan bahwa
+                    tulisan hanya menutupi sekitar <strong>\( \frac{1}{p} \)</strong> bagian dari seluruh halaman.
+                </p>
+
+                <p class="text-justify">
+                    Di sini, <strong>\( p \)</strong> adalah angka pembagi, sedangkan
+                    <strong>\( \frac{1}{p} \)</strong> menunjukkan proporsi atau persentase bagian citra
+                    yang merupakan objek.
+                </p>
+
+                <!-- Contoh -->
+                <p class="fw-semibold mt-3">Contoh:</p>
+
+                <ul class="mb-3">
+                    <li>Jika \( p = 4 \), maka \( \frac{1}{p} = \frac{1}{4} = 25\% \)</li>
+                    <li>Artinya, tulisan menutupi sekitar 25% dari gambar, sedangkan sisanya adalah latar belakang</li>
+                </ul>
+
+                <!-- Penjelasan metode -->
+                <p class="text-justify">
+                    Dengan informasi ini, kita dapat menentukan nilai threshold \( T \) dengan cara melihat
+                    histogram citra, lalu memilih nilai \( T \) sehingga sekitar
+                    <strong>\( \frac{1}{p} \)</strong> jumlah piksel berada di bawah nilai tersebut
+                    (biasanya piksel objek), dan sisanya berada di atas \( T \).
+                    Metode ini dikenal sebagai <strong>p-tile thresholding</strong>.
+                </p>
+
+                <p class="text-justify">
+                    Namun, dalam kebanyakan kasus, kita tidak memiliki informasi awal seperti itu.
+                    Oleh karena itu, diperlukan cara lain yang lebih umum, yaitu dengan menganalisis
+                    bentuk histogram citra.
+                </p>
+
+                <p class="text-justify mb-0">
+                    Histogram adalah grafik yang menunjukkan sebaran nilai keabuan pada citra.
+                    Jika citra memiliki perbedaan yang cukup jelas antara objek dan latar belakang,
+                    maka histogramnya biasanya akan memiliki dua puncak (bimodal).
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <p>
+                    Pada histogram bimodal:
+                </p>
+
+                <p>
+                    • Satu puncak mewakili objek
+                    <br>
+                    • Puncak lainnya mewakili latar belakang
+                </p>
+
+                <p>
+                    Di antara dua puncak tersebut biasanya terdapat lembah (nilai minimum). Nilai inilah yang paling
+                    cocok dijadikan sebagai threshold, karena menjadi batas pemisah antara objek dan background.
+                    Lihatlah gambar dibawah ini sebagai contoh
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub4/bimodal histogram.png') }}"
+                        class="img-fluid rounded" style="max-width: 600px;">
+                    <p class="mt-2"><em>Gambar 4.3 Contoh Histogram Bimodal</em></p>
+                </div>
+
+                <p>
+                    Berdasarkan gambar diatas, jika tingkat keabuan objek berbeda dari tingkat keabuan latar belakang,
+                    maka histogram yang dihasilkan biasanya bersifat bimodal, yaitu memiliki dua puncak. Pada histogram
+                    pada gambar di atas, terlihat bahwa piksel objek membentuk salah satu puncak yang berada di sekitar
+                    nilai keabuan 80, sedangkan piksel latar belakang membentuk puncak lainnya di sekitar nilai keabuan
+                    200.
+                </p>
+
+                <p>
+                    Bentuk histogram tersebut menunjukkan bahwa nilai keabuan di antara kedua puncak relatif jarang
+                    muncul dalam citra. Nilai-nilai ini umumnya berasal dari piksel yang berada pada batas (edge) antara
+                    objek dan latar belakang.
+                </p>
+
+                <p>
+                    Dalam proses segmentasi, nilai threshold yang dipilih sebaiknya mampu meminimalkan kesalahan
+                    pemisahan antara objek dan background. Oleh karena itu, secara intuitif threshold dipilih pada nilai
+                    keabuan yang berada pada lembah minimum histogram di antara dua puncak tersebut. Pada histogram ini,
+                    lembah berada pada kisaran 120–140, sehingga nilai threshold yang sesuai dapat dipilih di sekitar T
+                    ≈ 130.
+                </p>
+
+                <p>
+                    Dengan menggunakan nilai tersebut, piksel dengan nilai keabuan ≤ 130 diklasifikasikan sebagai objek,
+                    sedangkan piksel dengan nilai keabuan > 130 diklasifikasikan sebagai latar belakang.
+                </p>
+
+                <p>
+                    Jika histogram memiliki lebih dari dua puncak (multimodal), maka beberapa nilai threshold dapat
+                    ditentukan, yaitu pada titik minimum di antara setiap dua puncak. Setiap threshold tersebut akan
+                    menghasilkan hasil segmentasi yang berbeda karena memisahkan citra ke dalam beberapa kelas
+                    intensitas. Pendekatan ini dikenal sebagai multi-thresholding.
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body p-4">
+
+                <!-- Paragraf -->
+                <p class="text-justify">
+                    Namun, dalam praktiknya, bentuk histogram tidak selalu jelas. Terkadang puncak
+                    dan lembah pada histogram sulit dibedakan karena adanya pengaruh piksel pada
+                    batas objek dan latar belakang. Piksel-piksel ini biasanya memiliki gradien
+                    yang tinggi dan menghasilkan nilai keabuan di antara objek dan background,
+                    sehingga membuat histogram menjadi kurang tegas.
+                </p>
+
+                <p class="text-justify">
+                    Untuk mengatasi hal tersebut, salah satu pendekatan yang dapat digunakan adalah
+                    dengan memberikan bobot pada histogram, sehingga kontribusi piksel dengan
+                    gradien tinggi (piksel batas) dikurangi. Dengan cara ini, histogram akan lebih
+                    didominasi oleh piksel objek dan latar belakang, sehingga lembah di antara
+                    puncak menjadi lebih jelas dan nilai threshold lebih mudah ditentukan.
+                </p>
+
+                <p class="text-justify">
+                    Selain itu, terdapat metode lain yang justru hanya menggunakan piksel dengan
+                    gradien tinggi untuk membentuk histogram. Dalam pendekatan ini, histogram yang
+                    dihasilkan biasanya menjadi <strong>unimodal</strong> (satu puncak), karena hanya
+                    merepresentasikan nilai keabuan pada batas objek.
+                </p>
+
+                <p class="text-justify">
+                    Puncak tersebut kemudian dapat digunakan sebagai acuan untuk menentukan nilai
+                    threshold. Berikut adalah visualisasi histogram unimodal:
+                </p>
+
+                <!-- Gambar -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub4/unimodal histogram.png') }}"
+                        class="img-fluid rounded shadow-sm" style="max-width: 600px;">
+                    <p class="mt-2 text-muted">
+                        <em>Gambar 4.4 Contoh histogram unimodal</em>
+                    </p>
+                </div>
+
+                <!-- Threshold optimal -->
+                <p class="text-justify">
+                    Salah satu cara menentukan threshold adalah dengan metode
+                    <strong>thresholding optimal</strong>, yaitu dengan menganggap bahwa histogram
+                    citra terdiri dari beberapa distribusi (biasanya dua), yaitu distribusi untuk
+                    objek dan latar belakang.
+                </p>
+
+                <p class="text-justify">
+                    Nilai threshold dipilih pada titik di antara kedua distribusi tersebut, sehingga
+                    kesalahan dalam pemisahan piksel menjadi sekecil mungkin.
+                </p>
+
+                <p class="text-justify">
+                    Namun, metode ini cukup sulit dilakukan karena kita harus menentukan bentuk
+                    dan parameter distribusi tersebut, dan belum tentu histogram benar-benar
+                    mengikuti distribusi normal.
+                </p>
+
+                <!-- Otsu -->
+                <p class="text-justify">
+                    Oleh karena itu, digunakan pendekatan yang lebih praktis, yaitu mencari threshold
+                    yang dapat membedakan objek dan latar belakang sebaik mungkin, dengan cara melihat
+                    perbedaan nilai keabuan di antara keduanya.
+                </p>
+
+                <p class="text-justify">
+                    Salah satu metode yang paling populer adalah <strong>algoritma Otsu</strong>.
+                    Cara kerjanya adalah dengan mencoba semua kemungkinan nilai threshold, kemudian
+                    untuk setiap nilai tersebut dihitung seberapa baik pemisahan antara objek
+                    (foreground) dan latar belakang (background).
+                </p>
+
+                <!-- Kriteria -->
+                <p class="fw-semibold mt-3">Threshold terbaik dipilih ketika:</p>
+
+                <ul class="mb-3">
+                    <li>Perbedaan antara objek dan background paling jelas</li>
+                    <li>Sebaran nilai dalam masing-masing kelompok paling rapat (tidak menyebar)</li>
+                </ul>
+
+                <!-- Penutup -->
+                <p class="text-justify mb-0">
+                    Dengan demikian, algoritma Otsu mampu menentukan threshold secara otomatis
+                    dengan hasil segmentasi yang optimal.
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <!-- page4 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body p-4">
+
+                <!-- Judul -->
+                <h4 class="fw-bold mb-4 text-primary">
+                    Algoritma Otsu Threshold Detection
+                </h4>
+
+                <p class="mb-4">
+                    Berikut adalah langkah dari algoritma otsu threshold detection:
+                </p>
+
+                <!-- LANGKAH 1 -->
+                <div class="mb-4">
+                    <p class="fw-semibold text-dark">1. Hitung histogram citra</p>
+
+                    <p>
+                        Untuk sebuah citra \( I \)
+                        <span class="text-muted">(citra yang diproses)</span>
+                        dengan \( G \) tingkat keabuan
+                        <span class="text-muted">(jumlah level abu-abu)</span>,
+                        hitung histogram:
+                    </p>
+
+                    <div class="bg-light rounded p-3 text-center my-3">
+                        \[
+                        H(0), H(1), \ldots, H(G-1)
+                        \]
+                    </div>
+
+                    <p>
+                        Kemudian normalisasikan histogram sehingga setiap nilai
+                        \( H(i) \)
+                        <span class="text-muted">(probabilitas kemunculan intensitas ke-\( i \))</span>.
+                    </p>
+                </div>
+
+                <!-- LANGKAH 2 -->
+                <div class="mb-4">
+                    <p class="fw-semibold text-dark">2. Tentukan threshold dan bagi kelas</p>
+
+                    <p>
+                        Untuk setiap nilai threshold \( t \)
+                        <span class="text-muted">(nilai ambang)</span>:
+                    </p>
+
+                    <div class="bg-light rounded p-3 text-center my-3">
+                        \[
+                        t = 0, \ldots, G-2
+                        \]
+                    </div>
+
+                    <p class="mb-2">Bagi histogram menjadi dua bagian:</p>
+
+                    <ul class="mb-0">
+                        <li>
+                            <strong>Background (B)</strong> → \( \leq t \)
+                        </li>
+                        <li>
+                            <strong>Foreground (F)</strong> → \( > t \)
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- LANGKAH 3 -->
+                <div class="mb-4">
+                    <p class="fw-semibold text-dark">3. Hitung probabilitas dan variansi</p>
+
+                    <p class="mb-1">Probabilitas background:</p>
+
+                    <div class="bg-light rounded p-3 text-center my-2">
+                        \[
+                        \omega_B(t) = \sum_{j=0}^{t} H(j)
+                        \]
+                    </div>
+
+                    <p class="text-muted small mb-3">
+                        \( \omega_B(t) \): probabilitas background
+                    </p>
+
+                    <p class="mb-1">Probabilitas foreground:</p>
+
+                    <div class="bg-light rounded p-3 text-center my-2">
+                        \[
+                        \omega_F(t) = \sum_{j=t+1}^{G-1} H(j)
+                        \]
+                    </div>
+
+                    <p class="text-muted small mb-2">
+                        \( \omega_F(t) \): probabilitas foreground
+                    </p>
+
+                    <p class="text-center text-muted small mb-2">atau</p>
+
+                    <div class="bg-light rounded p-3 text-center my-2">
+                        \[
+                        \omega_F(t) = 1 - \omega_B(t)
+                        \]
+                    </div>
+
+                    <p class="mt-3 mb-1">Variansi total berbobot:</p>
+
+                    <div class="bg-light rounded p-3 text-center my-2">
+                        \[
+                        \sigma(t) = \omega_B(t)\sigma_B(t) + \omega_F(t)\sigma_F(t)
+                        \]
+                    </div>
+
+                    <p class="text-muted small">
+                        \( \sigma_B(t) \): variansi background •
+                        \( \sigma_F(t) \): variansi foreground •
+                        \( \sigma(t) \): variansi total
+                    </p>
+                </div>
+
+                <!-- LANGKAH 4 -->
+                <div>
+                    <p class="fw-semibold text-dark">4. Tentukan threshold optimal</p>
+
+                    <p>
+                        Pilih nilai threshold terbaik dengan meminimalkan variansi:
+                    </p>
+
+                    <div class="bg-light rounded p-3 text-center my-3">
+                        \[
+                        \hat{t} = \min \sigma(t)
+                        \]
+                    </div>
+
+                    <p class="text-muted small mb-0">
+                        \( \hat{t} \): threshold optimal hasil metode Otsu
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- page 5 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-body p-4">
+
+                <!-- 4 -->
+                <h5 class="fw-semibold">4. Coba Threshold t</h5>
+
+                <p>
+                    Pada contoh perhitungan detail ini akan mengambil t = 2 maka langkahnya adalah sebagai berikut :
+                </p>
+
+                <p><strong>a) Pembagian Kelas</strong></p>
+                <p>
+                    Background (B): nilai keabuan (i) ≤ 2 → {0,1,2} <br>
+                    Foreground (F): nilai keabuan (i) > 2 → {3,4,5}
+                </p>
+
+                <p><strong>b) Probabilitas</strong></p>
+
+                <p>Probabilitas Background :</p>
+                <div class="bg-light p-2 text-center mb-2">
+                    \[
+                    \omega_B = H(0)+H(1)+H(2)=0.071+0.143+0.286=0.5
+                    \]
+                </div>
+
+                <p>Probabilitas Foreground :</p>
+                <div class="bg-light p-2 text-center mb-3">
+                    \[
+                    \omega_F = 1-\omega_B = 0.5
+                    \]
+                </div>
+
+                <p><strong>c) Mean</strong></p>
+
+                <p>
+                    Mean (rata-rata) untuk suatu kelas dihitung dengan rumus:
+                </p>
+
+                <div class="bg-light p-2 text-center mb-3">
+                    \[
+                    \mu = \frac{\sum x \cdot H(x)}{\omega}
+                    \]
+                </div>
+
+                <p>
+                    dengan:
+                    <br>• x = nilai keabuan
+                    <br>• H(x) = probabilitas histogram
+                    <br>• ω = probabilitas kelas
+                </p>
+
+                <p>Mean Background</p>
+                <div class="bg-light p-2 text-center mb-2">
+                    \[
+                    \mu_B = \frac{0\times0.071+1\times0.143+2\times0.286}{0.5}
+                    \]
+                    \[
+                    \mu_B = \frac{0+0.143+0.572}{0.5}=1.43
+                    \]
+                </div>
+
+                <p>Mean Foreground</p>
+                <div class="bg-light p-2 text-center mb-3">
+                    \[
+                    \mu_F = \frac{3\times0.286+4\times0.143+5\times0.071}{0.5}
+                    \]
+                    \[
+                    \mu_F = \frac{0.858+0.572+0.355}{0.5}=3.57
+                    \]
+                </div>
+
+                <p><strong>d) Variansi</strong></p>
+
+                <p>
+                    Variansi untuk masing-masing kelas dihitung dengan rumus:
+                </p>
+
+                <div class="bg-light p-2 text-center mb-3">
+                    \[
+                    \sigma = \frac{\sum (x-\mu)^2 \cdot H(i)}{\omega}
+                    \]
+                </div>
+
+                <p>
+                    dengan:
+                    <br>• x = nilai keabuan
+                    <br>• μ = mean
+                    <br>• H(i) = probabilitas histogram
+                    <br>• ω = probabilitas kelas
+                </p>
+
+                <p>Variansi Background</p>
+                <div class="bg-light p-2 text-center mb-2">
+                    \[
+                    \sigma_B = \frac{(0-1.43)^2\times0.071+(1-1.43)^2\times0.143+(2-1.43)^2\times0.286}{0.5}
+                    \]
+                    \[
+                    \sigma_B = \frac{0.145+0.026+0.091}{0.5}=0.524
+                    \]
+                </div>
+
+                <p>Variansi Foreground</p>
+                <div class="bg-light p-2 text-center mb-3">
+                    \[
+                    \sigma_F = \frac{(3-3.57)^2\times0.286+(4-3.57)^2\times0.143+(5-3.57)^2\times0.071}{0.5}
+                    \]
+                    \[
+                    \sigma_F = \frac{0.091+0.026+0.145}{0.5}=0.524
+                    \]
+                </div>
+
+                <p><strong>e) Variansi Total</strong></p>
+                <div class="bg-light p-2 text-center mb-4">
+                    \[
+                    \sigma(t)=0.5(0.524)+0.5(0.524)=0.524
+                    \]
+                </div>
+
+                <!-- 5 -->
+                <h5 class="fw-semibold">5. Lakukan lagi untuk nilai threshold yang lain</h5>
+
+                <p>
+                    Berikut adalah hasil perhitungan lainnya:
+                </p>
+
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>t</th>
+                                <th>ω_B</th>
+                                <th>ω_F</th>
+                                <th>σ(t)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0</td>
+                                <td>0.071</td>
+                                <td>0.929</td>
+                                <td>0.82</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>0.214</td>
+                                <td>0.786</td>
+                                <td>0.69</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>0.5</td>
+                                <td>0.5</td>
+                                <td>0.524</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>0.786</td>
+                                <td>0.214</td>
+                                <td>0.69</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>0.929</td>
+                                <td>0.071</td>
+                                <td>0.82</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 6 -->
+                <h5 class="fw-semibold">6. Penentuan Threshold Terbaik</h5>
+
+                <p>
+                    Threshold terbaik diperoleh dari nilai variansi terkecil:
+                </p>
+
+                <div class="bg-light p-2 text-center mb-4">
+                    \[
+                    t^{\ast} = \min \sigma(t) = 2
+                    \]
+                </div>
+
+                <!-- 7 -->
+                <h5 class="fw-semibold">7. Segmentasi Citra</h5>
+
+                <div class="bg-light p-2 text-center">
+                    \[
+                    g(i,j)=
+                    \begin{cases}
+                    1 & \text{jika } f(i,j)>2 \\
+                    0 & \text{jika } f(i,j)\le 2
+                    \end{cases}
+                    \]
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="page-section">
+        <div class="card-mb-4 shadow-sm">
+            <div class="card-body">
+                <!-- aktivitas -->
+                <div class="quiz-card">
+
+                    <h5 class="quiz-title">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+                    </h5>
+                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
+                    </p>
+
+                    <!-- PROGRESS -->
+                    <div class="quiz-progress" id="quizProgress"></div>
+
+                    <!-- SOAL -->
+                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+                    <!-- FEEDBACK -->
+                    <div id="feedback" class="mt-3 fw-bold"></div>
+
+                    <!-- BUTTON -->
+                    <div class="quiz-nav">
+                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
+                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PAGINATION -->
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item active"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(3)">4</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(4)">5</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(5)">6</a></li>
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+{% endblock %}
+
+{% endblock %}

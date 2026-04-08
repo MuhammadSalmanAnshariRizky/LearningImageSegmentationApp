@@ -1,0 +1,237 @@
+{% extends 'layouts/base.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- PROGRESS -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">0%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 0%">
+                    0%
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- PAGE 1 -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h2 class="fw-bold mb-3">4. Threshold-Based Segmentation</h2>
+                <h5 class="fw-bold">Tujuan Pembelajaran</h5>
+                <ul>
+                    <li>Menguraikan konsep thresholding sebagai metode segmentasi citra digital</li>
+                    <li>Menguraikan proses thresholding dalam mengelompokkan pixel menjadi objek dan background.</li>
+                    <li>Menguraikan cara menentukan nilai threshold dalam proses segmentasi citra.</li>
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body p-4">
+
+                <!-- Judul -->
+                <h4 class="fw-bold mb-3 text-primary"><i class="bi bi-sliders me-2"></i>4.1 Pengantar Thresholding</h4>
+
+                <!-- Paragraf -->
+                <p class="text-justify">
+                    Graylevel Thresholding adalah cara paling sederhana untuk melakukan segmentasi citra.
+                    Banyak objek dalam citra memiliki tingkat kecerahan yang berbeda dengan background.
+                    Karena itu, kita bisa menggunakan sebuah nilai batas (threshold) untuk memisahkan objek
+                    dan latar belakang.
+                </p>
+
+                <p class="text-justify">
+                    Metode ini sangat cepat dan ringan secara komputasi, sehingga sering digunakan pada aplikasi
+                    sederhana, bahkan bisa dilakukan secara real-time. Thresholding bekerja dengan mengubah
+                    citra input <strong>f</strong> menjadi citra biner <strong>g</strong>.
+                </p>
+
+                <!-- Subjudul -->
+                <h5 class="fw-bold mt-4 mb-3 text-primary">
+                    Algoritma Thresholding Sederhana
+                </h5>
+
+                <p>Langkah dari algoritma thresholding sederhana yaitu:</p>
+
+                <!-- Langkah -->
+                <div class="ps-3 mb-3">
+                    <p class="mb-2">
+                        Periksa setiap piksel
+                        <span class="text-dark fw-semibold">\( f(i,j) \)</span>
+                        pada citra, kemudian tentukan nilai piksel hasil
+                        <span class="text-dark fw-semibold">\( g(i,j) \)</span>.
+                    </p>
+
+                    <ul class="mb-3">
+                        <li>Jika \( f(i,j) \geq T \), maka \( g(i,j) = 1 \) (objek)</li>
+                        <li>Jika \( f(i,j) < T \), maka \( g(i,j)=0 \) (background)</li>
+                    </ul>
+                </div>
+
+                <!-- Penjelasan -->
+                <p>
+                    Maksudnya adalah setiap piksel dibandingkan dengan nilai threshold \( T \),
+                    yang dapat dituliskan sebagai berikut:
+                </p>
+
+                <!-- Rumus -->
+                <div class="bg-light rounded p-3 text-center mb-3">
+                    \[
+                    g(i,j) =
+                    \begin{cases}
+                    1 & \text{untuk } f(i,j) > T \\
+                    0 & \text{untuk } f(i,j) \leq T
+                    \end{cases}
+                    \]
+                </div>
+
+                <!-- Penutup -->
+                <p class="text-justify mb-0">
+                    Langkah ini berarti setiap piksel pada citra dicek apakah nilainya melewati batas threshold
+                    atau tidak. Jika nilai piksel lebih besar dari \( T \), maka piksel tersebut dianggap sebagai objek.
+                    Sebaliknya, jika nilainya lebih kecil atau sama dengan \( T \), maka piksel dianggap sebagai latar
+                    belakang.
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body p-4">
+
+                <!-- Pengantar -->
+                <p class="text-justify">
+                    Perhatikan contoh berikut untuk penerapan thresholding sederhana.
+                </p>
+
+                <p class="text-justify">
+                    Citra awal yang dimiliki ialah sebagai berikut:
+                </p>
+
+                <!-- Gambar awal -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub4/f(i,j).png') }}" class="img-fluid rounded"
+                        style="max-width: 400px;">
+                    <p class="mt-2 text-muted">
+                        <em>Gambar 4.1 Citra awal untuk thresholding sederhana</em>
+                    </p>
+                </div>
+
+                <!-- Penjelasan -->
+                <p class="text-justify">
+                    Berdasarkan algoritma tersebut, setiap piksel
+                    <strong>\( f(i,j) \)</strong> akan diperiksa dengan nilai threshold.
+                    Pada contoh ini, nilai threshold diasumsikan sebesar
+                    <strong>\( T = 150 \)</strong>, sehingga memiliki ketentuan sebagai berikut:
+                </p>
+
+                <!-- Rumus -->
+                <div class="bg-light rounded p-3 text-center mb-3">
+                    \[
+                    g(i,j) =
+                    \begin{cases}
+                    1 & \text{untuk } f(i,j) > 150 \\
+                    0 & \text{untuk } f(i,j) \leq 150
+                    \end{cases}
+                    \]
+                </div>
+
+                <!-- Penjelasan hasil -->
+                <p class="text-justify">
+                    Berdasarkan ketentuan tersebut, citra hasil akan berubah menjadi citra biner,
+                    di mana setiap piksel hanya memiliki dua nilai, yaitu 0 dan 1.
+                    Hasil dari proses thresholding ditunjukkan pada gambar berikut:
+                </p>
+
+                <!-- Gambar hasil -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub4/g(i,j).png') }}" class="img-fluid rounded"
+                        style="max-width: 400px;">
+                    <p class="mt-2 text-muted">
+                        <em>Gambar 4.2 Hasil penerapan algoritma thresholding</em>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- page 4 -->
+    <!-- PAGINATION -->
+    <div class="page-section">
+        <div class="card-mb-4 shadow-sm">
+            <div class="card-body">
+                <!-- aktivitas -->
+                <div class="quiz-card">
+
+                    <h5 class="quiz-title">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+                    </h5>
+                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
+                    </p>
+
+                    <!-- PROGRESS -->
+                    <div class="quiz-progress" id="quizProgress"></div>
+
+                    <!-- SOAL -->
+                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+                    <!-- FEEDBACK -->
+                    <div id="feedback" class="mt-3 fw-bold"></div>
+
+                    <!-- BUTTON -->
+                    <div class="quiz-nav">
+                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
+                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item active"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item active"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item active"><a class="page-link" onclick="goPage(2)">3</a></li>
+            <li class="page-item active"><a class="page-link" onclick="goPage(3)">4</a></li>
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+{% endblock %}
+
+{% endblock %}

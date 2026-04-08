@@ -1,0 +1,258 @@
+{% extends 'layouts/base.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- PAGE 1 -->
+    <div class="page-section active">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <h4 class="fw-bold mb-4">Rangkuman</h4>
+
+                <h5 class="fw-bold">1. Pengertian Edge-Based Segmentation</h5>
+                <ul>
+                    <li>Metode segmentasi citra berdasarkan perubahan intensitas yang tajam (edge/tepi)</li>
+                    <li>Tepi menunjukkan batas antara objek dan latar belakang</li>
+                    <li>Digunakan untuk mendeteksi kontur objek</li>
+                </ul>
+
+                <h5 class="fw-bold mt-4">2. Operator Deteksi Tepi</h5>
+                <p>Digunakan untuk menemukan tepi dalam citra:</p>
+                <ul>
+                    <li>Prewitt</li>
+                    <li>Sobel</li>
+                    <li>Roberts</li>
+                    <li>Laplace</li>
+                    <li>LoG (Laplacian of Gaussian)</li>
+                    <li>Canny</li>
+                </ul>
+
+                <p>Hasil deteksi tepi:</p>
+                <ul>
+                    <li>Masih berupa garis terpisah</li>
+                    <li>Belum membentuk region utuh</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page-section">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <h5 class="fw-bold">3. Edge Chain (Rantai Tepi)</h5>
+
+                <p><b>a. Edge Chain Tertutup</b></p>
+                <ul>
+                    <li>Membentuk loop (tertutup)</li>
+                    <li>Mengelilingi objek</li>
+                    <li>Digunakan untuk analisis bentuk</li>
+                </ul>
+
+                <p><b>b. Edge Chain Terbuka</b></p>
+                <ul>
+                    <li>Tidak kembali ke titik awal</li>
+                    <li>Memiliki titik awal dan akhir</li>
+                    <li>Contoh: garis, retakan</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page-section">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <h5 class="fw-bold">4. Proses Edge-Based Segmentation</h5>
+
+                <p><b>(1) Deteksi Tepi</b></p>
+                <ul>
+                    <li>Menggunakan operator (Sobel, dll)</li>
+                    <li>Menghasilkan nilai gradien</li>
+                </ul>
+
+                <p><b>(2) Thresholding</b></p>
+                <ul>
+                    <li>Menghilangkan tepi lemah (noise)</li>
+                    <li>Hanya mempertahankan tepi kuat</li>
+                </ul>
+
+                <p><b>(3) Pembentukan Batas</b></p>
+                <ul>
+                    <li>Menghubungkan tepi menjadi kontur objek</li>
+                    <li>Hasil akhir: batas objek yang jelas</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="page-section">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <h5 class="fw-bold">5. Non-Maximal Suppression (NMS)</h5>
+
+                <p>Tujuan dari NMS adalah :</p>
+                <ul>
+                    <li>Menipiskan tepi (agar 1 piksel)</li>
+                    <li>Mempertahankan hanya maksimum lokal</li>
+                </ul>
+
+                <p>Langkah-langkah</p>
+                <ol>
+                    <li>Tentukan arah gradien (θ)</li>
+                    <li>Bandingkan dengan 2 piksel tetangga searah</li>
+                    <li>Jika bukan maksimum → hapus</li>
+                    <li>Jika maksimum → pertahankan</li>
+                </ol>
+
+                <p>Arah yang digunakan (kuantisasi)</p>
+                <ul>
+                    <li>0° → kiri & kanan</li>
+                    <li>45° → kanan atas & kiri bawah</li>
+                    <li>90° → atas & bawah</li>
+                    <li>135° → kiri atas & kanan bawah</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div class="page-section">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <h5 class="fw-bold">6. Hysteresis Thresholding</h5>
+
+                <p>Konsep</p>
+                <ul>
+                    <li>Menggunakan dua threshold:</li>
+                    <li>t₁ (tinggi) → tepi kuat</li>
+                    <li>t₀ (rendah) → noise</li>
+                </ul>
+
+                <p>Aturan</p>
+                <ul>
+                    <li>Jika g(x,y) > t₁ → tepi kuat</li>
+                    <li>Jika g(x,y) < t₀ → dihapus</li>
+                    <li>Jika t₀ ≤ g(x,y) ≤ t₁ → tepi lemah</li>
+                </ul>
+
+                <p>Keputusan Tepi Lemah</p>
+                <ul>
+                    <li>Dipertahankan jika terhubung dengan tepi kuat</li>
+                    <li>Dihapus jika tidak terhubung</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 6 -->
+    <div class="page-section">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <h5 class="fw-bold">7. Border Tracing</h5>
+
+                <p>Tujuan dari border tracing yaitu Menentukan batas (boundary) suatu objek</p>
+
+                <p><b>a. Inner Boundary (Batas Dalam)</b></p>
+                <ul>
+                    <li>Bagian dari objek</li>
+                    <li>Menelusuri piksel bernilai sama</li>
+                </ul>
+
+                <p>Langkah</p>
+                <ol>
+                    <li>Tentukan piksel awal P₀</li>
+                    <li>Kolom terkecil & baris terkecil</li>
+                    <li>Telusuri tetangga (4 / 8 connectivity)</li>
+                    <li>Ikuti batas (anti-clockwise)</li>
+                    <li>Berhenti jika:</li>
+                    <li>Pₙ = P₁ dan Pₙ₋₁ = P₀</li>
+                </ol>
+
+                <p><b>b. Outer Boundary (Batas Luar)</b></p>
+                <ul>
+                    <li>Bukan bagian dari objek</li>
+                    <li>Berasal dari piksel background di sekitar objek</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 7 -->
+    <div class="page-section">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <h5 class="fw-bold">8. Extended Boundary</h5>
+
+                <p>Konsep</p>
+                <ul>
+                    <li>Menggabungkan inner & outer boundary</li>
+                    <li>Membentuk batas yang lebih akurat</li>
+                </ul>
+
+                <p>8-Neighborhood</p>
+                <p>
+                    P(i,j) = {(i,j+1), (i−1,j+1), (i−1,j), (i−1,j−1), (i,j−1), (i+1,j−1), (i+1,j), (i+1,j+1)}
+                </p>
+
+                <p>Klasifikasi Piksel</p>
+                <ul>
+                    <li>LEFT</li>
+                    <li>RIGHT</li>
+                    <li>UPPER</li>
+                    <li>LOWER</li>
+                </ul>
+
+                <p>Perubahan Posisi</p>
+                <ul>
+                    <li>LEFT → (i, j+1)</li>
+                    <li>RIGHT → (i+1, j)</li>
+                    <li>UPPER → (i+1, j+1)</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item"><a class="page-link" onclick="prevPage()">Sebelumnya</a></li>
+
+            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(3)">4</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(4)">5</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(5)">6</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(6)">7</a></li>
+
+            <li class="page-item"><a class="page-link" onclick="nextPage()">Selanjutnya</a></li>
+
+        </ul>
+    </nav>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+
+{% endblock %}

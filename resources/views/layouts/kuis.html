@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Ujian Online - CBT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            color: #334155;
+        }
+
+        .cbt-header {
+            background: #ffffff;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 25px;
+        }
+
+        @media (max-width: 992px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+        }
+
+        .question-header {
+            background: #f8fafc;
+            padding: 15px 25px;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .question-body {
+            padding: 30px;
+            flex-grow: 1;
+        }
+
+        .question-footer {
+            padding: 20px 25px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .answer-item {
+            display: flex;
+            align-items: center;
+            border: 2px solid #e2e8f0;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .answer-item:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .answer-item input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .answer-item.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            font-weight: 600;
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 20px;
+        }
+
+        .timer-box {
+            background: #fee2e2;
+            color: #dc2626;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .q-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .q-nav {
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #f1f5f9;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .q-nav.active {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .q-nav.answered {
+            background: #22c55e !important;
+            color: white;
+        }
+
+        .q-nav.ragu {
+            background: #facc15 !important;
+            color: #854d0e;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="cbt-header">
+        <div class="container d-flex justify-content-between align-items-center">
+
+            <!-- Judul kuis -->
+            <h5 class="mb-0 fw-semibold text-primary">
+                {{ activity.title }}
+            </h5>
+
+            <!-- Info user -->
+            <div class="user-info text-end">
+                <small class="text-muted d-block">Nama Peserta</small>
+                <strong>
+                    salman
+                </strong>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="container pb-5">
+        <form id="quizForm" method="POST" action="/submit-kuis">
+            <div class="main-container">
+
+                <div class="content-area">
+                    <div class="question-card">
+                        <div class="question-header">
+                            SOAL NOMOR <span id="displayNum">1</span>
+                        </div>
+
+                        <div class="question-body">
+                            {% for q in questions %}
+                            <div class="question-wrapper {% if not loop.first %}hidden{% endif %}"
+                                id="q{{ loop.index }}">
+                                {% set soal_idx = loop.index %} {% set soal = q.question | from_json %}
+                                <div class="fs-5 mb-4">{{ soal.text | safe }}</div>
+
+                                {% set opsi = q.MC_option | from_json %}
+                                <div class="options-group">
+                                    {% for opt in opsi %}
+                                    {% for key, val in opt.items() %}
+                                    <label class="answer-item" id="label-q{{ soal_idx }}-{{ key }}">
+                                        <input type="radio" name="q{{ q.id }}" value="{{ key }}"
+                                            onclick="markAnswered('{{ soal_idx }}', this)">
+                                        <span>{{ key.upper() }}. {{ val.teks }}</span>
+                                    </label>
+                                    {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="question-footer">
+                            <button type="button" class="btn btn-outline-secondary px-4 fw-semibold" id="btnPrev"
+                                onclick="changeQuestion(-1)">SEBELUMNYA</button>
+
+                            <button type="button" class="btn btn-warning fw-semibold px-4" id="btnRagu"
+                                onclick="toggleRagu()">
+                                RAGU-RAGU
+                            </button>
+
+                            <button type="button" class="btn btn-primary px-4 fw-semibold" id="btnNext"
+                                onclick="changeQuestion(1)">SELANJUTNYA</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-area">
+                    <div class="sidebar-card">
+                        <div class="timer-box" id="timer">10:00</div>
+
+                        <h6 class="fw-bold mb-3">Nomor Soal</h6>
+                        <div class="q-grid mb-4">
+                            {% for q in questions %}
+                            <div class="q-nav {% if loop.first %}active{% endif %}" id="nav{{ loop.index }}"
+                                onclick="goToQuestion('{{ loop.index }}')">
+                                {{ loop.index }}
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <hr>
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm">
+                            SELESAI UJIAN
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Penanganan error VS Code: Bungkus variabel Jinja dalam quote agar dianggap string oleh editor
+        let currentIdx = 1;
+        const totalQuestions = parseInt("{{ questions|length }}");
+        let timeLeft = 600;
+
+        // Timer
+        const timerEl = document.getElementById('timer');
+        const timerInterval = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                return;
+            }
+            timeLeft--;
+            let m = Math.floor(timeLeft / 60);
+            let s = timeLeft % 60;
+            timerEl.innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }, 1000);
+
+        function goToQuestion(n) {
+            n = parseInt(n);
+            if (isNaN(n)) return;
+
+            // Update UI Soal
+            document.querySelectorAll('.question-wrapper').forEach(el => el.classList.add('hidden'));
+            document.getElementById('q' + n).classList.remove('hidden');
+
+            // Update Navigasi
+            document.querySelectorAll('.q-nav').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav' + n).classList.add('active');
+
+            document.getElementById('displayNum').innerText = n;
+            currentIdx = n;
+
+            // Update Tombol
+            document.getElementById('btnPrev').disabled = (n === 1);
+            document.getElementById('btnNext').innerText = (n === totalQuestions) ? "KONFIRMASI" : "SELANJUTNYA";
+        }
+
+        function changeQuestion(step) {
+            let target = currentIdx + step;
+            if (target >= 1 && target <= totalQuestions) {
+                goToQuestion(target);
+            }
+        }
+
+        function markAnswered(loopIdx, inputEl) {
+            // Beri warna hijau di navigasi samping
+            document.getElementById('nav' + loopIdx).classList.add('answered');
+
+            // Highlight kotak pilihan
+            const parentWrapper = document.getElementById('q' + loopIdx);
+            parentWrapper.querySelectorAll('.answer-item').forEach(label => {
+                label.classList.remove('selected');
+            });
+            inputEl.closest('.answer-item').classList.add('selected');
+        }
+
+        function toggleRagu() {
+            const navBtn = document.getElementById('nav' + currentIdx);
+            navBtn.classList.toggle('ragu');
+        }
+
+        // Jalankan saat load
+        window.onload = () => goToQuestion(1);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,199 @@
+{% extends 'layouts/base.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- PROGRESS -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">0%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 0%">
+                    0%
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- PAGE 1 -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h2 class="fw-bold mb-3">5. Region-Based Segmentation</h2>
+                <h5 class="fw-bold">Tujuan Pembelajaran</h5>
+                <ul>
+                    <li>Menguraikan konsep dasar segmentasi berbasis region beserta kriteria homogenitasnya.</li>
+                    <li>Menguraikan prinsip dan proses region merging dalam segmentasi citra.</li>
+                    <li>Menguraikan prinsip dan proses region splitting berdasarkan kriteria homogenitas.</li>
+                    <li>Menguraikan metode split and merge dalam segmentasi berbasis region.</li>
+                    <li>Menguraikan konsep dan proses watershed segmentation.</li>
+                    <li>Menguraikan proses post-processing untuk meningkatkan kualitas hasil segmentasi.</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 2 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body p-4">
+
+
+                <!-- Judul -->
+                <h4 class="fw-bold mb-4 text-primary">
+                    <i class="bi bi-diagram-3 me-2"></i>5.1 Pengantar Region-Based Segmentation
+                </h4>
+
+                <!-- Paragraf -->
+                <p class="text-justify">
+                    Pada segmentasi citra, kita bisa membentuk suatu region (wilayah) dari batas-batasnya,
+                    atau sebaliknya mendeteksi batas dari region yang sudah ada. Namun, hasil segmentasi
+                    dari metode berbasis tepi (edge-based) dan metode berbasis region (region growing)
+                    biasanya tidak sama. Oleh karena itu, sering kali keduanya dikombinasikan untuk
+                    mendapatkan hasil yang lebih baik.
+                </p>
+
+                <p class="text-justify">
+                    Metode region growing sangat cocok digunakan pada citra yang memiliki noise, karena
+                    pada kondisi tersebut batas objek sulit dideteksi. Pendekatan ini menggunakan konsep
+                    <strong>homogenitas</strong>, yaitu suatu region harus memiliki karakteristik yang seragam.
+                </p>
+
+                <!-- Tujuan -->
+                <p class="fw-semibold mt-3">Tujuan metode region-based:</p>
+                <p class="text-justify">
+                    Membagi citra menjadi beberapa region yang paling seragam (homogen).
+                </p>
+
+                <!-- Kriteria homogen -->
+                <p class="fw-semibold mt-3">Homogenitas suatu region dapat ditentukan berdasarkan:</p>
+                <ul>
+                    <li>tingkat keabuan (gray-level)</li>
+                    <li>warna</li>
+                    <li>tekstur</li>
+                    <li>atau karakteristik lainnya</li>
+                </ul>
+
+                <!-- Fungsi Q(R) -->
+                <p class="fw-semibold mt-3">
+                    Untuk menyatakan apakah suatu region homogen atau tidak, digunakan fungsi \( Q(R) \).
+                </p>
+
+                <!-- Syarat -->
+                <p class="fw-semibold mt-3">Syarat segmentasi yang benar:</p>
+
+                <div class="mb-3">
+                    <p class="mb-1"><strong>1. Setiap region harus homogen</strong></p>
+                    <div class="bg-light rounded p-2 text-center mb-2">
+                        \[
+                        Q(R_i) = TRUE
+                        \]
+                    </div>
+                    <p class="text-muted small">
+                        Artinya: setiap region \( R_i \) memiliki karakteristik yang seragam.
+                    </p>
+                </div>
+
+                <div class="mb-3">
+                    <p class="mb-1"><strong>2. Region bertetangga tidak boleh digabung jika tidak homogen</strong></p>
+                    <div class="bg-light rounded p-2 text-center mb-2">
+                        \[
+                        Q(R_i \cup R_j) = FALSE
+                        \]
+                    </div>
+                    <p class="text-muted small">
+                        Artinya: jika dua region digabung dan tidak homogen, maka tidak boleh digabung.
+                    </p>
+                </div>
+
+                <!-- Kesimpulan -->
+                <p class="fw-semibold mt-3">Kesimpulan hasil segmentasi:</p>
+                <ul>
+                    <li>Homogen (setiap region seragam)</li>
+                    <li>Maksimal (tidak bisa digabung lagi dengan region lain)</li>
+                </ul>
+
+                <!-- Kriteria sederhana -->
+                <p class="fw-semibold mt-3">Kriteria homogenitas sederhana:</p>
+                <ul>
+                    <li>rata-rata nilai keabuan</li>
+                    <li>warna</li>
+                    <li>tekstur sederhana</li>
+                </ul>
+
+                <!-- Penutup -->
+                <p class="text-justify mb-0">
+                    Meskipun biasanya digunakan pada citra 2D, metode ini juga dapat diterapkan pada
+                    citra 3D. Dalam hal ini, region yang terbentuk berupa volume, dan prosesnya mirip
+                    dengan thresholding tetapi tetap mempertahankan keterhubungan antar piksel.
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <div class="page-section">
+        <div class="card-mb-4 shadow-sm">
+            <div class="card-body">
+                <!-- aktivitas -->
+                <div class="quiz-card">
+
+                    <h5 class="quiz-title">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+                    </h5>
+                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
+                    </p>
+
+                    <!-- PROGRESS -->
+                    <div class="quiz-progress" id="quizProgress"></div>
+
+                    <!-- SOAL -->
+                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+                    <!-- FEEDBACK -->
+                    <div id="feedback" class="mt-3 fw-bold"></div>
+
+                    <!-- BUTTON -->
+                    <div class="quiz-nav">
+                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
+                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PAGINATION -->
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item active"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item active"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item active"><a class="page-link" onclick="goPage(2)">3</a></li>
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+{% endblock %}
+
+{% endblock %}

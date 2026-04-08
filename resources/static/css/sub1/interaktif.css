@@ -1,0 +1,143 @@
+#inputGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#inputGrid input {
+  text-align: center;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.pixel-box {
+  width: 70px;
+  height: 70px;
+  background: #0f172a;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  color: white;
+  transition: 0.3s;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.fly {
+  position: absolute;
+  background: #3b82f6;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.8s ease;
+  z-index: 1000;
+}
+.pixel-input {
+  border-radius: 10px;
+  height: 45px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+/* hover efek */
+.pixel-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+/* WRAPPER */
+#pixelWrapper {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 300px;
+  margin: 20px auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* GRID CONTAINER */
+#pixelGrid > div {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  gap: 14px;
+  justify-content: center;
+}
+.pixel-box {
+  width: 80px;
+  height: 80px;
+
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+
+  /* 🔥 depth modern */
+  box-shadow:
+    inset 0 0 8px rgba(0, 0, 0, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.15);
+
+  /* 🔥 animasi smooth */
+  transition: all 0.3s ease;
+
+  opacity: 0;
+  transform: translateY(10px) scale(0.9);
+}
+
+.pixel-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+}
+
+#pixelWrapper {
+  background: #f1f5f9;
+  padding: 25px;
+  border-radius: 18px;
+
+  width: fit-content;
+  margin: 20px auto;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+.pixel-box.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.pixel-box span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* HOVER EFFECT */
+.pixel-box:hover {
+  transform: scale(1.08);
+  box-shadow:
+    inset 0 0 10px rgba(0, 0, 0, 0.5),
+    0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ANIMASI MASUK */
+.pixel-box {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.pixel-box.show {
+  opacity: 1;
+  transform: scale(1);
+}

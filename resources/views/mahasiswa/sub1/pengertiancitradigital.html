@@ -1,0 +1,267 @@
+{% extends 'layouts/base.html' %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub1/interaktif.css') }}">
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <!-- PROGRESS -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">8%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 8%">8%
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Tujuan Pembelajaran -->
+    <!-- page 1 -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body">
+                <!-- Judul -->
+                <h2 class="fw-bold mb-3">1. Pengantar Citra Digital</h2>
+                <h5 class="fw-bold">Tujuan Pembelajaran</h5>
+                <ul>
+                    <li>Menguraikan pengertian citra digital.</li>
+                    <li>Menguraikan jenis-jenis citra digital seperti citra RGB, citra grayscale, dan citra biner.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- page 2 Pengertian -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h2 class="fw-bold mb-3 text-primary">
+                    <i class="fa-solid fa-image me-2"></i> 1.1 Pengertian Citra Digital
+                </h2>
+
+                <p>
+                    Citra digital adalah salah satu bentuk representasi visual dari dunia nyata dalam bentuk digital
+                    yang dapat dipahami dan diolah oleh komputer. Citra ini terdiri dari elemen-elemen titik yang
+                    disebut dengan piksel, yang tersusun dalam baris dan kolom. Setiap piksel memiliki nilai numerik
+                    yang menggambarkan tingkat kecerahan atau warna pada posisi tertentu dalam citra.
+                </p>
+
+                <p>
+                    Citra digital dapat diperoleh dari berbagai sumber, seperti kamera digital, scanner, atau hasil
+                    simulasi komputer. Secara umum, citra digital dapat dipahami sebagai representasi dua dimensi dari
+                    suatu objek atau adegan yang dinyatakan dalam bentuk fungsi intensitas.
+                </p>
+
+                <!-- Gambar Ilustrasi -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub1/perbandingan.png') }}" class="img-fluid rounded"
+                        style="max-width: 800px;">
+                    <p class="mt-2"><em>Gambar 1.1 Contoh citra digital</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- page 3 Representasi Matematis -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <p>
+                    Secara matematis, citra digital direpresentasikan sebagai:
+                </p>
+                <div class="bg-light p-3 rounded text-center mb-3">
+                    \[ f(x,y) \]
+                </div>
+
+                <p>
+                    di mana <strong>x</strong> dan <strong>y</strong> adalah koordinat spasial (posisi piksel),
+                    sedangkan
+                    <strong>f(x,y)</strong> menyatakan nilai intensitas atau tingkat kecerahan pada titik tersebut.
+                </p>
+
+                <p>
+                    Ketika citra direpresentasikan secara digital, baik koordinat maupun nilai intensitasnya telah
+                    melalui
+                    proses <em>discretization</em>, yaitu pengubahan nilai kontinu ke dalam bentuk diskrit sehingga
+                    dapat
+                    diolah oleh komputer.
+                </p>
+
+                <!-- Gambar Matriks -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub1/piksel.png') }}" class="img-fluid rounded "
+                        style="max-width: 500px;">
+                    <p class="mt-2"><em>Gambar 1.2 Representasi nilai citra digital</em></p>
+                </div>
+
+
+                <h5 class="fw-bold mb-3">Simulasi Koordinat Pixel (3 × 3)</h5>
+                <p class="text-muted">Masukkan nilai intensitas (0–255) untuk setiap pixel</p>
+
+                <!-- INPUT GRID -->
+                <div id="inputGrid" class="mb-3"></div>
+                <br>
+                <div class="text-center">
+                    <button class="btn btn-primary mb-3 text-center" onclick="startSimulation()">
+                        Mulai Simulasi
+                    </button>
+                </div>
+
+
+                <div id="errorMsg" class="text-danger mb-3"></div>
+
+                <!-- OUTPUT GRID -->
+                <div id="pixelWrapper" class="mt-4">
+                    <h6 class="text-center text-muted mb-3">Hasil Representasi Pixel</h6>
+                    <div id="pixelGrid" class="d-flex justify-content-center"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page 4 repserentasi matriks-->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <p>
+                    Berdasarkan konsep tersebut, citra digital dapat direpresentasikan dalam bentuk matriks sebagai
+                    berikut:
+                </p>
+
+                <div class="bg-light p-3 rounded text-center">
+                    \[f(x,y) =
+                    \begin{bmatrix}
+                    f(0,0) & f(0,1) & \cdots & f(0,N-1) \\
+                    f(1,0) & f(1,1) & \cdots & f(1,N-1) \\
+                    \vdots & \vdots & \vdots & \vdots \\
+                    f(M-1,0) & f(M-1,1) & \cdots & f(M-1,N-1)
+                    \end{bmatrix}\]
+                </div>
+
+                <p>
+                    Citra digital tersusun atas piksel-piksel (picture element). Setiap piksel memiliki nilai tertentu
+                    yang menunjukkan tingkat kecerahan atau warna pada posisi tertentu dalam citra.
+                </p>
+
+                <p>
+                    Piksel-piksel tersebut tersusun secara teratur dalam bentuk baris dan kolom, sehingga citra digital
+                    dapat direpresentasikan sebagai sebuah matriks dua dimensi. Koordinat <strong>x</strong> menunjukkan
+                    posisi piksel pada arah vertikal (baris), sedangkan <strong>y</strong> menunjukkan posisi piksel
+                    pada
+                    arah horizontal (kolom).
+                </p>
+
+                <p>
+                    Pada matriks citra digital terdapat dua ukuran utama, yaitu <strong>M</strong> dan
+                    <strong>N</strong>.
+                    Nilai <strong>M</strong> menunjukkan jumlah baris, sedangkan <strong>N</strong> menunjukkan jumlah
+                    kolom.
+                    Ukuran citra biasanya dituliskan sebagai <strong>M × N</strong>.
+                </p>
+
+                <p>
+                    Indeks koordinat piksel biasanya dimulai dari 0, sehingga piksel pertama berada pada posisi
+                    <strong>f(0,0)</strong> yang terletak di pojok kiri atas citra. Piksel pada baris pertama akan
+                    memiliki
+                    koordinat dari <strong>f(0,0)</strong> hingga <strong>f(0,N−1)</strong>, sedangkan piksel pada baris
+                    terakhir memiliki koordinat dari <strong>f(M−1,0)</strong> hingga <strong>f(M−1,N−1)</strong>.
+                </p>
+
+                <p>
+                    Dengan demikian, setiap posisi dalam matriks menyimpan nilai intensitas piksel yang membentuk
+                    keseluruhan citra digital.
+                </p>
+                <!-- KALKULATOR MATRIX -->
+
+
+                <h5 class="fw-bold mb-3">Simulasi ukuran citra dalam bentuk matriks </h5>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label>Baris (M)</label>
+                        <input type="number" id="inputM" class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label>Kolom (N)</label>
+                        <input type="number" id="inputN" class="form-control">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary mb-3" onclick="generateMatrixMathJax()">
+                    Ayo Buat!
+                </button>
+                <!-- OUTPUT MATHJAX -->
+                <div id="mathjaxOutput" class="bg-light p-3 rounded text-center mb-3"></div>
+
+                <!-- UKURAN -->
+                <div id="outputUkuran" class="fw-bold text-success text-center"></div>
+
+                <div id="narasiMatrix" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- page 5 aktivitas -->
+    <div class="page-section">
+        <div class="card-mb-4 shadow-sm">
+            <div class="card-body">
+                <!-- aktivitas -->
+                <div class="quiz-card">
+
+                    <h5 class="quiz-title">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+                    </h5>
+                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
+                    </p>
+
+                    <!-- PROGRESS -->
+                    <div class="quiz-progress" id="quizProgress"></div>
+
+                    <!-- SOAL -->
+                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+                    <!-- FEEDBACK -->
+                    <div id="feedback" class="mt-3 fw-bold"></div>
+
+                    <!-- BUTTON -->
+                    <div class="quiz-nav">
+                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
+                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(3)">4</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(4)">5</a></li>
+
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/sub1.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+
+{% endblock %}
+{% endblock %}

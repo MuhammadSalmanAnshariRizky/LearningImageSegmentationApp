@@ -1,0 +1,695 @@
+{% extends 'layouts/base.html' %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub1/jeniscitra.css') }}">
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <!-- proggress -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">8%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 8%">8%
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- page 1 -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body">
+                <h2 class="fw-bold mb-3 text-primary">
+                    <i class="fa-solid fa-image me-2"></i>1.2 Jenis Citra
+                </h2>
+
+                <p>
+                    Informasi di dalam sebuah elemen citra bergantung pada jenis data yang digunakan untuk
+                    merepresentasikannya. Nilai piksel hampir selalu berupa <i>binary word</i> dengan panjang
+                    <b>k</b>, sehingga sebuah piksel dapat merepresentasikan sebanyak <b>2<sup>k</sup></b> nilai
+                    yang berbeda. Nilai <b>k</b> disebut <i>bit depth</i> (atau hanya “depth”) dari citra.
+                    Tata letak bit pada setiap piksel bergantung pada jenis citranya, seperti citra biner,
+                    grayscale, atau warna RGB.
+                </p>
+
+
+
+                <h5 class="fw-bold mt-4 text-dark">
+                    a) Citra Grayscale
+                </h5>
+
+                <p>
+                    Pada citra grayscale, gambar hanya memiliki satu kanal (<i>channel</i>) yang berisi nilai
+                    intensitas atau tingkat kecerahan dari setiap piksel. Artinya, citra grayscale tidak
+                    menyimpan informasi warna seperti merah, hijau, dan biru, tetapi hanya menyimpan tingkat
+                    terang atau gelap suatu gambar.
+                </p>
+
+                <p>
+                    Nilai piksel pada citra grayscale selalu berupa angka positif karena menunjukkan intensitas
+                    cahaya atau kecerahan pada suatu titik dalam gambar. Nilai ini tidak mungkin bernilai
+                    negatif karena kecerahan tidak dapat lebih kecil dari nol.
+                </p>
+
+                <div class="alert border rounded-3" style="background:#f8f9fc;">
+                    <b>Rentang nilai intensitas:</b><br>
+                    0 ≤ f(x,y) ≤ 2<sup>k</sup> − 1
+                </div>
+
+                <p><b>Keterangan:</b></p>
+                <ul>
+                    <li><b>f(x,y)</b> = nilai intensitas piksel pada koordinat (x,y)</li>
+                    <li><b>k</b> = jumlah bit (bit depth)</li>
+                </ul>
+
+                <p>
+                    Contoh yang paling umum adalah citra grayscale 8-bit, yaitu citra yang menggunakan
+                    8 bit (1 byte) untuk setiap piksel.
+                </p>
+
+                <div class="alert border rounded-3" style="background:#f8f9fc;">
+                    2<sup>8</sup> = 256<br>
+                    2<sup>8</sup> − 1 = 255
+                </div>
+
+                <p>
+                    Sehingga rentang nilai piksel pada citra grayscale 8-bit adalah:
+                </p>
+
+                <div class="alert border rounded-3" style="background:#f8f9fc;">
+                    0 ≤ f(x,y) ≤ 255
+                </div>
+
+                <p><b>Interpretasi nilai:</b></p>
+                <ul>
+                    <li><b>0</b> → warna hitam (tidak ada cahaya)</li>
+                    <li><b>255</b> → warna putih (intensitas maksimum)</li>
+                    <li>Nilai di antaranya → berbagai tingkatan abu-abu</li>
+                </ul>
+
+                <p>
+                    Dengan demikian, citra grayscale dapat dipahami sebagai gambar yang terdiri dari berbagai
+                    tingkatan warna abu-abu. Semakin besar nilai piksel, maka gambar akan terlihat semakin terang,
+                    sedangkan semakin kecil nilainya maka gambar akan terlihat semakin gelap.
+                </p>
+
+                <!-- Gambar Ilustrasi -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub1/grayscale_example.png') }}"
+                        class="img-fluid rounded" style="max-width: 800px;">
+                    <p class="mt-2"><em>Gambar 1.3 Contoh citra grayscale beserta nilai piksel</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- page 2 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+                <h5 class="fw-bold mt-4 text-dark">
+                    Konversi RGB ke Grayscale
+                </h5>
+
+                <p>
+                    Dalam pengolahan citra digital, citra berwarna (RGB) sering kali diubah menjadi citra
+                    grayscale untuk menyederhanakan proses analisis. Hal ini karena citra grayscale hanya
+                    memiliki satu nilai intensitas, sehingga perhitungan menjadi lebih sederhana dibandingkan
+                    citra berwarna yang memiliki tiga kanal, yaitu Red (R), Green (G), dan Blue (B).
+                </p>
+
+                <p>
+                    Beberapa metode yang umum digunakan untuk konversi tersebut antara lain:
+                </p>
+
+                <h6 class="fw-bold mt-3">1. Lightness Method</h6>
+                <p>
+                    Metode Lightness mengubah citra RGB menjadi grayscale dengan cara mengambil nilai minimum dan
+                    maksimum
+                    dari komponen warna R, G, dan B, kemudian menghitung rata-ratanya. Rumus yang digunakan adalah:
+                </p>
+
+                <div class="alert border rounded-3 text-center" style="background:#f8f9fc;">
+                    y = (min(R,G,B) + max(R,G,B)) / 2
+                </div>
+
+                <p>
+                    Metode ini bekerja dengan mengambil dua nilai ekstrem dari ketiga komponen warna, yaitu nilai paling
+                    rendah dan paling tinggi. Kemudian kedua nilai tersebut dirata-ratakan untuk menghasilkan nilai
+                    grayscale.
+                    Cara ini memberikan hasil yang cukup seimbang karena mempertimbangkan perbedaan intensitas warna
+                    paling
+                    terang dan paling gelap.
+                </p>
+
+                <h6 class="fw-bold mt-3">2. Average Method</h6>
+                <p>
+                    Metode Average merupakan cara yang paling sederhana untuk mengubah citra RGB menjadi grayscale. Pada
+                    metode
+                    ini, nilai grayscale diperoleh dengan menghitung rata-rata dari ketiga komponen warna, yaitu merah
+                    (R),
+                    hijau (G), dan biru (B). Rumusnya adalah:
+                </p>
+
+                <div class="alert border rounded-3 text-center" style="background:#f8f9fc;">
+                    y = (R + G + B) / 3
+                </div>
+
+                <p>
+                    Metode ini menganggap bahwa ketiga komponen warna memiliki pengaruh yang sama terhadap tingkat
+                    kecerahan
+                    gambar. Oleh karena itu, nilai grayscale diperoleh dengan menjumlahkan nilai R, G, dan B, lalu
+                    membaginya
+                    dengan tiga.
+                </p>
+
+                <h6 class="fw-bold mt-3">3. Luminosity Method</h6>
+                <p>
+                    Metode Luminosity merupakan metode yang lebih akurat karena mempertimbangkan sensitivitas mata
+                    manusia
+                    terhadap warna tertentu. Mata manusia lebih peka terhadap warna hijau dibandingkan warna merah dan
+                    biru.
+                    Oleh karena itu, pada metode ini setiap komponen warna diberi bobot yang berbeda. Rumusnya adalah:
+                </p>
+
+                <div class="alert border rounded-3 text-center" style="background:#f8f9fc;">
+                    y = 0.3R + 0.59G + 0.11B
+                </div>
+
+                <p>
+                    Dalam rumus tersebut, warna hijau (G) memiliki bobot terbesar karena paling memengaruhi persepsi
+                    kecerahan
+                    oleh mata manusia. Sementara itu, warna merah (R) memiliki pengaruh sedang, dan warna biru (B)
+                    memiliki
+                    pengaruh paling kecil.
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- page 3 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h5 class="fw-bold mt-4">Contoh Perhitungan Konversi Nilai Grayscale</h5>
+                <p>
+                    Sebuah matriks RGB dengan masing-masing kanal sebagai berikut:
+                </p>
+
+                <div class="row text-center mb-4">
+
+                    <!-- Kanal R -->
+                    <div class="col-md-4 mb-3">
+                        <div class="p-3 border rounded-3 bg-light kanal-r">
+                            <b>Kanal R</b>
+                            <table class="table table-sm table-bordered mt-2 mb-0">
+                                <tr>
+                                    <td>110</td>
+                                    <td>80</td>
+                                    <td>90</td>
+                                </tr>
+                                <tr>
+                                    <td>50</td>
+                                    <td>60</td>
+                                    <td>100</td>
+                                </tr>
+                                <tr>
+                                    <td>20</td>
+                                    <td>40</td>
+                                    <td>120</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Kanal G -->
+                    <div class="col-md-4 mb-3">
+                        <div class="p-3 border rounded-3 bg-light kanal-g">
+                            <b>Kanal G</b>
+                            <table class="table table-sm table-bordered mt-2 mb-0">
+                                <tr>
+                                    <td>15</td>
+                                    <td>20</td>
+                                    <td>160</td>
+                                </tr>
+                                <tr>
+                                    <td>10</td>
+                                    <td>150</td>
+                                    <td>80</td>
+                                </tr>
+                                <tr>
+                                    <td>110</td>
+                                    <td>50</td>
+                                    <td>90</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Kanal B -->
+                    <div class="col-md-4 mb-3">
+                        <div class="p-3 border rounded-3 bg-light kanal-b">
+                            <b>Kanal B</b>
+                            <table class="table table-sm table-bordered mt-2 mb-0">
+                                <tr>
+                                    <td>120</td>
+                                    <td>60</td>
+                                    <td>80</td>
+                                </tr>
+                                <tr>
+                                    <td>30</td>
+                                    <td>140</td>
+                                    <td>170</td>
+                                </tr>
+                                <tr>
+                                    <td>80</td>
+                                    <td>110</td>
+                                    <td>100</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <p>
+                    Maka jika menggunakan rumus <b>Lightness</b>:
+                </p>
+
+                <div class="perhitungan-box">
+                    <div class="perhitungan-grid">
+
+                        <div class="perhitungan-item">(min(110,15,120)+max(110,15,120))/2</div>
+                        <div class="perhitungan-item">(min(80,20,60)+max(80,20,60))/2</div>
+                        <div class="perhitungan-item">(min(90,160,80)+max(90,160,80))/2</div>
+
+                        <div class="perhitungan-item">(min(50,10,30)+max(50,10,30))/2</div>
+                        <div class="perhitungan-item">(min(60,150,140)+max(60,150,140))/2</div>
+                        <div class="perhitungan-item">(min(100,80,170)+max(100,80,170))/2</div>
+
+                        <div class="perhitungan-item">(min(20,110,80)+max(20,110,80))/2</div>
+                        <div class="perhitungan-item">(min(40,50,110)+max(40,50,110))/2</div>
+                        <div class="perhitungan-item">(min(120,90,100)+max(120,90,100))/2</div>
+
+                    </div>
+                </div>
+
+                <p>
+                    Hasil konversi grayscale menggunakan metode Lightness adalah:
+                </p>
+
+                <div class="d-flex justify-content-center">
+                    <div class="hasil-gray">
+
+                        <table class="table table-bordered text-center mb-0">
+                            <tr>
+                                <td>67.5</td>
+                                <td>50</td>
+                                <td>120</td>
+                            </tr>
+                            <tr>
+                                <td>30</td>
+                                <td>105</td>
+                                <td>125</td>
+                            </tr>
+                            <tr>
+                                <td>65</td>
+                                <td>75</td>
+                                <td>105</td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- page 4 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h5 class="fw-bold mt-4">b) Citra Biner</h5>
+
+                <p>
+                    Citra biner adalah jenis citra digital yang paling sederhana, karena setiap pikselnya hanya memiliki
+                    dua
+                    kemungkinan nilai, yaitu hitam atau putih. Biasanya, nilai ini disimpan menggunakan 1 bit per
+                    piksel, di
+                    mana 0 menyatakan hitam dan 1 menyatakan putih. Lihatlah gambar dibawah ini untuk melihat nilai
+                    intensitas piksel dari citra biner
+                </p>
+
+                <!-- Gambar Ilustrasi -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub1/thresholding_example.png') }}"
+                        class="img-fluid rounded" style="max-width: 800px;">
+                    <p class="mt-2"><em>Gambar 1.4 Contoh citra biner beserta nilai piksel</em></p>
+                </div>
+
+                <p>
+                    Karena hanya memiliki dua nilai, citra biner tidak menyimpan informasi warna maupun tingkat keabuan
+                    seperti pada citra grayscale. Hal ini membuat citra biner menjadi lebih ringan dan efisien dalam
+                    penyimpanan data.
+                </p>
+
+                <p>Citra biner banyak digunakan dalam berbagai aplikasi, seperti:</p>
+
+                <ul>
+                    <li>Grafik garis (line graphics), misalnya gambar sederhana atau sketsa</li>
+                    <li>Pengarsipan dokumen, seperti hasil scan hitam-putih</li>
+                    <li>Pengiriman melalui faks (fax)</li>
+                    <li>Pencetakan elektronik (printing)</li>
+                </ul>
+
+                <p>
+                    Selain itu, citra biner sering diperoleh dari proses yang disebut thresholding, yaitu proses
+                    mengubah
+                    citra grayscale menjadi hitam-putih berdasarkan suatu nilai ambang (threshold).
+                </p>
+
+                <p>
+                    Nilai ambang atau threshold (T) dapat dihitung dengan rumus:
+                </p>
+
+
+
+                <div class="alert border rounded-3 bg-light text-center">
+                    \[
+                    T = \frac{\text{jumlah seluruh nilai piksel}}{(M \times N)}
+                    \]
+
+                </div>
+                <p><b>Keterangan:</b></p>
+                <ul>
+                    <li>M × N adalah ukuran citra (jumlah baris × jumlah kolom)</li>
+                    <li>T adalah nilai rata-rata intensitas piksel yang digunakan sebagai batas</li>
+                </ul>
+
+                <p>
+                    Setelah nilai threshold diperoleh, setiap piksel pada citra akan dibandingkan dengan nilai tersebut
+                    menggunakan aturan berikut:
+                </p>
+
+                <div class="alert border rounded-3 bg-light text-center">
+                    \[
+                    g(x,y)=
+                    \begin{cases}
+                    1, & \text{jika } f(x,y) > T \\
+                    0, & \text{jika } f(x,y) \le T
+                    \end{cases}
+                    \]
+                </div>
+
+                <p><b>Artinya:</b></p>
+                <ul>
+                    <li>Jika nilai piksel lebih besar dari T, maka diubah menjadi putih (1)</li>
+                    <li>Jika nilai piksel lebih kecil atau sama dengan T, maka diubah menjadi hitam (0)</li>
+                </ul>
+
+                <p>
+                    Dengan cara ini, citra grayscale dapat diubah menjadi citra biner yang hanya terdiri dari dua warna,
+                    sehingga lebih mudah diproses untuk keperluan tertentu.
+                </p>
+
+                <p>
+                    Sebagai contoh, terdapat citra grayscale berukuran 4 × 4 piksel dengan nilai intensitas sebagai
+                    berikut:
+                </p>
+
+                <div class="d-flex justify-content-center my-3">
+                    <table class="table table-bordered text-center w-auto">
+                        <tr>
+                            <td>100</td>
+                            <td>120</td>
+                            <td>130</td>
+                            <td>140</td>
+                        </tr>
+                        <tr>
+                            <td>90</td>
+                            <td>110</td>
+                            <td>150</td>
+                            <td>160</td>
+                        </tr>
+                        <tr>
+                            <td>80</td>
+                            <td>100</td>
+                            <td>120</td>
+                            <td>140</td>
+                        </tr>
+                        <tr>
+                            <td>70</td>
+                            <td>90</td>
+                            <td>110</td>
+                            <td>130</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p><b>Hitung nilai threshold</b></p>
+
+                <div class="alert border rounded-3 bg-light text-center">
+                    \[
+                    T = \frac{100+120+130+140+90+110+150+160+80+100+120+140+70+90+110+130}{4 \times 4}
+                    \]
+
+                    \[
+                    T = \frac{1840}{16} = 115
+                    \]
+                </div>
+
+                <p>
+                    Nilai threshold yang diperoleh adalah 115, dengan nilai tersebut maka dapat dilakukan aturan sebagai
+                    berikut:
+                </p>
+
+                <div class="alert border rounded-3 bg-light text-center">
+                    \[
+                    g(x,y)=
+                    \begin{cases}
+                    1, & \text{jika } f(x,y) > 115 \\
+                    0, & \text{jika } f(x,y) \le 115
+                    \end{cases}
+                    \]
+                </div>
+
+                <p><b>Berikut adalah hasil dari thresholding tersebut</b></p>
+
+                <div class="d-flex justify-content-center my-4">
+                    <div class="p-3 rounded-3 shadow-sm" style="background:#f8f9fc;">
+                        <table class="table text-center mb-0 custom-biner-table">
+                            <tr>
+                                <td class="zero">0</td>
+                                <td class="one">1</td>
+                                <td class="one">1</td>
+                                <td class="one">1</td>
+                            </tr>
+                            <tr>
+                                <td class="zero">0</td>
+                                <td class="zero">0</td>
+                                <td class="one">1</td>
+                                <td class="one">1</td>
+                            </tr>
+                            <tr>
+                                <td class="zero">0</td>
+                                <td class="zero">0</td>
+                                <td class="one">1</td>
+                                <td class="one">1</td>
+                            </tr>
+                            <tr>
+                                <td class="zero">0</td>
+                                <td class="zero">0</td>
+                                <td class="zero">0</td>
+                                <td class="one">1</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- page 5 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+
+
+                <!-- Citra RGB -->
+                <h5 class="fw-bold mt-4">c) Citra Berwarna</h5>
+
+                <p>
+                    Sebagian besar citra berwarna dibentuk dari tiga warna dasar, yaitu merah (Red), hijau (Green), dan
+                    biru
+                    (Blue) yang dikenal sebagai RGB. Pada citra RGB, setiap warna disimpan dalam bentuk angka untuk
+                    menunjukkan tingkat intensitas warna.
+                </p>
+
+                <p>
+                    Biasanya, setiap komponen warna (R, G, dan B) menggunakan 8 bit, sehingga memiliki rentang nilai
+                    dari 0
+                    hingga 255. Nilai 0 menunjukkan intensitas warna paling rendah (tidak ada warna), sedangkan nilai
+                    255
+                    menunjukkan intensitas warna paling tinggi.
+                </p>
+
+                <p>
+                    Karena terdapat tiga komponen warna, maka satu piksel pada citra RGB membutuhkan:
+                </p>
+
+                <div class="alert border rounded-3 bg-light text-center">
+                    \[
+                    3 \times 8 = 24 \ \text{bit}
+                    \]
+                </div>
+
+                <p>
+                    Artinya, setiap piksel menyimpan tiga nilai sekaligus, yaitu nilai merah, hijau, dan biru. Lihat
+                    gambar
+                    berikut untuk visualiasi dari nilai pikselnya
+                </p>
+
+                <!-- Gambar Ilustrasi -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub1/rgb_example.png') }}"
+                        class="img-fluid rounded shadow-sm" style="max-width:800px;">
+                    <p class="mt-2"><em>Gambar 1.5 contoh citra rgb beserta nilai piksel</em></p>
+
+                </div>
+                <p>
+                    Ruang warna RGB sering digambarkan dalam bentuk kubus RGB. Pada kubus ini:
+                </p>
+
+                <ul>
+                    <li>Sumbu X menunjukkan warna merah (Red)</li>
+                    <li>Sumbu Y menunjukkan warna hijau (Green)</li>
+                    <li>Sumbu Z menunjukkan warna biru (Blue)</li>
+                </ul>
+
+                <p>
+                    Lihatlah gambar berikut untuk visualisasi
+                </p>
+
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub1/model warna rgb.png') }}"
+                        class="img-fluid rounded shadow-sm" style="max-width:350px;">
+                    <p class="mt-2"><em>Gambar 1.6 Contoh ruang warna RGB</em></p>
+
+                </div>
+
+                <p>
+                    Beberapa kombinasi nilai RGB menghasilkan warna tertentu, misalnya:
+                </p>
+
+                <div class="row text-center my-3">
+
+                    <div class="col-md-4 mb-2">
+                        <div class="p-2 border rounded-3 bg-dark text-white">(0, 0, 0)<br>hitam</div>
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <div class="p-2 border rounded-3 bg-white">(255, 255, 255)<br>putih</div>
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <div class="p-2 border rounded-3" style="background:red;color:white;">(255, 0, 0)<br>merah</div>
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <div class="p-2 border rounded-3" style="background:green;color:white;">(0, 255, 0)<br>hijau
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <div class="p-2 border rounded-3" style="background:blue;color:white;">(0, 0, 255)<br>biru</div>
+                    </div>
+
+                </div>
+
+                <p>
+                    Selain itu, kombinasi dua warna dasar juga dapat menghasilkan warna lain, seperti:
+                </p>
+
+                <div class="row text-center my-3">
+
+                    <div class="col-md-4 mb-2">
+                        <div class="p-2 border rounded-3" style="background:cyan;">cyan (hijau + biru)</div>
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <div class="p-2 border rounded-3" style="background:magenta;color:white;">magenta (merah + biru)
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <div class="p-2 border rounded-3" style="background:yellow;">yellow (merah + hijau)</div>
+                    </div>
+
+                </div>
+
+                <p>
+                    Dengan demikian, citra RGB memungkinkan kita menampilkan berbagai macam warna melalui kombinasi tiga
+                    warna dasar tersebut.
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- Page 6 -->
+    <div class="page-section">
+        <div class="card-mb-4 shadow-sm">
+            <div class="card-body">
+                <!-- aktivitas -->
+                <div class="quiz-card">
+
+                    <h5 class="quiz-title">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+                    </h5>
+                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
+                    </p>
+
+                    <!-- PROGRESS -->
+                    <div class="quiz-progress" id="quizProgress"></div>
+
+                    <!-- SOAL -->
+                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+                    <!-- FEEDBACK -->
+                    <div id="feedback" class="mt-3 fw-bold"></div>
+
+                    <!-- BUTTON -->
+                    <div class="quiz-nav">
+                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
+                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(3)">4</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(4)">5</a></li>
+            <li class="page-item"><a class="page-link" onclick="goPage(5)">6</a></li>
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+{% endblock %}
+{% endblock %}

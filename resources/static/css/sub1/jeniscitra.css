@@ -1,0 +1,120 @@
+/* =======================
+   KANAL R (MERAH)
+======================= */
+.kanal-r {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 0, 0.08),
+    rgba(255, 0, 0, 0.02)
+  );
+  border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.kanal-r table td {
+  background: rgba(255, 0, 0, 0.05);
+}
+
+.kanal-r table td:hover {
+  background: rgba(255, 0, 0, 0.15);
+}
+
+/* =======================
+   KANAL G (HIJAU)
+======================= */
+.kanal-g {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 0, 0.119),
+    rgba(0, 128, 0, 0.02)
+  );
+  border: 1px solid rgba(13, 218, 13, 0.3);
+}
+
+.kanal-g table td {
+  background: rgba(0, 128, 0, 0.05);
+}
+
+.kanal-g table td:hover {
+  background: rgba(0, 128, 0, 0.15);
+}
+
+/* =======================
+   KANAL B (BIRU)
+======================= */
+.kanal-b {
+  background: linear-gradient(
+    135deg,
+    rgba(53, 53, 255, 0.08),
+    rgba(42, 110, 212, 0.02)
+  );
+  border: 1px solid rgba(0, 0, 255, 0.3);
+}
+
+.kanal-b table td {
+  background: rgba(0, 0, 255, 0.05);
+}
+
+.kanal-b table td:hover {
+  background: rgba(0, 0, 255, 0.15);
+}
+
+.perhitungan-box {
+  background: #f8f9fc;
+  border-radius: 10px;
+  padding: 15px;
+  font-family: monospace;
+}
+
+.perhitungan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.perhitungan-item {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.hasil-gray {
+  background: #e5e7eb;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.hasil-gray table td {
+  background: #d1d5db;
+  font-weight: 500;
+}
+
+/* biner */
+.custom-biner-table td {
+  width: 70px;
+  height: 70px;
+  vertical-align: middle;
+  font-weight: bold;
+  font-size: 18px;
+  border: 2px solid #dee2e6;
+  transition: 0.2s;
+}
+
+/* warna 0 (hitam) */
+.custom-biner-table .zero {
+  background: #111;
+  color: #fff;
+}
+
+/* warna 1 (putih) */
+.custom-biner-table .one {
+  background: #ffffff;
+  color: #111;
+}
+
+/* hover biar interaktif dikit */
+.custom-biner-table td:hover {
+  transform: scale(1.05);
+}

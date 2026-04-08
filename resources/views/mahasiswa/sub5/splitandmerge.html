@@ -1,0 +1,1086 @@
+{% extends 'layouts/base.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- PROGRESS -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Progress Belajar</span>
+                <span class="text-success fw-bold">0%</span>
+            </div>
+
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 0%">
+                    0%
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 1 -->
+    <div class="page-section active">
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-body p-4">
+
+                <!-- Judul -->
+                <h4 class="fw-bold mb-4 text-primary">
+                    <i class="bi bi-diagram-3 me-2"></i>5.3 Split and Merge
+                </h4>
+
+                <!-- Paragraf -->
+                <p class="text-justify">
+                    Kombinasi antara <em>region splitting</em> dan <em>region merging</em> dapat menghasilkan metode
+                    yang memiliki
+                    keunggulan dari keduanya. Pendekatan <em>split-and-merge</em> bekerja menggunakan representasi citra
+                    berbentuk piramida (<em>pyramid</em>), di mana region berbentuk persegi dan berada pada tingkat
+                    resolusi
+                    tertentu.
+                </p>
+
+                <!-- Gambar -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub5/splitting & Merging.png') }}"
+                        class="img-fluid rounded " style="max-width: 450px;">
+                    <p class="mt-2 text-muted">
+                        <em>Gambar 5.3 visualisasi proses dari split and merge</em>
+                    </p>
+                </div>
+
+                <!-- Penjelasan -->
+                <p class="text-justify">
+                    Berdasarkan ilustrasi gambar tersebut, jika suatu region pada tingkat piramida tidak memenuhi
+                    kriteria homogenitas (kecuali pada tingkat paling bawah), maka region tersebut akan dipecah menjadi
+                    empat subregion. Subregion ini merupakan representasi dengan resolusi yang lebih tinggi pada tingkat
+                    di bawahnya.
+                </p>
+
+                <p class="text-justify mb-0">
+                    Sebaliknya, jika terdapat empat region pada suatu tingkat yang memiliki nilai homogenitas yang
+                    hampir sama,
+                    maka region-region tersebut dapat digabung menjadi satu region pada tingkat yang lebih tinggi.
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 2 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-body p-4">
+
+                <!-- Penjelasan -->
+                <p class="text-justify">
+                    Proses segmentasi ini dapat dipahami sebagai pembentukan struktur pohon yang disebut
+                    <em>segmentation quadtree</em>, di mana setiap daun (<em>leaf node</em>) merepresentasikan
+                    satu region yang homogen. Proses <em>splitting</em> dan <em>merging</em> berkaitan dengan
+                    pembentukan atau penghapusan bagian dari pohon tersebut.
+                </p>
+
+                <p class="text-justify">
+                    Jumlah node daun pada pohon menunjukkan jumlah region hasil segmentasi akhir. Berikut adalah
+                    ilustrasi dari <em>segmentation quadtree</em>.
+                </p>
+
+                <!-- Gambar -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub5/quadtree split and merge.png') }}"
+                        class="img-fluid rounded" style="max-width: 600px;">
+                    <p class="mt-2 text-muted">
+                        <em>Gambar 5.4 contoh ilustrasi region splitting dan struktur data quadtree</em>
+                    </p>
+                </div>
+
+                <!-- Paragraf lanjutan -->
+                <p class="text-justify">
+                    Metode <em>split-and-merge</em> biasanya menggunakan struktur data seperti
+                    <em>region adjacency graph</em> untuk menyimpan informasi keterhubungan antar region.
+                    Penggunaan struktur pohon segmentasi ini memudahkan implementasi dan meningkatkan efisiensi
+                    komputasi, meskipun region yang dihasilkan tidak selalu saling terhubung secara langsung.
+                </p>
+
+                <p class="text-justify">
+                    Salah satu kelemahan metode ini adalah asumsi bahwa region berbentuk persegi. Oleh karena itu,
+                    sering ditambahkan proses tambahan untuk memungkinkan penggabungan region yang tidak berada
+                    pada cabang yang sama dalam pohon segmentasi.
+                </p>
+
+                <!-- Penjelasan kondisi -->
+                <p class="text-justify">
+                    Region awal dapat ditentukan secara bebas atau berdasarkan informasi awal (<em>prior
+                        knowledge</em>).
+                    Karena metode ini menggabungkan proses <em>splitting</em> dan <em>merging</em>, maka segmentasi awal
+                    tidak harus langsung memenuhi kondisi:
+                </p>
+
+                <!-- Rumus -->
+                <div class="bg-light rounded p-2 text-center mb-3">
+                    \[
+                    Q(R_i) = TRUE \quad \text{atau} \quad Q(R_i \cup R_j) = FALSE
+                    \]
+                </div>
+
+                <!-- Penutup -->
+                <p class="text-justify mb-0">
+                    Kriteria homogenitas tetap menjadi faktor utama dalam metode ini. Untuk citra sederhana,
+                    kriteria ini dapat didasarkan pada sifat lokal citra. Namun, untuk citra yang lebih kompleks,
+                    bahkan kriteria yang lebih lengkap sekalipun belum tentu menghasilkan segmentasi yang optimal.
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 3 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-body p-4">
+
+                <!-- Judul -->
+                <h4 class="fw-bold mb-4 text-primary">
+                    Algoritma Split and Merge
+                </h4>
+
+                <p>
+                    Berikut Adalah Langkah dari penerapan algoritma split and merge
+                </p>
+
+                <!-- Langkah 1 -->
+                <p class="fw-semibold mt-3">1. Inisialisasi awal</p>
+                <p>
+                    Tentukan segmentasi awal citra menjadi beberapa region, kriteria homogenitas
+                    \( Q(R_i) \), serta struktur data pyramid.
+                </p>
+
+                <!-- Langkah 2 -->
+                <p class="fw-semibold mt-3">2. Pengecekan kondisi suatu region</p>
+
+                <p>
+                    Jika terdapat suatu region \( R \) pada struktur pyramid yang tidak homogen
+                    \( [Q(R)=FALSE] \), maka region tersebut dipecah menjadi empat subregion.
+                </p>
+
+                <p>
+                    Jika terdapat empat region dengan parent yang sama dan memenuhi:
+                </p>
+
+                <div class="bg-light rounded p-2 text-center mb-3">
+                    \[
+                    Q(R_1 \cup R_2 \cup R_3 \cup R_4) = TRUE
+                    \]
+                </div>
+
+                <p>
+                    maka region tersebut digabung menjadi satu region homogen. Jika tidak ada lagi region yang dapat
+                    di-split atau di-merge, lanjut ke langkah 3.
+                </p>
+
+                <!-- Langkah 3 -->
+                <p class="fw-semibold mt-3">3. Pengecekan dua region yang bertetangga</p>
+
+                <p>
+                    Jika terdapat dua region bertetangga \( R_i \) dan \( R_j \)
+                    (meskipun berada pada level pyramid yang berbeda atau tidak memiliki parent yang sama)
+                    dan memenuhi:
+                </p>
+
+                <div class="bg-light rounded p-2 text-center mb-3">
+                    \[
+                    Q(R_i \cup R_j) = TRUE
+                    \]
+                </div>
+
+                <p>
+                    maka kedua region tersebut digabung menjadi satu region.
+                </p>
+
+                <!-- Langkah 4 -->
+                <p class="fw-semibold mt-3">4. Penggabungan tambahan</p>
+
+                <p class="mb-0">
+                    Gabungkan region berukuran kecil dengan region tetangga yang paling mirip jika diperlukan
+                    untuk menghilangkan region yang terlalu kecil.
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <!-- PAGE 4 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body p-4">
+
+                <!-- Judul -->
+                <h4 class="fw-bold mb-4 text-primary">Contoh Split and Merge</h4>
+
+                <p>
+                    Perhatikan contoh berikut untuk penerapan dari split and merge.
+                    Gunakan nilai piksel pada gambar berikut!
+                </p>
+
+                <!-- Gambar -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub5/init_split_merge.png') }}"
+                        class="img-fluid rounded" style="max-width: 450px;">
+                    <p class="mt-2"><em>Gambar 5.5 inisialisasi citra untuk algoritma split and merge</em></p>
+                </div>
+
+                <!-- LANGKAH 1 -->
+                <h5 class="fw-bold mt-4">1. Menentukan segmentasi awal</h5>
+
+                <p>
+                    Menentukan segmentasi awal citra menjadi beberapa region, kriteria homogenitas serta struktur data
+                    pyramid.
+                </p>
+
+                <p>
+                    Kriteria homogenitas yang digunakan adalah:
+                </p>
+
+                <div class="bg-light p-2 text-center mb-3">
+                    \[
+                    T = 3
+                    \]
+                </div>
+
+                <p>
+                    Maka dari region awal adalah:
+                </p>
+
+                <div class="bg-light p-2 text-center mb-2">
+                    \[
+                    |7 - 0| = 7
+                    \]
+                </div>
+
+                <p>
+                    Karena tidak memenuhi kriteria homogenitas:
+                </p>
+
+                <div class="bg-light p-2 text-center mb-2">
+                    \[
+                    7 > 3
+                    \]
+                </div>
+
+                <div class="bg-light p-2 text-center mb-3">
+                    \[
+                    Q(R_i) = FALSE
+                    \]
+                </div>
+
+                <p>
+                    Sehingga citra akan dibagi menjadi 4 sub-region lagi seperti gambar dibawah ini.
+                </p>
+
+                <!-- Gambar -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub5/split_4_region.png') }}" class="img-fluid rounded"
+                        style="max-width: 450px;">
+                    <p class="mt-2"><em>Gambar 5.6 Pembagian citra menjadi 4 region pertama</em></p>
+                </div>
+
+
+                <!-- LANGKAH 2 -->
+                <h5 class="fw-bold mt-4">2. Lakukan proses splitting pada masing masing region tersebut</h5>
+
+                <!-- REGION A -->
+                <div class="mb-4">
+                    <p><strong>Region (A):</strong></p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        \begin{bmatrix}
+                        5 & 6 & 6 & 6 \\
+                        6 & 7 & 6 & 7 \\
+                        6 & 6 & 4 & 4 \\
+                        5 & 4 & 5 & 4
+                        \end{bmatrix}
+                        \]
+                    </div>
+
+                    <p>
+                        Tmax = 7, Tmin = 4
+                    </p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |7 - 4| = 3
+                        \]
+                    </div>
+
+                    <p>
+                        Karena:
+                    </p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        3 \le 3
+                        \]
+                    </div>
+
+                    <p>
+                        Region (A) homogen jadi tidak perlu splitting di region A
+                    </p>
+                </div>
+
+                <!-- REGION B -->
+                <div class="mb-4">
+                    <p><strong>Region (B):</strong></p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        \begin{bmatrix}
+                        7 & 7 & 6 & 6 \\
+                        5 & 5 & 4 & 7 \\
+                        3 & 2 & 5 & 6 \\
+                        2 & 3 & 4 & 6
+                        \end{bmatrix}
+                        \]
+                    </div>
+
+                    <p>
+                        Tmax = 7, Tmin = 2
+                    </p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |7 - 2| = 5
+                        \]
+                    </div>
+
+                    <p>
+                        Karena:
+                    </p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        5 > 3
+                        \]
+                    </div>
+
+                    <p>
+                        Region (B) tidak homogen jadi perlu splitting menjadi (B1, B2, B3, B4)
+                    </p>
+                </div>
+
+                <!-- REGION C -->
+                <div class="mb-4">
+                    <p><strong>Region (C):</strong></p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        \begin{bmatrix}
+                        0 & 3 & 2 & 3 \\
+                        0 & 0 & 0 & 0 \\
+                        1 & 1 & 0 & 1 \\
+                        1 & 0 & 1 & 0
+                        \end{bmatrix}
+                        \]
+                    </div>
+
+                    <p>
+                        Tmax = 3, Tmin = 0
+                    </p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |3 - 0| = 3
+                        \]
+                    </div>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        3 \le 3
+                        \]
+                    </div>
+
+                    <p>
+                        Region (C) homogen jadi tidak perlu splitting di region C
+                    </p>
+                </div>
+
+                <!-- REGION D -->
+                <div>
+                    <p><strong>Region (D):</strong></p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        \begin{bmatrix}
+                        3 & 2 & 4 & 7 \\
+                        2 & 2 & 5 & 6 \\
+                        0 & 3 & 4 & 4 \\
+                        2 & 3 & 5 & 4
+                        \end{bmatrix}
+                        \]
+                    </div>
+
+                    <p>
+                        Tmax = 5, Tmin = 0
+                    </p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |5 - 0| = 5
+                        \]
+                    </div>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        5 > 3
+                        \]
+                    </div>
+
+                    <p class="mb-0">
+                        Region (D) tidak homogen jadi perlu splitting menjadi (D1, D2, D3, D4)
+                    </p>
+                </div>
+
+                <!-- SUB REGION -->
+                <div class="mt-4">
+
+                    <p class="fw-semibold">
+                        Cek lagi pada bagian sub-regions dengan menggunakan kriteria yang sama yaitu:
+                    </p>
+
+                    <!-- B1 -->
+                    <div class="mb-4">
+                        <p><strong>Region (B1)</strong></p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            \begin{bmatrix}
+                            7 & 7 \\
+                            5 & 5
+                            \end{bmatrix}
+                            \]
+                        </div>
+
+                        <p>Tmax = 7, Tmin = 5</p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            |7 - 5| = 2
+                            \]
+                        </div>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            2 \le 3
+                            \]
+                        </div>
+
+                        <p>Region (B1) homogen jadi tidak perlu splitting di region B1</p>
+                    </div>
+
+                    <!-- B2 -->
+                    <div class="mb-4">
+                        <p><strong>Region (B2)</strong></p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            \begin{bmatrix}
+                            6 & 6 \\
+                            4 & 7
+                            \end{bmatrix}
+                            \]
+                        </div>
+
+                        <p>Tmax = 7, Tmin = 4</p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            |7 - 4| = 3
+                            \]
+                        </div>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            3 \le 3
+                            \]
+                        </div>
+
+                        <p>Region (B2) homogen jadi tidak perlu splitting di region B2</p>
+                    </div>
+
+                    <!-- B3 -->
+                    <div class="mb-4">
+                        <p><strong>Region (B3)</strong></p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            \begin{bmatrix}
+                            3 & 2 \\
+                            2 & 2
+                            \end{bmatrix}
+                            \]
+                        </div>
+
+                        <p>Tmax = 3, Tmin = 2</p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            |3 - 2| = 1
+                            \]
+                        </div>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            1 \le 3
+                            \]
+                        </div>
+
+                        <p>Region (B3) homogen jadi tidak perlu splitting di region B3</p>
+                    </div>
+
+                    <!-- B4 -->
+                    <div class="mb-4">
+                        <p><strong>Region (B4)</strong></p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            \begin{bmatrix}
+                            5 & 6 \\
+                            4 & 6
+                            \end{bmatrix}
+                            \]
+                        </div>
+
+                        <p>Tmax = 6, Tmin = 4</p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            |6 - 4| = 2
+                            \]
+                        </div>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            2 \le 3
+                            \]
+                        </div>
+
+                        <p>Region (B4) homogen jadi tidak perlu splitting di region B4</p>
+                    </div>
+
+                    <!-- D1 -->
+                    <div class="mb-4">
+                        <p><strong>Region (D1)</strong></p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            \begin{bmatrix}
+                            3 & 2 \\
+                            2 & 2
+                            \end{bmatrix}
+                            \]
+                        </div>
+
+                        <p>Tmax = 3, Tmin = 2</p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            |3 - 2| = 1
+                            \]
+                        </div>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            1 \le 3
+                            \]
+                        </div>
+
+                        <p>Region (D1) homogen jadi tidak perlu splitting di region D1</p>
+                    </div>
+
+                    <!-- D2 -->
+                    <div class="mb-4">
+                        <p><strong>Region (D2)</strong></p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            \begin{bmatrix}
+                            5 & 7 \\
+                            5 & 6
+                            \end{bmatrix}
+                            \]
+                        </div>
+
+                        <p>Tmax = 7, Tmin = 5</p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            |7 - 5| = 2
+                            \]
+                        </div>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            2 \le 3
+                            \]
+                        </div>
+
+                        <p>Region (D2) homogen jadi tidak perlu splitting di region D2</p>
+                    </div>
+
+                    <!-- D3 -->
+                    <div class="mb-4">
+                        <p><strong>Region (D3)</strong></p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            \begin{bmatrix}
+                            0 & 3 \\
+                            2 & 3
+                            \end{bmatrix}
+                            \]
+                        </div>
+
+                        <p>Tmax = 3, Tmin = 0</p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            |3 - 0| = 3
+                            \]
+                        </div>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            3 \le 3
+                            \]
+                        </div>
+
+                        <p>Region (D3) homogen jadi tidak perlu splitting di region D3</p>
+                    </div>
+
+                    <!-- D4 -->
+                    <div>
+                        <p><strong>Region (D4)</strong></p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            \begin{bmatrix}
+                            4 & 4 \\
+                            5 & 4
+                            \end{bmatrix}
+                            \]
+                        </div>
+
+                        <p>Tmax = 5, Tmin = 4</p>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            |5 - 4| = 1
+                            \]
+                        </div>
+
+                        <div class="bg-light p-2 text-center mb-2">
+                            \[
+                            1 \le 3
+                            \]
+                        </div>
+
+                        <p>Region (D4) homogen jadi tidak perlu splitting di region D4</p>
+                    </div>
+
+                    <!-- HASIL -->
+                    <div class="mt-4">
+                        <p>
+                            Maka berdasarkan langkah tersebut didapatkan lah region dan sub region seperti gambar
+                            dibawah ini!
+                        </p>
+
+                        <div class="text-center my-4">
+                            <img src="{{ url_for('static', filename='img/sub5/split_subregion.png') }}"
+                                class="img-fluid rounded " style="max-width: 450px;">
+                            <p class="mt-2"><em>Gambar 5.7 pembagian region B dan region D menjadi sub region</em></p>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- page 5 -->
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm ">
+            <div class="card-body p-4">
+
+                <!-- Judul -->
+                <h4 class="fw-bold mb-4 text-primary">
+                    3. Pengecekan Dua Region yang Bertetangga (Merging)
+                </h4>
+
+                <p>
+                    Pengecekan dilakukan dengan kriteria homogen sama seperti di awal pada region berikut:
+                </p>
+
+                <!-- A dengan B1 -->
+                <div class="mb-4">
+                    <p><strong>1. Region A dengan Region B1</strong></p>
+                    <div class="text-center my-4">
+                        <img src="{{ url_for('static', filename='img/sub5/iterasi 1.png') }}" class="img-fluid rounded "
+                            style="max-width: 450px;">
+                        <p class="mt-2"><em>Gambar 5.8 pengecekan Homogenitas Region A dengan Region B1</em></p>
+                    </div>
+
+
+                    <p>Tmax = 7, Tmin = 4</p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |7 - 4| = 3
+                        \]
+                    </div>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        3 \le 3
+                        \]
+                    </div>
+
+                    <p>
+                        Region A dengan Region B1 memenuhi kriteria maka akan dilakukan proses merge menjadi (A, B1)
+                    </p>
+                </div>
+
+                <!-- (A,B1) dengan B2 -->
+                <div class="mb-4">
+                    <p><strong>2. Region (A,B1) dengan B2</strong></p>
+                    <div class="text-center my-4">
+                        <img src="{{ url_for('static', filename='img/sub5/iterasi 2.png') }}" class="img-fluid rounded "
+                            style="max-width: 450px;">
+                        <p class="mt-2"><em>Gambar 5.9 pengecekan homogenitas Region A,B1 dengan B2</em></p>
+                    </div>
+
+
+                    <p>Tmax = 7, Tmin = 4</p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |7 - 4| = 3
+                        \]
+                    </div>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        3 \le 3
+                        \]
+                    </div>
+
+                    <p>
+                        Region (A, B1) dengan Region B2 memenuhi kriteria maka akan dilakukan proses merge menjadi (A,
+                        B1, B2)
+                    </p>
+                </div>
+
+                <!-- (A,B1,B2) dengan B3 -->
+                <div class="mb-4">
+                    <p><strong>3. Region (A,B1,B2) dengan B3</strong></p>
+                    <div class="text-center my-4">
+                        <img src="{{ url_for('static', filename='img/sub5/iterasi 3.png') }}" class="img-fluid rounded "
+                            style="max-width: 450px;">
+                        <p class="mt-2"><em>Gambar 5.10 Pengecekan region A,B1,B2 dengan B3</em></p>
+                    </div>
+
+                    <p>Tmax = 7, Tmin = 2</p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |7 - 2| = 5
+                        \]
+                    </div>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        5 > 3
+                        \]
+                    </div>
+
+                    <p>
+                        Region (A, B1, B2) dengan Region B3 tidak memenuhi kriteria maka dua region tersebut tidak dapat
+                        di merge
+                    </p>
+                </div>
+
+                <!-- (A,B1,B2) dengan B4 -->
+                <div class="mb-4">
+                    <p><strong>4. Region (A,B1,B2) dengan B4</strong></p>
+                    <div class="text-center my-4">
+                        <img src="{{ url_for('static', filename='img/sub5/iterasi 4.png') }}" class="img-fluid rounded "
+                            style="max-width: 450px;">
+                        <p class="mt-2"><em>Gambar 5.11 Pengecekan region A,B1,B2 dengan B4</em></p>
+                    </div>
+
+
+                    <p>Tmax = 7, Tmin = 4</p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |7 - 4| = 3
+                        \]
+                    </div>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        3 \le 3
+                        \]
+                    </div>
+
+                    <p>
+                        Region (A, B1, B2) dengan Region B4 memenuhi kriteria maka akan dilakukan proses merge menjadi
+                        (A, B1, B2, B4)
+                    </p>
+                </div>
+
+                <!-- dengan C -->
+                <div class="mb-4">
+                    <p><strong>5. Region (A,B1,B2,B4) dengan C</strong></p>
+                    <div class="text-center my-4">
+                        <img src="{{ url_for('static', filename='img/sub5/iterasi 5.png') }}" class="img-fluid rounded "
+                            style="max-width: 450px;">
+                        <p class="mt-2"><em>Gambar 5.12 Pengecekan region A,B1,B2,B4 dengan C</em></p>
+                    </div>
+
+                    <p>Tmax = 7, Tmin = 0</p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |7 - 0| = 7
+                        \]
+                    </div>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        7 > 3
+                        \]
+                    </div>
+
+                    <p>
+                        Region (A, B1, B2, B4) dengan Region C tidak memenuhi kriteria maka dua region tersebut tidak
+                        dapat di merge
+                    </p>
+                </div>
+
+                <!-- dengan D1 -->
+                <div class="mb-4">
+                    <p><strong>6. Region (A,B1,B2,B4) dengan D1</strong></p>
+                    <div class="text-center my-4">
+                        <img src="{{ url_for('static', filename='img/sub5/iterasi 6.png') }}" class="img-fluid rounded "
+                            style="max-width: 450px;">
+                        <p class="mt-2"><em>Gambar 5.13 Pengecekan region A,B1,B2,B4 dengan D1</em></p>
+                    </div>
+
+                    <p>Tmax = 7, Tmin = 2</p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |7 - 2| = 5
+                        \]
+                    </div>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        5 > 3
+                        \]
+                    </div>
+
+                    <p>
+                        Region (A, B1, B2, B4) dengan Region D1 tidak memenuhi kriteria maka dua region tersebut tidak
+                        dapat di merge
+                    </p>
+                </div>
+
+                <!-- dengan D2 -->
+                <div class="mb-4">
+                    <p><strong>7. Region (A,B1,B2,B4) dengan D2</strong></p>
+
+                    <div class="text-center my-4">
+                        <img src="{{ url_for('static', filename='img/sub5/iterasi 7.png') }}" class="img-fluid rounded "
+                            style="max-width: 450px;">
+                        <p class="mt-2"><em>Gambar 5.14 Pengecekan region A,B1,B2,B4 dengan D2</em></p>
+                    </div>
+                    <p>Tmax = 7, Tmin = 4</p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |7 - 4| = 3
+                        \]
+                    </div>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        3 \le 3
+                        \]
+                    </div>
+
+                    <p>
+                        Region (A, B1, B2, B4) dengan Region D2 memenuhi kriteria maka akan dilakukan proses merge
+                        menjadi (A, B1, B2, B4, D2)
+                    </p>
+                </div>
+
+                <!-- dengan D3 -->
+                <div class="mb-4">
+                    <p><strong>8. Region (A,B1,B2,B4,D2) dengan D3</strong></p>
+                    <div class="text-center my-4">
+                        <img src="{{ url_for('static', filename='img/sub5/iterasi 8.png') }}" class="img-fluid rounded "
+                            style="max-width: 450px;">
+                        <p class="mt-2"><em>Gambar 5.15 Pengecekan region A,B1,B2,B4,D2 dengan D3</em></p>
+                    </div>
+
+
+                    <p>Tmax = 7, Tmin = 0</p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |7 - 0| = 7
+                        \]
+                    </div>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        7 > 3
+                        \]
+                    </div>
+
+                    <p>
+                        Region (A, B1, B2, B4, D2) dengan Region D3 tidak memenuhi kriteria maka dua region tersebut
+                        tidak dapat di merge
+                    </p>
+                </div>
+
+                <!-- dengan D4 -->
+                <div>
+                    <p><strong>9. egion (A,B1,B2,B4,D2) dengan D4</strong></p>
+                    <div class="text-center my-4">
+                        <img src="{{ url_for('static', filename='img/sub5/iterasi 9.png') }}" class="img-fluid rounded "
+                            style="max-width: 450px;">
+                        <p class="mt-2"><em>Gambar 5.16 Pengecekan region A,B1,B2,B4,D2 dengan D4</em></p>
+                    </div>
+
+                    <p>Tmax = 7, Tmin = 4</p>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        |7 - 4| = 3
+                        \]
+                    </div>
+
+                    <div class="bg-light p-2 text-center mb-2">
+                        \[
+                        3 \le 3
+                        \]
+                    </div>
+
+                    <p class="mb-0">
+                        Region (A, B1, B2, B4, D2) dengan Region D4 memenuhi kriteria maka akan dilakukan proses merge
+                        menjadi (A, B1, B2, B4, D2, D4)
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="page-section">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body p-4">
+
+                <!-- Judul -->
+                <h4 class="fw-bold mb-4 text-primary">
+                    4. Hasil Akhir
+                </h4>
+
+                <!-- Narasi -->
+                <p class="text-justify">
+                    Proses dihentikan setelah seluruh region dan sub-region diperiksa, dimana tidak ada lagi region yang
+                    perlu
+                    di-split dan tidak terdapat region bertetangga yang memenuhi syarat untuk dilakukan merging.
+                    Sehingga diperoleh hasil segmentasi akhir yang stabil.
+                </p>
+
+                <p class="text-justify">
+                    Berikut adalah visualisasi hasil dari segmentasi menggunakan metode split and merging yang telah
+                    dilakukan.
+                </p>
+
+                <!-- Gambar -->
+                <div class="text-center my-4">
+                    <img src="{{ url_for('static', filename='img/sub5/hasil_split_merge.png') }}"
+                        class="img-fluid rounded" style="max-width: 450px;">
+                    <p class="mt-2 text-muted">
+                        <em>Gambar 5.17 Citra hasil segmentasi menggunakan metode split and merging</em>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="page-section">
+        <div class="card-mb-4 shadow-sm">
+            <div class="card-body">
+                <!-- aktivitas -->
+                <div class="quiz-card">
+
+                    <h5 class="quiz-title">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+                    </h5>
+                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut
+                        ini!
+                    </p>
+
+                    <!-- PROGRESS -->
+                    <div class="quiz-progress" id="quizProgress"></div>
+
+                    <!-- SOAL -->
+                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+                    <!-- FEEDBACK -->
+                    <div id="feedback" class="mt-3 fw-bold"></div>
+
+                    <!-- BUTTON -->
+                    <div class="quiz-nav">
+                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
+                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PAGINATION -->
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm custom-pagination">
+
+            <li class="page-item" id="prevPageItem">
+                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+            </li>
+
+            <li class="page-item active"><a class="page-link" onclick="goPage(0)">1</a></li>
+            <li class="page-item active"><a class="page-link" onclick="goPage(1)">2</a></li>
+            <li class="page-item active"><a class="page-link" onclick="goPage(2)">3</a></li>
+            <li class="page-item active"><a class="page-link" onclick="goPage(3)">4</a></li>
+            <li class="page-item active"><a class="page-link" onclick="goPage(4)">5</a></li>
+            <li class="page-item active"><a class="page-link" onclick="goPage(5)">6</a></li>
+            <li class="page-item active"><a class="page-link" onclick="goPage(6)">7</a></li>
+            <li class="page-item" id="nextPageItem">
+                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            </li>
+
+        </ul>
+    </nav>
+
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+{% endblock %}
+
+{% endblock %}
