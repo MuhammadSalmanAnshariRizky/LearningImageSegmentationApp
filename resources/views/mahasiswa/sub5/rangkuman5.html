@@ -1,161 +1,104 @@
 {% extends 'layouts/base.html' %}
 
-{% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
-{% endblock %}
-
 {% block content %}
-
 <div class="container mt-4">
 
-    <!-- PAGE 1 -->
-    <div class="page-section active">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h4 class="fw-bold mb-4">Rangkuman</h4>
-                <h5 class="fw-bold">1. Konsep Dasar</h5>
-
-                <p>
-                    Region-based segmentation adalah metode yang membagi citra menjadi beberapa bagian:
-                </p>
-
-                <p>\[ R_1, R_2, ..., R_n \]</p>
-
-                <p>
-                    Pembagian dilakukan berdasarkan kesamaan karakteristik (homogenitas), seperti intensitas atau warna
-                </p>
-                <h5 class="fw-bold">2. Kriteria Segmentasi</h5>
-
-                <p>
-                    Agar hasil segmentasi benar, setiap region harus memenuhi:
-                </p>
-
-                <p>
-                    Setiap region harus homogen:
-                </p>
-
-                <p>\[ Q(R_i)=TRUE \]</p>
-
-                <p>
-                    Region bertetangga tidak boleh digabung jika tidak homogen:
-                </p>
-
-                <p>\[ Q(R_i \cup R_j)=FALSE \]</p>
-
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>\(R_i, R_j\)= region</li>
-                    <li>\(Q\)= fungsi homogenitas</li>
-                </ul>
-
-                <p>
-                    Artinya, region harus seragam dan sudah tidak bisa digabung lagi.
-                </p>
-
-
-            </div>
+  <div class="card border shadow-sm mb-4 rounded-4">
+    <div class="card-body px-4 py-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold text-dark">Progress Belajar</span>
+        <span class="text-success fw-bold">{{ progress }}%</span>
+      </div>
+      <div class="progress rounded-pill bg-light" style="height: 10px;">
+        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill" role="progressbar"
+          style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
         </div>
+      </div>
     </div>
+  </div>
 
+  <div class="card border shadow-sm rounded-4 mb-4">
+    <div class="card-body p-4 p-md-5">
+      <h3 class="fw-bold mb-4 text-custom-blue">
+        <i class="fa-solid fa-book-bookmark me-2"></i> Rangkuman Materi
+      </h3>
 
+      <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+        <p class="mb-4">Berikut adalah rangkuman berdasarkan materi yang sudah dijelaskan pada bab Region-based
+          segmentation yaitu:</p>
 
-    <!-- PAGE 2 -->
-    <div class="page-section">
-        <div class="card shadow-sm">
-            <div class="card-body">
+        <ol class="list-group list-group-numbered list-group-flush text-dark">
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Region-Based Segmentation</strong> merupakan metode segmentasi citra yang membentuk objek dengan
+            mengelompokkan piksel-piksel yang memiliki karakteristik serupa ke dalam suatu wilayah (region).
+          </li>
 
-                <h5 class="fw-bold">3. Region Merging</h5>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Tujuan utama Region-Based Segmentation</strong> adalah membagi citra menjadi beberapa region yang
+            homogen, di mana homogenitas dapat ditentukan berdasarkan tingkat keabuan (gray-level), warna, tekstur, atau
+            karakteristik lainnya.
+          </li>
 
-                <p>
-                    Proses ini digunakan untuk menggabungkan region kecil menjadi lebih besar.
-                </p>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Segmentasi yang baik</strong> harus memenuhi dua aturan utama, yaitu setiap region harus homogen dan
+            dua region bertetangga tidak boleh digabung apabila hasil penggabungannya tidak homogen.
+          </li>
 
-                <p>
-                    Penggabungan dilakukan jika masih memenuhi homogenitas:
-                </p>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Berdasarkan cara pembentukan region</strong>, Region-Based Segmentation dibagi menjadi dua
+            pendekatan utama, yaitu Region Growing dan Region Splitting and Merging.
+          </li>
 
-                <p>\[ Q(R_i \cup R_j)=TRUE \]</p>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Region Growing</strong> membentuk region dengan menambahkan piksel-piksel yang memiliki
+            karakteristik serupa ke dalam suatu region awal (seed point) berdasarkan konsep seed point, similarity, dan
+            connectivity.
+          </li>
 
-                <p>
-                    Biasanya menggunakan kriteria sederhana:
-                </p>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Pada Region Growing</strong>, piksel dapat bergabung ke dalam region apabila memenuhi kriteria
+            kesamaan (similarity) dan memiliki keterhubungan spasial (connectivity) dengan region yang sedang tumbuh,
+            misalnya menggunakan konsep 8-connectivity.
+          </li>
 
-                <p>\[ |\mu_i - \mu_j| \le T \]</p>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Implementasi Region Growing</strong> menggunakan Python dan OpenCV dilakukan melalui tahap membaca
+            citra grayscale, menentukan seed point, menentukan nilai threshold sebagai toleransi kesamaan, melakukan
+            pertumbuhan region, dan menampilkan hasil segmentasi.
+          </li>
 
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>\(\mu_i, \mu_j\)= rata-rata intensitas</li>
-                    <li>\(T\)= threshold</li>
-                </ul>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Region Splitting and Merging</strong> merupakan metode segmentasi yang menggabungkan proses
+            pembagian (splitting) dan penggabungan (merging) region berdasarkan kriteria homogenitas, dengan
+            memanfaatkan struktur pyramid dan segmentation quadtree.
+          </li>
 
-                <p>
-                    Proses berhenti jika tidak ada lagi region yang bisa digabung.
-                </p>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Pada proses splitting</strong>, region yang tidak homogen akan dipecah menjadi empat subregion
+            secara rekursif, sedangkan pada proses merging, region-region bertetangga yang memiliki karakteristik serupa
+            akan digabung menjadi region yang lebih besar.
+          </li>
 
-            </div>
-        </div>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Keberhasilan segmentasi</strong> menggunakan Region Growing maupun Region Splitting and Merging
+            dipengaruhi oleh parameter yang digunakan, seperti pemilihan seed point, nilai threshold, kriteria
+            homogenitas, batas penggabungan region (MERGE_THRESHOLD), dan ukuran minimum region (MIN_SIZE).
+          </li>
+        </ol>
+      </div>
+
     </div>
-
-    <!-- PAGE 3 -->
-    <div class="page-section">
-        <div class="card shadow-sm">
-            <div class="card-body">
-
-                <h5 class="fw-bold">4. Split and Merge</h5>
-
-                <p>
-                    Metode ini menggabungkan dua proses: pemecahan dan penggabungan.
-                </p>
-
-                <p>
-                    Split (pemecahan): dilakukan jika region tidak homogen
-                </p>
-
-                <p>\[ Q(R_i)=FALSE \]</p>
-
-                <p>
-                    Merge (penggabungan): dilakukan jika region masih homogen
-                </p>
-
-                <p>\[ Q(R_i \cup R_j)=TRUE \]</p>
-
-                <p>
-                    Proses ini diulang sampai semua region stabil.
-                </p>
-
-                <h5 class="fw-bold">5. Post-Processing</h5>
-
-                <p>
-                    Setelah segmentasi, biasanya masih ada region kecil yang tidak penting.
-                </p>
-
-                <p>
-                    Region kecil tersebut digabung dengan region yang paling mirip:
-                </p>
-
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- PAGINATION -->
-    <nav class="mt-4 d-flex justify-content-center">
-        <ul class="pagination pagination-sm custom-pagination">
-
-            <li class="page-item"><a class="page-link" onclick="prevPage()">Sebelumnya</a></li>
-
-            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
-
-
-            <li class="page-item"><a class="page-link" onclick="nextPage()">Selanjutnya</a></li>
-
-        </ul>
-    </nav>
-
+  </div>
 </div>
-<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<div class="text-center mt-4 mb-5">
 
+  <button id="btnSelesaiRangkuman" class="btn btn-success rounded-pill px-5 py-3 fw-bold shadow-sm" data-topic="5"
+    data-subtopic="22">
+    <i class="fa-solid fa-circle-check me-2"></i>
+    Selesai Membaca Rangkuman
+  </button>
+
+
+  <script src="{{ url_for('static', filename='js/rangkuman.js') }}"></script>
+</div>
 {% endblock %}

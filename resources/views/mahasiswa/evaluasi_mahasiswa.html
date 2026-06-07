@@ -1,0 +1,426 @@
+{% extends 'layouts/base.html' %} {% block title %}{{ activity.title }}{%
+endblock %} {% block content %}
+<style>
+    /* Menyamakan Lebar dengan Rangkuman Materi */
+    .quiz-wrapper {
+        max-width: 100%;
+    }
+
+    .header-title {
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .instruction-item {
+        display: flex;
+        gap: 14px;
+        margin-bottom: 14px;
+        font-size: 0.95rem;
+        /* Ukuran teks diperkecil */
+        color: #475569;
+        align-items: center;
+    }
+
+    .icon-wrapper {
+        min-width: 28px;
+        /* Lingkaran angka diperkecil */
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #3b82f6);
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
+        flex-shrink: 0;
+    }
+
+    .alert-custom {
+        background: #fff7ed;
+        border: 1px solid #ffedd5;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        /* Ukuran teks alert diperkecil */
+        color: #9a3412;
+    }
+
+    .btn-start {
+        background: linear-gradient(135deg, #6366f1, #3b82f6);
+        border: none;
+        border-radius: 12px;
+        padding: 12px;
+        /* Padding tombol sedikit dikurangi */
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-start:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    /* ===== HASIL & RIWAYAT UI ===== */
+    .stat-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 16px;
+        height: 100%;
+        transition: all 0.2s ease;
+    }
+
+    .stat-box:hover {
+        background: #ffffff;
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    .table-custom {
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+
+    .table-custom thead th {
+        border: none;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 0.85rem;
+        /* Ukuran header tabel diperkecil */
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table-custom tbody tr {
+        background: #ffffff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        border-radius: 10px;
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+        border: 1px solid #e2e8f0;
+        font-size: 0.95rem;
+    }
+
+    .table-custom tbody tr:hover {
+        transform: scale(1.005);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .table-custom tbody td {
+        vertical-align: middle;
+        border: none;
+        padding: 12px 16px;
+    }
+
+    .table-custom tbody td:first-child {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        border-left: 1px solid #e2e8f0;
+    }
+
+    .table-custom tbody td:last-child {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border-right: 1px solid #e2e8f0;
+    }
+</style>
+
+<div class="container mt-4 pb-5 quiz-wrapper">
+    <div class="card border shadow-sm mb-4 rounded-4">
+        <div class="card-body px-4 py-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold text-dark fs-6">Progress Belajar</span>
+                <span class="text-success fw-bold fs-6">{{ progress }}%</span>
+            </div>
+            <div class="progress rounded-pill bg-light" style="height: 10px">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill"
+                    role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0"
+                    aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+
+    {% if not result %}
+    <div class="card border shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4 p-md-5">
+            <div
+                class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom">
+                <h4 class="fw-bold mb-3 mb-md-0" style="color: #1e293b">
+                    <i class="fa-solid fa-file-pen text-primary me-2"></i> {{
+                    activity.title }}
+                </h4>
+
+                <div class="d-flex gap-2">
+                    <span
+                        class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold border border-primary border-opacity-25">
+                        <i class="fa-regular fa-file-lines me-1"></i> {{
+                        activity.jumlah_soal }} Soal
+                    </span>
+                    <span
+                        class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold border border-primary border-opacity-25">
+                        <i class="fa-regular fa-clock me-1"></i> {{
+                        activity.durasi_pengerjaan }} Menit
+                    </span>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <h6 class="fw-bold mb-3" style="color: #334155">Petunjuk Pengerjaan</h6>
+
+                <div class="instruction-item">
+                    <div class="icon-wrapper">1</div>
+                    <div>Pastikan koneksi internet dalam keadaan stabil.</div>
+                </div>
+
+                <div class="instruction-item">
+                    <div class="icon-wrapper">2</div>
+                    <div>Gunakan tombol navigasi untuk berpindah antar soal.</div>
+                </div>
+
+                <div class="instruction-item">
+                    <div class="icon-wrapper">3</div>
+                    <div>
+                        Gunakan tombol <strong>Ragu-Ragu</strong> jika belum yakin dengan
+                        jawabanmu.
+                    </div>
+                </div>
+
+                <div class="instruction-item">
+                    <div class="icon-wrapper">4</div>
+                    <div>Waktu ujian akan terus berjalan selama halaman terbuka.</div>
+                </div>
+
+                <div class="instruction-item">
+                    <div class="icon-wrapper">5</div>
+                    <div>
+                        Pastikan klik tombol <strong>Selesai</strong> setelah semua soal
+                        dikerjakan.
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-custom mt-4 mb-4 py-2 px-3 d-flex align-items-center">
+                <i class="fa-solid fa-triangle-exclamation fs-6 me-3"></i>
+                <div>
+                    <strong>Peringatan!</strong><br />
+                    Jawaban tidak akan tersimpan jika kamu keluar dari halaman ujian
+                    sebelum menekan tombol Selesai.
+                </div>
+            </div>
+
+            <div class="d-grid mt-4">
+                <a href="{{ url_for('user.mulai_kuis', title=activity.title) }}"
+                    class="btn btn-start text-white shadow-sm" onclick="startExam(event)">
+                    Mulai Menjawab Kuis <i class="fa-solid fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% elif result %}
+    <div class="card border shadow-sm rounded-4 mb-5">
+        <div class="card-body p-4 p-md-4 text-center">
+            <div class="mb-4 pb-3 border-bottom">
+                <h4 class="fw-bold text-dark mb-2">
+                    <i class="fa-solid fa-award text-primary me-2"></i> {{ activity.title
+                    }}
+                </h4>
+                <span
+                    class="badge bg-success bg-opacity-10 text-success px-3 py-1 rounded-pill border border-success border-opacity-25">
+                    {{ activity.title }} Selesai Dikerjakan
+                </span>
+            </div>
+
+            <h6 class="fw-bold text-dark mb-3">Hasil Kuis Terakhir</h6>
+
+            <div class="row g-3 text-center mb-4">
+                <div class="col-4">
+                    <div class="stat-box">
+                        <div class="text-muted small mb-1 fw-semibold">Nilai Akhir</div>
+                        <h3 class="text-primary fw-bold mb-0">
+                            {{ result.nilai_akhir|round(0) }}
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="stat-box">
+                        <div class="text-muted small mb-1 fw-semibold">Status</div>
+                        <h6
+                            class="mb-0 mt-2 {{ 'text-success' if result.result_status == 'lulus' else 'text-danger' }} fw-bold">
+                            {% if result.result_status == 'lulus' %}
+                            <i class="fa-solid fa-circle-check me-1"></i> {{
+                            result.result_status }} {% else %}
+                            <i class="fa-solid fa-circle-xmark me-1"></i> {{
+                            result.result_status }} {% endif %}
+                        </h6>
+                    </div>
+                </div>
+
+                {% set menit = result.waktu_mengerjakan // 60 %} {% set detik =
+                result.waktu_mengerjakan % 60 %}
+
+                <div class="col-4">
+                    <div class="stat-box">
+                        <div class="text-muted small mb-1 fw-semibold">
+                            Waktu Mengerjakan
+                        </div>
+                        <h6 class="mb-0 mt-2 text-dark fw-bold">
+                            {{ menit }}m {{ detik }}s
+                        </h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3 mb-4 pb-2 border-bottom">
+                <span
+                    class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-3 mb-3 border border-success border-opacity-25"
+                    style="font-size: 0.9rem">
+                    <i class="fa-solid fa-check me-1"></i> Jawaban Benar: {{
+                    result.total_benar }}
+                </span>
+                <span
+                    class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-3 mb-3 border border-danger border-opacity-25"
+                    style="font-size: 0.9rem">
+                    <i class="fa-solid fa-xmark me-1"></i> Jawaban Salah: {{
+                    result.total_salah }}
+                </span>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-center mt-2">
+                <button class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm" style="font-size: 0.9rem"
+                    data-bs-toggle="modal" data-bs-target="#detailModal">
+                    <i class="fa-solid fa-eye me-1"></i> Lihat Detail Jawaban
+                </button>
+                <a href="{{ url_for('user.mulai_kuis', title=activity.title) }}"
+                    class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold" style="font-size: 0.9rem">
+                    <i class="fa-solid fa-rotate-left me-1"></i> Ulangi Kuis
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <h6 class="fw-bold mb-3 text-dark">
+                <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Riwayat
+                Pengerjaan
+            </h6>
+            <div class="table-responsive">
+                <table class="table table-custom align-middle text-center mb-0">
+                    <thead>
+                        <tr>
+                            <th class="text-start ps-3">Tanggal & Waktu</th>
+                            <th>Benar</th>
+                            <th>Salah</th>
+                            <th>Nilai</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in results %}
+                        <tr>
+                            <td class="text-start ps-3 fw-medium text-dark">
+                                {{ r.start_time.strftime('%d %B %Y %H:%M') }}
+                            </td>
+                            <td class="text-success fw-semibold">{{ r.total_benar }}</td>
+                            <td class="text-danger fw-semibold">{{ r.total_salah }}</td>
+                            <td class="fw-bold text-primary">{{ r.nilai_akhir|round(0) }}</td>
+                            <td>
+                                <span
+                                    class="badge px-3 py-1 rounded-pill {{ 'bg-success' if r.result_status == 'lulus' else 'bg-danger' }}">
+                                    {{ r.result_status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-light border-bottom-0 pb-2 pt-3 px-4">
+                    <h6 class="modal-title fw-bold text-dark">
+                        <i class="fa-solid fa-list-check me-2 text-primary"></i> Detail
+                        Jawaban
+                    </h6>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body bg-light pt-0 px-4 pb-4">
+                    {% for d in detail %}
+                    <div class="card border border-light shadow-sm rounded-3 mb-3">
+                        <div class="card-body p-3">
+                            <div class="fw-medium text-dark mb-3" style="line-height: 1.5; font-size: 0.95rem">
+                                <span class="text-primary me-1 fw-bold">{{ loop.index }}.</span>
+                                {{ d.soal|safe }}
+                            </div>
+
+                            <div
+                                class="d-flex justify-content-between align-items-center bg-white p-2 px-3 rounded-2 border">
+                                <div>
+                                    <span class="text-muted small d-block mb-1" style="font-size: 0.8rem">Jawaban
+                                        Kamu:</span>
+                                    <span class="fw-bold text-dark" style="font-size: 0.9rem">{{ d.jawaban_user
+                                        }}</span>
+                                </div>
+
+                                <div
+                                    class="badge rounded-pill px-3 py-1 
+                  {{ 'bg-success bg-opacity-10 text-success border border-success' if d.status == 'benar' else 'bg-danger bg-opacity-10 text-danger border border-danger' }}">
+                                    {% if d.status == 'benar' %}
+                                    <i class="fa-solid fa-check me-1"></i> Benar {% else %}
+                                    <i class="fa-solid fa-xmark me-1"></i> Salah {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function startExam(e) {
+        e.preventDefault();
+
+        // Simpan URL tujuan agar bisa diakses di dalam SweetAlert
+        const targetUrl = e.currentTarget.href;
+
+        Swal.fire({
+            title: "Mulai Ujian Sekarang?",
+            text: "Pastikan koneksi internet kamu stabil dan kamu sudah siap.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3b82f6", // Warna biru menyesuaikan tema tombolmu
+            cancelButtonColor: "#ef4444", // Warna merah untuk batal
+            confirmButtonText: '<i class="fa-solid fa-play me-1"></i> Ya, Mulai!',
+            cancelButtonText: "Batal",
+            reverseButtons: true, // Membalik posisi tombol agar "Ya" di kanan
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const STORAGE_KEY = `aktivitas_${"{{ activity.id }}"}`;
+                const SESSION_FLAG = `is_exam_${"{{ activity.id }}"}`;
+
+                // Hapus progress lama
+                localStorage.removeItem(STORAGE_KEY);
+                sessionStorage.removeItem(SESSION_FLAG);
+
+                // Lanjut ke halaman ujian
+                window.location.href = targetUrl;
+            }
+        });
+    }
+</script>
+{% endblock %}

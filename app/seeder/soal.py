@@ -1168,91 +1168,29 @@ def seed_activity():
     from app.model.activity import Activity
 
     data = [
-        {
-            "title": "aktivitas 1",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Pengertian Citra Digital"
-        },
-        {
-            "title": "aktivitas 2",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Jenis Citra Digital"
-        },        
-        {
-            "title": "aktivitas 3",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Pengantar Segmentasi Citra"
-        },
-        {
-            "title": "aktivitas 4",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Metode Segmentasi Citra"
-        },
-        {
-            "title": "aktivitas 5",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Pengantar Edge-based Segmentation"
-        },
-        {
-            "title": "aktivitas 6",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Edge Image Thresholding"
-        },
-        {
-            "title": "aktivitas 7",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Border Tracing"
-        },
-        {
-            "title": "aktivitas 8",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Pengantar thresholding"
-        },
-        {
-            "title": "aktivitas 9",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Penerapan Thresholding"
-        },
-        {
-            "title": "aktivitas 10",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Menentukan Thresholding"
-        },
-        {
-            "title": "aktivitas 11",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Pengantar Region-Based Segmentation"
-        },
-        {
-            "title": "aktivitas 12",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Merge"
-        },
-        {
-            "title": "aktivitas 13",
-            "type": "aktivitas",
-            "jumlah_soal": 4,
-            "topic_name": "Split and Merge"
-        },
-        {
-            "title":"aktivitas 14",
-            "type":"aktivitas",
-            "jumlah_soal":4,    
-            "topic_name":"Region Postprocessing"
-        }
+        # Topic 1
+        {"title": "aktivitas 1", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 1, "id_subtopic": 1},
+        {"title": "aktivitas 2", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 1, "id_subtopic": 2},
 
+        # Topic 2
+        {"title": "aktivitas 3", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 2, "id_subtopic": 5},
+        {"title": "aktivitas 4", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 2, "id_subtopic": 6},
+
+        # Topic 3
+        {"title": "aktivitas 5", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 3, "id_subtopic": 9},
+        {"title": "aktivitas 6", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 3, "id_subtopic": 10},
+        {"title": "aktivitas 7", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 3, "id_subtopic": 11},
+
+        # Topic 4
+        {"title": "aktivitas 8", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 4, "id_subtopic": 14},
+        {"title": "aktivitas 9", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 4, "id_subtopic": 15},
+        {"title": "aktivitas 10", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 4, "id_subtopic": 16},
+
+        # Topic 5
+        {"title": "aktivitas 11", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 5, "id_subtopic": 19},
+        {"title": "aktivitas 12", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 5, "id_subtopic": 20},
+        {"title": "aktivitas 13", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 5, "id_subtopic": 21},
+        {"title": "aktivitas 14", "type": "aktivitas", "jumlah_soal": 4, "id_topic": 5, "id_subtopic": 22},
     ]
 
     #reset biar tidak dobel (opsional tapi disarankan)
@@ -1261,12 +1199,13 @@ def seed_activity():
 
     for item in data:
         activity = Activity(
+            id_class=1,
             title=item["title"],
             type=item["type"],
             durasi_pengerjaan=None,
-            deadline=None,
             jumlah_soal=item["jumlah_soal"],
-            topic_name=item["topic_name"]
+            id_topic=item["id_topic"],
+            id_subtopic=item["id_subtopic"],
         )
         db.session.add(activity)
 
@@ -1383,13 +1322,34 @@ def seed_question_kuis():
                 Diketahui sebuah citra RGB dengan masing-masing kanal sebagai berikut:
                 </p>
 
-                <pre>
-                Kanal R        Kanal G        Kanal B
-                110  80  90    15  20 160    120  60  80
-                50   60 100    10 150  80     30 140 170
-                20   40 120   110  50  90     80 110 100
-                </pre>
+\\[
+\\begin{array}{|c|c|c|}
+\\hline
+\\text{Kanal R} & \\text{Kanal G} & \\text{Kanal B} \\\\
+\\hline
 
+\\begin{array}{ccc}
+110 & 80 & 90 \\\\
+50 & 60 & 100 \\\\
+20 & 40 & 120
+\\end{array}
+&
+\\begin{array}{ccc}
+15 & 20 & 160 \\\\
+10 & 150 & 80 \\\\
+110 & 50 & 90
+\\end{array}
+&
+\\begin{array}{ccc}
+120 & 60 & 80 \\\\
+30 & 140 & 170 \\\\
+80 & 110 & 100
+\\end{array}
+
+\\\\
+\\hline
+\\end{array}
+\\]
                 <p>
                 Jika dilakukan konversi ke grayscale menggunakan metode Luminosity:
                 </p>
@@ -1960,36 +1920,13 @@ def seed_kuis():
     from app.model.activity import Activity
 
     data = [
-        {
-            "title": "Kuis 1",
-            "type": "kuis",
-            "jumlah_soal": 10,
-            "topic_name": "Pengantar Citra Digital"
-        },
-        {
-            "title": "Kuis 2",
-            "type": "kuis",
-            "jumlah_soal": 10,
-            "topic_name": "Segmentasi Citra"
-        },
-        {
-            "title": "Kuis 3",
-            "type": "kuis",
-            "jumlah_soal": 10,
-            "topic_name": "Edge-Based Segmentation"
-        },
-        {
-            "title": "Kuis 4",
-            "type": "kuis",
-            "jumlah_soal": 10,
-            "topic_name": "Threshold-Based Segmentation"
-        },
-        {
-            "title": "Kuis 5",
-            "type": "kuis",
-            "jumlah_soal": 10,
-            "topic_name": "Region-Based Segmentation"
-        }
+        
+        {"title": "Kuis 1", "type": "kuis", "jumlah_soal": 10, "id_topic": 1, "id_subtopic": 4},
+        {"title": "Kuis 2", "type": "kuis", "jumlah_soal": 10, "id_topic": 2, "id_subtopic": 8},
+        {"title": "Kuis 3", "type": "kuis", "jumlah_soal": 10, "id_topic": 3, "id_subtopic": 13},
+        {"title": "Kuis 4", "type": "kuis", "jumlah_soal": 10, "id_topic": 4, "id_subtopic": 18},
+        {"title": "Kuis 5", "type": "kuis", "jumlah_soal": 10, "id_topic": 5, "id_subtopic": 24},
+       
     ]
 
     # hapus hanya data kuis lama
@@ -1998,18 +1935,291 @@ def seed_kuis():
 
     for item in data:
         kuis = Activity(
+            id_class=1,
             title=item["title"],
             type=item["type"],
             durasi_pengerjaan=30,
-            deadline=None,
             jumlah_soal=item["jumlah_soal"],
-            topic_name=item["topic_name"]
+            id_topic=item["id_topic"],
+            id_subtopic=item["id_subtopic"]
         )
         db.session.add(kuis)
 
     db.session.commit()
     print("✅ Seeder 5 kuis sesuai topik berhasil!")
-    
+
+def seed_question_evaluasi():
+    from app import db
+    from app.model.question import Question
+    import json
+
+    data = [
+        {
+            "question": {"text": "Dalam pengolahan citra digital, sebuah gambar direpresentasikan sebagai fungsi dua dimensi f(x,y). Pernyataan yang paling tepat terkait fungsi tersebut adalah…", "URL": None},
+            "options": [
+                {"a": {"teks": "f(x,y) hanya menunjukkan warna citra", "url": None}},
+                {"b": {"teks": "x dan y menunjukkan nilai intensitas", "url": None}},
+                {"c": {"teks": "f(x,y) menunjukkan nilai kecerahan pada koordinat tertentu", "url": None}},
+                {"d": {"teks": "x dan y menunjukkan jumlah piksel", "url": None}},
+                {"e": {"teks": "f(x,y) menunjukkan ukuran citra", "url": None}}
+            ],
+            "answer": "c"
+        },
+        {
+            "question": {"text": "Sebuah citra digital berukuran 256 × 256 piksel. Jika setiap piksel memiliki nilai intensitas tertentu, maka total jumlah piksel pada citra tersebut adalah…", "URL": None},
+            "options": [
+                {"a": {"teks": "256", "url": None}},
+                {"b": {"teks": "512", "url": None}},
+                {"c": {"teks": "65536", "url": None}},
+                {"d": {"teks": "131072", "url": None}},
+                {"e": {"teks": "100000", "url": None}}
+            ],
+            "answer": "c"
+        },
+        {
+            "question": {"text": "Pada citra grayscale 8-bit, jika nilai mendekati 0 maka tampilannya adalah…", "URL": None},
+            "options": [
+                {"a": {"teks": "Warna cerah", "url": None}},
+                {"b": {"teks": "Warna merah", "url": None}},
+                {"c": {"teks": "Warna gelap atau hitam", "url": None}},
+                {"d": {"teks": "Warna putih", "url": None}},
+                {"e": {"teks": "Warna abu terang", "url": None}}
+            ],
+            "answer": "c"
+        },
+        {
+            "question": {"text": "Dalam konversi RGB ke grayscale, metode luminosity lebih akurat karena…", "URL": None},
+            "options": [
+                {"a": {"teks": "Menggunakan rata-rata sederhana", "url": None}},
+                {"b": {"teks": "Memberi bobot berbeda tiap kanal", "url": None}},
+                {"c": {"teks": "Mengabaikan warna hijau", "url": None}},
+                {"d": {"teks": "Menggunakan nilai maksimum", "url": None}},
+                {"e": {"teks": "Menggunakan nilai minimum", "url": None}}
+            ],
+            "answer": "b"
+        },
+        {
+            "question": {"text": "Jika RGB menggunakan 8 bit tiap kanal, maka total bit per piksel adalah…", "URL": None},
+            "options": [
+                {"a": {"teks": "8 bit", "url": None}},
+                {"b": {"teks": "16 bit", "url": None}},
+                {"c": {"teks": "24 bit", "url": None}},
+                {"d": {"teks": "32 bit", "url": None}},
+                {"e": {"teks": "64 bit", "url": None}}
+            ],
+            "answer": "c"
+        },
+        {
+            "question": {"text": "Citra biner sering digunakan karena…", "URL": None},
+            "options": [
+                {"a": {"teks": "Memiliki banyak warna", "url": None}},
+                {"b": {"teks": "Hanya dua nilai sehingga efisien", "url": None}},
+                {"c": {"teks": "Resolusi tinggi", "url": None}},
+                {"d": {"teks": "3 kanal warna", "url": None}},
+                {"e": {"teks": "Lebih kompleks", "url": None}}
+            ],
+            "answer": "b"
+        },
+        {
+            "question": {"text": "Jika piksel < threshold maka akan menjadi…", "URL": None},
+            "options": [
+                {"a": {"teks": "Objek", "url": None}},
+                {"b": {"teks": "Background", "url": None}},
+                {"c": {"teks": "Merah", "url": None}},
+                {"d": {"teks": "Tidak berubah", "url": None}},
+                {"e": {"teks": "Noise", "url": None}}
+            ],
+            "answer": "b"
+        },
+        {
+            "question": {"text": "Tujuan segmentasi citra adalah…", "URL": None},
+            "options": [
+                {"a": {"teks": "Menambah ukuran", "url": None}},
+                {"b": {"teks": "Mempermudah analisis objek", "url": None}},
+                {"c": {"teks": "Mengubah warna", "url": None}},
+                {"d": {"teks": "Mengurangi resolusi", "url": None}},
+                {"e": {"teks": "Menambah piksel", "url": None}}
+            ],
+            "answer": "b"
+        },
+        {
+            "question": {"text": "Connected set berarti…", "URL": None},
+            "options": [
+                {"a": {"teks": "Piksel saling terhubung", "url": None}},
+                {"b": {"teks": "Warna berbeda", "url": None}},
+                {"c": {"teks": "Boleh terpisah", "url": None}},
+                {"d": {"teks": "Ukuran sama", "url": None}},
+                {"e": {"teks": "Bentuk lingkaran", "url": None}}
+            ],
+            "answer": "a"
+        },
+        {
+            "question": {"text": "Piksel masuk dua region berarti…", "URL": None},
+            "options": [
+                {"a": {"teks": "Benar", "url": None}},
+                {"b": {"teks": "Optimal", "url": None}},
+                {"c": {"teks": "Homogen", "url": None}},
+                {"d": {"teks": "Melanggar aturan", "url": None}},
+                {"e": {"teks": "Tidak berpengaruh", "url": None}}
+            ],
+            "answer": "d"
+        },
+        {
+            "question": {"text": "Edge-based segmentation berdasarkan…", "URL": None},
+            "options": [
+                {"a": {"teks": "Warna", "url": None}},
+                {"b": {"teks": "Tekstur", "url": None}},
+                {"c": {"teks": "Jumlah piksel", "url": None}},
+                {"d": {"teks": "Ukuran", "url": None}},
+                {"e": {"teks": "Perubahan intensitas tajam", "url": None}}
+            ],
+            "answer": "e"
+        },
+        {
+            "question": {"text": "Hasil edge belum jadi segmentasi karena…", "URL": None},
+            "options": [
+                {"a": {"teks": "Terlalu terang", "url": None}},
+                {"b": {"teks": "Tidak berwarna", "url": None}},
+                {"c": {"teks": "Terlalu kecil", "url": None}},
+                {"d": {"teks": "Tidak bernilai", "url": None}},
+                {"e": {"teks": "Masih garis terpisah", "url": None}}
+            ],
+            "answer": "e"
+        },
+        {
+            "question": {"text": "Tujuan Non-Maximal Suppression adalah…", "URL": None},
+            "options": [
+                {"a": {"teks": "Menipiskan tepi", "url": None}},
+                {"b": {"teks": "Menghapus semua", "url": None}},
+                {"c": {"teks": "Menebalkan tepi", "url": None}},
+                {"d": {"teks": "RGB", "url": None}},
+                {"e": {"teks": "Menambah noise", "url": None}}
+            ],
+            "answer": "a"
+        },
+        {
+            "question": {"text": "Gradien 90° dibandingkan dengan…", "URL": None},
+            "options": [
+                {"a": {"teks": "Atas dan bawah", "url": None}},
+                {"b": {"teks": "Kiri kanan", "url": None}},
+                {"c": {"teks": "Diagonal", "url": None}},
+                {"d": {"teks": "Semua", "url": None}},
+                {"e": {"teks": "Tidak dibandingkan", "url": None}}
+            ],
+            "answer": "a"
+        },
+        {
+            "question": {"text": "Hysteresis threshold piksel tengah akan…", "URL": None},
+            "options": [
+                {"a": {"teks": "Dihapus", "url": None}},
+                {"b": {"teks": "Tepi kuat", "url": None}},
+                {"c": {"teks": "Tidak diproses", "url": None}},
+                {"d": {"teks": "Background", "url": None}},
+                {"e": {"teks": "Dicek konektivitas", "url": None}}
+            ],
+            "answer": "e"
+        },
+        {
+            "question": {"text": "Global threshold kurang efektif jika…", "URL": None},
+            "options": [
+                {"a": {"teks": "Resolusi tinggi", "url": None}},
+                {"b": {"teks": "Banyak piksel", "url": None}},
+                {"c": {"teks": "Berwarna", "url": None}},
+                {"d": {"teks": "Kecil", "url": None}},
+                {"e": {"teks": "Pencahayaan tidak merata", "url": None}}
+            ],
+            "answer": "e"
+        },
+        {
+            "question": {"text": "Histogram bimodal artinya…", "URL": None},
+            "options": [
+                {"a": {"teks": "Tidak ada objek", "url": None}},
+                {"b": {"teks": "Semua sama", "url": None}},
+                {"c": {"teks": "Rusak", "url": None}},
+                {"d": {"teks": "Objek vs background jelas", "url": None}},
+                {"e": {"teks": "Tidak bisa segmentasi", "url": None}}
+            ],
+            "answer": "d"
+        },
+        {
+            "question": {"text": "Otsu menentukan threshold dengan…", "URL": None},
+            "options": [
+                {"a": {"teks": "Nilai terbesar", "url": None}},
+                {"b": {"teks": "Nilai terkecil", "url": None}},
+                {"c": {"teks": "Ubah warna", "url": None}},
+                {"d": {"teks": "Maksimalkan perbedaan kelas", "url": None}},
+                {"e": {"teks": "Hapus piksel", "url": None}}
+            ],
+            "answer": "d"
+        },
+        {
+            "question": {"text": "Region merging jika…", "URL": None},
+            "options": [
+                {"a": {"teks": "Homogen setelah digabung", "url": None}},
+                {"b": {"teks": "Warna beda", "url": None}},
+                {"c": {"teks": "Ukuran sama", "url": None}},
+                {"d": {"teks": "Tidak bertetangga", "url": None}},
+                {"e": {"teks": "Jumlah sama", "url": None}}
+            ],
+            "answer": "a"
+        },
+        {
+            "question": {"text": "Split and merge jika tidak homogen maka…", "URL": None},
+            "options": [
+                {"a": {"teks": "Dihapus", "url": None}},
+                {"b": {"teks": "Digabung semua", "url": None}},
+                {"c": {"teks": "Ubah warna", "url": None}},
+                {"d": {"teks": "Dipecah jadi subregion", "url": None}},
+                {"e": {"teks": "Diabaikan", "url": None}}
+            ],
+            "answer": "d"
+        }
+    ]
+
+
+    db.session.commit()
+
+    for item in data:
+        q = Question(
+            type="mc",
+            question=json.dumps(item["question"]),
+            MC_option=json.dumps(item["options"]),
+            MC_Answer=item["answer"],
+            tingkat_kesulitan="sedang",
+            created_by=1
+        )
+        db.session.add(q)
+
+    db.session.commit()
+    print("✅ Seeder evaluasi (20 soal) berhasil!")
+
+def seed_evaluasi():
+    from app import db
+    from app.model.activity import Activity
+
+    data = [
+        {"title": "Evaluasi Akhir", "type": "evaluasi", "jumlah_soal": 20, "id_topic": 6, "id_subtopic": None},
+    ]
+
+    # hapus hanya data evaluasi lama
+    Activity.query.filter_by(type="evaluasi").delete()
+    db.session.commit()
+
+    for item in data:
+        evaluasi = Activity(
+            id_class=1,
+            title=item["title"],
+            type=item["type"],
+            durasi_pengerjaan=60,  # biasanya lebih lama
+            jumlah_soal=item["jumlah_soal"],
+            id_topic=item["id_topic"],
+            id_subtopic=item["id_subtopic"]
+        )
+        db.session.add(evaluasi)
+
+    db.session.commit()
+    print("✅ Seeder evaluasi berhasil!")
+        
 def seed_activity_question():
     from app import db
     from app.model.activity_question import ActivityQuestion
@@ -2022,17 +2232,24 @@ def seed_activity_question():
     ActivityQuestion.query.delete()
     db.session.commit()
 
-    offset = 0  # penting: global offset biar tidak tabrakan soal
+    offset = 0  # supaya soal tidak bentrok
 
     for i, activity in enumerate(activities, start=1):
 
-        # 🔥 aturan jumlah soal
+        # 🔥 aturan jumlah soal baru
         if i <= 14:
             jumlah = 4
-        else:
+        elif 15 <= i <= 19:
             jumlah = 10
+        else:
+            jumlah = 20
 
         questions = Question.query.offset(offset).limit(jumlah).all()
+
+        # ⚠️ kalau soal kurang (biar aman)
+        if not questions:
+            print(f"⚠️ Soal habis di activity ke-{i}")
+            break
 
         for q in questions:
             rel = ActivityQuestion(
@@ -2041,15 +2258,17 @@ def seed_activity_question():
             )
             db.session.add(rel)
 
-        offset += jumlah  # geser offset sesuai jumlah soal
+        offset += jumlah  # geser offset
 
     db.session.commit()
-    print("✅ Seeder activity_question berhasil (4 soal awal, lalu 10 soal)")
-
+    print("✅ Seeder activity_question berhasil (4 → 10 → 20 soal)")
+    
 if __name__ == "__main__":
     with app.app_context():
         seed_activity()
         seed_question()
         seed_question_kuis()
         seed_kuis()
+        seed_question_evaluasi()
+        seed_evaluasi()
         seed_activity_question()

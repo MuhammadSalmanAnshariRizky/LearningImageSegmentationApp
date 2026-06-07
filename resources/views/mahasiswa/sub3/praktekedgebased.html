@@ -1,0 +1,532 @@
+{% extends 'layouts/base.html' %} {% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kodeeditor.css') }}" />
+{% endblock %} {% block content %}
+<div class="container mt-4">
+  <!-- PROGRESS -->
+  <div class="card border shadow-sm mb-4 rounded-4">
+    <div class="card-body px-4 py-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold text-dark">Progress Belajar</span>
+        <span class="text-success fw-bold">{{ progress }}%</span>
+      </div>
+      <div class="progress rounded-pill bg-light" style="height: 10px;">
+        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill" role="progressbar"
+          style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h4 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-laptop-code me-2"></i> 3.3 Praktek Edge-Based Segmentation
+        </h4>
+
+        <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-4">Perhatikan langkah-langkah dibawah ini untuk praktek Edge-Based Segmentation menggunakan
+            python dengan implementasi library OpenCV:</p>
+
+          <p class="fw-bold mb-2">1. Mengimport Library</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                1<br>2<br>3
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">Baris 1 mengimpor pustaka OpenCV untuk pengolahan citra. Baris 2 mengimpor NumPy
+            untuk operasi matriks. Baris 3 mengimpor Matplotlib untuk menampilkan hasil citra.</p>
+
+          <p class="fw-bold mb-2">2. Membaca Citra</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                4<br>5
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+<span class="text-secondary"># Membaca citra</span>
+image = cv2.imread(<span class="text-success">'nama_file.ekntensi_file'</span>)
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">Baris 5 mengubah format warna BGR (default OpenCV) menjadi RGB agar dapat
+            ditampilkan dengan benar menggunakan Matplotlib.</p>
+
+          <p class="fw-bold mb-2">3. Mengubah Citra Menjadi Grayscale</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                6
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">Pada tahap ini citra berwarna dikonversi menjadi citra grayscale. Proses deteksi
+            tepi lebih mudah dilakukan pada citra grayscale karena hanya memiliki satu kanal intensitas.</p>
+
+          <p class="fw-bold mb-2">4. Melakukan Deteksi Tepi Menggunakan Operator Canny</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                7
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+edges = cv2.Canny(gray, <span class="text-info">100</span>, <span class="text-info">200</span>)
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">Fungsi cv2.Canny() digunakan untuk mendeteksi tepi pada citra. Parameter disini
+            adalah implementasi dari Hysteresis Thresholding. Parameter yang digunakan adalah: 100 = threshold bawah,
+            200 = threshold atas. Hasil dari proses ini berupa citra biner yang menampilkan piksel-piksel tepi.</p>
+
+          <p class="fw-bold mb-2">5. Edge Linking Menggunakan Morphological Closing</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                8<br>9<br>10<br>11<br>12<br>13
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+kernel = np.ones((<span class="text-info">3</span>, <span class="text-info">3</span>), np.uint8)
+closed = cv2.morphologyEx(
+    edges,
+    cv2.MORPH_CLOSE,
+    kernel
+)
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">Tahap ini berfungsi untuk menghubungkan piksel-piksel tepi yang terputus. Baris 8
+            membuat kernel berukuran 3×3. Baris 9–12 melakukan operasi Closing, yaitu kombinasi dilasi (dilation) dan
+            erosi (erosion). Tujuan proses ini adalah menutup celah (gap) kecil sehingga batas objek menjadi lebih
+            kontinu.</p>
+
+          <p class="fw-bold mb-2">6. Menentukan Kontur dari Objek</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                14<br>15<br>16<br>17<br>18
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+contours, hierarchy = cv2.findContours(
+    closed,
+    cv2.RETR_EXTERNAL,
+    cv2.CHAIN_APPROX_SIMPLE
+)
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">Tahap ini digunakan untuk menemukan kontur atau batas objek. cv2.RETR_EXTERNAL hanya
+            mengambil kontur terluar. cv2.CHAIN_APPROX_SIMPLE menyimpan titik-titik penting dari kontur sehingga
+            penggunaan memori lebih efisien. Output dari tahap ini berupa daftar kontur yang merepresentasikan batas
+            objek.</p>
+
+          <p class="fw-bold mb-2">7. Region Extraction</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                19<br>20<br>21<br>22<br>23<br>24<br>25<br>26
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+mask = np.zeros(gray.shape, dtype=np.uint8)
+cv2.drawContours(
+    mask,
+    contours,
+    -<span class="text-info">1</span>,
+    <span class="text-info">255</span>,
+    thickness=cv2.FILLED
+)
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">Tahap ini digunakan untuk mengubah kontur menjadi wilayah (region). Baris 18 membuat
+            citra kosong (mask). Baris 19 – 25 mengisi area di dalam kontur dengan nilai 255. Hasilnya adalah citra
+            biner yang menunjukkan objek dan latar belakang.</p>
+
+          <p class="fw-bold mb-2">8. Menampilkan Hasil</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+plt.figure(figsize=(<span class="text-info">16</span>, <span class="text-info">4</span>))
+plt.subplot(<span class="text-info">141</span>)
+plt.imshow(image_rgb)
+plt.title(<span class="text-success">"Citra Asli"</span>)
+plt.axis(<span class="text-success">'off'</span>)
+plt.subplot(<span class="text-info">142</span>)
+plt.imshow(edges, cmap=<span class="text-success">'gray'</span>)
+plt.title(<span class="text-success">"Edge Detection"</span>)
+plt.axis(<span class="text-success">'off'</span>)
+plt.subplot(<span class="text-info">143</span>)
+plt.imshow(closed, cmap=<span class="text-success">'gray'</span>)
+plt.title(<span class="text-success">"Edge Linking"</span>)
+plt.axis(<span class="text-success">'off'</span>)
+plt.subplot(<span class="text-info">144</span>)
+plt.imshow(mask, cmap=<span class="text-success">'gray'</span>)
+plt.title(<span class="text-success">"Region Extraction / Hasil Segmentasi"</span>)
+plt.axis(<span class="text-success">'off'</span>)
+plt.tight_layout()
+plt.show()
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">Terakhir adalah menampilkan hasil proses visualisasi.</p>
+
+
+          <img src="{{ url_for('static', filename='img/sub3/Output_Edge_based.png') }}" class="img-fluid"
+            style="max-width: 100%; height: auto;">
+          <p class="mt-3 mb-3 text-muted small text-center "><em>Gambar 3.3 Output Edge-Based Segmentation</em></p>
+
+
+          <p class="mb-3 text-dark">Gambar di atas menunjukkan hasil penerapan metode Edge-Based Segmentation pada citra
+            kendaraan militer menggunakan tahapan Edge Detection, Edge Linking, dan Region Extraction.</p>
+          <p class="mb-3 text-dark">Pada tahap Edge Detection, metode Canny berhasil mendeteksi perubahan intensitas
+            yang signifikan pada citra sehingga menghasilkan garis-garis tepi yang merepresentasikan batas objek. Selain
+            tepi kendaraan, beberapa objek kecil dan tekstur permukaan tanah juga terdeteksi sebagai tepi karena
+            memiliki perbedaan intensitas yang cukup besar terhadap lingkungan sekitarnya.</p>
+          <p class="mb-3 text-dark">Selanjutnya, pada tahap Edge Linking, dilakukan proses penghubungan piksel-piksel
+            tepi menggunakan operasi Morphological Closing. Hasil proses ini menunjukkan bahwa beberapa celah kecil pada
+            batas kendaraan berhasil ditutup sehingga kontur objek menjadi lebih utuh dan kontinu dibandingkan hasil
+            deteksi tepi sebelumnya.</p>
+          <p class="mb-3 text-dark">Tahap terakhir adalah Region Extraction, yaitu mengisi area yang berada di dalam
+            kontur tertutup. Pada hasil segmentasi terlihat bahwa area kendaraan berhasil diekstraksi menjadi suatu
+            wilayah (region) berwarna putih yang terpisah dari latar belakang. Hal ini menunjukkan bahwa batas objek
+            yang terbentuk pada tahap edge linking cukup baik untuk digunakan dalam proses segmentasi.</p>
+          <p class="mb-3 text-dark">Meskipun demikian, masih terdapat beberapa objek kecil di sekitar kendaraan yang
+            ikut tersegmentasi. Hal ini terjadi karena beberapa area pada latar belakang juga membentuk kontur tertutup
+            sehingga dianggap sebagai objek oleh sistem.</p>
+          <p class="mb-0 text-dark">Secara keseluruhan, hasil yang diperoleh menunjukkan bahwa metode Edge-Based
+            Segmentation mampu mengidentifikasi dan mengekstraksi objek utama dengan cukup baik, terutama ketika objek
+            memiliki batas yang jelas dan kontras yang cukup tinggi terhadap latar belakang.</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <div class="mt-2 mb-5 text-center">
+          <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+            <div class="px-4 py-2 rounded-3 text-white shadow-sm" style="background-color: #1e293b;">
+              <h5 class="fw-bold mb-0">
+                <i class="fa-solid fa-rocket me-2"></i> Ayo Coba Sendiri!
+              </h5>
+            </div>
+            <button type="button"
+              class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-medium shadow-sm d-flex align-items-center"
+              data-bs-toggle="modal" data-bs-target="#panduanEdgeModal" style="height: 100%;">
+              <i class="fa-solid fa-circle-question me-2"></i> Cara Penggunaan
+            </button>
+          </div>
+          <p class="text-dark mt-3 mb-0 fw-medium" style="font-size: 1.05rem;">
+            Unggah sampel gambar dan selesaikan kode program di bawah ini untuk mengekstraksi objek menggunakan
+            segmentasi berbasis tepi (<strong>Edge Detection, Edge Linking, dan Region Extraction</strong>).
+          </p>
+        </div>
+
+        <div class="modal fade" id="panduanEdgeModal" tabindex="-1" aria-labelledby="panduanEdgeModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+              <div class="modal-header border-bottom-0 px-4 px-md-5 pt-4 pb-2">
+                <h5 class="modal-title fw-bold text-custom-blue" id="panduanEdgeModalLabel">
+                  <i class="fa-solid fa-circle-info me-2"></i> Panduan Penggunaan Live Code
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body px-4 px-md-5 pb-4">
+                <div class="row g-4 text-secondary mt-1" style="font-size: 0.95rem; line-height: 1.7;">
+                  <div class="col-md-6">
+                    <div class="d-flex mb-3">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">1</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Upload Gambar</strong><br>
+                        Klik area <em>"Upload Gambar Sampel"</em> di sebelah kiri atau <em>drag & drop</em> gambarmu ke
+                        kotak tersebut. Pastikan nama filenya muncul di daftar berkas berkas.
+                      </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">2</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Lengkapi Kode Program</strong><br>
+                        Isi bagian kode yang rumpang (ditandai dengan variabel kosong atau parameter
+                        <code>_____</code>). Sesuaikan nama file di fungsi <code>imread()</code> dengan gambar yang
+                        di-upload!
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="d-flex mb-3">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">3</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Jalankan Kode (Run)</strong><br>
+                        Klik tombol <strong>Run</strong> berwarna hijau di pojok kanan atas cell. Hasil eksekusi matriks
+                        gambar dan konsol teks akan tampil langsung di bawah cell.
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">4</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Manajemen Lembar Kerja</strong><br>
+                        Gunakan tombol <strong class="text-primary">+ Add Cell</strong> di pojok kanan atas untuk
+                        menambah area kode baru atau klik ikon <strong>Trash</strong> merah untuk menghapus.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer border-top-0 px-4 px-md-5 pb-4 pt-0 justify-content-end">
+                <button type="button" class="btn text-white rounded-pill px-4" style="background-color: #1e293b;"
+                  data-bs-dismiss="modal">
+                  Saya Mengerti
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="notebook-wrapper border border-2 rounded-4 shadow-sm overflow-hidden mb-3">
+          <aside class="sidebar bg-light p-3 border-end">
+            <div class="sidebar-header mb-3 border-bottom pb-2">
+              <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-folder-open me-2 text-custom-blue"></i> File
+                Workspace</h6>
+            </div>
+            <div class="upload-area border border-dashed rounded-3 p-3 text-center bg-white" style="cursor:pointer;"
+              onclick="triggerEdgeUpload()">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon fs-2 text-custom-blue mb-2"></i>
+              <p class="mb-1 text-dark fw-bold" style="font-size:0.9rem;">Upload Gambar Sampel</p>
+              <span class="text-dark small">Drag & drop atau klik</span>
+            </div>
+            <ul id="edgeFileList" class="file-list mt-3 p-0">
+              <li class="empty list-unstyled text-center text-dark small py-2"><i class="fa-regular fa-file me-2"></i>
+                Belum ada berkas</li>
+            </ul>
+            <input type="file" id="edgeFileInput" hidden onchange="handleEdgeUpload(event)">
+          </aside>
+
+          <main class="workspace">
+            <div class="workspace-header">
+              <div class="title">
+                <i class="fa-solid fa-code me-2"></i>Live Edge-Based Segmentation Notebook
+              </div>
+              <div class="actions">
+                <button class="btn-add" onclick="addEdgeCell()">
+                  <i class="fa-solid fa-plus"></i> Add Cell
+                </button>
+              </div>
+            </div>
+
+            <div id="edgeNotebook" class="cells"></div>
+          </main>
+        </div>
+
+        <div class="modal fade" id="edgeImageModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow-lg" style="background-color: #1e293b;">
+              <div class="modal-header border-bottom-0 px-4 pt-4 pb-0">
+                <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-image text-info me-2"></i> Preview
+                  Hasil Segmentasi Tepi</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+              </div>
+              <div class="modal-body text-center p-4">
+                <img id="edgeModalImage" src="" class="img-fluid rounded-3 shadow-lg border border-secondary"
+                  style="max-height: 70vh; width: auto;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
+
+      <div class="bg-custom-blue text-white p-4">
+        <h3 class="fw-bold mb-0">
+          <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+        </h3>
+      </div>
+
+      <div class="card-body p-4 p-md-5">
+        <p class="mb-4 text-dark" style="font-size: 1.05rem;">
+          Untuk menguji pemahaman kamu pada materi di atas, silakan kerjakan aktivitas berikut ini!
+        </p>
+
+        <div class="border border-custom-blue border-2 rounded-3 p-4 mb-5 bg-white">
+          <h5 class="fw-bold text-custom-blue mb-3">
+            <i class="fa-solid fa-clipboard-list me-2"></i> Petunjuk Pengerjaan
+          </h5>
+          <ul class="mb-0 text-dark" style="line-height: 1.8;">
+            <li>Baca setiap pertanyaan dengan teliti sebelum menjawab.</li>
+            <li>Pilih salah satu opsi jawaban yang menurutmu paling tepat.</li>
+            <li>Tombol <strong>LANJUT</strong> baru akan aktif setelah kamu memilih jawaban.</li>
+            <li>Perhatikan <em>feedback</em> (umpan balik) yang muncul di bawah soal untuk mengetahui apakah jawabanmu
+              benar atau salah.</li>
+            <li>Setelah selesai, kamu bisa menekan tombol <strong>KEMBALI</strong> jika ingin mengulang aktivitas.</li>
+          </ul>
+        </div>
+
+        <div class="quiz-area border-top pt-4">
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold text-dark mb-0">Soal Aktivitas</h5>
+            <span class="badge bg-custom-blue rounded-pill px-3 py-2 fs-6 shadow-sm" id="quizProgress"></span>
+          </div>
+
+          <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+          <div id="feedback" class="mt-3 fw-bold"></div>
+
+          <div class="quiz-nav mt-5 d-flex justify-content-end gap-3">
+            <button id="ulangBtn" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold shadow-sm d-none">
+              <i class="fa-solid fa-rotate-left me-2"></i> KEMBALI
+            </button>
+            <button id="nextBtn" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm" disabled>
+              LANJUT <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination pagination-sm custom-pagination">
+      <li class="page-item" id="prevPageItem">
+        <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+      </li>
+
+      <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+      <li class="page-item" id="nextPageItem">
+        <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sub3/edgebased.js') }}"></script>
+
+{% endblock %} {% endblock %}

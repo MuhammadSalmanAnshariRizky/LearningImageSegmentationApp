@@ -1,0 +1,327 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<style>
+    .btn-guide {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 8px 14px;
+        transition: 0.2s;
+    }
+
+    .btn-guide:hover {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+    }
+
+    .text-subtle {
+        color: #64748b;
+        font-size: 14px;
+    }
+</style>
+
+<div class="card shadow-sm p-4">
+
+    <!-- 🔥 JUDUL DINAMIS -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold">
+            {% if nama_kelas %}
+            Data Siswa Kelas {{ nama_kelas }}
+            {% else %}
+            Data Siswa per Kelas
+            {% endif %}
+            <i class="bi bi-info-circle text-muted"></i>
+        </h3>
+        <div class="d-flex gap-2">
+
+            <!-- BUTTON PANDUAN -->
+            <button class="btn btn-guide" data-bs-toggle="modal" data-bs-target="#modalPanduan">
+
+                <i class="bi bi-book-half"></i>
+                Panduan Penggunaan
+            </button>
+
+            <!-- BUTTON EXPORT -->
+            <a href="{{ url_for('user.export_siswa', class_id=selected_class) }}" class="btn btn-success">
+                <i class="bi bi-file-earmark-excel"></i>
+                {% if selected_class %}
+                Export Siswa Kelas {{ nama_kelas }}
+                {% else %}
+                Export Semua Siswa
+                {% endif %}
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- 🔥 Info awal -->
+    {% if not selected_class %}
+    <div class="alert alert-info">
+        Silakan pilih kelas terlebih dahulu untuk melihat data siswa.
+    </div>
+    {% endif %}
+
+    <!-- Filter -->
+    <div class="mb-3">
+        <label class="form-label">Pilih Kelas:</label>
+
+        <form method="GET">
+            <select name="class_id" class="form-select w-25" onchange="this.form.submit()">
+                <option value="">-- Pilih Nama Kelas --</option>
+                {% for k in kelas %}
+                <option value="{{ k.id }}" {% if selected_class==k.id %}selected{% endif %}>
+                    {{ k.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <!-- 🔥 TABLE HANYA MUNCUL KALAU SUDAH PILIH -->
+    {% if selected_class %}
+    <table id="tableSiswa" class="table table-bordered table-striped">
+        <thead class="table-primary text-center">
+            <tr>
+                <th>No</th>
+                <th>Nama Siswa</th>
+                <th>Email</th>
+                <th>Kelas</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in siswa %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ s[0].name }}</td>
+                <td>{{ s[0].email }}</td>
+                <td>{{ s[1].name }}</td>
+                <td class="text-center">
+                    <button class="btn btn-warning btn-sm btn-edit" data-id="{{ s[0].id }}" data-nama="{{ s[0].name }}"
+                        data-email="{{ s[0].email }}">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <!-- Modal Edit -->
+    <div class="modal fade" id="modalEditSiswa" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <form id="formEditSiswa">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-pencil-square"></i> Edit Data Siswa
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" id="edit_id">
+
+                        <div class="mb-3">
+                            <label>Nama Siswa</label>
+                            <input type="text" id="edit_nama" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" id="edit_email" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Password (opsional)</label>
+                            <input type="password" id="edit_password" class="form-control"
+                                placeholder="Biarkan kosong jika tidak diubah">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Batal
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PANDUAN -->
+<!-- MODAL PANDUAN -->
+<div class="modal fade" id="modalPanduan" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header border-0 pb-0">
+
+                <div>
+                    <h4 class="fw-bold text-primary mb-1">
+                        Panduan Penggunaan
+                    </h4>
+
+                    <p class="text-subtle mb-0">
+                        Informasi penggunaan fitur pada halaman data siswa.
+                    </p>
+                </div>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body pt-4">
+
+                <div class="p-3 rounded-4 bg-light mb-3">
+                    <div class="fw-bold text-primary mb-1">
+                        <i class="bi bi-diagram-3"></i>
+                        Pilih Kelas
+                    </div>
+
+                    <div class="text-subtle">
+                        Gunakan dropdown kelas untuk menampilkan data siswa berdasarkan kelas yang dipilih.
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-4 bg-light mb-3">
+                    <div class="fw-bold text-success mb-1">
+                        <i class="bi bi-file-earmark-excel"></i>
+                        Export Data
+                    </div>
+
+                    <div class="text-subtle">
+                        Tombol export digunakan untuk mengunduh data siswa dalam format Excel.
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-4 bg-light mb-3">
+                    <div class="fw-bold text-warning mb-1">
+                        <i class="bi bi-pencil-square"></i>
+                        Edit Data Siswa
+                    </div>
+
+                    <div class="text-subtle">
+                        Gunakan tombol edit untuk memperbarui nama, email, atau password siswa.
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-4 bg-light">
+                    <div class="fw-bold text-danger mb-1">
+                        <i class="bi bi-search"></i>
+                        Pencarian Data
+                    </div>
+
+                    <div class="text-subtle">
+                        Gunakan fitur pencarian pada tabel untuk menemukan data siswa dengan cepat.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer border-0 pt-0">
+
+                <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">
+
+                    Saya Mengerti
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 🔥 DataTables hanya jalan kalau ada tabel -->
+{% if selected_class %}
+<script>
+    $(document).ready(function () {
+        $('#tableSiswa').DataTable({
+            pageLength: 10,
+            lengthMenu: [10, 25, 50],
+            language: {
+                lengthMenu: "Tampilkan _MENU_ data",
+                search: "Cari:",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ siswa",
+                emptyTable: "Belum ada data siswa di kelas ini",
+                paginate: {
+                    previous: "Previous",
+                    next: "Next"
+                }
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+
+        // buka modal + isi data
+        $(document).on('click', '.btn-edit', function () {
+            $('#edit_id').val($(this).data('id'));
+            $('#edit_nama').val($(this).data('nama'));
+            $('#edit_email').val($(this).data('email'));
+            $('#edit_password').val('');
+
+            $('#modalEditSiswa').modal('show');
+        });
+
+        // submit edit
+        $('#formEditSiswa').submit(function (e) {
+            e.preventDefault();
+
+            let id = $('#edit_id').val();
+
+            $.ajax({
+                url: `/update_siswa/${id}`,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    name: $('#edit_nama').val(),
+                    email: $('#edit_email').val(),
+                    password: $('#edit_password').val()
+                }),
+                success: function (res) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: res.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat update data'
+                    });
+                }
+            });
+        });
+
+    });
+</script>
+{% endif %}
+
+{% endblock %}

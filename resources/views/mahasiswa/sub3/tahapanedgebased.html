@@ -1,0 +1,896 @@
+{% extends 'layouts/base.html' %} {% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kodeeditor.css') }}" />
+{% endblock %} {% block content %}
+<div class="container mt-4">
+  <!-- PROGRESS -->
+  <div class="card border shadow-sm mb-4 rounded-4">
+    <div class="card-body px-4 py-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold text-dark">Progress Belajar</span>
+        <span class="text-success fw-bold">{{ progress }}%</span>
+      </div>
+      <div class="progress rounded-pill bg-light" style="height: 10px;">
+        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill" role="progressbar"
+          style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-crop-simple me-2"></i>3.1 Pengantar Edge-based Segmentation
+        </h3>
+
+        <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-4">
+            Edge-based segmentation merupakan metode segmentasi citra yang memanfaatkan informasi tepi untuk memisahkan
+            objek dari latar belakang. Metode ini didasarkan pada asumsi bahwa batas objek ditandai oleh perubahan
+            intensitas piksel yang signifikan dibandingkan dengan area di sekitarnya. Oleh karena itu, proses segmentasi
+            diawali dengan mendeteksi tepi objek, kemudian menghubungkan piksel-piksel tepi yang saling berkaitan hingga
+            membentuk batas yang utuh, dan diakhiri dengan mengekstraksi wilayah objek berdasarkan batas yang telah
+            diperoleh. Secara umum, tahapan edge-based segmentation terdiri atas edge detection, edge linking, dan
+            region extraction/segmentation.
+          </p>
+
+          <h4 class="fw-bold mb-3 text-custom-blue">1. Edge Detection (Deteksi Tepi)</h4>
+          <p class="mb-4">
+            Deteksi tepi merupakan proses untuk menemukan perubahan intensitas yang signifikan pada citra. Perubahan
+            intensitas tersebut biasanya menunjukkan batas antara objek dan latar belakang. Hasil dari proses ini berupa
+            citra tepi (edge map) yang berisi piksel-piksel yang diduga sebagai batas objek. Beberapa metode deteksi
+            tepi yang umum digunakan adalah sebagai berikut:
+          </p>
+
+          <div class="mb-4">
+            <p class="mb-2"><strong>a) Roberts Edge Detector</strong><br>
+              Operator Roberts merupakan salah satu metode deteksi tepi paling sederhana yang menggunakan operator
+              gradien berukuran 2×2. Metode ini menghitung perubahan intensitas secara diagonal sehingga mampu
+              mendeteksi tepi dengan cepat. Berikut adalah kernel dari Roberts Edge Detector:</p>
+
+            <div class="row text-center my-3 justify-content-center">
+              <div class="col-auto">
+                <div class="fw-semibold mb-2"><span class="math-tex">\( G_x \)</span></div>
+                <table class="table table-bordered table-sm text-center bg-light" style="width: 80px;">
+                  <tr>
+                    <td style="width: 40px;">1</td>
+                    <td style="width: 40px;">0</td>
+                  </tr>
+                  <tr>
+                    <td>0</td>
+                    <td>-1</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-auto ms-4">
+                <div class="fw-semibold mb-2"><span class="math-tex">\( G_y \)</span></div>
+                <table class="table table-bordered table-sm text-center bg-light" style="width: 80px;">
+                  <tr>
+                    <td style="width: 40px;">0</td>
+                    <td style="width: 40px;">1</td>
+                  </tr>
+                  <tr>
+                    <td>-1</td>
+                    <td>0</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <p class="mb-2 mt-4"><strong>b) Prewitt Edge Detector</strong><br>
+              Operator Prewitt menggunakan kernel 3×3 untuk menghitung gradien pada arah horizontal dan vertikal. Metode
+              ini lebih stabil dibanding Roberts karena mempertimbangkan lebih banyak piksel di sekitar titik yang
+              danalisis. Berikut adalah kernel dari Prewitt:</p>
+
+            <div class="row text-center my-3 justify-content-center">
+              <div class="col-auto">
+                <div class="fw-semibold mb-2"><span class="math-tex">\( G_x \)</span></div>
+                <table class="table table-bordered table-sm text-center bg-light" style="width: 120px;">
+                  <tr>
+                    <td style="width: 40px;">-1</td>
+                    <td style="width: 40px;">0</td>
+                    <td style="width: 40px;">1</td>
+                  </tr>
+                  <tr>
+                    <td>-1</td>
+                    <td>0</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td>-1</td>
+                    <td>0</td>
+                    <td>1</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-auto ms-4">
+                <div class="fw-semibold mb-2"><span class="math-tex">\( G_y \)</span></div>
+                <table class="table table-bordered table-sm text-center bg-light" style="width: 120px;">
+                  <tr>
+                    <td style="width: 40px;">1</td>
+                    <td style="width: 40px;">1</td>
+                    <td style="width: 40px;">1</td>
+                  </tr>
+                  <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>-1</td>
+                    <td>-1</td>
+                    <td>-1</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <p class="mb-2 mt-4"><strong>c) Sobel Edge Detector</strong><br>
+              Operator Sobel merupakan pengembangan dari Prewitt dengan memberikan bobot lebih besar pada piksel tengah
+              sehingga hasil deteksi tepi menjadi lebih baik. Berikut adalah kernel dari Sobel:</p>
+
+            <div class="row text-center my-3 justify-content-center">
+              <div class="col-auto">
+                <div class="fw-semibold mb-2"><span class="math-tex">\( G_x \)</span></div>
+                <table class="table table-bordered table-sm text-center bg-light" style="width: 120px;">
+                  <tr>
+                    <td style="width: 40px;">-1</td>
+                    <td style="width: 40px;">0</td>
+                    <td style="width: 40px;">1</td>
+                  </tr>
+                  <tr>
+                    <td>-2</td>
+                    <td>0</td>
+                    <td>2</td>
+                  </tr>
+                  <tr>
+                    <td>-1</td>
+                    <td>0</td>
+                    <td>1</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-auto ms-4">
+                <div class="fw-semibold mb-2"><span class="math-tex">\( G_y \)</span></div>
+                <table class="table table-bordered table-sm text-center bg-light" style="width: 120px;">
+                  <tr>
+                    <td style="width: 40px;">1</td>
+                    <td style="width: 40px;">2</td>
+                    <td style="width: 40px;">1</td>
+                  </tr>
+                  <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>-1</td>
+                    <td>-2</td>
+                    <td>-1</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <p class="mb-3">Besarnya gradien dihitung menggunakan:</p>
+            <div class="bg-light p-2 text-center rounded border mb-4">
+              <span class="math-tex">\( G = \sqrt{G_x^2 + G_y^2} \)</span>
+            </div>
+
+            <p class="mb-2 mt-4"><strong>d) Laplacian Edge Detector</strong><br>
+              Metode Laplacian menggunakan turunan orde kedua untuk mendeteksi perubahan intensitas. Pada laplacian
+              terdapat dua versi yang umum digunakan yaitu:</p>
+
+            <div class="row my-3">
+              <div class="col-md-6 text-center">
+                <div class="p-3 bg-light border rounded-3 h-100">
+                  <div class="fw-bold  mb-2">Versi 4-Connectivity</div>
+                  <table class="table table-bordered table-sm text-center mx-auto bg-white"
+                    style="width: 120px; margin-bottom: 0;">
+                    <tr>
+                      <td style="width: 40px;">0</td>
+                      <td style="width: 40px;">1</td>
+                      <td style="width: 40px;">0</td>
+                    </tr>
+                    <tr>
+                      <td>1</td>
+                      <td>-4</td>
+                      <td>1</td>
+                    </tr>
+                    <tr>
+                      <td>0</td>
+                      <td>1</td>
+                      <td>0</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-6 text-center mt-3 mt-md-0">
+                <div class="p-3 bg-light border rounded-3 h-100">
+                  <div class="fw-bold  mb-2">Versi 8-Connectivity</div>
+                  <table class="table table-bordered table-sm text-center mx-auto bg-white"
+                    style="width: 120px; margin-bottom: 0;">
+                    <tr>
+                      <td style="width: 40px;">1</td>
+                      <td style="width: 40px;">1</td>
+                      <td style="width: 40px;">1</td>
+                    </tr>
+                    <tr>
+                      <td>1</td>
+                      <td>-8</td>
+                      <td>1</td>
+                    </tr>
+                    <tr>
+                      <td>1</td>
+                      <td>1</td>
+                      <td>1</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <p class="mb-2 mt-4"><strong>e) Canny Edge Detector</strong><br>
+              Metode Canny dikembangkan oleh John Canny dan dianggap sebagai salah satu metode deteksi tepi terbaik
+              karena menghasilkan tepi yang tipis, jelas, dan relatif tahan terhadap noise. Tahapan yang
+              dilakukan oleh Canny ialah sebagai berikut:</p>
+            <ol class=" ps-4 mb-4">
+              <li class="mb-1">Gaussian Smoothing</li>
+              <li class="mb-1">Gradient Calculation</li>
+              <li class="mb-1">Non-Maximum Suppression</li>
+              <li class="mb-1">Hysteresis Thresholding</li>
+              <li>Edge Tracking berdasarkan Hysteresis Thresholding</li>
+            </ol>
+          </div>
+
+          <p class="mb-2 mt-4"><strong>f) Contoh Perhitungan Kernel Robert</strong></p>
+          <p class="mb-3">Misalkan diberikan citra grayscale berukuran 5×5 sebagai berikut:</p>
+
+          <div class="table-responsive my-3">
+            <table class="table table-bordered text-center mx-auto bg-light" style="max-width: 300px;">
+              <tr>
+                <td>12</td>
+                <td>15</td>
+                <td>18</td>
+                <td>95</td>
+                <td>100</td>
+              </tr>
+              <tr>
+                <td>14</td>
+                <td>17</td>
+                <td>20</td>
+                <td>98</td>
+                <td>105</td>
+              </tr>
+              <tr>
+                <td>16</td>
+                <td>19</td>
+                <td>22</td>
+                <td>102</td>
+                <td>108</td>
+              </tr>
+              <tr>
+                <td>18</td>
+                <td>21</td>
+                <td>24</td>
+                <td>105</td>
+                <td>110</td>
+              </tr>
+              <tr>
+                <td>20</td>
+                <td>23</td>
+                <td>26</td>
+                <td>108</td>
+                <td>115</td>
+              </tr>
+            </table>
+          </div>
+
+          <p class="mb-3">Lakukan perhitungan pada bagian koordinat (2,4) dengan operasi ketetanggan,</p>
+
+          <div class="table-responsive my-3">
+            <table class="table table-bordered text-center mx-auto bg-light" style="max-width: 300px;">
+              <tr>
+                <td>12</td>
+                <td>15</td>
+                <td>18</td>
+                <td>95</td>
+                <td>100</td>
+              </tr>
+              <tr>
+                <td>14</td>
+                <td>17</td>
+                <td>20</td>
+                <td class="bg-warning fw-bold text-dark" title="Koordinat (2,4)">98</td>
+                <td>105</td>
+              </tr>
+              <tr>
+                <td>16</td>
+                <td>19</td>
+                <td>22</td>
+                <td>102</td>
+                <td>108</td>
+              </tr>
+              <tr>
+                <td>18</td>
+                <td>21</td>
+                <td>24</td>
+                <td>105</td>
+                <td>110</td>
+              </tr>
+              <tr>
+                <td>20</td>
+                <td>23</td>
+                <td>26</td>
+                <td>108</td>
+                <td>115</td>
+              </tr>
+            </table>
+          </div>
+
+          <p class="mb-3">Selanjutnya dilakukan perhitungan dengan kernel preewit pada Gx dan Gy,</p>
+
+
+          <p class="mb-2"><strong>Gradien Horizontal (Gx)</strong></p>
+          <div class="bg-light p-3 rounded text-center mb-4 text-dark font-monospace"
+            style="font-size: 0.95rem; overflow-x: auto; white-space: nowrap;">
+            Gx = (18 × -1) + (95 × 0) + (100 × 1) + (20 × -1) + (98 × 0) + (105 × 1) + (22 × -1) + (102 × 0) + (108 ×
+            1) <br>
+            Gx = (-18 + 0 + 100) + (-20 + 0 + 105) + (-22 + 0 + 108) <br>
+            Gx = 82 + 85 + 86 <br>
+            <span class="text-custom-blue fw-bold">Gx = 253</span>
+          </div>
+
+          <p class="mb-2"><strong>Gradien Vertikal (Gy)</strong></p>
+          <div class="bg-light p-3 rounded text-center mb-4 text-dark font-monospace"
+            style="font-size: 0.95rem; overflow-x: auto; white-space: nowrap;">
+            Gy = (18 + 95 + 100) - (22 + 102 + 108) <br>
+            Gy = 213 - 232 <br>
+            <span class="text-custom-blue fw-bold">Gy = -19</span>
+          </div>
+
+          <p class="mb-2"><strong>Menghitung Magnitudo Gradien</strong></p>
+          <div class="bg-light p-3 rounded text-center mb-4 text-dark font-monospace" style="font-size: 0.95rem;">
+            G = \(\sqrt{Gx^2 + Gy^2}\) <br>
+            G = \(\sqrt{253^2 + (-19)^2}\) <br>
+            G = \(\sqrt{64009 + 361}\) <br>
+            G = \(\sqrt{64370}\) <br>
+            <span class="text-success fw-bold">G ≈ 253.71</span>
+          </div>
+
+          <p class="mb-2"><strong>Matriks Magnitudo</strong></p>
+          <div class="table-responsive my-3">
+            <table class="table table-bordered text-center mx-auto bg-light" style="max-width: 300px;">
+              <tr>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+              </tr>
+              <tr>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+                <td class="fw-bold text-success bg-white" title="Hasil Magnitudo Koordinat (2,4)">253.71</td>
+                <td>x</td>
+              </tr>
+              <tr>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+              </tr>
+              <tr>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+              </tr>
+              <tr>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+              </tr>
+            </table>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-link me-2"></i> 3.2 Edge Linking (Penghubungan Tepi)
+        </h3>
+
+        <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-4">
+            Setelah proses deteksi tepi dilakukan, hasil yang diperoleh umumnya berupa kumpulan piksel tepi yang belum
+            membentuk batas objek secara utuh. Kondisi ini dapat terjadi akibat adanya noise, variasi
+            pencahayaan, maupun karakteristik metode deteksi tepi yang digunakan. Oleh karena itu, diperlukan
+            proses edge linking untuk menghubungkan piksel-piksel tepi yang memiliki hubungan spasial sehingga membentuk
+            kontur atau batas objek yang lebih lengkap. Pendekatan yang dilakukan yaitu sebagai berikut:
+          </p>
+
+          <h4 class="fw-bold mb-3 text-custom-blue">a) Local Processing</h4>
+          <p class="mb-4">
+            Local processing menghubungkan tepi berdasarkan informasi lokal di sekitar piksel, biasanya dalam
+            neighborhood kecil seperti 3×3 atau 5×5. Dua properti utama yang digunakan:
+          </p>
+
+          <ul class="mb-4 text-darkfw-semibold">
+            <li>Magnitudo gradien <span class="math-tex">\( M(x,y) \)</span></li>
+            <li>Arah gradien <span class="math-tex">\( \alpha(x,y) \)</span> (arah tegak lurus terhadap tepi)</li>
+          </ul>
+
+          <h5 class="fw-bold text-custom-blue mb-3">Kriteria Keterhubungan pada Local Processing</h5>
+          <p class="mb-4">
+            Dalam pendekatan local processing, dua piksel tepi dianggap saling terhubung apabila memiliki karakteristik
+            yang serupa. Keterhubungan tersebut dapat ditentukan berdasarkan dua kriteria utama, yaitu
+            kesamaan magnitudo gradien dan kesamaan arah gradien.
+          </p>
+
+          <p class="mb-2 text-dark"><strong>Kesamaan Magnitudo Gradien</strong></p>
+          <p class="mb-3">
+            Dua piksel tepi dapat dihubungkan apabila memiliki magnitudo gradien yang relatif serupa. Kondisi ini
+            dnyatakan oleh Persamaan (3.1).
+          </p>
+
+          <div
+            class="bg-light p-3 text-center rounded border mb-4 d-flex justify-content-between align-items-center px-4">
+            <div class="w-100 text-center">
+              <span class="math-tex text-dark fw-bold">\( |M(s,t) - M(x,y)| \le E \)</span>
+            </div>
+            <span class="fw-bold text-dark" style="white-space: nowrap;">(Persamaan 3.1)</span>
+          </div>
+
+          <p class="mb-4">
+            Persamaan (3.1) menunjukkan bahwa perbedaan magnitudo gradien antara dua piksel tepi tidak boleh melebihi
+            nilai ambang (threshold) <span class="math-tex">\( E \)</span>. Jika perbedaan tersebut kecil,
+            maka kedua piksel dianggap memiliki kekuatan tepi yang serupa dan kemungkinan berasal dari batas objek yang
+            sama.
+          </p>
+
+          <p class="mb-2 text-dark"><strong>Kesamaan Arah Gradien</strong></p>
+          <p class="mb-3">
+            Selain memiliki magnitudo gradien yang serupa, dua piksel tepi juga harus memiliki arah gradien yang relatif
+            sama. Kondisi ini dinyatakan oleh Persamaan (3.2).
+          </p>
+
+          <div
+            class="bg-light p-3 text-center rounded border mb-4 d-flex justify-content-between align-items-center px-4">
+            <div class="w-100 text-center">
+              <span class="math-tex text-dark fw-bold">\( |\alpha(s,t) - \alpha(x,y)| \le A \)</span>
+            </div>
+            <span class="fw-bold text-dark" style="white-space: nowrap;">(Persamaan 3.2)</span>
+          </div>
+
+          <p class="mb-4">
+            Persamaan (3.2) menunjukkan bahwa perbedaan arah gradien antara dua piksel tepi tidak boleh melebihi nilai
+            ambang <span class="math-tex">\( A \)</span>. Jika arah gradien kedua piksel hampir sama, maka
+            keduanya dianggap mengikuti arah batas objek yang sama sehingga dapat dihubungkan menjadi suatu kontur yang
+            kontinu. Berdasarkan kedua kriteria tersebut, piksel-piksel tepi yang memiliki magnitudo gradien
+            dan arah gradien yang serupa akan dikelompokkan menjadi rantai tepi (edge chain) yang selanjutnya membentuk
+            batas objek (object boundary).
+          </p>
+
+          <h5 class="fw-bold text-custom-blue mb-3">Algoritma Sederhana Local Processing</h5>
+          <p class="mb-4 text-dark">Berikut adalah langkah-langkah algoritma sederhana untuk Local Processing:</p>
+
+          <ol class="ps-4 text-dark" style="line-height: 1.8; font-size: 1.05rem;">
+
+            <li class="mb-4">
+              <strong>Menghitung Magnitudo <span class="math-tex">\( M(x,y) \)</span> dan Arah Gradien <span
+                  class="math-tex">\( \alpha(x,y) \)</span></strong>
+              <p class="mt-2 mb-0">
+                Tahap pertama adalah menghitung magnitudo gradien <span class="math-tex">\( M(x,y) \)</span> dan arah
+                gradien <span class="math-tex">\( \alpha(x,y) \)</span> dari citra masukan <span class="math-tex">\(
+                  f(x,y) \)</span>. Magnitudo gradien menunjukkan kekuatan suatu tepi, sedangkan arah gradien
+                menunjukkan orientasi perubahan intensitas pada citra.
+              </p>
+            </li>
+
+            <li class="mb-4">
+              <strong>Membentuk Citra Biner</strong>
+              <p class="mt-2 mb-3">
+                Setelah nilai magnitudo dan arah gradien diperoleh, dilakukan proses seleksi piksel tepi untuk membentuk
+                citra biner <span class="math-tex">\( g(x,y) \)</span>.
+              </p>
+
+              <div class="bg-light p-3 text-center rounded border mb-3 font-monospace text-dark fw-bold"
+                style="font-size: 0.95rem;">
+                g(x,y) = 1, Jika M(x,y) > TM dan &alpha;(x,y) = A &plusmn; TA <br>
+                g(x,y) = 0, lainnya
+              </div>
+
+              <p class="mb-0">
+                <strong>Keterangan:</strong><br>
+                TM = ambang magnitudo gradien<br>
+                A = arah gradien yang diinginkan<br>
+                TA = toleransi arah gradien
+              </p>
+            </li>
+
+            <li class="mb-4">
+              <strong>Menghubungkan Piksel Tepi</strong>
+              <p class="mt-2 mb-0">
+                Citra biner yang dihasilkan kemudian dipindai untuk menemukan celah (gap) antar piksel tepi. Jika
+                panjang celah lebih kecil dari batas tertentu <span class="math-tex">\( L \)</span>, maka celah tersebut
+                diisi sehingga piksel-piksel tepi yang terputus dapat dihubungkan menjadi satu kesatuan. Proses ini
+                bertujuan menghasilkan batas objek yang lebih kontinu.
+              </p>
+            </li>
+
+            <li class="mb-0">
+              <strong>Menghubungkan Tepi pada Berbagai Arah</strong>
+              <p class="mt-2 mb-0">
+                Langkah sebelumnya dilakukan untuk arah tertentu. Untuk mendeteksi dan menghubungkan tepi pada arah
+                lain, citra dapat diputar sebesar sudut tertentu <span class="math-tex">\( \theta \)</span>, kemudian
+                proses pemindaian diulang. Setelah proses selesai, citra dikembalikan ke orientasi semula. Melalui
+                prosedur ini, piksel-piksel tepi yang memiliki karakteristik serupa dapat dihubungkan menjadi rantai
+                tepi (edge chain) yang membentuk batas objek (object boundary).
+              </p>
+            </li>
+
+          </ol>
+
+          <hr class="my-5">
+          <h4 class="fw-bold mb-4 text-custom-blue">Contoh Perhitungan Local Processing</h4>
+          <p class="mb-3 text-dark">Misalnya hasil Edge Detection menghasilkan matriks magnitudo gradien:</p>
+
+          <div class="table-responsive my-3">
+            <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold"
+              style="max-width: 220px;">
+              <tr>
+                <td>45</td>
+                <td>60</td>
+                <td>55</td>
+              </tr>
+              <tr>
+                <td>52</td>
+                <td class="bg-warning text-dark fw-bold">80</td>
+                <td>78</td>
+              </tr>
+              <tr>
+                <td>48</td>
+                <td>75</td>
+                <td>82</td>
+              </tr>
+            </table>
+          </div>
+
+          <p class="mb-3 text-dark">dan matriks arah gradien:</p>
+          <div class="table-responsive my-3">
+            <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold"
+              style="max-width: 220px;">
+              <tr>
+                <td>88&deg;</td>
+                <td>90&deg;</td>
+                <td>92&deg;</td>
+              </tr>
+              <tr>
+                <td>89&deg;</td>
+                <td class="bg-warning text-dark fw-bold">91&deg;</td>
+                <td>93&deg;</td>
+              </tr>
+              <tr>
+                <td>87&deg;</td>
+                <td>90&deg;</td>
+                <td>94&deg;</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="bg-light p-2 rounded text-center border mb-3 mx-auto text-dark fw-bold">
+            Contoh nilai dari syarat yang sudah ditentukan untuk local processing:<br>
+            <span class=" fw-bold text-custom-blue">TM = 70</span> |
+            <span class="fw-bold text-custom-blue">A = 90&deg;</span> |
+            <span class="fw-bold text-custom-blue">TA = 5&deg;</span>
+          </div>
+
+          <p class="mb-3 text-dark">Langkah-langkah perhitungan local processing yaitu:</p>
+
+          <ol class="ps-4 text-dark" style="line-height: 1.8; font-size: 1.05rem;">
+
+            <li class="mb-4">
+              <strong>Seleksi Berdasarkan Magnitudo Gradien</strong>
+              <p class="mt-2 mb-3">
+                Suatu piksel dipilih apabila memenuhi kondisi nilai magnitudo gradien lebih dari ambang magnitudo
+                gradien yang disimbolkan sebagai berikut: <span class="math-tex">\( M(x,y) > TM \)</span>. Contoh
+                perhitungan untuk piksel yang berada pada pusat dengan koordinat dan nilai sebagai berikut:
+              </p>
+              <div class="bg-light p-2 rounded text-center border mb-3 mx-auto text-dark fw-bold"
+                style="max-width: 300px;">
+                M(2,2) = 80
+              </div>
+              <p class="mb-0">
+                karena nilai pada koordinat tersebut lebih besar dari ambang magnitudo gradien yang dilambangkan sebagai
+                berikut: <span class="fw-bold text-danger">80 > 70</span>, maka piksel tersebut memenuhi <strong>syarat
+                  magnitudo gradien</strong>.
+              </p>
+            </li>
+
+            <li class="mb-4">
+              <strong>Seleksi Berdasarkan Arah Gradien</strong>
+              <p class="mt-2 mb-3">
+                Selain memenuhi kriteria magnitudo gradien, suatu piksel juga harus memenuhi kriteria arah gradien.
+                Kriteria ini digunakan untuk memastikan bahwa piksel-piksel yang dipilih memiliki orientasi tepi yang
+                serupa. Secara matematis, kondisi tersebut dinyatakan sebagai berikut:
+              </p>
+              <div class="bg-light p-2 text-center rounded border mb-3 mx-auto text-dark fw-bold"
+                style="max-width: 300px;">
+                <span class="math-tex">\( \alpha(x,y) = A \pm TA \)</span>
+              </div>
+              <p class="mb-3">
+                Persamaan tersebut menyatakan bahwa arah gradien suatu piksel harus berada dalam rentang <span
+                  class="math-tex">\( A-TA \)</span> hingga <span class="math-tex">\( A+TA \)</span>. Jika arah gradien
+                piksel berada dalam rentang tersebut, maka piksel dianggap memiliki orientasi yang serupa dan dapat
+                dihubungkan dengan piksel tepi lainnya. Berdasarkan nilai yang sudah ditentukan yaitu:
+              </p>
+              <div class="bg-light p-2 text-center rounded border mb-3 mx-auto font-monospace text-dark fw-bold"
+                style="max-width: 300px;">
+                90&deg; &plusmn; 5&deg;
+              </div>
+              <p class="mb-3">sehingga rentang arah yang diterima adalah:</p>
+              <div class="bg-light p-2 text-center rounded border mb-3 mx-auto text-dark fw-bold"
+                style="max-width: 300px;">
+                <span class="math-tex">\( 85^\circ \le \alpha(x,y) \le 95^\circ \)</span>
+              </div>
+              <p class="mb-0">
+                Untuk arah gradien piksel yang berada pada koordinat (2,2) yaitu: <span
+                  class="fw-bold text-custom-blue">&alpha;(2,2) = 91&deg;</span>. Karena bernilai 91&deg; (<span
+                  class="math-tex">\( 85^\circ \le 91^\circ \le 95^\circ \)</span>) maka syarat arah gradien juga
+                terpenuhi.
+              </p>
+            </li>
+
+            <li class="mb-4">
+              <strong>Membentuk citra biner</strong>
+              <p class="mt-2 mb-3">
+                Berdasarkan langkah sebelumnya, karena memenuhi syarat berdasarkan kondisi tersebut maka diperoleh nilai
+                terbarunya yaitu: <span class="fw-bold text-success">g(2,2) = 1</span>. Artinya piksel tersebut dianggap
+                sebagai bagian dari tepi.
+              </p>
+              <p class="mb-3">Proses yang sama dilakukan untuk seluruh piksel sehingga diperoleh:</p>
+              <div class="table-responsive my-3">
+                <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold"
+                  style="max-width: 220px;">
+                  <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>0</td>
+                    <td class="bg-white text-success fw-bold">1</td>
+                    <td class="bg-white text-success fw-bold">1</td>
+                  </tr>
+                  <tr>
+                    <td>0</td>
+                    <td class="bg-white text-success fw-bold">1</td>
+                    <td class="bg-white text-success fw-bold">1</td>
+                  </tr>
+                </table>
+              </div>
+              <p class="mb-0">
+                Nilai 1 menunjukkan piksel yang memenuhi kriteria magnitudo gradien dan arah gradien, sedangkan nilai 0
+                menunjukkan piksel yang tidak memenuhi kriteria. Tahap berikutnya adalah melakukan edge linking, yaitu
+                menghubungkan piksel-piksel tepi yang saling berdekatan sehingga membentuk suatu rantai tepi (edge
+                chain). Pada matriks di atas terlihat bahwa terdapat empat piksel bernilai 1 yang saling bertetangga,
+                sehingga piksel-piksel tersebut dapat dianggap sebagai bagian dari tepi yang sama. Karena seluruh piksel
+                bernilai 1 saling terhubung, maka terbentuk sebuah edge chain yang kontinu. Hasil penghubungan ini
+                kemudian digunakan untuk membentuk batas objek (object boundary).
+              </p>
+            </li>
+
+            <li class="mb-4">
+              <strong>Edge Linking (Mengatasi Celah / Gap)</strong>
+              <p class="mt-2 mb-3">
+                Apabila terdapat celah (gap) antar piksel tepi, maka sistem akan memeriksa panjang celah tersebut. Jika
+                panjang celah lebih kecil dari batas yang ditentukan (L), maka celah akan diisi sehingga rantai tepi
+                tetap terhubung. Misalkan hasil citra biner yang diperoleh adalah:
+              </p>
+              <div class="table-responsive my-3">
+                <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold"
+                  style="max-width: 350px;">
+                  <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td class="bg-white text-success fw-bold">1</td>
+                    <td class="bg-white text-success fw-bold">1</td>
+                    <td class="bg-warning text-dark fw-bold" title="Celah (Gap)">0</td>
+                    <td class="bg-white text-success fw-bold">1</td>
+                    <td class="bg-white text-success fw-bold">1</td>
+                  </tr>
+                  <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                </table>
+              </div>
+              <p class="mb-0">
+                Pada baris kedua terdapat sebuah celah (gap) yang ditunjukkan oleh nilai 0 di antara dua kelompok piksel
+                tepi. Misalkan panjang celah tersebut adalah: <span class="fw-bold text-danger">gap = 1</span> dan batas
+                maksimum yang diizinkan adalah: <span class="fw-bold text-custom-blue">L = 2</span>. Karena panjang
+                celah lebih kecil daripada batas maksimum (<span class="math-tex">\( gap < L \)</span> atau <span
+                      class="math-tex">\( 1 < 2 \)</span>) maka celah tersebut dapat diisi.
+              </p>
+            </li>
+
+            <li class="mb-0">
+              <strong>Sesudah Penghubungan</strong>
+              <p class="mt-2 mb-3">Setelah proses edge linking, diperoleh:</p>
+              <div class="table-responsive my-3">
+                <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold"
+                  style="max-width: 350px;">
+                  <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td class="bg-white text-success fw-bold">1</td>
+                    <td class="bg-white text-success fw-bold">1</td>
+                    <td class="bg-white text-success fw-bold" title="Celah telah Terisi">1</td>
+                    <td class="bg-white text-success fw-bold">1</td>
+                    <td class="bg-white text-success fw-bold">1</td>
+                  </tr>
+                  <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                </table>
+              </div>
+              <p class="mb-0">
+                Nilai 0 pada posisi tengah diubah menjadi 1 sehingga seluruh piksel tepi menjadi saling terhubung dan
+                membentuk suatu edge chain yang lebih kontinu. Proses ini membantu menghasilkan batas objek (object
+                boundary) yang lebih lengkap untuk digunakan pada tahap region extraction.
+              </p>
+
+            </li>
+          </ol>
+          <!-- hough -->
+          <h4 class="fw-bold mb-3 text-custom-blue">b) Global Processing dengan Hough Transform</h4>
+
+          <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+            <p class="mb-4">
+              Salah satu metode global processing yang banyak digunakan adalah Hough Transform. Metode ini digunakan
+              untuk
+              mendeteksi bentuk-bentuk geometris tertentu, seperti garis, lingkaran, dan elips, berdasarkan kumpulan
+              piksel
+              tepi yang telah diperoleh dari proses deteksi tepi. Hough Transform bekerja dengan memetakan setiap piksel
+              tepi ke dalam suatu ruang parameter (parameter space), kemudian mencari pola akumulasi yang menunjukkan
+              keberadaan suatu bentuk geometris.
+            </p>
+
+            <p class="mb-4">
+              Keunggulan Hough Transform adalah kemampuannya mendeteksi bentuk objek meskipun sebagian tepi mengalami
+              gangguan, terputus, atau tidak lengkap. Oleh karena itu, metode ini sering digunakan pada aplikasi yang
+              memerlukan deteksi bentuk secara robust, seperti deteksi jalur pada kendaraan otonom, deteksi lingkaran
+              pada
+              citra medis, dan pengenalan objek industri.
+            </p>
+
+            <div id="gambar3_2" class="text-center  rounded-4 p-4 my-4 shadow-sm">
+              <img src="{{ url_for('static', filename='img/sub3/Hough.png') }}" class="img-fluid rounded-3 shadow-sm"
+                style="max-width: 550px; width: 100%; height: auto;">
+              <p class="mt-3 mb-0 text-muted small">
+                <em>Gambar 3.2 Contoh Hough Transform</em>
+              </p>
+            </div>
+
+            <p class=" mb-0">
+              Meskipun demikian, Hough Transform memiliki kompleksitas komputasi yang lebih tinggi dibandingkan
+              local processing sehingga pembahasannya tidak menjadi fokus utama dalam modul ini. Pada modul ini,
+              konsep edge linking lebih difokuskan pada pendekatan lokal yang lebih sederhana dan mudah dipahami
+              sebagai dasar pembelajaran segmentasi berbasis tepi.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- page aktivitas -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
+
+      <div class="bg-custom-blue text-white p-4">
+        <h3 class="fw-bold mb-0">
+          <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+        </h3>
+      </div>
+
+      <div class="card-body p-4 p-md-5">
+
+        <p class="mb-4" style="font-size: 1.05rem;">
+          Untuk menguji pemahaman kamu pada materi di atas, silakan kerjakan aktivitas berikut ini!
+        </p>
+
+        <div class="border border-custom-blue border-2 rounded-3 p-4 mb-5 bg-white">
+          <h5 class="fw-bold text-custom-blue mb-3">
+            <i class="fa-solid fa-clipboard-list me-2"></i> Petunjuk Pengerjaan
+          </h5>
+          <ul class="mb-0 " style="line-height: 1.8;">
+            <li>Baca setiap pertanyaan dengan teliti sebelum menjawab.</li>
+            <li>Pilih salah satu opsi jawaban yang menurutmu paling tepat.</li>
+            <li>Tombol <strong>LANJUT</strong> baru akan aktif setelah kamu memilih jawaban.</li>
+            <li>Perhatikan <em>feedback</em> (umpan balik) yang muncul di bawah soal untuk mengetahui apakah
+              jawabanmu
+              benar atau salah.</li>
+            <li>Setelah selesai, kamu bisa menekan tombol <strong>KEMBALI</strong> jika ingin mengulang aktivitas.
+            </li>
+          </ul>
+        </div>
+
+        <div class="quiz-area border-top pt-4">
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold text-dark mb-0">Soal Aktivitas</h5>
+            <span class="badge bg-custom-blue rounded-pill px-3 py-2 fs-6 shadow-sm" id="quizProgress"></span>
+          </div>
+
+          <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+          <div id="feedback" class="mt-3 fw-bold"></div>
+
+          <div class="quiz-nav mt-5 d-flex justify-content-end gap-3">
+            <button id="ulangBtn" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold shadow-sm d-none">
+              <i class="fa-solid fa-rotate-left me-2"></i> KEMBALI
+            </button>
+            <button id="nextBtn" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm" disabled>
+              LANJUT <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination pagination-sm custom-pagination">
+      <li class="page-item" id="prevPageItem">
+        <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+      </li>
+
+      <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+
+      <li class="page-item" id="nextPageItem">
+        <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+
+{% endblock %} {% endblock %}

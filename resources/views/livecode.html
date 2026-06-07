@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Live Python Runner</title>
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+
+    <!-- Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #1e1e1e;
+            color: white;
+            padding: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #00c853;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #output {
+            background: black;
+            padding: 15px;
+            border-radius: 10px;
+            min-height: 100px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>🐍 Live Python Runner</h2>
+
+    <textarea id="code">
+print("Hello World")
+</textarea>
+
+    <br /><br />
+
+    <button onclick="runCode()">▶ Run Code</button>
+
+    <h3>Output:</h3>
+    <pre id="output"></pre>
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+
+    <!-- Python mode -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+
+    <script>
+        // INIT CODEMIRROR
+        const editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+            mode: "python",
+            theme: "dracula",
+            lineNumbers: true,
+            indentUnit: 4,
+            tabSize: 4,
+        });
+
+        editor.setSize("700px", "350px");
+
+        // FUNCTION RUN CODE
+        function runCode() {
+            const code = editor.getValue();
+            const outputBox = document.getElementById("output");
+
+            outputBox.style.color = "white";
+            outputBox.innerText = "⏳ Running...";
+
+            fetch("http://127.0.0.1:5000/run-code", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ code: code }),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+
+                    if (data.status === "error") {
+                        outputBox.style.color = "red";
+                    } else {
+                        outputBox.style.color = "lime";
+                    }
+
+                    outputBox.innerText = data.output;
+                })
+                .catch((err) => {
+                    outputBox.style.color = "red";
+                    outputBox.innerText = err;
+                });
+        }
+
+        // AUTO RUN (opsional)
+        editor.on("change", () => {
+            clearTimeout(window.delay);
+            window.delay = setTimeout(runCode, 1000);
+        });
+    </script>
+
+</body>
+
+</html>

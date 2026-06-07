@@ -1,26 +1,25 @@
 document.addEventListener("DOMContentLoaded", function () {
   const links = document.querySelectorAll(".sidebar-sub");
-  const sidebar = document.querySelector(".sidebar");
-  let currentPath = window.location.pathname.replace(/\/$/, "");
+  const sidebar = document.querySelector("#sidebar");
+  const scrollContainer = document.querySelector(".sidebar-scroll");
 
+  let currentPath = window.location.pathname.replace(/\/$/, "");
   let activeLink = null;
 
   // =========================
-  // AMBIL DATA ACCORDION
+  // LOAD ACCORDION STATE
   // =========================
   let activeAccordions =
     JSON.parse(localStorage.getItem("activeAccordions")) || [];
 
-  // =========================
-  // BUKA ACCORDION
-  // =========================
   activeAccordions.forEach((id) => {
     const el = document.querySelector(id);
     if (el) {
       el.classList.add("show");
 
       const button =
-        el.previousElementSibling.querySelector(".accordion-button");
+        el.previousElementSibling?.querySelector(".accordion-button");
+
       if (button) {
         button.classList.remove("collapsed");
         button.setAttribute("aria-expanded", "true");
@@ -37,11 +36,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (linkPath === currentPath) {
       activeLink = link;
 
-      setTimeout(() => {
-        link.classList.add("active");
-      }, 150);
+      link.classList.add("active");
 
       const collapse = link.closest(".accordion-collapse");
+
       if (collapse) {
         collapse.classList.add("show");
 
@@ -51,12 +49,13 @@ document.addEventListener("DOMContentLoaded", function () {
           activeAccordions.push(id);
           localStorage.setItem(
             "activeAccordions",
-            JSON.stringify(activeAccordions),
+            JSON.stringify(activeAccordions)
           );
         }
 
         const button =
-          collapse.previousElementSibling.querySelector(".accordion-button");
+          collapse.previousElementSibling?.querySelector(".accordion-button");
+
         if (button) {
           button.classList.remove("collapsed");
           button.setAttribute("aria-expanded", "true");
@@ -66,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // =========================
-  // SAVE ACCORDION CLICK
+  // SAVE CLICK ACCORDION
   // =========================
   document.querySelectorAll(".accordion-button").forEach((btn) => {
     btn.addEventListener("click", function () {
@@ -83,20 +82,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
       localStorage.setItem(
         "activeAccordions",
-        JSON.stringify(activeAccordions),
+        JSON.stringify(activeAccordions)
       );
     });
   });
 
   // =========================
-  // AUTO SCROLL KE ACTIVE LINK
+  // AUTO SCROLL FIX (FINAL 🔥)
   // =========================
-  if (activeLink) {
+  if (activeLink && scrollContainer) {
+    // tunggu accordion benar-benar kebuka
     setTimeout(() => {
       activeLink.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
-    }, 300); // tunggu accordion kebuka dulu
+    }, 400);
   }
 });

@@ -1,168 +1,504 @@
+{% set role = session.get('user_role') %}
+{% set id_class = session.get('id_class') %}
+
 <div id="sidebar" class="border-end" style="width:250px; min-height:100vh; background:#1E293B;">
 
     <div class="p-3 fw-bold fs-5 text-white border-bottom text-center">
-        <i class="bi bi-book me-2"></i> Daftar Materi
+        <i class="bi bi-book me-2"></i>
+        Daftar Materi
     </div>
-    <div class="accordion accordion-flush px-2" id="menuAccordion">
-        <a href="/dashboard" class="nav-link sidebar-sub">
-            <i class="bi bi-speedometer2 me-2"></i> Dashboard
-        </a>
-        <!-- Pengantar -->
-        <div class="accordion-item bg-transparent border-0">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed text-white bg-transparent sidebar-link"
-                    data-bs-toggle="collapse" data-bs-target="#bab1">
-                    <i class="bi bi-image me-2"></i>
-                    Pengantar Citra Digital
-                </button>
-            </h2>
-            <div id="bab1" class="accordion-collapse collapse">
-                <div class="accordion-body p-0">
-                    <a href="/materi1/pengantarcitradigital" class="nav-link sidebar-sub">
-                        <i class="bi bi-info-circle"></i> Pengertian Citra Digital
-                    </a>
-                    <a href="/materi1/jeniscitra" class="nav-link sidebar-sub">
-                        <i class="bi bi-collection"></i> Jenis Citra
-                    </a>
-                    <a href="/materi1/rangkuman" class="nav-link sidebar-sub">
-                        <i class="bi bi-file-text"></i> Rangkuman
-                    </a>
-                    <a href="/materi1/kuis" class="nav-link sidebar-sub">
-                        <i class="bi bi-patch-question"></i> Kuis
-                    </a>
+
+    <div class="sidebar-scroll">
+
+        <div class="accordion accordion-flush px-2" id="menuAccordion">
+            {% if session.get('user_role') == 'Teacher' %}
+            <a href="{{ url_for('user.dashboard_dosen') }}" class="nav-link sidebar-sub">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Dashboard
+            </a>
+            {% else %}
+            <a href="{{ url_for('user.dashboard') }}" class="nav-link sidebar-sub">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Dashboard
+            </a>
+            {% endif %}
+
+            {% if role == 'Student' %}
+
+            <div class="accordion-item bg-transparent border-0">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed text-white bg-transparent sidebar-link"
+                        data-bs-toggle="collapse" data-bs-target="#bab1">
+                        <i class="bi bi-image me-2"></i>
+                        Pengantar Citra Digital
+                    </button>
+                </h2>
+                <div id="bab1" class="accordion-collapse collapse">
+                    <div class="accordion-body p-0">
+
+                        {% if (id_class, 1, 1) in aktif_materi %}
+                        <a href="/materi1/pengantarcitradigital" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (1, 1) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-info-circle{% endif %}"></i>
+                            Pengertian Citra Digital
+                        </a>
+                        {% endif %}
+
+                        {% if (id_class, 1, 2) in aktif_materi %}
+                        {% if (1, 1) in completed_materi %}
+                        <a href="/materi1/jeniscitra" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (1, 2) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-collection{% endif %}"></i>
+                            Jenis Citra
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Jenis Citra
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (1, 2) in completed_materi %}
+                        <a href="/materi1/rangkuman" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (1, 3) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-file-text{% endif %}"></i>
+                            Rangkuman
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Rangkuman
+                        </div>
+                        {% endif %}
+
+                        {% if (id_class, 1, 4) in aktif_materi %}
+                        {% if (1, 3) in completed_materi %}
+                        <a href="/materi1/kuis" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (1, 4) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-patch-question{% endif %}"></i>
+                            Kuis
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Kuis
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Segmentasi -->
-        <div class="accordion-item bg-transparent border-0">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed text-white bg-transparent sidebar-link"
-                    data-bs-toggle="collapse" data-bs-target="#bab2">
-                    <i class="bi bi-grid me-2"></i>
-                    Segmentasi Citra
-                </button>
-            </h2>
-            <div id="bab2" class="accordion-collapse collapse">
-                <div class="accordion-body p-0">
-                    <a href="/materi2/pengantarsegmentasi" class="nav-link sidebar-sub">
-                        <i class="bi bi-info-circle"></i> Pengantar Segmentasi
-                    </a>
-                    <a href="/materi2/metodesegmentasi" class="nav-link sidebar-sub">
-                        <i class="bi bi-gear"></i> Metode Segmentasi
-                    </a>
-                    <a href="/materi2/rangkuman" class="nav-link sidebar-sub">
-                        <i class="bi bi-file-text"></i> Rangkuman
-                    </a>
-                    <a href="/materi2/kuis" class="nav-link sidebar-sub">
-                        <i class="bi bi-patch-question"></i> Kuis
-                    </a>
+            <div class="accordion-item bg-transparent border-0">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed text-white bg-transparent sidebar-link"
+                        data-bs-toggle="collapse" data-bs-target="#bab2">
+                        <i class="bi bi-grid me-2"></i>
+                        Segmentasi Citra
+                    </button>
+                </h2>
+                <div id="bab2" class="accordion-collapse collapse">
+                    <div class="accordion-body p-0">
+
+                        {% if (id_class, 2, 5) in aktif_materi %}
+                        {% if (1, 4) in completed_materi %}
+                        <a href="/materi2/pengantarsegmentasi" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (2, 5) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-info-circle{% endif %}"></i>
+                            Pengantar Segmentasi
+                        </a>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (id_class, 2, 6) in aktif_materi %}
+                        {% if (2, 5) in completed_materi %}
+                        <a href="/materi2/metodesegmentasi" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (2, 6) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-gear{% endif %}"></i>
+                            Metode Segmentasi
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Metode Segmentasi
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (2, 6) in completed_materi %}
+                        <a href="/materi2/rangkuman" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (2, 7) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-file-text{% endif %}"></i>
+                            Rangkuman
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Rangkuman
+                        </div>
+                        {% endif %}
+
+                        {% if (id_class, 2, 8) in aktif_materi %}
+                        {% if (2, 7) in completed_materi %}
+                        <a href="/materi2/kuis" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (2, 8) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-patch-question{% endif %}"></i>
+                            Kuis
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Kuis
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Edge -->
-        <div class="accordion-item bg-transparent border-0">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed text-white bg-transparent sidebar-link"
-                    data-bs-toggle="collapse" data-bs-target="#bab3">
-                    <i class="bi bi-bezier2 me-2"></i>
-                    Edge-Based Segmentation
-                </button>
-            </h2>
-            <div id="bab3" class="accordion-collapse collapse">
-                <div class="accordion-body p-0">
-                    <a href="/materi3/pengantaredgebased" class="nav-link sidebar-sub">
-                        <i class="bi bi-info-circle"></i> Pengantar Edge Detection
-                    </a>
-                    <a href="/materi3/edgethresholding" class="nav-link sidebar-sub">
-                        <i class="bi bi-sliders"></i> Image Thresholding
-                    </a>
-                    <a href="/materi3/bordertracing" class="nav-link sidebar-sub">
-                        <i class="bi bi-diagram-2"></i> Border Tracing
-                    </a>
-                    <a href="/materi3/rangkuman" class="nav-link sidebar-sub">
-                        <i class="bi bi-file-text"></i> Rangkuman
-                    </a>
-                    <a href="/materi3/kuis" class="nav-link sidebar-sub">
-                        <i class="bi bi-patch-question"></i> Kuis
-                    </a>
+            <div class="accordion-item bg-transparent border-0">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed text-white bg-transparent sidebar-link"
+                        data-bs-toggle="collapse" data-bs-target="#bab3">
+                        <i class="bi bi-bezier2 me-2"></i>
+                        Edge-Based Segmentation
+                    </button>
+                </h2>
+                <div id="bab3" class="accordion-collapse collapse">
+                    <div class="accordion-body p-0">
+
+                        {% if (id_class, 3, 9) in aktif_materi %}
+                        {% if (2, 8) in completed_materi %}
+                        <a href="/materi3/pengantaredgebased" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (3, 9) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-info-circle{% endif %}"></i>
+                            Pengantar Edge-Based
+                        </a>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (id_class, 3, 10) in aktif_materi %}
+                        {% if (3, 9) in completed_materi %}
+                        <a href="/materi3/tahapanedgebased" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (3, 10) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-sliders{% endif %}"></i>
+                            Tahapan Edge-Based
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Tahapan Edge-Based
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (id_class, 3, 11) in aktif_materi %}
+                        {% if (3, 10) in completed_materi %}
+                        <a href="/materi3/praktekedgebased" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (3, 11) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-diagram-2{% endif %}"></i>
+                            Praktek Edge-Based
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Praktek Edge-Based
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (3, 11) in completed_materi %}
+                        <a href="/materi3/rangkuman" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (3, 12) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-file-text{% endif %}"></i>
+                            Rangkuman
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Rangkuman
+                        </div>
+                        {% endif %}
+
+                        {% if (id_class, 3, 13) in aktif_materi %}
+                        {% if (3, 12) in completed_materi %}
+                        <a href="/materi3/kuis" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (3, 13) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-patch-question{% endif %}"></i>
+                            Kuis
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Kuis
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Threshold -->
-        <div class="accordion-item bg-transparent border-0">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed text-white bg-transparent sidebar-link"
-                    data-bs-toggle="collapse" data-bs-target="#bab4">
-                    <i class="bi bi-sliders me-2"></i>
-                    Threshold-Based Segmentation
-                </button>
-            </h2>
-            <div id="bab4" class="accordion-collapse collapse">
-                <div class="accordion-body p-0">
-                    <a href="/materi4/pengantarthresholdbased" class="nav-link sidebar-sub">
-                        <i class="bi bi-info-circle"></i> Pengantar Thresholding
-                    </a>
-                    <a href="/materi4/penerapanthresholding" class="nav-link sidebar-sub">
-                        <i class="bi bi-play-circle"></i> Penerapan Thresholding
-                    </a>
-                    <a href="/materi4/menentukanthreshold" class="nav-link sidebar-sub">
-                        <i class="bi bi-calculator"></i> Menentukan Nilai Threshold
-                    </a>
-                    <a href="/materi4/rangkuman" class="nav-link sidebar-sub">
-                        <i class="bi bi-file-text"></i> Rangkuman
-                    </a>
-                    <a href="/materi4/kuis" class="nav-link sidebar-sub">
-                        <i class="bi bi-patch-question"></i> Kuis
-                    </a>
+            <div class="accordion-item bg-transparent border-0">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed text-white bg-transparent sidebar-link"
+                        data-bs-toggle="collapse" data-bs-target="#bab4">
+                        <i class="bi bi-sliders me-2"></i>
+                        Threshold-Based
+                    </button>
+                </h2>
+                <div id="bab4" class="accordion-collapse collapse">
+                    <div class="accordion-body p-0">
+
+                        {% if (id_class, 4, 14) in aktif_materi %}
+                        {% if (3, 13) in completed_materi %}
+                        <a href="/materi4/pengantarthresholdbased" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (4, 14) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-info-circle{% endif %}"></i>
+                            Pengantar Thresholding
+                        </a>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (id_class, 4, 15) in aktif_materi %}
+                        {% if (4, 14) in completed_materi %}
+                        <a href="/materi4/histogram" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (4, 15) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-play-circle{% endif %}"></i>
+                            Histogram
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Histogram
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (id_class, 4, 16) in aktif_materi %}
+                        {% if (4, 15) in completed_materi %}
+                        <a href="/materi4/metodethresholding" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (4, 16) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-calculator{% endif %}"></i>
+                            Metode Thresholding
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Metode Thresholding
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (4, 16) in completed_materi %}
+                        <a href="/materi4/rangkuman" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (4, 17) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-file-text{% endif %}"></i>
+                            Rangkuman
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Rangkuman
+                        </div>
+                        {% endif %}
+
+                        {% if (id_class, 4, 18) in aktif_materi %}
+                        {% if (4, 17) in completed_materi %}
+                        <a href="/materi4/kuis" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (4, 18) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-patch-question{% endif %}"></i>
+                            Kuis
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Kuis
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Region -->
-        <div class="accordion-item bg-transparent border-0">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed text-white bg-transparent sidebar-link"
-                    data-bs-toggle="collapse" data-bs-target="#bab5">
-                    <i class="bi bi-diagram-3 me-2"></i>
-                    Region-Based Segmentation
-                </button>
-            </h2>
-            <div id="bab5" class="accordion-collapse collapse">
-                <div class="accordion-body p-0">
-                    <a href="/materi5/pengantarregionbased" class="nav-link sidebar-sub">
-                        <i class="bi bi-info-circle"></i> Pengantar Region-Based
-                    </a>
-                    <a href="/materi5/regionmerge" class="nav-link sidebar-sub">
-                        <i class="bi bi-arrow-left-right"></i> Region Merging
-                    </a>
-                    <a href="/materi5/splitandmerge" class="nav-link sidebar-sub">
-                        <i class="bi bi-layout-split"></i> Split and Merge
-                    </a>
-                    <a href="/materi5/postprocessing" class="nav-link sidebar-sub">
-                        <i class="bi bi-magic"></i> Post-Processing
-                    </a>
-                    <a href="/materi5/rangkuman" class="nav-link sidebar-sub">
-                        <i class="bi bi-file-text"></i> Rangkuman
-                    </a>
-                    <a href="/materi5/kuis" class="nav-link sidebar-sub">
-                        <i class="bi bi-patch-question"></i> Kuis
-                    </a>
+            <div class="accordion-item bg-transparent border-0">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed text-white bg-transparent sidebar-link"
+                        data-bs-toggle="collapse" data-bs-target="#bab5">
+                        <i class="bi bi-diagram-3 me-2"></i>
+                        Region-Based
+                    </button>
+                </h2>
+                <div id="bab5" class="accordion-collapse collapse">
+                    <div class="accordion-body p-0">
+
+                        {% if (id_class, 5, 19) in aktif_materi %}
+                        {% if (4, 18) in completed_materi %}
+                        <a href="/materi5/pengantarregionbased" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (5, 19) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-info-circle{% endif %}"></i>
+                            Pengantar Region-Based
+                        </a>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (id_class, 5, 20) in aktif_materi %}
+                        {% if (5, 19) in completed_materi %}
+                        <a href="/materi5/regiongrowing" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (5, 20) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-arrow-left-right{% endif %}"></i>
+                            Region Growing
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Region Growing
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (id_class, 5, 21) in aktif_materi %}
+                        {% if (5, 20) in completed_materi %}
+                        <a href="/materi5/splitandmerge" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (5, 21) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-layout-split{% endif %}"></i>
+                            Split and Merge
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Split and Merge
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if (5, 21) in completed_materi %}
+                        <a href="/materi5/rangkuman" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (5, 22) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-file-text{% endif %}"></i>
+                            Rangkuman
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Rangkuman
+                        </div>
+                        {% endif %}
+
+                        {% if (id_class, 5, 23) in aktif_materi %}
+                        {% if (5, 22) in completed_materi %}
+                        <a href="/materi5/kuis" class="nav-link sidebar-sub">
+                            <i
+                                class="bi {% if (5, 23) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-patch-question{% endif %}"></i>
+                            Kuis
+                        </a>
+                        {% else %}
+                        <div class="nav-link sidebar-sub text-secondary opacity-50">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            Kuis
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Evaluasi -->
-        <div class="accordion-item bg-transparent border-0">
-            <h2 class="accordion-header">
-                <a href="#" class="accordion-button no-arrow text-white bg-transparent sidebar-link">
-                    <i class="bi bi-clipboard-check me-2"></i>
-                    Evaluasi
+            <div class="accordion-item bg-transparent border-0">
+                <h2 class="accordion-header">
+                    {% if
+                    (1, 4) in completed_materi and
+                    (2, 8) in completed_materi and
+                    (3, 13) in completed_materi and
+                    (4, 18) in completed_materi and
+                    (5, 23) in completed_materi
+                    %}
+                    {% if (id_class, 6, 24) in aktif_materi %}
+                    <a href="/evaluasi" class="accordion-button no-arrow text-white bg-transparent sidebar-link">
+                        <i
+                            class="bi {% if (6, 24) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-clipboard-check{% endif %} me-2"></i>
+                        Evaluasi
+                    </a>
+                    {% endif %}
+                    {% else %}
+                    <div class="accordion-button no-arrow text-secondary bg-transparent sidebar-link opacity-50">
+                        <i class="bi bi-lock-fill me-2"></i>
+                        Evaluasi Terkunci
+                    </div>
+                    {% endif %}
+                </h2>
+            </div>
+
+            {% endif %}
+
+            {% if role == 'Teacher' %}
+            <div class="mt-3 px-2">
+
+                <div class="text-white small fw-bold mb-2" style="opacity: 0.7;">
+                    DATA AKADEMIK
+                </div>
+
+                <a href="/datakelas"
+                    class="nav-link sidebar-sub {% if request.path == '/datakelas' %}active{% endif %}">
+                    <i class="bi bi-journal-text me-2"></i> Data Kelas
                 </a>
-            </h2>
+
+                <a href="/datasiswa"
+                    class="nav-link sidebar-sub {% if request.path == '/datasiswa' %}active{% endif %}">
+                    <i class="bi bi-people me-2"></i> Data Siswa
+                </a>
+
+                <a href="/dataprogress"
+                    class="nav-link sidebar-sub {% if request.path == '/dataprogress' %}active{% endif %}">
+                    <i class="bi bi-graph-up-arrow me-2"></i> Data Progres
+                </a>
+
+                <a href="/datanilai" class="nav-link sidebar-sub
+       {% if request.path.startswith('/detailnilai') %}
+       active
+       {% endif %}">
+                    <i class="bi bi-bar-chart-line me-2"></i> Data Nilai
+                </a>
+
+                <a href="/datasoal" class="nav-link sidebar-sub
+   {% if request.path == '/datasoal'
+   or request.path.startswith('/editsoal')
+   or request.path.startswith('/tambahsoal') %}
+   active
+   {% endif %}">
+
+                    <i class="bi bi-patch-question me-2"></i>
+                    Data Soal
+                </a>
+
+                <a href="/dataaktivitas" class="nav-link sidebar-sub
+   {% if request.path.startswith('/aturaktivitas') %}
+   active
+   {% endif %}">
+
+                    <i class="bi bi-clipboard-data me-2"></i>
+                    Data Aktivitas
+                </a>
+
+                <a href="{{ url_for('user.settings_kelas') }}" class="nav-link sidebar-sub
+   {% if request.path.startswith('/settings-kelas') %}
+   active
+   {% endif %}">
+
+                    <i class="bi bi-gear me-2"></i>
+                    Setting KKM
+
+                </a>
+
+            </div>
+            {% endif %}
+
         </div>
 
     </div>
+
 </div>

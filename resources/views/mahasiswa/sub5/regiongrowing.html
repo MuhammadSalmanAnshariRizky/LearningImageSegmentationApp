@@ -1,0 +1,798 @@
+{% extends 'layouts/base.html' %} {% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kodeeditor.css') }}" />
+{% endblock %} {% block content %}
+<div class="container mt-4">
+  <!-- PROGRESS -->
+  <div class="card border shadow-sm mb-4 rounded-4">
+    <div class="card-body px-4 py-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold text-dark">Progress Belajar</span>
+        <span class="text-success fw-bold">{{ progress }}%</span>
+      </div>
+      <div class="progress rounded-pill bg-light" style="height: 10px;">
+        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill" role="progressbar"
+          style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- PAGE 1 -->
+  <div class="page-section active">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-seedling me-2"></i> 5.2 Region Growing
+        </h3>
+
+        <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-4">
+            <strong>Region Growing</strong> merupakan metode segmentasi yang membentuk region dengan cara menambahkan
+            piksel-piksel yang memiliki karakteristik serupa ke dalam suatu region awal (<em>seed point</em>). Proses
+            ini dimulai dengan memilih satu atau lebih <em>seed point</em>, kemudian region diperluas dengan menambahkan
+            piksel-piksel tetangga yang memenuhi kriteria kesamaan tertentu.
+          </p>
+
+          <p class="mb-4">
+            Secara umum, kesamaan (<em>similarity</em>) dapat ditentukan berdasarkan intensitas, warna, tekstur, maupun
+            atribut lainnya. Akan tetapi, kesamaan saja belum cukup untuk membentuk suatu region. Piksel yang akan
+            dimasukkan ke dalam region juga harus memiliki hubungan spasial dengan region yang sedang tumbuh. Oleh
+            karena itu, Region Growing menggunakan dua konsep utama, yaitu <em>similarity</em> dan
+            <em>connectivity</em>. Proses Region Growing dilakukan dengan memanfaatkan <em>seed point</em>,
+            <em>predicate of similarity</em>, dan <em>connectivity</em> untuk membentuk suatu region.
+          </p>
+
+          <div class="border border-custom-blue border-2 rounded-3 p-4 mb-5 bg-white shadow-sm">
+            <h5 class="fw-bold text-custom-blue mb-3">
+              <i class="fa-solid fa-list-ol me-2"></i> Algoritma Region Growing
+            </h5>
+            <ol class="mb-0 text-dark" style="line-height: 1.8;">
+              <li class="mb-3">
+                <strong>Menentukan Seed Point:</strong><br>
+                Langkah pertama adalah menentukan satu atau lebih <em>seed point</em> yang akan digunakan sebagai titik
+                awal pertumbuhan <em>region</em>. Jika terdapat beberapa <em>seed point</em> yang saling terhubung, maka
+                setiap kelompok seed point direduksi menjadi satu titik representatif dan diberi label awal. <em>Seed
+                  point</em> dipilih pada area yang diyakini merupakan bagian dari objek yang akan disegmentasi.
+              </li>
+              <li class="mb-3">
+                <strong>Membentuk Citra Kandidat berdasarkan predicate:</strong><br>
+                Selanjutnya dilakukan pemeriksaan terhadap seluruh piksel pada citra menggunakan suatu
+                <em>predicate</em> atau kriteria kesamaan. Suatu piksel akan diberi nilai 1 apabila memenuhi kriteria
+                yang ditentukan, dan diberi nilai 0 apabila tidak memenuhi kriteria tersebut. Sebagai contoh, jika
+                kesamaan ditentukan berdasarkan intensitas, maka predicate dapat dituliskan sebagai:
+                <div class="my-3 text-center text-dark fw-bold">
+                  \[ Q = \begin{cases} \text{TRUE}, & |f(x,y) - f_s| \le T \\ \text{FALSE}, & \text{lainnya} \end{cases}
+                  \]
+                </div>
+                <div class=" ps-3">
+                  Keterangan:<br>
+                  \( f(x,y) \) = intensitas piksel yang diperiksa,<br>
+                  \( f_s \) = intensitas seed point,<br>
+                  \( T \) = nilai toleransi.
+                </div>
+                <p class="mt-2 mb-0">Hasil tahap ini berupa citra kandidat yang berisi piksel-piksel yang dianggap
+                  memiliki karakteristik serupa dengan seed point.</p>
+              </li>
+              <li class="mb-3">
+                <strong>Menambahkan piksel yang terhubung dengan seed point:</strong><br>
+                Setelah diperoleh piksel-piksel kandidat, proses berikutnya adalah memeriksa <em>connectivity</em>. Pada
+                pendekatan <em>8-connectivity</em>, suatu piksel hanya dapat dimasukkan ke dalam region apabila memenuhi
+                <em>predicate</em> kesamaan dan terhubung dengan <em>seed point</em> melalui hubungan
+                <em>8-neighbor</em>. Dengan demikian, piksel yang memiliki intensitas serupa tetapi tidak terhubung
+                dengan seed point tidak akan dimasukkan ke dalam region.
+              </li>
+              <li>
+                <strong>Memberikan label pada region:</strong><br>
+                Piksel-piksel yang berhasil bergabung akan membentuk suatu <em>connected component</em>. Setiap
+                connected component kemudian diberi label region yang berbeda. Hasil pelabelan inilah yang menjadi hasil
+                akhir segmentasi Region Growing.
+              </li>
+            </ol>
+          </div>
+
+          <h4 class="fw-bold mb-3 text-custom-blue mt-5">Contoh Perhitungan Region Growing</h4>
+          <p class="mb-4">
+            Misalkan terdapat citra grayscale sederhana berukuran \( 4 \times 5 \) dengan nilai intensitas sebagai
+            berikut:
+          </p>
+
+          <div class="table-responsive my-4">
+            <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1 shadow-sm"
+              style="max-width: 300px;">
+              <tr>
+                <td>48</td>
+                <td>50</td>
+                <td>52</td>
+                <td>150</td>
+                <td>152</td>
+              </tr>
+              <tr>
+                <td>49</td>
+                <td>51</td>
+                <td>53</td>
+                <td>148</td>
+                <td>151</td>
+              </tr>
+              <tr>
+                <td>47</td>
+                <td>50</td>
+                <td>52</td>
+                <td>149</td>
+                <td>150</td>
+              </tr>
+              <tr>
+                <td>46</td>
+                <td>48</td>
+                <td>51</td>
+                <td>151</td>
+                <td>153</td>
+              </tr>
+            </table>
+            <p class="text-center  text-muted mt-2"><em>Matriks Citra Awal Grayscale</em></p>
+          </div>
+
+          <p class="mb-4">
+            Tujuan segmentasi adalah mengidentifikasi region yang memiliki karakteristik intensitas serupa dengan seed
+            point yang dipilih. Berikut adalah tahapan simulasinya secara mendetail:
+          </p>
+
+          <div class="ps-3 border-start border-3 border-custom-blue text-dark mb-5">
+
+            <p class="mb-4">
+              <span class="badge bg-custom-blue px-3 py-2 rounded-2 mb-2">Tahap 1</span><br>
+              <strong>Menentukan Seed Array \( S(x,y) \)</strong><br>
+              Seed Array digunakan untuk menunjukkan lokasi seed point. Misalkan dipilih seed point pada piksel bernilai
+              51 yang berada pada baris ke-2 kolom ke-2. Maka:
+            <div class="table-responsive my-3">
+              <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1"
+                style="max-width: 250px; font-size: 0.9rem;">
+                <tr>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>0</td>
+                  <td class="bg-warning text-dark">1</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+              </table>
+            </div>
+            <div class=" >
+              Keterangan:<br>
+              Nilai 1 menunjukkan lokasi seed point.<br>
+              Nilai 0 menunjukkan bukan seed point.<br>
+              Jadi seed point berfungsi sebagai titik awal pertumbuhan region.
+            </div>
+            </p>
+
+            <p class=" mb-4">
+              <span class="badge bg-custom-blue px-3 py-2 rounded-2 mb-2">Tahap 2</span><br>
+              <strong>Menentukan Predicate \( Q \)</strong><br>
+              Predicate merupakan aturan yang digunakan untuk menentukan apakah suatu piksel cukup mirip
+              (<em>Similarity</em>) untuk bergabung ke dalam region. Sebagai contoh:
+              <div class="my-3 text-center">
+                \[ Q = \begin{cases} \text{TRUE}, & |f(x,y) - f_s| \le 5 \\ \text{FALSE}, & \text{lainnya} \end{cases}
+                \]
+              </div>
+              <div class=" mb-3">
+                dengan: \( f(x,y) \) = intensitas piksel yang diperiksa, \( f_s \) = intensitas seed point (yaitu 51),
+                dan
+                5 = nilai toleransi.
+              </div>
+              Artinya: Jika selisih intensitas piksel dengan seed point kurang dari atau sama dengan 5, maka piksel
+              dianggap mirip. Jika selisihnya lebih dari 5, maka piksel dianggap tidak mirip.
+              </p>
+
+              <p class="mb-4">
+                <span class="badge bg-custom-blue px-3 py-2 rounded-2 mb-2">Tahap 3</span><br>
+                <strong>Periksa Seluruh Piksel Menggunakan Predicate \( Q \)</strong><br>
+                Periksa seluruh piksel pada citra menggunakan predicate \( Q \).<br>
+                Misalnya pada koordinat tertentu: \( |48 - 51| = 3 \). Karena \( 3 \le 5 \), maka hasil \( Q =
+                \text{TRUE}
+                \) (bernilai 1).<br><br>
+                Setelah semua piksel diperiksa, diperoleh matriks kandidat \( f_Q \) sebagai berikut:
+              <div class="table-responsive my-3">
+                <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1"
+                  style="max-width: 250px; font-size: 0.9rem;">
+                  <tr>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                </table>
+              </div>
+              <span class=" >Nilai 1 menunjukkan piksel yang memenuhi predicate.</span>
+            </p>
+
+            <p class=" mb-4">
+                <span class="badge bg-custom-blue px-3 py-2 rounded-2 mb-2">Tahap 4</span><br>
+                <strong>Melakukan Pertumbuhan Region (Region Growing)</strong><br>
+                Mulai dari seed point, kemudian tambahkan semua piksel bernilai 1 yang terhubung dengan seed point
+                menggunakan <em>8-connectivity</em>.
+                </p>
+
+                <img src="{{ url_for('static', filename='img/sub5/8-connectivity.png') }}"
+                  class="img-fluid text-center mb-0"
+                  style="max-width: 40%; height: auto; display: block; margin-left: auto; margin-right: auto;">
+                <p class="mt-0 mb-3 text-muted  text-center small"><em>Gambar 5.2 Pengecekan connectivity menggunakan
+                    8-connectivity
+                    sederhana</em>
+                </p>
+
+
+                <p class="mb-0">
+                  Semua tetangga di sekitar piksel diperiksa. Jika memiliki kondisi memenuhi predicate dan terhubung
+                  dengan
+                  seed point, maka piksel dimasukkan ke dalam region. Pada contoh ini seluruh piksel di sisi kiri akan
+                  bergabung menjadi satu <em>region</em> karena saling terhubung.
+                </p>
+            </div>
+
+            <p class="fw-bold mb-2 text-custom-blue">Hasil Akhir Pelabelan Region</p>
+            <p class="mb-3">Setelah tidak ada lagi piksel yang dapat ditambahkan, region diberi label khusus:</p>
+
+            <div class="table-responsive my-4">
+              <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1 shadow-sm"
+                style="max-width: 250px; font-size: 0.9rem;">
+                <tr>
+                  <td class="table-success">1</td>
+                  <td class="table-success">1</td>
+                  <td class="table-success">1</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td class="table-success">1</td>
+                  <td class="table-success text-danger">1</td>
+                  <td class="table-success">1</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td class="table-success">1</td>
+                  <td class="table-success">1</td>
+                  <td class="table-success">1</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td class="table-success">1</td>
+                  <td class="table-success">1</td>
+                  <td class="table-success">1</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+              </table>
+              <p class="text-center  text-muted mt-2"><em>Label 1 menunjukkan region hasil segmentasi objek</em>
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Praktek region growing -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h4 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-laptop-code me-2"></i> 5.3 Praktek Region Growing dengan Python
+        </h4>
+
+        <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-4">Perhatikan langkah-langkah dibawah ini sebagai penerapan dari region growing menggunakan
+            python:</p>
+
+          <p class="fw-bold mb-2">1. Import Library yang diperlukan</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                1<br>2<br>3
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">
+            Baris 1 mengimpor pustaka OpenCV yang digunakan untuk membaca dan mengolah citra.
+            Baris 2 mengimpor pustaka NumPy yang digunakan untuk operasi matriks dan array.
+            Baris 3 mengimpor pustaka Matplotlib yang digunakan untuk menampilkan hasil segmentasi.
+          </p>
+
+          <p class="fw-bold mb-2">2. Membaca citra grayscale</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                4
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+img = cv2.imread('mobil_tank.jpg', cv2.IMREAD_GRAYSCALE)
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">Baris 4 digunakan untuk membaca citra dalam format grayscale.</p>
+
+          <p class="fw-bold mb-2">3. Menentukan Seed point</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                5
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+seed = (270, 220)
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">
+            Seed point merupakan titik awal pertumbuhan region. Koordinat ditulis dalam format: \( (x, y) \).
+            Pada contoh ini seed point ditempatkan pada bagian badan tank sehingga region akan tumbuh mengikuti
+            karakteristik intensitas objek tersebut.
+          </p>
+
+          <p class="fw-bold mb-2">4. Menentukan nilai toleransi</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                6
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+threshold = 31
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">
+            Threshold digunakan sebagai batas toleransi kesamaan intensitas.
+            Semakin kecil nilai threshold, semakin ketat kriteria kesamaan piksel.
+            Semakin besar nilai threshold, semakin banyak piksel yang dapat bergabung ke dalam region.
+          </p>
+
+          <p class="fw-bold mb-2">5. Melakukan proses Region Growing</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                28<br>30<br>32<br>34<br>36<br>38<br>40<br>42<br>43<br>45<br>48<br>50<br>53<br>54<br>56<br>57<br>59
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+rows, cols = img.shape
+segmented = np.zeros((rows, cols), np.uint8)
+visited = np.zeros((rows, cols), np.bool_)
+seed_value = int(img[seed])
+queue = [seed]
+
+while len(queue) > 0:
+    x, y = queue.pop(0)
+    if visited[x, y]:
+        continue
+    visited[x, y] = True
+    
+    if abs(int(img[x, y]) - seed_value) &lt;= threshold:
+        segmented[x, y] = 255
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                nx = x + dx
+                ny = y + dy
+                queue.append((nx, ny))
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">
+            Bagian ini merupakan inti dari algoritma Region Growing. Program dimulai dengan mengambil nilai intensitas
+            pada seed point sebagai acuan pembentukan region.
+            Piksel yang memenuhi kriteria kesamaan dan terhubung dengan region akan ditambahkan ke dalam antrian (queue)
+            untuk diperiksa pada iterasi berikutnya. Proses ini terus berulang hingga tidak ada lagi piksel yang dapat
+            ditambahkan ke dalam region.
+          </p>
+
+          <p class="fw-bold mb-2">6. Menampilkan hasil</p>
+          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                69<br>71<br>72<br>73<br>74<br>75<br>77<br>78<br>79<br>81<br>82
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">
+plt.figure(figsize=(12,5))
+plt.subplot(1,2,1)
+plt.imshow(img, cmap='gray')
+plt.scatter(seed[1], seed[0], color='red', s=50, label='Seed Point')
+plt.title('Citra Asli')
+plt.legend()
+plt.subplot(1,2,2)
+plt.imshow(segmented, cmap='gray')
+plt.title('Hasil Region Growing')
+plt.tight_layout()
+plt.show()
+</pre>
+              </div>
+            </div>
+          </div>
+          <p class="mb-4 text-dark">
+            Bagian ini digunakan untuk menampilkan hasil segmentasi. Gambar pertama menunjukkan citra asli beserta
+            posisi seed point yang ditandai dengan titik merah.
+            Gambar kedua menunjukkan hasil Region Growing yang berisi region hasil segmentasi berdasarkan kesamaan
+            intensitas dan keterhubungan piksel terhadap seed point.
+          </p>
+
+          <img src="{{ url_for('static', filename='img/sub5/RegionGrowing.png') }}" class="img-fluid"
+            style="max-width: 100%; height: auto;">
+          <p class="mt-3 mb-3 text-muted small text-center "><em>Gambar 5. 3 Output penerapan Region Growing pada
+              Python</em></p>
+
+          <p class="mb-3 text-dark">
+            Terlihat bahwa sebagian besar badan tank berhasil tersegmentasi dengan baik. Hal ini menunjukkan bahwa
+            piksel-piksel pada area tersebut memiliki intensitas yang mirip dengan seed point dan saling terhubung
+            melalui hubungan 8-connectivity. Sebaliknya, area tanah dan objek lain di sekitar tank tidak ikut bergabung
+            ke dalam region karena memiliki karakteristik intensitas yang berbeda.
+          </p>
+          <p class="mb-3 text-dark">
+            Meskipun demikian, masih terlihat beberapa bagian kecil pada tank yang tidak ikut tersegmentasi, seperti
+            beberapa detail pada bagian atas dan roda kendaraan. Hal ini terjadi karena terdapat variasi intensitas pada
+            bagian-bagian tersebut sehingga tidak memenuhi nilai toleransi (threshold) yang telah ditentukan.
+          </p>
+          <p class="mb-0 text-dark">
+            Keberhasilan segmentasi dipengaruhi oleh dua faktor utama, yaitu pemilihan seed point dan nilai threshold
+            yang digunakan sebagai kriteria kesamaan. Pada contoh ini, seed point yang ditempatkan di dalam objek mampu
+            menghasilkan region yang cukup representatif sehingga bentuk tank dapat dikenali dengan jelas. Hasil ini
+            menunjukkan bahwa Region Growing tidak hanya mempertimbangkan kesamaan intensitas, tetapi juga memperhatikan
+            keterhubungan antar piksel dalam membentuk suatu region.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- kode program region growing -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <div class="mt-2 mb-5 text-center">
+          <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+            <div class="px-4 py-2 rounded-3 text-white shadow-sm" style="background-color: #1e293b;">
+              <h5 class="fw-bold mb-0">
+                <i class="fa-solid fa-rocket me-2"></i> Ayo Coba Sendiri!
+              </h5>
+            </div>
+            <button type="button"
+              class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-medium shadow-sm d-flex align-items-center"
+              data-bs-toggle="modal" data-bs-target="#panduanRegionModal" style="height: 100%;">
+              <i class="fa-solid fa-circle-question me-2"></i> Cara Penggunaan
+            </button>
+          </div>
+          <p class="text-dark mt-3 mb-0 fw-medium" style="font-size: 1.05rem;">
+            Unggah sampel gambar dan selesaikan kode program di bawah ini untuk mengekstraksi objek menggunakan
+            segmentasi berbasis wilayah (<strong>Region Growing</strong>).
+          </p>
+        </div>
+
+        <div class="modal fade" id="panduanRegionModal" tabindex="-1" aria-labelledby="panduanRegionModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+              <div class="modal-header border-bottom-0 px-4 px-md-5 pt-4 pb-2">
+                <h5 class="modal-title fw-bold text-custom-blue" id="panduanRegionModalLabel">
+                  <i class="fa-solid fa-circle-info me-2"></i> Panduan Penggunaan Live Code
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body px-4 px-md-5 pb-4">
+                <div class="row g-4 text-secondary mt-1" style="font-size: 0.95rem; line-height: 1.7;">
+                  <div class="col-md-6">
+                    <div class="d-flex mb-3">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">1</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Upload Gambar</strong><br>
+                        Klik area <em>"Upload Gambar Sampel"</em> di sebelah kiri atau <em>drag & drop</em> gambarmu ke
+                        kotak tersebut. Pastikan nama filenya muncul di daftar berkas berkas.
+                      </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">2</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Lengkapi Kode Program</strong><br>
+                        Isi bagian kode yang rumpang (ditandai dengan parameter <code>_____</code>). Sesuaikan nama file
+                        di fungsi <code>imread()</code> dengan gambar yang di-upload serta tentukan koordinat seed
+                        point!
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="d-flex mb-3">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">3</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Jalankan Kode (Run)</strong><br>
+                        Klik tombol <strong>Play</strong> di pojok kanan atas cell. Hasil visualisasi titik seed pada
+                        citra asli serta masker biner region growing akan tampil langsung di bawah cell.
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">4</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Manajemen Lembar Kerja</strong><br>
+                        Gunakan tombol <strong class="text-primary">+ Add Cell</strong> di pojok kanan atas untuk
+                        menambah area kode baru atau klik ikon <strong>Trash</strong> merah untuk menghapus.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer border-top-0 px-4 px-md-5 pb-4 pt-0 justify-content-end">
+                <button type="button" class="btn text-white rounded-pill px-4" style="background-color: #1e293b;"
+                  data-bs-dismiss="modal">
+                  Saya Mengerti
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="notebook-wrapper border border-2 rounded-4 shadow-sm overflow-hidden mb-3">
+          <aside class="sidebar bg-light p-3 border-end">
+            <div class="sidebar-header mb-3 border-bottom pb-2">
+              <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-folder-open me-2 text-custom-blue"></i> File
+                Workspace</h6>
+            </div>
+            <div class="upload-area border border-dashed rounded-3 p-3 text-center bg-white" style="cursor:pointer;"
+              onclick="triggerRegionUpload()">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon fs-2 text-custom-blue mb-2"></i>
+              <p class="mb-1 text-dark fw-bold" style="font-size:0.9rem;">Upload Gambar Sampel</p>
+              <span class="text-dark small">Drag & drop atau klik</span>
+            </div>
+            <ul id="regionFileList" class="file-list mt-3 p-0">
+              <li class="empty list-unstyled text-center text-dark small py-2"><i class="fa-regular fa-file me-2"></i>
+                Belum ada berkas</li>
+            </ul>
+            <input type="file" id="regionFileInput" hidden onchange="handleRegionUpload(event)">
+          </aside>
+
+          <main class="workspace">
+            <div class="workspace-header">
+              <div class="title">
+                <i class="fa-solid fa-code me-2"></i>Live Region Growing Segmentation Notebook
+              </div>
+              <div class="actions">
+                <button class="btn-add" onclick="addRegionCell()">
+                  <i class="fa-solid fa-plus"></i> Add Cell
+                </button>
+              </div>
+            </div>
+
+            <div id="regionNotebook" class="cells"></div>
+          </main>
+        </div>
+
+        <div class="modal fade" id="regionImageModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow-lg" style="background-color: #1e293b;">
+              <div class="modal-header border-bottom-0 px-4 pt-4 pb-0">
+                <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-image text-info me-2"></i> Preview
+                  Hasil Segmentasi Wilayah</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+              </div>
+              <div class="modal-body text-center p-4">
+                <img id="regionModalImage" src="" class="img-fluid rounded-3 shadow-lg border border-secondary"
+                  style="max-height: 70vh; width: auto;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
+
+      <div class="bg-custom-blue text-white p-4">
+        <h3 class="fw-bold mb-0">
+          <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+        </h3>
+      </div>
+
+      <div class="card-body p-4 p-md-5">
+
+        <p class="mb-4" style="font-size: 1.05rem;">
+          Untuk menguji pemahaman kamu pada materi di atas, silakan kerjakan aktivitas berikut ini!
+        </p>
+
+        <div class="border border-custom-blue border-2 rounded-3 p-4 mb-5 bg-white">
+          <h5 class="fw-bold text-custom-blue mb-3">
+            <i class="fa-solid fa-clipboard-list me-2"></i> Petunjuk Pengerjaan
+          </h5>
+          <ul class="mb-0 " style="line-height: 1.8;">
+            <li>Baca setiap pertanyaan dengan teliti sebelum menjawab.</li>
+            <li>Pilih salah satu opsi jawaban yang menurutmu paling tepat.</li>
+            <li>Tombol <strong>LANJUT</strong> baru akan aktif setelah kamu memilih jawaban.</li>
+            <li>Perhatikan <em>feedback</em> (umpan balik) yang muncul di bawah soal untuk mengetahui apakah
+              jawabanmu
+              benar atau salah.</li>
+            <li>Setelah selesai, kamu bisa menekan tombol <strong>KEMBALI</strong> jika ingin mengulang aktivitas.
+            </li>
+          </ul>
+        </div>
+
+        <div class="quiz-area border-top pt-4">
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold text-dark mb-0">Soal Aktivitas</h5>
+            <span class="badge bg-custom-blue rounded-pill px-3 py-2 fs-6 shadow-sm" id="quizProgress"></span>
+          </div>
+
+          <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+          <div id="feedback" class="mt-3 fw-bold"></div>
+
+          <div class="quiz-nav mt-5 d-flex justify-content-end gap-3">
+            <button id="ulangBtn" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold shadow-sm d-none">
+              <i class="fa-solid fa-rotate-left me-2"></i> KEMBALI
+            </button>
+            <button id="nextBtn" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm" disabled>
+              LANJUT <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination pagination-sm custom-pagination">
+      <li class="page-item" id="prevPageItem">
+        <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+      </li>
+
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(0)">1</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(1)">2</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(2)">3</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(3)">4</a>
+      </li>
+      <li class="page-item" id="nextPageItem">
+        <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sub5/regiongrowing.js') }}"></script>
+{% endblock %} {% endblock %}

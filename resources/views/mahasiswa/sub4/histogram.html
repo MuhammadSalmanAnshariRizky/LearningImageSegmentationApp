@@ -1,0 +1,217 @@
+{% extends 'layouts/base.html' %} {% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}" />
+{% endblock %} {% block content %}
+<div class="container mt-4">
+  <!-- PROGRESS -->
+  <div class="card border shadow-sm mb-4 rounded-4">
+    <div class="card-body px-4 py-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold text-dark">Progress Belajar</span>
+        <span class="text-success fw-bold">{{ progress }}%</span>
+      </div>
+      <div class="progress rounded-pill bg-light" style="height: 10px;">
+        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill" role="progressbar"
+          style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 1 -->
+  <div class="page-section active">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-chart-column me-2"></i> 4.2 Peran Histogram dalam Menentukan Nilai Threshold
+        </h3>
+
+        <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-4">
+            Menentukan nilai threshold akan lebih mudah jika kita memiliki informasi awal mengenai citra yang akan
+            disegmentasi. Misalnya, pada citra dokumen diketahui bahwa area tulisan hanya menempati sebagian
+            kecil dari keseluruhan gambar. Informasi seperti ini dapat digunakan dalam metode <em>p-tile
+              thresholding</em>, yaitu menentukan threshold berdasarkan persentase area objek pada citra.
+          </p>
+
+          <p class="mb-4">
+            Namun, pada manyak kasus informasi awal tersebut tidak tersedia. Oleh karena itu, penentuan
+            threshold biasanya dilakukan dengan menganalisis <strong>histogram citra</strong>. Histogram
+            merupakan grafik yang menunjukkan distribusi nilai intensitas piksel dalam suatu citra.
+          </p>
+
+          <div class="border border-custom-blue border-2 rounded-3 p-4 mb-4 bg-white">
+            <h5 class="fw-bold text-custom-blue mb-3">
+              <i class="fa-solid fa-shapes me-2"></i> Karakteristik Bentuk Histogram Citra
+            </h5>
+            <ul class="mb-0 text-dark" style="line-height: 1.8;">
+              <li class="mb-3">
+                <strong>Bimodal Histogram (Dua Puncak):</strong> Jika objek dan latar belakang memiliki perbedaan
+                intensitas yang cukup jelas, histogram umumnya membentuk dua puncak. Satu puncak
+                merepresentasikan objek, sedangkan puncak lainnya merepresentasikan latar belakang. Di antara
+                kedua puncak tersebut biasanya terdapat sebuah lembah (<em>valley</em>). Nilai intensitas pada
+                lembah inilah yang sering dipilih sebagai <strong>threshold</strong> karena menjadi batas pemisah antara
+                objek dan background.
+              </li>
+              <li>
+                <strong>Multimodal Histogram (Lebih dari Dua Puncak):</strong> Jika histogram memiliki lebih dari dua
+                puncak, maka dapat digunakan lebih dari satu nilai threshold untuk memisahkan citra menjadi beberapa
+                kelas intensitas. Pendekatan pemisahan ini dikenal sebagai metode
+                <em>multi-thresholding</em>.
+              </li>
+            </ul>
+            <img src="{{ url_for('static', filename='img/sub4/histogram.png') }}"
+              class="img-fluid text-center mt-4 mb-0"
+              style="max-width: 60%; height: auto; display: block; margin-left: auto; margin-right: auto;">
+            <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4.3 Jenis-Jenis Histogram</em>
+            </p>
+          </div>
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-triangle-exclamation me-2"></i> 4.3 Faktor yang Mempengaruhi Keberhasilan Thresholding
+        </h3>
+
+        <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-4">
+            Pada citra nyata di dunia medis maupun industri, bentuk histogram tidak selalu ideal. Keberhasilan
+            pemisahan thresholding sangat dipengaruhi oleh beberapa faktor eksternal lingkungan dan sensor citra berikut
+            ini:
+          </p>
+
+          <h5 class="fw-bold text-custom-blue mb-2">1. Derau (Noise)</h5>
+          <p class="mb-3">
+            Noise dapat menyebabkan distribusi intensitas objek dan background saling tumpang tindih sehingga grafik
+            histogram menjadi kurang jelas. Akibatnya, pemilihan parameter threshold menjadi lebih sulit dan
+            hasil kualitas segmentasi dapat menurun.
+          </p>
+          <img src="{{ url_for('static', filename='img/sub4/Noise.png') }}" class="img-fluid text-center mt-4 mb-0"
+            style="max-width: 60%; height: auto; display: block; margin-left: auto; margin-right: auto;">
+          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4. 4 Contoh citra yang memiliki Noise</em></p>
+          <h5 class="fw-bold text-custom-blue mb-2">2. Pencahayaan (Illumination)</h5>
+          <p class="mb-3">
+            Pencahayaan yang tidak merata dapat menyebabkan objek yang sama memiliki nilai intensitas yang berbeda pada
+            area permukaan tertentu. Kondisi pencahayaan buruk ini membuat histogram menjadi lebih kompleks
+            dan sering menyebabkan kegagalan fatal pada metode global thresholding.
+          </p>
+          <img src="{{ url_for('static', filename='img/sub4/Illumination.png') }}"
+            class="img-fluid text-center mt-4 mb-0"
+            style="max-width: 60%; height: auto; display: block; margin-left: auto; margin-right: auto;">
+          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4. 5 Contoh citra yang mengalami masalah pada
+              pencahayaan (Illumination)</em></p>
+
+          <h5 class="fw-bold text-custom-blue mb-2">3. Reflektansi Objek (Reflectance)</h5>
+          <p class="mb-3">
+            Perbedaan sifat pemantulan cahaya atau permukaan objek dapat menghasilkan variasi intensitas meskipun objek
+            tersebut berasal dari satu kelas yang sama. Variasi ini dapat memperlebar distribusi grafik
+            histogram dan menyulitkan proses pemisahan batas objek dan background.
+          </p>
+          <img src="{{ url_for('static', filename='img/sub4/Reflection.png') }}" class="img-fluid text-center mt-4 mb-0"
+            style="max-width: 60%; height: auto; display: block; margin-left: auto; margin-right: auto;">
+          <p class="mt-0 mb-3 text-muted small text-center ">
+            <em>Gambar 4. 6 Contoh citra yang memiliki reflekstansi objek</em>
+          </p>
+
+          <div class="bg-light p-4 rounded border mt-4">
+            <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-circle-check me-2 text-success"></i> Kesimpulan
+              Analisis</h6>
+            <p class="mb-0">
+              Berdasarkan analisis histogram, nilai threshold idealnya dapat dipilih pada daerah lembah
+              (<em>valley</em>) yang mampu memisahkan distribusi intensitas objek dan latar belakang secara
+              kontras. Namun, karena citra nyata sering kali tidak ideal akibat faktor di atas, penentuan
+              threshold memerlukan pendekatan yang lebih sistematis. Untuk mengatasi permasalahan
+              tersebut, sub-bab berikutnya akan mempelajari berbagai perkembangan metode komputasi thresholding
+              adaptif.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
+
+      <div class="bg-custom-blue text-white p-4">
+        <h3 class="fw-bold mb-0">
+          <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+        </h3>
+      </div>
+
+      <div class="card-body p-4 p-md-5">
+        <p class="mb-4 text-dark" style="font-size: 1.05rem;">
+          Untuk menguji pemahaman kamu pada materi di atas, silakan kerjakan aktivitas berikut ini!
+        </p>
+
+        <div class="border border-custom-blue border-2 rounded-3 p-4 mb-5 bg-white">
+          <h5 class="fw-bold text-custom-blue mb-3">
+            <i class="fa-solid fa-clipboard-list me-2"></i> Petunjuk Pengerjaan
+          </h5>
+          <ul class="mb-0 text-dark" style="line-height: 1.8;">
+            <li>Baca setiap pertanyaan dengan teliti sebelum menjawab.</li>
+            <li>Pilih salah satu opsi jawaban yang menurutmu paling tepat.</li>
+            <li>Tombol <strong>LANJUT</strong> baru akan aktif setelah kamu memilih jawaban.</li>
+            <li>Perhatikan <em>feedback</em> (umpan balik) yang muncul di bawah soal untuk mengetahui apakah jawabanmu
+              benar atau salah.</li>
+            <li>Setelah selesai, kamu bisa menekan tombol <strong>KEMBALI</strong> jika ingin mengulang aktivitas.</li>
+          </ul>
+        </div>
+
+        <div class="quiz-area border-top pt-4">
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold text-dark mb-0">Soal Aktivitas</h5>
+            <span class="badge bg-custom-blue rounded-pill px-3 py-2 fs-6 shadow-sm" id="quizProgress"></span>
+          </div>
+
+          <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+          <div id="feedback" class="mt-3 fw-bold"></div>
+
+          <div class="quiz-nav mt-5 d-flex justify-content-end gap-3">
+            <button id="ulangBtn" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold shadow-sm d-none">
+              <i class="fa-solid fa-rotate-left me-2"></i> KEMBALI
+            </button>
+            <button id="nextBtn" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm" disabled>
+              LANJUT <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- PAGINATION -->
+  <nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination pagination-sm custom-pagination">
+      <li class="page-item" id="prevPageItem">
+        <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+      </li>
+
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(0)">1</a>
+      </li>
+      <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+      <li class="page-item" id="nextPageItem">
+        <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+{% endblock %} {% endblock %}

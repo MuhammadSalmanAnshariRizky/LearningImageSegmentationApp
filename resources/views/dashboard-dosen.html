@@ -1,0 +1,332 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid py-4 px-4">
+
+    <!-- HEADER -->
+    <div class="mb-4">
+
+        <h3 class="fw-bold mb-1">
+            Dashboard
+        </h3>
+
+        <p class="text-muted mb-0">
+            Ringkasan data akademik dan perkembangan pembelajaran siswa.
+        </p>
+
+    </div>
+
+    <!-- TOP CARDS -->
+    <div class="row g-3 mb-4">
+
+        <!-- CARD -->
+        <div class="col-xl-4 col-md-4 col-sm-6">
+
+            <div class="card shadow-sm h-100 dashboard-card">
+
+                <div class="card-body p-4">
+
+                    <div class="icon-wrapper bg-primary-subtle text-primary">
+                        <i class="fas fa-school"></i>
+                    </div>
+
+                    <p class="card-label text-muted">
+                        DATA KELAS
+                    </p>
+
+                    <h3 class="fw-bold mb-1">
+                        6
+                    </h3>
+
+                    <p class="text-muted small mb-0">
+                        Kelas aktif tersedia
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="col-xl-4 col-md-4 col-sm-6">
+
+            <div class="card shadow-sm h-100 dashboard-card">
+
+                <div class="card-body p-4">
+
+                    <div class="icon-wrapper bg-success-subtle text-success">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+
+                    <p class="card-label text-muted">
+                        DATA SISWA
+                    </p>
+
+                    <h3 class="fw-bold mb-1">
+                        142
+                    </h3>
+
+                    <p class="text-muted small mb-0">
+                        Total siswa aktif
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="col-xl-4 col-md-4 col-sm-6">
+
+            <div class="card shadow-sm h-100 dashboard-card">
+
+                <div class="card-body p-4">
+
+                    <div class="icon-wrapper bg-warning-subtle text-warning">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+
+                    <p class="card-label text-muted">
+                        DATA SOAL
+                    </p>
+
+                    <h3 class="fw-bold mb-1">
+                        85
+                    </h3>
+
+                    <p class="text-muted small mb-0">
+                        Butir soal tersedia
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="row">
+
+        <div class="col-12">
+
+            <div class="card shadow-sm dashboard-card">
+
+                <div class="card-body p-4">
+
+                    <div class="mb-4">
+
+                        <h5 class="fw-bold mb-1">
+                            Progress Pembelajaran
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Monitoring perkembangan aktivitas pembelajaran tiap kelas.
+                        </p>
+
+                    </div>
+
+                    <!-- ITEM -->
+                    <div class="progress-item mb-4">
+
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+
+                            <div>
+
+                                <h6 class="fw-semibold mb-0">
+                                    Kelas 10A - Matematika
+                                </h6>
+
+                                <small class="text-muted">
+                                    32 siswa
+                                </small>
+
+                            </div>
+
+                            <span class="fw-bold text-primary progress-value">
+                                85%
+                            </span>
+
+                        </div>
+
+                        <div class="progress custom-progress">
+
+                            <div class="progress-bar bg-primary" style="width: 85%; border-radius: 10px;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ITEM -->
+                    <div class="progress-item mb-4">
+
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+
+                            <div>
+
+                                <h6 class="fw-semibold mb-0">
+                                    Kelas 10B - Fisika
+                                </h6>
+
+                                <small class="text-muted">
+                                    28 siswa
+                                </small>
+
+                            </div>
+
+                            <span class="fw-bold text-warning progress-value">
+                                60%
+                            </span>
+
+                        </div>
+
+                        <div class="progress custom-progress">
+
+                            <div class="progress-bar bg-warning" style="width: 60%; border-radius: 10px;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ITEM -->
+                    <div class="progress-item">
+
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+
+                            <div>
+
+                                <h6 class="fw-semibold mb-0">
+                                    Kelas 11A - Biologi
+                                </h6>
+
+                                <small class="text-muted">
+                                    30 siswa
+                                </small>
+
+                            </div>
+
+                            <span class="fw-bold text-danger progress-value">
+                                40%
+                            </span>
+
+                        </div>
+
+                        <div class="progress custom-progress">
+
+                            <div class="progress-bar bg-danger" style="width: 40%; border-radius: 10px;">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    body {
+        background: #f4f6f9;
+    }
+
+    /* ======================
+       CARD
+    ====================== */
+
+    .dashboard-card {
+        border: 1px solid rgba(0, 0, 0, .08);
+        border-radius: 14px;
+        transition: .2s ease;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .12) !important;
+    }
+
+    /* ======================
+       ICON
+    ====================== */
+
+    .icon-wrapper {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* ======================
+       LABEL
+    ====================== */
+
+    .card-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        margin-bottom: 0.5rem;
+    }
+
+    /* ======================
+       PROGRESS
+    ====================== */
+
+    .custom-progress {
+        height: 8px;
+        border-radius: 10px;
+        background: #e5e7eb;
+    }
+
+    .progress-value {
+        font-size: 0.9rem;
+    }
+
+    /* ======================
+       CUSTOM COLORS
+    ====================== */
+
+    .bg-primary-subtle {
+        background-color: #e0e7ff !important;
+    }
+
+    .bg-success-subtle {
+        background-color: #dcfce7 !important;
+    }
+
+    .bg-warning-subtle {
+        background-color: #fef3c7 !important;
+    }
+
+    /* ======================
+       MOBILE
+    ====================== */
+
+    @media(max-width: 768px) {
+
+        .card-body {
+            padding: 1.2rem !important;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+        }
+
+    }
+</style>
+
+{% endblock %}

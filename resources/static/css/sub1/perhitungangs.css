@@ -1,0 +1,45 @@
+/* Efek dasar untuk sel matriks */
+.anim-matrix td {
+  width: 33.33%;
+  height: 50px;
+  vertical-align: middle;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: all 0.4s ease-in-out;
+}
+
+/* Efek menyala untuk masing-masing kanal */
+.highlight-r {
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+  transform: scale(1.15);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+.highlight-g {
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+  transform: scale(1.15);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+.highlight-b {
+  background-color: #dbeafe !important;
+  color: #1d4ed8 !important;
+  transform: scale(1.15);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+/* Efek menyala untuk hasil grayscale */
+.highlight-res {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+  transform: scale(1.15);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+.done-res {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}

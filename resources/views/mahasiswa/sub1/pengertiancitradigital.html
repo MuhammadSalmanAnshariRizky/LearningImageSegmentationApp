@@ -1,242 +1,561 @@
 {% extends 'layouts/base.html' %}
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/sub1/interaktif.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kodeeditor.css') }}">
 {% endblock %}
 {% block content %}
 <div class="container mt-4">
     <!-- PROGRESS -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-                <span class="fw-semibold">Progress Belajar</span>
-                <span class="text-success fw-bold">8%</span>
+    <div class="card border shadow-sm rounded-4 mb-4">
+        <div class="card-body px-4 py-3">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold text-dark">Progress Belajar</span>
+                <span class="text-success fw-bold">{{ progress }}%</span>
             </div>
 
-            <div class="progress" style="height: 10px;">
-                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 8%">8%
+            <div class="progress rounded-pill bg-light" style="height: 10px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill"
+                    role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0"
+                    aria-valuemax="100">
                 </div>
             </div>
+
         </div>
     </div>
     <!-- Tujuan Pembelajaran -->
-    <!-- page 1 -->
     <div class="page-section active">
-        <div class="card mb-4 shadow-sm ">
-            <div class="card-body">
-                <!-- Judul -->
-                <h2 class="fw-bold mb-3">1. Pengantar Citra Digital</h2>
-                <h5 class="fw-bold">Tujuan Pembelajaran</h5>
-                <ul>
-                    <li>Menguraikan pengertian citra digital.</li>
-                    <li>Menguraikan jenis-jenis citra digital seperti citra RGB, citra grayscale, dan citra biner.</li>
-                </ul>
+        <!-- Mengganti border-0 menjadi border agar kotak utama memiliki garis tepi -->
+        <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
+
+            <div class="bg-custom-blue text-white p-4">
+                <h3 class="fw-bold mb-0">
+                    <i class="fas fa-image me-2"></i>
+                    1. Pengantar Citra Digital
+                </h3>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+
+                <div class="border border-custom-blue border-2 rounded-3 p-4 mb-4 bg-white">
+
+                    <h5 class="fw-bold text-custom-blue mb-3">
+                        <i class="fas fa-bullseye me-2"></i>
+                        Tujuan Pembelajaran
+                    </h5>
+
+                    <ul class="mb-0 text-secondary" style="line-height: 1.8;">
+                        <li class="mb-2">
+                            Mahasiswa dapat menguraikan konsep citra digital berdasarkan materi yang diberikan dengan
+                            benar.
+                        </li>
+                        <li>
+                            Mahasiswa dapat membedakan jenis-jenis citra digital seperti citra RGB, citra grayscale, dan
+                            citra biner berdasarkan karakteristiknya dengan tepat.
+                        </li>
+                    </ul>
+
+                </div>
+
             </div>
         </div>
     </div>
+
     <!-- page 2 Pengertian -->
     <div class="page-section">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-                <h2 class="fw-bold mb-3 text-primary">
+        <div class="card border shadow-sm rounded-4 mb-4">
+
+            <div class="card-body p-4 p-md-5">
+
+                <h3 class="fw-bold mb-4 text-custom-blue">
                     <i class="fa-solid fa-image me-2"></i> 1.1 Pengertian Citra Digital
-                </h2>
+                </h3>
 
-                <p>
-                    Citra digital adalah salah satu bentuk representasi visual dari dunia nyata dalam bentuk digital
-                    yang dapat dipahami dan diolah oleh komputer. Citra ini terdiri dari elemen-elemen titik yang
-                    disebut dengan piksel, yang tersusun dalam baris dan kolom. Setiap piksel memiliki nilai numerik
-                    yang menggambarkan tingkat kecerahan atau warna pada posisi tertentu dalam citra.
-                </p>
+                <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+                    <p class="mb-3">
+                        Citra digital adalah salah satu bentuk representasi visual dari dunia nyata dalam bentuk digital
+                        yang dapat dipahami dan diolah oleh komputer. Citra ini terdiri dari elemen-elemen titik yang
+                        disebut dengan piksel, yang tersusun dalam baris dan kolom. Setiap piksel memiliki nilai numerik
+                        yang menggambarkan tingkat kecerahan atau warna pada posisi tertentu dalam citra.
+                    </p>
 
-                <p>
-                    Citra digital dapat diperoleh dari berbagai sumber, seperti kamera digital, scanner, atau hasil
-                    simulasi komputer. Secara umum, citra digital dapat dipahami sebagai representasi dua dimensi dari
-                    suatu objek atau adegan yang dinyatakan dalam bentuk fungsi intensitas.
-                </p>
+                    <p class="mb-4">
+                        Citra digital dapat diperoleh dari berbagai sumber, seperti <b>kamera digital</b>,
+                        <b>scanner</b>, atau <b>hasil
+                            simulasi komputer.</b> Secara umum, citra digital dapat dipahami sebagai representasi dua
+                        dimensi
+                        dari
+                        suatu objek atau adegan yang dinyatakan dalam bentuk fungsi intensitas.
+                    </p>
 
-                <!-- Gambar Ilustrasi -->
-                <div class="text-center my-4">
-                    <img src="{{ url_for('static', filename='img/sub1/perbandingan.png') }}" class="img-fluid rounded"
-                        style="max-width: 800px;">
-                    <p class="mt-2"><em>Gambar 1.1 Contoh citra digital</em></p>
                 </div>
+
+                <div id="gambar1_1" class="text-center  p-4  my-4">
+                    <img src="{{ url_for('static', filename='img/sub1/Visualiasi citra.jpg') }}"
+                        class="img-fluid rounded-3 shadow-sm" style="max-width: 100%; height: auto;">
+
+                    <p class="mt-3 mb-0 text-muted small">
+                        <em>Gambar 1.1 Contoh representasi citra digital pada dunia nyata dan komputer</em>
+                    </p>
+                </div>
+                <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+                    <p class="mb-4">
+                        Secara matematis, citra digital direpresentasikan sebagai f(x,y), di mana <b>x dan y adalah
+                            koordinat
+                            spasial (posisi piksel)</b>, sedangkan <b>f(x,y) menyatakan nilai intensitas atau tingkat
+                            kecerahan pada
+                            titik tersebut</b>. Pada citra grayscale, setiap piksel direpresentasikan oleh satu nilai
+                        intensitas
+                        yang umumnya berada pada rentang 0–255, di mana nilai 0 menunjukkan warna hitam, nilai 255
+                        menunjukkan warna putih, dan nilai di antaranya merepresentasikan berbagai tingkat keabuan.
+                    </p>
+                    <p class="mb-4">
+                        Berdasarkan <a href="#gambar1_1" class="text-decoration-none fw-semibold">
+                            Gambar 1.1
+                        </a>, objek bekantan yang dilihat manusia sebagai gambar utuh sebenarnya
+                        diproses oleh komputer sebagai kumpulan nilai numerik pada setiap piksel. Misalnya, pada area
+                        wajah bekantan nilai intensitas pada koordinat tertentu dapat berupa , f(1,2)=100, dan
+                        f(1,3)=110. Nilai-nilai tersebut menunjukkan tingkat kecerahan masing-masing piksel pada lokasi
+                        yang bersesuaian.
+                    </p>
+                </div>
+
             </div>
         </div>
     </div>
 
     <!-- page 3 Representasi Matematis -->
     <div class="page-section">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-                <p>
-                    Secara matematis, citra digital direpresentasikan sebagai:
-                </p>
-                <div class="bg-light p-3 rounded text-center mb-3">
-                    \[ f(x,y) \]
+        <!-- Konsistensi kotak utama: border, shadow-sm, rounded-4 -->
+        <div class="card border shadow-sm rounded-4 mb-4">
+
+            <!-- Konsistensi padding yang lega -->
+            <div class="card-body p-4 p-md-5">
+
+                <!-- Pembungkus teks materi: text-secondary, line-height 1.8, rata kiri-kanan -->
+                <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+                    <p class="mb-4">
+                        Ketika citra direpresentasikan secara digital, baik koordinat maupun nilai intensitasnya telah
+                        melalui proses <em>discretization</em>, yaitu perubahan nilai kontinu ke dalam bentuk diskrit
+                        sehingga
+                        dapat diolah oleh komputer. Hasil proses ini membuat citra tersusun atas sejumlah piksel yang
+                        memiliki posisi dan nilai tertentu. Setiap piksel dapat diidentifikasi berdasarkan koordinat
+                        (x,y) dan memiliki nilai intensitas yang menyatakan tingkat kecerahannya. Representasi susunan
+                        piksel dan sistem koordinat pada citra digital ditunjukkan pada <a href="#gambar1_2"
+                            class="text-decoration-none fw-semibold">
+                            Gambar 1.2
+                        </a>.
+                    </p>
                 </div>
 
-                <p>
-                    di mana <strong>x</strong> dan <strong>y</strong> adalah koordinat spasial (posisi piksel),
-                    sedangkan
-                    <strong>f(x,y)</strong> menyatakan nilai intensitas atau tingkat kecerahan pada titik tersebut.
-                </p>
+                <!-- Gambar Matriks: menggunakan gaya "figura" yang sama dengan materi sebelumnya -->
+                <div id="gambar1_2" class="text-center  p-4  my-4">
+                    <img src="{{ url_for('static', filename='img/sub1/piksel.png') }}"
+                        class="img-fluid rounded-3 shadow-sm" style="max-width: 500px; width: 100%; height: auto;">
 
-                <p>
-                    Ketika citra direpresentasikan secara digital, baik koordinat maupun nilai intensitasnya telah
-                    melalui
-                    proses <em>discretization</em>, yaitu pengubahan nilai kontinu ke dalam bentuk diskrit sehingga
-                    dapat
-                    diolah oleh komputer.
-                </p>
-
-                <!-- Gambar Matriks -->
+                    <p class="mt-3 mb-0 text-muted small">
+                        <em>Gambar 1.2 Representasi nilai citra digital</em>
+                    </p>
+                </div>
+                <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+                    <p class="mb-4">
+                        Berdasarkan gambar 1.2, sebuah citra digital dapat direpresentasikan dalam bentuk matriks
+                        sebagai berikut :
+                    </p>
+                </div>
                 <div class="text-center my-4">
-                    <img src="{{ url_for('static', filename='img/sub1/piksel.png') }}" class="img-fluid rounded "
-                        style="max-width: 500px;">
-                    <p class="mt-2"><em>Gambar 1.2 Representasi nilai citra digital</em></p>
-                </div>
-
-
-                <h5 class="fw-bold mb-3">Simulasi Koordinat Pixel (3 × 3)</h5>
-                <p class="text-muted">Masukkan nilai intensitas (0–255) untuk setiap pixel</p>
-
-                <!-- INPUT GRID -->
-                <div id="inputGrid" class="mb-3"></div>
-                <br>
-                <div class="text-center">
-                    <button class="btn btn-primary mb-3 text-center" onclick="startSimulation()">
-                        Mulai Simulasi
-                    </button>
-                </div>
-
-
-                <div id="errorMsg" class="text-danger mb-3"></div>
-
-                <!-- OUTPUT GRID -->
-                <div id="pixelWrapper" class="mt-4">
-                    <h6 class="text-center text-muted mb-3">Hasil Representasi Pixel</h6>
-                    <div id="pixelGrid" class="d-flex justify-content-center"></div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- page 4 repserentasi matriks-->
-    <div class="page-section">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-                <p>
-                    Berdasarkan konsep tersebut, citra digital dapat direpresentasikan dalam bentuk matriks sebagai
-                    berikut:
-                </p>
-
-                <div class="bg-light p-3 rounded text-center">
-                    \[f(x,y) =
+                    \[
+                    f(x,y)=
                     \begin{bmatrix}
-                    f(0,0) & f(0,1) & \cdots & f(0,N-1) \\
-                    f(1,0) & f(1,1) & \cdots & f(1,N-1) \\
-                    \vdots & \vdots & \vdots & \vdots \\
+                    f(0,0) & f(0,1) & \cdots & f(0,N-1)\\
+                    f(1,0) & f(1,1) & \cdots & f(1,N-1)\\
+                    \vdots & \vdots & \ddots & \vdots\\
                     f(M-1,0) & f(M-1,1) & \cdots & f(M-1,N-1)
-                    \end{bmatrix}\]
+                    \end{bmatrix}
+                    \]
                 </div>
+                <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
 
-                <p>
-                    Citra digital tersusun atas piksel-piksel (picture element). Setiap piksel memiliki nilai tertentu
-                    yang menunjukkan tingkat kecerahan atau warna pada posisi tertentu dalam citra.
-                </p>
-
-                <p>
-                    Piksel-piksel tersebut tersusun secara teratur dalam bentuk baris dan kolom, sehingga citra digital
-                    dapat direpresentasikan sebagai sebuah matriks dua dimensi. Koordinat <strong>x</strong> menunjukkan
-                    posisi piksel pada arah vertikal (baris), sedangkan <strong>y</strong> menunjukkan posisi piksel
-                    pada
-                    arah horizontal (kolom).
-                </p>
-
-                <p>
-                    Pada matriks citra digital terdapat dua ukuran utama, yaitu <strong>M</strong> dan
-                    <strong>N</strong>.
-                    Nilai <strong>M</strong> menunjukkan jumlah baris, sedangkan <strong>N</strong> menunjukkan jumlah
-                    kolom.
-                    Ukuran citra biasanya dituliskan sebagai <strong>M × N</strong>.
-                </p>
-
-                <p>
-                    Indeks koordinat piksel biasanya dimulai dari 0, sehingga piksel pertama berada pada posisi
-                    <strong>f(0,0)</strong> yang terletak di pojok kiri atas citra. Piksel pada baris pertama akan
-                    memiliki
-                    koordinat dari <strong>f(0,0)</strong> hingga <strong>f(0,N−1)</strong>, sedangkan piksel pada baris
-                    terakhir memiliki koordinat dari <strong>f(M−1,0)</strong> hingga <strong>f(M−1,N−1)</strong>.
-                </p>
-
-                <p>
-                    Dengan demikian, setiap posisi dalam matriks menyimpan nilai intensitas piksel yang membentuk
-                    keseluruhan citra digital.
-                </p>
-                <!-- KALKULATOR MATRIX -->
-
-
-                <h5 class="fw-bold mb-3">Simulasi ukuran citra dalam bentuk matriks </h5>
-
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label>Baris (M)</label>
-                        <input type="number" id="inputM" class="form-control">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label>Kolom (N)</label>
-                        <input type="number" id="inputN" class="form-control">
-                    </div>
-                </div>
-
-                <button class="btn btn-primary mb-3" onclick="generateMatrixMathJax()">
-                    Ayo Buat!
-                </button>
-                <!-- OUTPUT MATHJAX -->
-                <div id="mathjaxOutput" class="bg-light p-3 rounded text-center mb-3"></div>
-
-                <!-- UKURAN -->
-                <div id="outputUkuran" class="fw-bold text-success text-center"></div>
-
-                <div id="narasiMatrix" class="mt-3"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- page 5 aktivitas -->
-    <div class="page-section">
-        <div class="card-mb-4 shadow-sm">
-            <div class="card-body">
-                <!-- aktivitas -->
-                <div class="quiz-card">
-
-                    <h5 class="quiz-title">
-                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
-                    </h5>
-                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
+                    <p class="mb-3">
+                        Citra digital dapat dipahami sebagai sekumpulan titik kecil yang disebut pixel (<em>picture
+                            element</em>).
+                        Setiap pixel memiliki nilai tertentu yang menunjukkan tingkat kecerahan atau warna pada posisi
+                        tertentu dalam citra.
+                        Pixel-pixel tersebut tersusun secara teratur dalam bentuk baris dan kolom, sehingga citra
+                        digital dapat direpresentasikan sebagai sebuah matriks dua dimensi.
+                        Koordinat \( x \) menunjukkan posisi pixel pada arah vertikal (baris), sedangkan \( y \)
+                        menunjukkan posisi pixel pada arah horizontal (kolom).
                     </p>
 
-                    <!-- PROGRESS -->
-                    <div class="quiz-progress" id="quizProgress"></div>
-
-                    <!-- SOAL -->
-                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
-
-                    <!-- FEEDBACK -->
-                    <div id="feedback" class="mt-3 fw-bold"></div>
-
-                    <!-- BUTTON -->
-                    <div class="quiz-nav">
-                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
-                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
-                    </div>
+                    <p class="mb-0">
+                        Pada matriks citra digital terdapat dua ukuran utama, yaitu \( M \) dan \( N \). Nilai \( M \)
+                        menunjukkan jumlah baris pada citra,
+                        sedangkan \( N \) menunjukkan jumlah kolom pada citra. Oleh karena itu, ukuran citra sering
+                        dituliskan sebagai \( M \times N \),
+                        yang berarti citra memiliki \( M \) baris dan \( N \) kolom pixel. Indeks koordinat pixel
+                        biasanya dimulai dari 0,
+                        sehingga pixel pertama berada pada posisi \( f(0,0) \) yang terletak di pojok kiri atas citra.
+                        Pixel pada baris pertama akan memiliki koordinat \( f(0,0) \), \( f(0,1) \), \( f(0,2) \),
+                        hingga \( f(0,N-1) \).
+                        Sementara itu, pixel pada baris terakhir memiliki koordinat \( f(M-1,0) \), \( f(M-1,1) \),
+                        hingga \( f(M-1,N-1) \).
+                        Dengan demikian, setiap posisi dalam matriks menyimpan nilai intensitas pixel yang membentuk
+                        keseluruhan citra digital.
+                    </p>
 
                 </div>
+
             </div>
         </div>
     </div>
+    <!-- page 4 -->
+    <div class="page-section">
+        <div class="card border shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4 p-md-5">
+
+                <h3 class="fw-bold mb-4 text-custom-blue">
+                    <i class="fa-solid fa-laptop-code me-2"></i> Praktek membaca gambar dengan Python
+                </h3>
+
+                <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+                    <p class="mb-4">
+                        Pada proses pengolahan citra digital, langkah pertama yang dilakukan adalah membaca gambar dari
+                        penyimpanan komputer ke dalam program. Pada Python, proses ini dapat dilakukan menggunakan
+                        library OpenCV dengan fungsi cv2.imread(). Setelah gambar berhasil dibaca, gambar juga dapat
+                        disimpan kembali ke penyimpanan lokal menggunakan fungsi cv2.imwrite().
+                    </p>
+
+                    <p class="fw-bold text-dark mb-3">Langkah-langkah membaca gambar dengan python:</p>
+
+                    <p class="mb-2">1) Download gambar yang sudah disediakan pada link berikut: <a
+                            href="https://bit.ly/4wXduAa" target="_blank">https://bit.ly/4wXduAa</a></p>
+
+                    <p class="mb-4">2) Upload gambar sampel kedalam kode editor yang digunakan</p>
+
+                    <p class="mb-2">3) Import library OpenCV sebagai inisiasi awal untuk image processing</p>
+
+                    <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary"
+                        style="font-size: 0.95rem;">
+                        <div class="d-flex align-items-center px-3 py-2"
+                            style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+                            <div class="rounded-circle me-1"
+                                style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+                            <div class="rounded-circle me-1"
+                                style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+                            <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;">
+                            </div>
+                            <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+                        </div>
+                        <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+                            <div class="text-secondary text-end py-3 px-3"
+                                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                                1
+                            </div>
+                            <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                                <div><span class="text-warning">import</span> cv2</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="mb-2">4) Untuk membaca gambar dalam python menggunakan OpenCV dapat dilakukan dengan
+                        menuliskan perintah cv2.imread()</p>
+
+                    <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary"
+                        style="font-size: 0.95rem;">
+                        <div class="d-flex align-items-center px-3 py-2"
+                            style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+                            <div class="rounded-circle me-1"
+                                style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+                            <div class="rounded-circle me-1"
+                                style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+                            <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;">
+                            </div>
+                            <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+                        </div>
+                        <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+                            <div class="text-secondary text-end py-3 px-3"
+                                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                                1
+                            </div>
+                            <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                                <div>image = cv2.imread(<span class="text-success">'gambar.jpg'</span>)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="mb-2">5) Setelah gambar berhasil dibaca, isi nilai piksel atau matriks citra dapat
+                        ditampilkan menggunakan perintah print(). Nilai matriks tersebut berisi intensitas warna pada
+                        setiap piksel gambar.</p>
+
+                    <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary"
+                        style="font-size: 0.95rem;">
+                        <div class="d-flex align-items-center px-3 py-2"
+                            style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+                            <div class="rounded-circle me-1"
+                                style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+                            <div class="rounded-circle me-1"
+                                style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+                            <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;">
+                            </div>
+                            <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+                        </div>
+                        <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+                            <div class="text-secondary text-end py-3 px-3"
+                                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                                1
+                            </div>
+                            <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                                <div><span class="text-info">print</span>(image)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="mb-2">6) Perhatikan output yang dihasilkan, jika memiliki nilai yang berbeda seperti
+                        contoh dibawah ini, maka merupakan gambar dengan format RGB</p>
+                    <div
+                        class="bg-light border-start border-4 border-primary p-3 rounded-end mb-3 font-monospace text-dark">
+                        <div class="text-muted small mb-2">Output:</div>
+                        [166 42 102]<br>
+                        [165 41 101]<br>
+                        [165 41 101]
+                    </div>
+
+                    <p class="mb-2">Keterangan :</p>
+                    <ul class="mb-3">
+                        <li>Nilai 166 adalah kanal Blue</li>
+                        <li>Nilai 42 adalah kanal Green</li>
+                        <li>Nilai 102 adalah kanal Red</li>
+                    </ul>
+
+                    <p class="mb-4">
+                        Pada OpenCV, urutan warna menggunakan format BGR (Blue, Green, Red), bukan RGB.Setiap piksel
+                        pada gambar berwarna memiliki tiga nilai intensitas warna dengan rentang nilai 0–255. Semakin
+                        besar nilai channel, maka semakin tinggi intensitas warna pada piksel tersebut.
+                    </p>
+
+                    <p class="mb-2">7) Tetapi jika memiliki nilai yang sama, artinya gambar tersebut adalah grayscale
+                    </p>
+                    <div
+                        class="bg-light border-start border-4 border-secondary p-3 rounded-end mb-0 font-monospace text-dark">
+                        <div class="text-muted small mb-2">Output:</div>
+                        [114 114 114]<br>
+                        [127 127 127]<br>
+                        [138 138 138]
+                    </div>
+                </div>
+                <div class="mt-5 mb-5 text-center">
+                    <div class="d-inline-block px-5 py-3 rounded-pill bg-custom-blue text-white shadow">
+                        <h4 class="fw-bold mb-0">
+                            <i class="fa-solid fa-rocket me-2"></i> Ayo Coba Sendiri!
+                        </h4>
+                    </div>
+                    <p class="text-secondary mt-3 mb-0 fw-medium" style="font-size: 1.05rem;">
+                        Upload gambarmu dan ketik kode program pada <em class="text-dark fw-bold">Live Code
+                            Notebook</em> di bawah ini, untuk melihat hasilnya secara langsung.
+                    </p>
+                </div>
+                <div class="text-center mb-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill fw-semibold shadow-sm px-4"
+                        data-bs-toggle="modal" data-bs-target="#panduanModal">
+                        <i class="fa-solid fa-circle-question text-custom-blue me-2"></i> Cara Penggunaan Kode Editor
+                    </button>
+                </div>
+                <!-- modal -->
+                <div class="modal fade" id="panduanModal" tabindex="-1" aria-labelledby="panduanModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content rounded-4 border-0 shadow-lg">
+
+                            <div class="modal-header border-bottom-0 px-4 px-md-5 pt-4 pb-2">
+                                <h5 class="modal-title fw-bold text-custom-blue" id="panduanModalLabel">
+                                    <i class="fa-solid fa-circle-info me-2"></i> Panduan Penggunaan Live Code
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body px-4 px-md-5 pb-4">
+                                <div class="row g-4 text-secondary mt-1" style="font-size: 0.95rem; line-height: 1.7;">
+
+                                    <div class="col-md-6">
+                                        <div class="d-flex mb-3">
+                                            <div class="me-3">
+                                                <span class="badge bg-custom-blue rounded-circle p-2"
+                                                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">1</span>
+                                            </div>
+                                            <div>
+                                                <strong class="text-dark">Upload Gambar</strong><br>
+                                                Klik area <em>"Upload Image"</em> di sebelah kiri atau <em>drag &
+                                                    drop</em> gambarmu ke kotak tersebut. Pastikan nama filenya muncul
+                                                di daftar <em>File Anda</em> (contoh: <code>pohon.jpg</code>).
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex mb-3">
+                                            <div class="me-3">
+                                                <span class="badge bg-custom-blue rounded-circle p-2"
+                                                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">2</span>
+                                            </div>
+                                            <div>
+                                                <strong class="text-dark">Lengkapi Kode Program</strong><br>
+                                                Isi bagian kode yang rumpang (ditandai dengan <code>.....</code>).
+                                                <strong>Sangat Penting:</strong> Sesuaikan nama file di dalam fungsi
+                                                <code>imread('...')</code> dengan nama gambar yang baru saja kamu
+                                                upload!
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="d-flex mb-3">
+                                            <div class="me-3">
+                                                <span class="badge bg-custom-blue rounded-circle p-2"
+                                                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">3</span>
+                                            </div>
+                                            <div>
+                                                <strong class="text-dark">Jalankan Kode (Run)</strong><br>
+                                                Klik tombol <strong>Play</strong> <i
+                                                    class="fa-solid fa-play text-primary mx-1"></i> berwarna biru di
+                                                pojok kanan atas cell. Hasil eksekusi akan langsung muncul di kotak
+                                                terminal hitam di bawahnya.
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex">
+                                            <div class="me-3">
+                                                <span class="badge bg-custom-blue rounded-circle p-2"
+                                                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">4</span>
+                                            </div>
+                                            <div>
+                                                <strong class="text-dark">Manajemen Cell</strong><br>
+                                                Gunakan tombol <strong class="text-primary">+ Add Cell</strong> di pojok
+                                                kanan atas untuk menambah area kode baru. Jika ingin mengulang atau
+                                                menghapus, klik ikon <strong>Trash</strong> <i
+                                                    class="fa-solid fa-trash text-danger mx-1"></i> merah.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="modal-footer border-top-0 px-4 px-md-5 pb-4 pt-0 justify-content-end">
+                                <button type="button" class="btn text-white rounded-pill px-4"
+                                    style="background-color: #1e293b;" data-bs-dismiss="modal">
+                                    Saya Mengerti
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- kode editor -->
+                <div class="notebook-wrapper border border-2 rounded-4 shadow-sm overflow-hidden mb-3">
+
+                    <aside class="sidebar">
+
+                        <div class="sidebar-header">
+                            <h6><i class="fa-solid fa-folder-open me-2"></i>File Anda</h6>
+                        </div>
+
+                        <div class="upload-area" onclick="triggerUpload()">
+                            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                            <p class="mb-1">Upload Image</p>
+                            <span>Drag & drop atau klik</span>
+                        </div>
+
+                        <ul id="fileList" class="file-list">
+                            <li class="empty">
+                                <i class="fa-regular fa-file me-2"></i>Belum ada file
+                            </li>
+                        </ul>
+
+                        <input type="file" id="fileInput" hidden onchange="handleUpload(event)">
+                    </aside>
+
+                    <main class="workspace">
+
+                        <div class="workspace-header">
+                            <div class="title">
+                                <i class="fa-solid fa-code me-2"></i>Live Code Notebook
+                            </div>
+
+                            <div class="actions">
+                                <button class="btn-add" onclick="addCell()">
+                                    <i class="fa-solid fa-plus"></i> Add Cell
+                                </button>
+
+                            </div>
+                        </div>
+
+                        <div id="notebook" class="cells"></div>
+
+                    </main>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="page-section">
+        <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
+
+            <div class="bg-custom-blue text-white p-4">
+                <h3 class="fw-bold mb-0">
+                    <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+                </h3>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+
+                <p class="mb-4" style="font-size: 1.05rem;">
+                    Untuk menguji pemahaman kamu pada materi di atas, silakan kerjakan aktivitas berikut ini!
+                </p>
+
+                <div class="border border-custom-blue border-2 rounded-3 p-4 mb-5 bg-white">
+                    <h5 class="fw-bold text-custom-blue mb-3">
+                        <i class="fa-solid fa-clipboard-list me-2"></i> Petunjuk Pengerjaan
+                    </h5>
+                    <ul class="mb-0" style="line-height: 1.8;">
+                        <li>Baca setiap pertanyaan dengan teliti sebelum menjawab.</li>
+                        <li>Pilih salah satu opsi jawaban yang menurutmu paling tepat.</li>
+                        <li>Tombol <strong>LANJUT</strong> baru akan aktif setelah kamu memilih jawaban.</li>
+                        <li>Perhatikan <em>feedback</em> (umpan balik) yang muncul di bawah soal untuk mengetahui apakah
+                            jawabanmu benar atau salah.</li>
+                        <li>Setelah selesai, kamu bisa menekan tombol <strong>ULANGI</strong> jika ingin mengulang
+                            aktivitas.</li>
+                    </ul>
+                </div>
+
+                <div class="quiz-area border-top pt-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold text-dark mb-0">Soal Aktivitas</h5>
+                        <span class="badge bg-custom-blue rounded-pill px-3 py-2 fs-6 shadow-sm"
+                            id="quizProgress"></span>
+                    </div>
+
+                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+                    <div id="feedback" class="mt-3 fw-bold"></div>
+
+                    <div class="quiz-nav mt-5 d-flex justify-content-end gap-3">
+                        <button id="ulangBtn"
+                            class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold shadow-sm d-none">
+                            <i class="fa-solid fa-rotate-left me-2"></i> ULANG
+                        </button>
+                        <button id="nextBtn" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm"
+                            disabled>
+                            LANJUT <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <nav class="mt-4 d-flex justify-content-center">
         <ul class="pagination pagination-sm custom-pagination">
 
@@ -259,9 +578,8 @@
 
 </div>
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/sub1.js') }}"></script>
 <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 <script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
-
+<script src="{{ url_for('static', filename='js/sub1/membaca_citra.js') }}"></script>
 {% endblock %}
 {% endblock %}

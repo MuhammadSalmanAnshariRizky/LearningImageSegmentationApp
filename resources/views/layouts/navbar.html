@@ -1,40 +1,68 @@
-<nav class="navbar navbar-expand-lg shadow-sm sticky-top px-3" style="background:#1A1A2E; height:60px;">
+<nav class="navbar shadow-sm sticky-top px-3" style="background:#1A1A2E; min-height:60px;">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
 
-    <div class="container-fluid d-flex align-items-center">
+        <div class="d-flex align-items-center gap-3">
 
-        <!-- LEFT -->
-        <div class="d-flex align-items-center gap-4">
-
-            <!-- Logo -->
-            <div class="d-flex align-items-center gap-4">
+            <a href="#" class="text-decoration-none d-flex align-items-center gap-2 me-2">
                 <i class="bi bi-grid text-white fs-4"></i>
                 <span class="navbar-brand mb-0 fw-bold text-white">Segmind</span>
-            </div>
+            </a>
 
-            <!-- Toggle Sidebar -->
-            <button class="btn d-flex align-items-center justify-content-center" onclick="toggleSidebar()"
+            <button class="btn d-flex align-items-center justify-content-center border-0" onclick="toggleSidebar()"
                 style="background:#1E293B; width:40px; height:40px; border-radius:10px;">
                 <i class="bi bi-list text-white fs-5"></i>
             </button>
 
         </div>
 
-        <!-- RIGHT -->
-        <div class="ms-auto d-flex align-items-center gap-4">
+        <!-- RIGHT SIDE -->
+        <div class="ms-auto d-flex align-items-center gap-3 pe-4">
 
-            <a class="nav-link d-flex align-items-center gap-1" href="#" style="color:#94A3B8;">
-                <i class="bi bi-house"></i> Dashboard
-            </a>
+            <!-- USER INFO -->
+            <div class="d-flex align-items-center gap-2 text-white">
+                <div class="d-flex flex-column text-end">
+                    <span class="fw-semibold" style="font-size:14px;">
+                        {{ session['user_name'] }}
+                    </span>
+                    <small style="font-size:12px; color:#CBD5E1;">
+                        {{ session['role'] }}
+                    </small>
+                </div>
 
-            <a class="nav-link d-flex align-items-center gap-1" href="#" style="color:#94A3B8;">
-                <i class="bi bi-person"></i> Profile
-            </a>
+                <div class="d-flex align-items-center justify-content-center"
+                    style="width:40px; height:40px; border-radius:50%; background:#334155;">
+                    <i class="bi bi-person-fill text-white"></i>
+                </div>
+            </div>
 
-            <a class="nav-link d-flex align-items-center gap-1 fw-semibold" href="#" style="color:#DC2626;">
-                <i class="bi bi-box-arrow-right"></i> Logout
-            </a>
+            <!-- LOGOUT -->
+            <form action="{{ url_for('user.logout') }}" method="POST" class="m-0" id="logoutForm">
+                <button type="button" id="btnLogout" class="logout-btn d-flex align-items-center gap-2">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
 
         </div>
-
     </div>
 </nav>
+
+<script>
+    document.getElementById("btnLogout").addEventListener("click", function () {
+        Swal.fire({
+            title: "Yakin mau logout?",
+            text: "Kamu akan keluar dari sistem.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DC2626",
+            cancelButtonColor: "#6B7280",
+            confirmButtonText: "Ya, logout!",
+            cancelButtonText: "Batal",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("logoutForm").submit();
+            }
+        });
+    });
+</script>

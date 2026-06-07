@@ -1,67 +1,36 @@
 {% extends 'layouts/base.html' %}
 
 {% block styles %}
-<!-- ICON ONLINE -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
 <style>
     body {
         background: #f4f7fc;
     }
 
-    /* HEADER */
-    h3 {
-        letter-spacing: 0.3px;
-    }
-
-    /* INFO CARD */
-    .dashboard-card {
-        border: none;
-        border-radius: 16px;
-        padding: 18px;
-        background: #ffffff;
-        transition: 0.3s;
-    }
-
-    .dashboard-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.07);
-    }
-
-    .icon-circle {
-        width: 55px;
-        height: 55px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-    }
-
-    /* PROGRESS */
-    .progress {
-        height: 10px;
-        border-radius: 10px;
-        background: #e9ecef;
-    }
-
-    .progress-bar {
-        border-radius: 10px;
-    }
-
-    /* COURSE CARD */
+    /* Perbaikan Card: Ditambah border tipis dan shadow dasar agar tidak terlihat kosong */
+    .dashboard-card,
     .course-card {
+        border: 1px solid #e1e5eb;
         border-radius: 16px;
-        border: none;
         background: #ffffff;
-        transition: all 0.25s ease;
+        transition: 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    .dashboard-card {
+        padding: 20px;
+    }
+
+    .dashboard-card:hover,
+    .course-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+        border-color: #d2d6dd;
+    }
+
+    .course-card {
         position: relative;
         overflow: hidden;
-    }
-
-    .course-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
     }
 
     .course-card::before {
@@ -70,10 +39,10 @@
         left: 0;
         top: 0;
         height: 100%;
-        width: 5px;
-        border-radius: 10px;
+        width: 6px;
     }
 
+    /* Warna penanda status */
     .success::before {
         background: #198754;
     }
@@ -86,24 +55,53 @@
         background: #adb5bd;
     }
 
-    .badge {
-        font-size: 0.75rem;
-        padding: 6px 12px;
-        border-radius: 50px;
-    }
-
     .locked-card {
-        background: #f1f3f5;
-        opacity: 0.75;
+        background: #f8f9fa;
     }
 
-    .btn {
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        /* Diubah jadi rounded rectangle agar lebih modern */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .progress {
+        height: 10px;
+        border-radius: 10px;
+        background: #e9ecef;
+    }
+
+    .progress-bar {
         border-radius: 10px;
     }
 
     .section-title {
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        color: #2b3445;
+    }
+
+    .topic-info,
+    .topic-progress-text {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .badge-status {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+        border-radius: 50px;
         font-weight: 600;
-        letter-spacing: 0.4px;
+    }
+
+    .table> :not(caption)>*>* {
+        padding: 1rem 0.75rem;
+        /* Memberi ruang napas pada baris tabel */
     }
 </style>
 {% endblock %}
@@ -111,153 +109,202 @@
 {% block content %}
 <div class="container mt-4 mb-5">
 
-    <!-- HEADER -->
-    <div class="mb-4">
-        <h3 class="fw-bold">
-            <i class="bi bi-grid-1x2-fill me-2 text-primary"></i>Dashboard
-        </h3>
-        <p class="text-muted">Pantau progres belajarmu dan lanjutkan materi </p>
+    <div class="d-flex justify-content-between align-items-end mb-4 pb-2 border-bottom">
+        <div>
+            <h3 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-grid-1x2-fill me-2 text-primary"></i> Dashboard Siswa
+            </h3>
+            <p class="text-muted mb-0">Selamat datang kembali! Lanjutkan pembelajaranmu hari ini.</p>
+        </div>
+        {% if kelas %}
+        <div class="text-end d-none d-md-block">
+            <span class="badge bg-white text-dark border border-secondary px-3 py-2 fs-6 shadow-sm">
+                <i class="bi bi-building me-1 text-muted"></i> Kelas: <b>{{ kelas.name }}</b>
+            </span>
+        </div>
+        {% endif %}
     </div>
 
-    <!-- INFO -->
-    <div class="row g-4 mb-4">
+    <div class="row g-4 mb-5 align-items-stretch">
 
-        <div class="col-md-4">
-            <div class="dashboard-card shadow-sm d-flex justify-content-between align-items-center">
-                <div>
-                    <small class="text-muted">Total Materi</small>
-                    <h3 class="fw-bold">6</h3>
+        <div class="col-lg-5 d-flex flex-column gap-4">
+
+            <div class="row g-4">
+                <div class="col-sm-6">
+                    <div
+                        class="dashboard-card d-flex flex-column align-items-start justify-content-center h-100 position-relative">
+                        <div
+                            class="icon-circle bg-primary bg-opacity-10 text-primary position-absolute end-0 top-0 mt-3 me-3">
+                            <i class="bi bi-journal-bookmark-fill fs-5"></i>
+                        </div>
+                        <h2 class="fw-bolder mb-0 text-dark">{{ total_materi }}</h2>
+                        <span class="text-muted small mt-1 fw-medium">Total Topik</span>
+                    </div>
                 </div>
-                <div class="icon-circle bg-primary bg-opacity-10 text-primary">
-                    <i class="bi bi-journal-bookmark-fill"></i>
+                <div class="col-sm-6">
+                    <div
+                        class="dashboard-card d-flex flex-column align-items-start justify-content-center h-100 position-relative">
+                        <div
+                            class="icon-circle bg-success bg-opacity-10 text-success position-absolute end-0 top-0 mt-3 me-3">
+                            <i class="bi bi-check2-circle fs-5"></i>
+                        </div>
+                        <h2 class="fw-bolder mb-0 text-dark">{{ selesai }}</h2>
+                        <span class="text-muted small mt-1 fw-medium">Sub Topik Diselesaikan</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card flex-fill d-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h6 class="fw-bold mb-1">Progress Pembelajaran</h6>
+                        <small class="text-muted">Selesai {{ selesai }} dari 24 sub materi.</small>
+                    </div>
+                    <span class="badge bg-success rounded-pill px-3 py-2 fs-6">{{ progress_percent }}%</span>
+                </div>
+                <div class="progress" style="height: 14px;">
+                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                        style="width: {{ progress_percent }}%"></div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="dashboard-card shadow-sm d-flex justify-content-between align-items-center">
-                <div>
-                    <small class="text-muted">Diselesaikan</small>
-                    <h3 class="fw-bold">2</h3>
+        <div class="col-lg-7">
+            <div class="dashboard-card h-100 d-flex flex-column">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-circle bg-warning bg-opacity-10 text-warning me-3">
+                            <i class="bi bi-bar-chart-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0">Hasil Belajar</h6>
+                            <small class="text-muted">Rekapitulasi kuis dan evaluasi terbaru</small>
+                        </div>
+                    </div>
                 </div>
-                <div class="icon-circle bg-success bg-opacity-10 text-success">
-                    <i class="bi bi-check2-circle"></i>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="dashboard-card shadow-sm d-flex justify-content-between align-items-center">
-                <div>
-                    <small class="text-muted">Nilai</small>
-                    <h3 class="fw-bold">85</h3>
-                </div>
-                <div class="icon-circle bg-warning bg-opacity-10 text-warning">
-                    <i class="bi bi-star-fill"></i>
+                <div class="table-responsive flex-grow-1"
+                    style="min-height: 200px; max-height: 250px; overflow-y: auto;">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light sticky-top shadow-sm" style="z-index: 1;">
+                            <tr>
+                                <th class="border-0">Kegiatan</th>
+                                <th class="border-0">Nilai</th>
+                                <th class="border-0 text-end pe-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="border-top-0">
+                            {% for item in hasil_belajar %}
+                            <tr>
+                                <td class="fw-semibold text-dark">{{ item.title }}</td>
+                                <td>
+                                    <span
+                                        class="badge bg-primary bg-opacity-10 text-primary border border-primary px-2 py-1 fs-6">
+                                        {{ item.nilai }}
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    {% if item.status == 'lulus' %}
+                                    <span class="badge bg-success px-3 py-2 rounded-pill"><i
+                                            class="bi bi-check me-1"></i> Lulus</span>
+                                    {% else %}
+                                    <span class="badge bg-danger px-3 py-2 rounded-pill"><i class="bi bi-x me-1"></i>
+                                        Tidak Lulus</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-4">
+                                    Belum ada data hasil belajar.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- PROGRESS -->
-    <div class="card border-0 shadow-sm mb-5" style="border-radius: 12px;">
-        <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-end mb-2">
-                <div>
-                    <h5 class="fw-bold mb-1">Progres Keseluruhan Kursus</h5>
-                    <p class="text-muted small mb-0">Kamu telah menyelesaikan 2 dari 5 modul. Terus semangat!</p>
-                </div>
-                <span class="badge bg-success rounded-pill px-3 py-2 fs-6">40% Selesai</span>
-            </div>
-
-            <div class="progress mt-3" style="height: 12px; border-radius: 6px;">
-                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar"
-                    style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-        </div>
+    <div class="d-flex align-items-center justify-content-between mb-4 mt-2">
+        <h5 class="section-title mb-0"><i class="bi bi-book-half me-2 text-primary"></i> Modul Pembelajaran</h5>
     </div>
-
-    <!-- MATERI -->
-    <h5 class="section-title mb-3">
-        <i class="bi bi-play-circle me-2"></i>Modul Pembelajaran
-    </h5>
 
     <div class="row g-4">
-
-        <!-- 1 -->
+        {% for item in materi_list %}
         <div class="col-md-6 col-lg-4">
-            <div class="card course-card success h-100 shadow-sm">
-                <div class="card-body">
-                    <span class="badge bg-success bg-opacity-10 text-success">
-                        <i class="bi bi-check2 me-1"></i>Selesai
-                    </span>
+            <div
+                class="card course-card {{ item.card_class }} {{ 'locked-card' if item.status == 'locked' else '' }} h-100">
+                <div class="card-body p-4">
 
-                    <h6 class="fw-bold mt-3">
-                        <i class="bi bi-image me-1"></i>Pengantar Citra Digital
-                    </h6>
-
-                    <p class="text-muted small">Dasar citra digital, piksel, resolusi.</p>
-
-                    <div class="progress mt-2">
-                        <div class="progress-bar bg-success" style="width:100%"></div>
+                    <div class="d-flex justify-content-start mb-3">
+                        {% if item.status == 'done' %}
+                        <span class="badge badge-status bg-success bg-opacity-10 text-success border border-success">
+                            <i class="bi bi-check2-circle me-1"></i> Selesai
+                        </span>
+                        {% elif item.status == 'current' %}
+                        <span class="badge badge-status bg-primary bg-opacity-10 text-primary border border-primary">
+                            <i class="bi bi-play-fill me-1"></i> Sedang Dipelajari
+                        </span>
+                        {% else %}
+                        <span
+                            class="badge badge-status bg-secondary bg-opacity-10 text-secondary border border-secondary">
+                            <i class="bi bi-lock-fill me-1"></i> Terkunci
+                        </span>
+                        {% endif %}
                     </div>
-                </div>
 
-                <div class="card-footer bg-transparent border-0">
-                    <a href="#" class="btn btn-outline-secondary w-100 btn-sm">
-                        <i class="bi bi-arrow-repeat me-1"></i>Ulangi
-                    </a>
-                </div>
-            </div>
-        </div>
+                    <h5 class="fw-bold mb-2 text-truncate" title="{{ item.title }}">{{ item.title }}</h5>
 
-        <!-- 2 -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card course-card primary h-100 shadow-sm">
-                <div class="card-body">
-                    <span class="badge bg-primary bg-opacity-10 text-primary">
-                        <i class="bi bi-play-fill me-1"></i>Sedang Belajar
-                    </span>
-
-                    <h6 class="fw-bold mt-3">
-                        <i class="bi bi-diagram-3 me-1"></i>Segmentasi Citra
-                    </h6>
-
-                    <p class="text-muted small">Memisahkan objek dari background.</p>
-
-                    <div class="progress mt-2">
-                        <div class="progress-bar bg-primary" style="width:50%"></div>
+                    {% if item.title|lower == 'evaluasi' %}
+                    <div class="mt-3 mb-4">
+                        <div
+                            class="p-3 bg-danger bg-opacity-10 text-danger rounded border border-danger border-opacity-25 d-flex align-items-center">
+                            <i class="bi bi-patch-check-fill fs-4 me-2"></i>
+                            <span class="fw-medium small">Evaluasi Akhir Pembelajaran</span>
+                        </div>
                     </div>
+                    {% else %}
+                    <p class="topic-info mb-3 d-flex align-items-center">
+                        <i class="bi bi-list-task me-2 text-muted"></i>
+                        <span><b>{{ item.selesai_sub }}</b> dari {{ item.total_sub }} sub materi selesai</span>
+                    </p>
+
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="topic-progress-text">Progress</small>
+                            <small class="fw-bold text-dark">{{ item.progress }}%</small>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar {% if item.status == 'done' %}bg-success{% elif item.status == 'current' %}bg-primary{% else %}bg-secondary opacity-50{% endif %}"
+                                style="width: {{ item.progress }}%">
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
 
-                <div class="card-footer bg-transparent border-0">
-                    <a href="#" class="btn btn-primary w-100 btn-sm">
-                        <i class="bi bi-arrow-right me-1"></i>Lanjutkan
+                <div class="card-footer bg-transparent border-top-0 pt-0 pb-4 px-4 mt-auto">
+                    {% if item.status == 'locked' %}
+                    <button class="btn btn-light text-muted fw-medium w-100" disabled>
+                        <i class="bi bi-lock-fill me-2"></i> Terkunci
+                    </button>
+                    {% else %}
+                    <a href="{{ item.href }}"
+                        class="btn {{ 'btn-outline-success' if item.status == 'done' else 'btn-primary' }} fw-medium w-100">
+                        {% if item.status == 'done' %}
+                        <i class="bi bi-arrow-repeat me-1"></i> Pelajari Ulang
+                        {% else %}
+                        Lanjutkan <i class="bi bi-arrow-right ms-1"></i>
+                        {% endif %}
                     </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- LOCKED TEMPLATE -->
-        {% for item in ["Edge-Based", "Threshold-Based", "Region-Based", "Evaluasi"] %}
-        <div class="col-md-6 col-lg-4">
-            <div class="card course-card locked locked-card h-100 shadow-sm">
-                <div class="card-body">
-                    <span class="badge bg-secondary bg-opacity-10 text-secondary">
-                        <i class="bi bi-lock-fill me-1"></i>Terkunci
-                    </span>
-
-                    <h6 class="fw-bold mt-3">
-                        <i class="bi bi-lock me-1"></i>{{item}}
-                    </h6>
-
-                    <p class="text-muted small">Belum tersedia.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
         {% endfor %}
-
     </div>
 
 </div>

@@ -1,0 +1,471 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<style>
+    body {
+        background: #f8fafc;
+    }
+
+    .card-custom {
+        border: none;
+        border-radius: 18px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .title-main {
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .text-subtle {
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .btn-main {
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .btn-blue {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-blue:hover {
+        background: #1d4ed8;
+    }
+
+    .table thead {
+        background: #1e293b;
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        background: #f1f5f9;
+    }
+
+    .badge-mudah {
+        background: #22c55e;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+    }
+
+    .badge-sedang {
+        background: #facc15;
+        color: #1e293b;
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+    }
+
+    .btn-icon {
+        border-radius: 8px;
+        padding: 6px 10px;
+        transition: 0.2s;
+    }
+
+    .btn-view {
+        border: 1px solid #2563eb;
+        color: #2563eb;
+        background: white;
+    }
+
+    .btn-edit {
+        border: 1px solid #facc15;
+        color: #facc15;
+        background: white;
+    }
+
+    .btn-delete {
+        border: 1px solid #ef4444;
+        color: #ef4444;
+        background: white;
+    }
+
+    .btn-view:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: #facc15;
+        color: black;
+    }
+
+    .btn-delete:hover {
+        background: #ef4444;
+        color: white;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 10px;
+        padding: 6px 12px;
+        font-size: 14px;
+        color: #334155;
+    }
+
+    .nav-pills .nav-link.active {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-guide {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .btn-guide:hover {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+    }
+</style>
+
+<!-- 🔥 CARD UTAMA (SEMUA MENYATU) -->
+<div class="card card-custom p-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="title-main mb-0">Daftar Soal</h4>
+            <div class="text-subtle">Berdasarkan Kelas</div>
+        </div>
+
+        <div class="d-flex gap-2">
+
+            <!-- BUTTON PANDUAN -->
+            <button class="btn btn-guide btn-main" data-bs-toggle="modal" data-bs-target="#modalPanduan">
+
+                <i class="bi bi-book-half"></i>
+                Panduan Penggunaan
+            </button>
+
+            <!-- BUTTON TAMBAH -->
+            <a href="{{ url_for('user.tambah_soal') }}" class="btn btn-main btn-blue">
+
+                <i class="bi bi-plus-circle"></i>
+                Tambah Soal Manual
+            </a>
+
+        </div>
+    </div>
+
+    <!-- TABS -->
+    {% if classes %}
+    <ul class="nav nav-pills mb-3">
+        {% for c in classes %}
+        <li class="nav-item">
+            <button class="nav-link {% if loop.first %}active{% endif %}" data-bs-toggle="tab"
+                data-bs-target="#kelas{{ c.id }}">
+                {{ c.name }}
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="alert alert-info">Belum ada kelas</div>
+    {% endif %}
+
+    <!-- CONTENT -->
+    <div class="tab-content">
+
+        {% for c in classes %}
+        <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="kelas{{ c.id }}">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover table-soal">
+
+                    <thead class="text-center">
+                        <tr>
+                            <th>No</th>
+                            <th>Tipe</th>
+                            <th>Pertanyaan</th>
+                            <th>Topik</th>
+                            <th>Sub Topik</th>
+                            <th>Kesulitan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in data_per_class[c.id].soal %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+
+                            <td>
+                                {% if item.type == 'mc' %}
+                                Pilihan Ganda
+                                {% elif item.type == 'sa' %}
+                                Essay
+                                {% else %}
+                                {{ item.type }}
+                                {% endif %}
+                            </td>
+
+                            <td>{{ item.question }}</td>
+
+                            <td>{{ item.topic }}</td>
+
+                            <td>
+                                {% if item.subtopic and item.subtopic != '-' %}
+                                {{ item.subtopic }}
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if item.level == 'mudah' %}
+                                <span class="badge-mudah">Mudah</span>
+                                {% elif item.level == 'sedang' %}
+                                <span class="badge-sedang">Sedang</span>
+                                {% else %}
+                                <span class="badge bg-danger">Sulit</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+
+                                    <a href="#" class="btn btn-icon btn-view btn-detail" data-id="{{ item.id }}"
+                                        data-bs-toggle="tooltip" title="Lihat Detail">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    <a href="{{ url_for('user.editsoal', id=item.id) }}" class="btn btn-icon btn-edit"
+                                        title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+
+                                    <a href="/hapussoal/{{ item.id }}" class="btn btn-icon btn-delete" title="Hapus">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- MODAL DETAIL -->
+<div class="modal fade" id="modalDetailSoal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Detail Soal</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="modalDetailBody">
+                Loading...
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PANDUAN -->
+<div class="modal fade" id="modalPanduan" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h4 class="fw-bold mb-1 text-primary">
+                        Panduan Penggunaan
+                    </h4>
+
+                    <p class="text-subtle mb-0">
+                        Pelajari fungsi setiap fitur pada halaman daftar soal.
+                    </p>
+                </div>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <div class="modal-body pt-4">
+
+                <div class="p-3 rounded-4 bg-light mb-3">
+                    <div class="fw-bold text-primary mb-1">
+                        <i class="bi bi-plus-circle"></i>
+                        Tambah Soal Manual
+                    </div>
+
+                    <div class="text-subtle">
+                        Digunakan untuk membuat soal baru secara manual ke dalam sistem pembelajaran.
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-4 bg-light mb-3">
+                    <div class="fw-bold text-primary mb-1">
+                        <i class="bi bi-collection"></i>
+                        Tab Kelas
+                    </div>
+
+                    <div class="text-subtle">
+                        Setiap tab menampilkan daftar soal berdasarkan kelas yang dipilih.
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-4 bg-light mb-3">
+                    <div class="fw-bold text-primary mb-1">
+                        <i class="bi bi-eye"></i>
+                        Detail Soal
+                    </div>
+
+                    <div class="text-subtle">
+                        Gunakan tombol detail untuk melihat isi soal lengkap beserta jawaban dan pembahasan.
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-4 bg-light mb-3">
+                    <div class="fw-bold text-warning mb-1">
+                        <i class="bi bi-pencil-square"></i>
+                        Edit Soal
+                    </div>
+
+                    <div class="text-subtle">
+                        Digunakan untuk memperbarui atau mengubah isi soal yang telah dibuat sebelumnya.
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-4 bg-light">
+                    <div class="fw-bold text-danger mb-1">
+                        <i class="bi bi-trash"></i>
+                        Hapus Soal
+                    </div>
+
+                    <div class="text-subtle">
+                        Menghapus soal secara permanen dari sistem. Gunakan fitur ini dengan hati-hati.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">
+
+                    Saya Mengerti
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $('.table-soal').DataTable({
+            pageLength: 10,
+            lengthMenu: [10, 25, 50],
+            language: {
+                lengthMenu: "Tampilkan _MENU_ data",
+                search: "Cari:",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ soal",
+                emptyTable: "Belum ada soal"
+            }
+        });
+
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // TOOLTIP
+        new bootstrap.Tooltip(document.body, {
+            selector: '[data-bs-toggle="tooltip"]'
+        });
+
+        // DETAIL MODAL
+        document.querySelectorAll(".btn-detail").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                let id = this.dataset.id;
+
+                let modal = new bootstrap.Modal(document.getElementById('modalDetailSoal'));
+                modal.show();
+
+                document.getElementById("modalDetailBody").innerHTML = "Loading...";
+
+                fetch(`/detail_soal?id=${id}`)
+                    .then(res => res.text())
+                    .then(html => {
+                        const container = document.getElementById("modalDetailBody");
+                        container.innerHTML = html;
+
+                        if (window.MathJax) {
+                            MathJax.typesetPromise([container]);
+                        }
+                    })
+            });
+        });
+
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+
+            e.preventDefault();
+
+            const url = this.getAttribute('href');
+
+            Swal.fire({
+                title: 'Yakin hapus?',
+                text: "Data soal akan dihapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+
+        });
+    });
+</script>
+
+{% endblock %}

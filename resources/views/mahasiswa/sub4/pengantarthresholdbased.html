@@ -1,237 +1,565 @@
-{% extends 'layouts/base.html' %}
-
-{% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
-{% endblock %}
-
-{% block content %}
+{% extends 'layouts/base.html' %} {% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kodeeditor.css') }}" />
+{% endblock %} {% block content %}
 <div class="container mt-4">
-
-    <!-- PROGRESS -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-                <span class="fw-semibold">Progress Belajar</span>
-                <span class="text-success fw-bold">0%</span>
-            </div>
-
-            <div class="progress" style="height: 10px;">
-                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 0%">
-                    0%
-                </div>
-            </div>
+  <!-- PROGRESS -->
+  <div class="card border shadow-sm mb-4 rounded-4">
+    <div class="card-body px-4 py-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold text-dark">Progress Belajar</span>
+        <span class="text-success fw-bold">{{ progress }}%</span>
+      </div>
+      <div class="progress rounded-pill bg-light" style="height: 10px;">
+        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill" role="progressbar"
+          style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
         </div>
+      </div>
     </div>
+  </div>
 
+  <!-- PAGE 1 -->
+  <div class="page-section active">
+    <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
 
+      <div class="bg-custom-blue text-white p-4">
+        <h3 class="fw-bold mb-0">
+          <i class="fa-solid fa-crop-simple me-2"></i> 4. <i>Threshold-Based Segmentation</i>
+        </h3>
+      </div>
 
-    <!-- PAGE 1 -->
-    <div class="page-section active">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-                <h2 class="fw-bold mb-3">4. Threshold-Based Segmentation</h2>
-                <h5 class="fw-bold">Tujuan Pembelajaran</h5>
-                <ul>
-                    <li>Menguraikan konsep thresholding sebagai metode segmentasi citra digital</li>
-                    <li>Menguraikan proses thresholding dalam mengelompokkan pixel menjadi objek dan background.</li>
-                    <li>Menguraikan cara menentukan nilai threshold dalam proses segmentasi citra.</li>
-                </ul>
-            </div>
-        </div>
+      <div class="card-body p-4 p-md-5">
 
+        <div class="border border-custom-blue border-2 rounded-3 p-4 mb-4 bg-white">
 
-    </div>
+          <h5 class="fw-bold text-custom-blue mb-3">
+            <i class="fa-solid fa-bullseye me-2"></i>
+            Tujuan Pembelajaran
+          </h5>
 
-    <!-- PAGE 2 -->
-    <div class="page-section">
-        <div class="card mb-4 shadow-sm ">
-            <div class="card-body p-4">
-
-                <!-- Judul -->
-                <h4 class="fw-bold mb-3 text-primary"><i class="bi bi-sliders me-2"></i>4.1 Pengantar Thresholding</h4>
-
-                <!-- Paragraf -->
-                <p class="text-justify">
-                    Graylevel Thresholding adalah cara paling sederhana untuk melakukan segmentasi citra.
-                    Banyak objek dalam citra memiliki tingkat kecerahan yang berbeda dengan background.
-                    Karena itu, kita bisa menggunakan sebuah nilai batas (threshold) untuk memisahkan objek
-                    dan latar belakang.
-                </p>
-
-                <p class="text-justify">
-                    Metode ini sangat cepat dan ringan secara komputasi, sehingga sering digunakan pada aplikasi
-                    sederhana, bahkan bisa dilakukan secara real-time. Thresholding bekerja dengan mengubah
-                    citra input <strong>f</strong> menjadi citra biner <strong>g</strong>.
-                </p>
-
-                <!-- Subjudul -->
-                <h5 class="fw-bold mt-4 mb-3 text-primary">
-                    Algoritma Thresholding Sederhana
-                </h5>
-
-                <p>Langkah dari algoritma thresholding sederhana yaitu:</p>
-
-                <!-- Langkah -->
-                <div class="ps-3 mb-3">
-                    <p class="mb-2">
-                        Periksa setiap piksel
-                        <span class="text-dark fw-semibold">\( f(i,j) \)</span>
-                        pada citra, kemudian tentukan nilai piksel hasil
-                        <span class="text-dark fw-semibold">\( g(i,j) \)</span>.
-                    </p>
-
-                    <ul class="mb-3">
-                        <li>Jika \( f(i,j) \geq T \), maka \( g(i,j) = 1 \) (objek)</li>
-                        <li>Jika \( f(i,j) < T \), maka \( g(i,j)=0 \) (background)</li>
-                    </ul>
-                </div>
-
-                <!-- Penjelasan -->
-                <p>
-                    Maksudnya adalah setiap piksel dibandingkan dengan nilai threshold \( T \),
-                    yang dapat dituliskan sebagai berikut:
-                </p>
-
-                <!-- Rumus -->
-                <div class="bg-light rounded p-3 text-center mb-3">
-                    \[
-                    g(i,j) =
-                    \begin{cases}
-                    1 & \text{untuk } f(i,j) > T \\
-                    0 & \text{untuk } f(i,j) \leq T
-                    \end{cases}
-                    \]
-                </div>
-
-                <!-- Penutup -->
-                <p class="text-justify mb-0">
-                    Langkah ini berarti setiap piksel pada citra dicek apakah nilainya melewati batas threshold
-                    atau tidak. Jika nilai piksel lebih besar dari \( T \), maka piksel tersebut dianggap sebagai objek.
-                    Sebaliknya, jika nilainya lebih kecil atau sama dengan \( T \), maka piksel dianggap sebagai latar
-                    belakang.
-                </p>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- PAGE 3 -->
-    <div class="page-section">
-        <div class="card mb-4 shadow-sm ">
-            <div class="card-body p-4">
-
-                <!-- Pengantar -->
-                <p class="text-justify">
-                    Perhatikan contoh berikut untuk penerapan thresholding sederhana.
-                </p>
-
-                <p class="text-justify">
-                    Citra awal yang dimiliki ialah sebagai berikut:
-                </p>
-
-                <!-- Gambar awal -->
-                <div class="text-center my-4">
-                    <img src="{{ url_for('static', filename='img/sub4/f(i,j).png') }}" class="img-fluid rounded"
-                        style="max-width: 400px;">
-                    <p class="mt-2 text-muted">
-                        <em>Gambar 4.1 Citra awal untuk thresholding sederhana</em>
-                    </p>
-                </div>
-
-                <!-- Penjelasan -->
-                <p class="text-justify">
-                    Berdasarkan algoritma tersebut, setiap piksel
-                    <strong>\( f(i,j) \)</strong> akan diperiksa dengan nilai threshold.
-                    Pada contoh ini, nilai threshold diasumsikan sebesar
-                    <strong>\( T = 150 \)</strong>, sehingga memiliki ketentuan sebagai berikut:
-                </p>
-
-                <!-- Rumus -->
-                <div class="bg-light rounded p-3 text-center mb-3">
-                    \[
-                    g(i,j) =
-                    \begin{cases}
-                    1 & \text{untuk } f(i,j) > 150 \\
-                    0 & \text{untuk } f(i,j) \leq 150
-                    \end{cases}
-                    \]
-                </div>
-
-                <!-- Penjelasan hasil -->
-                <p class="text-justify">
-                    Berdasarkan ketentuan tersebut, citra hasil akan berubah menjadi citra biner,
-                    di mana setiap piksel hanya memiliki dua nilai, yaitu 0 dan 1.
-                    Hasil dari proses thresholding ditunjukkan pada gambar berikut:
-                </p>
-
-                <!-- Gambar hasil -->
-                <div class="text-center my-4">
-                    <img src="{{ url_for('static', filename='img/sub4/g(i,j).png') }}" class="img-fluid rounded"
-                        style="max-width: 400px;">
-                    <p class="mt-2 text-muted">
-                        <em>Gambar 4.2 Hasil penerapan algoritma thresholding</em>
-                    </p>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- page 4 -->
-    <!-- PAGINATION -->
-    <div class="page-section">
-        <div class="card-mb-4 shadow-sm">
-            <div class="card-body">
-                <!-- aktivitas -->
-                <div class="quiz-card">
-
-                    <h5 class="quiz-title">
-                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
-                    </h5>
-                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
-                    </p>
-
-                    <!-- PROGRESS -->
-                    <div class="quiz-progress" id="quizProgress"></div>
-
-                    <!-- SOAL -->
-                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
-
-                    <!-- FEEDBACK -->
-                    <div id="feedback" class="mt-3 fw-bold"></div>
-
-                    <!-- BUTTON -->
-                    <div class="quiz-nav">
-                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
-                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <nav class="mt-4 d-flex justify-content-center">
-        <ul class="pagination pagination-sm custom-pagination">
-
-            <li class="page-item" id="prevPageItem">
-                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+          <ul class="mb-0 text-dark" style="line-height: 1.8;">
+            <li class="mb-2">
+              Mahasiswa mampu menguraikan konsep <em>threshold-based segmentation</em> sebagai metode pemisahan objek
+              dan background pada citra digital melalui pembahasan materi dengan tepat.
             </li>
-
-            <li class="page-item active"><a class="page-link" onclick="goPage(0)">1</a></li>
-            <li class="page-item active"><a class="page-link" onclick="goPage(1)">2</a></li>
-            <li class="page-item active"><a class="page-link" onclick="goPage(2)">3</a></li>
-            <li class="page-item active"><a class="page-link" onclick="goPage(3)">4</a></li>
-            <li class="page-item" id="nextPageItem">
-                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+            <li class="mb-2">
+              Mahasiswa mampu menguraikan penggunaan histogram dalam menentukan nilai threshold untuk memisahkan objek
+              dan background pada segmentasi citra digital dengan benar.
             </li>
+            <li class="mb-2">
+              Mahasiswa mampu menguraikan prinsip kerja metode Global Thresholding, dan Otsu Thresholding dalam
+              menentukan nilai threshold untuk segmentasi citra digital dengan benar.
+            </li>
+            <li>
+              Mahasiswa mampu menerapkan metode Global Thresholding dan Otsu Thresholding menggunakan Python dan OpenCV
+              untuk menghasilkan segmentasi objek pada citra digital dengan tepat.
+            </li>
+          </ul>
 
-        </ul>
-    </nav>
+        </div>
 
+      </div>
+    </div>
+  </div>
+
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-circle-half-stroke me-2"></i> 4.1 Pengantar Threshold-Based Segmentation
+        </h3>
+
+        <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-4">
+            Threshold-Based Segmentation merupakan salah satu metode segmentasi citra yang paling sederhana dan banyak
+            digunakan untuk memisahkan objek dari latar belakang berdasarkan perbedaan nilai intensitas piksel. Metode
+            ini bekerja dengan membandingkan setiap piksel pada citra terhadap suatu nilai ambang (threshold). Piksel
+            yang memiliki intensitas lebih besar dari nilai ambang akan dikelompokkan sebagai objek, sedangkan piksel
+            yang memiliki intensitas lebih kecil atau sama dengan nilai ambang akan dikelompokkan sebagai latar
+            belakang.
+          </p>
+
+          <p class="mb-4">
+            Sebagai contoh, perhatikan sebuah citra yang berisi tulisan hitam pada kertas putih. Karena intensitas
+            piksel tulisan dan kertas berbeda, maka kita dapat menentukan sebuah nilai threshold untuk memisahkan
+            keduanya. Hasilnya, area tulisan akan menjadi objek dan area kertas akan menjadi background.
+          </p>
+
+          <h4 class="fw-bold mb-3 text-custom-blue">Algoritma Thresholding Sederhana</h4>
+          <p class="mb-4">
+            Langkah dari algoritma thresholding sederhana yaitu: periksa setiap piksel pada citra, kemudian tentukan
+            nilai piksel hasil dengan aturan sebagai berikut:
+          </p>
+
+          <ul class="mb-4 text-dark fw-semibold">
+            <li>Jika <span class="math-tex">\( f(x,y) > T \)</span>, maka <span class="math-tex">\( g(x,y) = 255
+                \)</span> (objek)</li>
+            <li>Jika tidak, maka <span class="math-tex">\( g(x,y) = 0 \)</span> (background)</li>
+          </ul>
+
+          <p class="mb-3">
+            Maksudnya adalah setiap piksel dibandingkan dengan nilai threshold (T), yang dapat dituliskan secara
+            matematis melalui Persamaan (4.1) sebagai berikut:
+          </p>
+
+          <div
+            class="bg-light p-3 text-center rounded border mb-4 d-flex justify-content-between align-items-center px-4">
+            <div class="w-100 text-center">
+              <span class="math-tex text-dark fw-bold">
+                \( g(x,y) = \begin{cases} 255, & \text{jika } f(x,y) > T \\ 0, & \text{jika } f(x,y) \le T \end{cases}
+                \)
+              </span>
+            </div>
+            <span class="fw-bold text-dark" style="white-space: nowrap;">(Persamaan 4.1)</span>
+          </div>
+
+          <p class="mb-4">
+            Langkah ini berarti setiap piksel pada citra dicek apakah nilainya melewati batas threshold atau tidak. Jika
+            nilai piksel lebih besar dari T, maka piksel tersebut dianggap sebagai objek. Sebaliknya, jika nilainya
+            lebih kecil atau sama dengan T, maka piksel dianggap sebagai latar belakang.
+          </p>
+
+          <h5 class="fw-bold text-custom-blue mb-3">Contoh Penerapan Thresholding Sederhana</h5>
+          <p class="mb-3">Misalkan kita memiliki matriks citra awal berukuran 3×3 sebagai berikut:</p>
+
+          <img src="{{ url_for('static', filename='img/sub4/f(i,j).png') }}" class="img-fluid text-center mb-0"
+            style="max-width: 40%; height: auto; display: block; margin-left: auto; margin-right: auto;">
+          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4.1 citra awal untuk thresholding sederhana</em>
+          </p>
+
+
+          <p class="mb-4">
+            Berdasarkan algoritma tersebut, maka setiap piksel <span class="math-tex">\( f(i,j) \)</span> akan diperiksa
+            dengan nilai threshold. Nilai threshold pada gambar tersebut kita asumsikan dengan nilai <span
+              class="fw-bold text-custom-blue">T = 150</span>, maka akan memiliki ketentuan pengujian sebagai berikut:
+          </p>
+
+          <div class="bg-light p-3 text-center rounded border mb-4 shadow-sm text-dark fw-bold">
+            \(g(i,j) = \begin{cases} 1 & \text{untuk } f(i,j) > 150 \\ 0 & \text{untuk } f(i,j) \le 150 \end{cases}\)
+          </div>
+          <p class="mb-4">
+            Berdasarkan ketentuan tersebut maka citra yang terbarunya akan menjadi citra biner seperti gambar dibawah
+            ini untuk nilai dari citra biner tersebut:
+          </p>
+
+          <img src="{{ url_for('static', filename='img/sub4/g(i,j).png') }}" class="img-fluid text-center mb-0"
+            style="max-width: 40%; height: auto; display: block; margin-left: auto; margin-right: auto;">
+          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4.2 hasil dari penerapan algoritma
+              thresholding</em>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
+
+      <div class="bg-custom-blue text-white p-4">
+        <h3 class="fw-bold mb-0">
+          <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+        </h3>
+      </div>
+
+      <div class="card-body p-4 p-md-5">
+        <p class="mb-4 text-dark" style="font-size: 1.05rem;">
+          Untuk menguji pemahaman kamu pada materi di atas, silakan kerjakan aktivitas berikut ini!
+        </p>
+
+        <div class="border border-custom-blue border-2 rounded-3 p-4 mb-5 bg-white">
+          <h5 class="fw-bold text-custom-blue mb-3">
+            <i class="fa-solid fa-clipboard-list me-2"></i> Petunjuk Pengerjaan
+          </h5>
+          <ul class="mb-0 text-dark" style="line-height: 1.8;">
+            <li>Baca setiap pertanyaan dengan teliti sebelum menjawab.</li>
+            <li>Pilih salah satu opsi jawaban yang menurutmu paling tepat.</li>
+            <li>Tombol <strong>LANJUT</strong> baru akan aktif setelah kamu memilih jawaban.</li>
+            <li>Perhatikan <em>feedback</em> (umpan balik) yang muncul di bawah soal untuk mengetahui apakah jawabanmu
+              benar atau salah.</li>
+            <li>Setelah selesai, kamu bisa menekan tombol <strong>KEMBALI</strong> jika ingin mengulang aktivitas.</li>
+          </ul>
+        </div>
+
+        <div class="quiz-area border-top pt-4">
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold text-dark mb-0">Soal Aktivitas</h5>
+            <span class="badge bg-custom-blue rounded-pill px-3 py-2 fs-6 shadow-sm" id="quizProgress"></span>
+          </div>
+
+          <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+          <div id="feedback" class="mt-3 fw-bold"></div>
+
+          <div class="quiz-nav mt-5 d-flex justify-content-end gap-3">
+            <button id="ulangBtn" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold shadow-sm d-none">
+              <i class="fa-solid fa-rotate-left me-2"></i> KEMBALI
+            </button>
+            <button id="nextBtn" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm" disabled>
+              LANJUT <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- PAGINATION -->
+  <nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination pagination-sm custom-pagination">
+      <li class="page-item" id="prevPageItem">
+        <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+      </li>
+
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(0)">1</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(1)">2</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(2)">3</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(3)">4</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(4)">5</a>
+      </li>
+      <li class="page-item" id="nextPageItem">
+        <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+      </li>
+    </ul>
+  </nav>
 </div>
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 <script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
-{% endblock %}
+<script>
+  let binaryCellCount = 0;
 
-{% endblock %}
+  let binaryEditors = {};
+
+  let binaryImagePath = "";
+
+  // =====================================
+  // ADD CELL
+  // =====================================
+  function addBinaryCell() {
+
+    binaryCellCount++;
+
+    const container =
+      document.getElementById(
+        "binaryNotebook"
+      );
+
+    const cell =
+      document.createElement("div");
+
+    cell.className = "cell";
+
+    cell.innerHTML = `
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+
+    <span class="text-muted small fw-bold">
+        Binary Threshold In [${binaryCellCount}]:
+    </span>
+
+    <div class="cell-actions">
+
+        <button
+            class="btn-icon run"
+            onclick="runBinaryCell(${binaryCellCount})"
+        >
+
+            <i class="fa-solid fa-play"></i>
+
+        </button>
+
+    </div>
+
+</div>
+
+<textarea id="binary-editor-${binaryCellCount}">
+import cv2
+import numpy as np
+import os
+
+# =====================================
+# BACA GAMBAR GRAYSCALE
+# =====================================
+img = cv2.imread('uploads/grayscale.jpg',cv2.IMREAD_GRAYSCALE)
+
+# =====================================
+# VALIDASI
+# =====================================
+if img is None:
+
+    print("Gambar tidak ditemukan!")
+
+    exit()
+
+# =====================================
+# THRESHOLD
+# =====================================
+T = 128
+
+# =====================================
+# UKURAN CITRA
+# =====================================
+rows, cols = img.shape
+
+# =====================================
+# CITRA HASIL
+# =====================================
+binary = np.zeros((rows, cols), dtype=np.uint8)
+
+# =====================================
+# PROSES THRESHOLDING
+# =====================================
+for i in range(rows):
+
+    for j in range(cols):
+
+        # =====================================
+        # f(i,j) > T
+        # =====================================
+        if img[i, j] > T:
+
+            # objek
+            binary[i, j] = 255
+
+        else:
+
+            # background
+            binary[i, j] = 0
+
+# =====================================
+# SIMPAN HASIL
+# =====================================
+save_path = os.path.join(output_dir, "hasil_binary_threshold.jpg")
+
+cv2.imwrite( save_path, binary)
+
+# =====================================
+# OUTPUT
+# =====================================
+print("Binary Thresholding berhasil")
+
+print("Threshold:")
+print(T)
+
+print("Ukuran citra:")
+print(img.shape)
+
+print("Disimpan di:")
+print(save_path)
+
+</textarea>
+
+<div
+    id="binary-output-${binaryCellCount}"
+    class="output-box"
+>
+    Output muncul di sini...
+</div>
+`;
+
+    container.appendChild(cell);
+
+    const editor =
+      CodeMirror.fromTextArea(
+        document.getElementById(
+          `binary-editor-${binaryCellCount}`
+        ),
+        {
+          mode: "python",
+          theme: "dracula",
+          lineNumbers: true,
+          lineWrapping: true
+        }
+      );
+
+    editor.setSize(
+      "100%",
+      "auto"
+    );
+
+    binaryEditors[
+      binaryCellCount
+    ] = editor;
+  }
+
+  // =====================================
+  // RUN CELL
+  // =====================================
+  function runBinaryCell(id) {
+
+    const code =
+      binaryEditors[id].getValue();
+
+    const outputBox =
+      document.getElementById(
+        `binary-output-${id}`
+      );
+
+    outputBox.innerHTML =
+      "⏳ Running Binary Threshold...";
+
+    fetch(
+      "/run-code",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+
+        body: JSON.stringify({
+
+          code: code,
+
+          image_path:
+            binaryImagePath
+        })
+      }
+    )
+
+      .then(res => res.json())
+
+      .then(data => {
+
+        outputBox.innerHTML = `
+
+<div class="result-wrapper">
+
+    <div class="console-output mb-3">
+
+        <pre>${data.output}</pre>
+
+    </div>
+
+    <div class="image-results">
+
+        ${data.before_image
+            ?
+            `
+            <div class="image-card">
+
+                <h6>Gambar Asli</h6>
+
+                <img
+                    src="${data.before_image}"
+                    class="result-image preview-image"
+
+                    data-bs-toggle="modal"
+                    data-bs-target="#binaryModal"
+
+                    onclick="openBinaryModal('${data.before_image}')"
+                >
+
+            </div>
+            `
+            :
+            ""
+          }
+
+        <div class="image-card">
+
+            <h6>Hasil Binary Threshold</h6>
+
+            <img
+                src="/static/results/hasil_binary_threshold.jpg?t=${Date.now()}"
+                class="result-image preview-image"
+
+                data-bs-toggle="modal"
+                data-bs-target="#binaryModal"
+
+                onclick="openBinaryModal('/static/results/hasil_binary_threshold.jpg?t=${Date.now()}')"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+`;
+      });
+  }
+
+  // =====================================
+  // TRIGGER UPLOAD
+  // =====================================
+  function triggerBinaryUpload() {
+
+    document.getElementById(
+      "binaryFileInput"
+    ).click();
+
+  }
+
+  // =====================================
+  // HANDLE UPLOAD
+  // =====================================
+  function handleBinaryUpload(event) {
+
+    const file =
+      event.target.files[0];
+
+    if (!file) return;
+
+    const formData =
+      new FormData();
+
+    formData.append(
+      "image",
+      file
+    );
+
+    fetch(
+      "/upload-image",
+      {
+        method: "POST",
+        body: formData
+      }
+    )
+
+      .then(res => res.json())
+
+      .then(data => {
+
+        binaryImagePath =
+          data.path;
+
+        document.getElementById(
+          "binaryFileList"
+        ).innerHTML = `
+        
+<li>
+
+    <i class="fa-solid fa-file-image me-2 text-secondary"></i>
+
+    ${file.name}
+
+</li>
+`;
+      });
+  }
+
+  // =====================================
+  // OPEN MODAL
+  // =====================================
+  function openBinaryModal(src) {
+
+    document.getElementById(
+      "binaryModalImage"
+    ).src = src;
+
+  }
+</script>
+{% endblock %} {% endblock %}

@@ -1,695 +1,1813 @@
-{% extends 'layouts/base.html' %}
-{% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/sub1/jeniscitra.css') }}">
-{% endblock %}
-{% block content %}
+{% extends 'layouts/base.html' %} {% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub1/jeniscitra.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub1/perhitungangs.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kodeeditor.css') }}" />
+{% endblock %} {% block content %}
 <div class="container mt-4">
-    <!-- proggress -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-                <span class="fw-semibold">Progress Belajar</span>
-                <span class="text-success fw-bold">8%</span>
-            </div>
+  <!-- proggress -->
+  <div class="card border shadow-sm rounded-4 mb-4">
+    <div class="card-body px-4 py-3">
 
-            <div class="progress" style="height: 10px;">
-                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 8%">8%
-                </div>
-            </div>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold text-dark">Progress Belajar</span>
+        <span class="text-success fw-bold">{{ progress }}%</span>
+      </div>
+
+      <div class="progress rounded-pill bg-light" style="height: 10px;">
+        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill" role="progressbar"
+          style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
         </div>
+      </div>
+
     </div>
-    <!-- page 1 -->
-    <div class="page-section active">
-        <div class="card mb-4 shadow-sm ">
-            <div class="card-body">
-                <h2 class="fw-bold mb-3 text-primary">
-                    <i class="fa-solid fa-image me-2"></i>1.2 Jenis Citra
-                </h2>
+  </div>
+  <!-- page 1 -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
 
-                <p>
-                    Informasi di dalam sebuah elemen citra bergantung pada jenis data yang digunakan untuk
-                    merepresentasikannya. Nilai piksel hampir selalu berupa <i>binary word</i> dengan panjang
-                    <b>k</b>, sehingga sebuah piksel dapat merepresentasikan sebanyak <b>2<sup>k</sup></b> nilai
-                    yang berbeda. Nilai <b>k</b> disebut <i>bit depth</i> (atau hanya “depth”) dari citra.
-                    Tata letak bit pada setiap piksel bergantung pada jenis citranya, seperti citra biner,
-                    grayscale, atau warna RGB.
-                </p>
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-image me-2"></i> 1.2 Jenis Citra
+        </h3>
 
+        <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
 
+          <p class="mb-4">
+            Informasi di dalam sebuah elemen citra bergantung pada jenis data yang digunakan untuk merepresentasikannya.
+            Nilai piksel hampir selalu berupa <em>binary word</em> dengan panjang \( k \), sehingga sebuah piksel dapat
+            merepresentasikan sebanyak \( 2^k \) nilai yang berbeda. Nilai \( k \) disebut <em>bit depth</em> (atau
+            hanya "depth")
+            dari citra. Tata letak bit secara tepat pada setiap piksel bergantung pada jenis citranya; misalnya citra
+            biner,
+            grayscale, atau citra RGB.
+          </p>
 
-                <h5 class="fw-bold mt-4 text-dark">
-                    a) Citra Grayscale
+          <h5 class="fw-bold text-dark mt-5 mb-3">a) Citra Grayscale</h5>
+
+          <p class="mb-3">
+            Pada citra grayscale, gambar hanya memiliki satu kanal (<em>channel</em>) yang berisi nilai intensitas atau
+            tingkat
+            kecerahan dari setiap piksel. Artinya, citra grayscale tidak menyimpan informasi warna seperti merah, hijau,
+            dan biru,
+            tetapi hanya menyimpan tingkat terang atau gelap suatu gambar.
+          </p>
+
+          <p class="mb-4">
+            Nilai piksel pada citra grayscale selalu berupa angka positif, karena angka tersebut menunjukkan intensitas
+            cahaya atau
+            kecerahan pada suatu titik dalam gambar. Nilai ini tidak mungkin bernilai negatif karena kecerahan atau
+            intensitas
+            cahaya tidak dapat lebih kecil dari nol.
+          </p>
+
+          <p class="mb-2">Secara umum, nilai intensitas piksel pada citra grayscale berada pada rentang:</p>
+
+          <div class="bg-light p-3 rounded-3 border text-center mb-3 position-relative">
+            <span class="fs-5 fw-semibold text-dark">\( 0 \leq f(x,y) \leq 2^k - 1 \)</span>
+            <div class="position-absolute bottom-0 end-0 p-2 text-muted small">
+              <em>Persamaan (1.1)</em>
+            </div>
+          </div>
+
+          <p class="mb-2 fw-semibold text-dark">Keterangan:</p>
+          <ul class="mb-4">
+            <li>\( f(x,y) \) = nilai intensitas piksel pada koordinat \( (x,y) \)</li>
+            <li>\( k \) = jumlah bit (<em>bit depth</em>) yang digunakan untuk menyimpan nilai piksel</li>
+          </ul>
+
+          <p class="mb-3">
+            Contoh yang paling sering digunakan adalah citra grayscale 8-bit, yaitu citra yang menggunakan 8 bit (1
+            byte) untuk
+            setiap piksel. Dengan menggunakan 8 bit, jumlah kemungkinan nilai yang dapat direpresentasikan adalah:
+          </p>
+
+          <div class="bg-light p-2 rounded-3 border text-center mb-3">
+            <span class="fs-5 fw-semibold text-dark">\( 2^8 = 256 \)</span>
+          </div>
+
+          <p class="mb-3">
+            Namun karena nilai piksel dimulai dari 0, maka nilai maksimum yang dapat disimpan adalah:
+          </p>
+
+          <div class="bg-light p-2 rounded-3 border text-center mb-3">
+            <span class="fs-5 fw-semibold text-dark">\( 2^8 - 1 = 255 \)</span>
+          </div>
+          <p class="mb-3">
+            Sehingga rentang nilai piksel pada citra grayscale 8-bit adalah <strong>\( 0 \leq f(x,y) \leq 255
+              \)</strong>.
+            Berdasarkan hasil dari persamaan tersebut diperoleh yaitu:
+          </p>
+
+          <ul class="mb-4">
+            <li><strong>0</strong> menunjukkan warna hitam (tidak ada cahaya)</li>
+            <li><strong>255</strong> menunjukkan warna putih (intensitas cahaya maksimum)</li>
+          </ul>
+
+          <div id="gambar1_3" class="text-center p-4 my-5 shadow-sm">
+            <img src="{{ url_for('static', filename='img/sub1/grayscale_example.png') }}" class="img-fluid rounded-3"
+              style="max-width: 800px; width: 100%; height: auto;">
+            <p class="mt-3 mb-0 text-muted small">
+              <em>Gambar 1.3 Contoh citra grayscale beserta nilai piksel</em>
+            </p>
+          </div>
+
+          <p class="mb-3">
+            Nilai di antara 0 hingga 255 menghasilkan berbagai tingkatan abu-abu, mulai dari abu-abu gelap hingga
+            abu-abu terang.
+            Dengan demikian, citra grayscale dapat dipahami sebagai gambar yang terdiri dari berbagai tingkatan warna
+            abu-abu yang
+            dibentuk oleh nilai intensitas setiap piksel. Semakin besar nilai piksel, maka gambar akan terlihat semakin
+            terang,
+            sedangkan semakin kecil nilainya maka gambar akan terlihat semakin gelap.
+          </p>
+
+          <p class="mb-0">
+            Dalam pengolahan citra digital, citra berwarna (RGB) sering kali diubah menjadi citra grayscale untuk
+            menyederhanakan
+            proses analisis. Hal ini karena citra grayscale hanya memiliki satu nilai intensitas, sehingga perhitungan
+            menjadi lebih
+            sederhana dibandingkan citra berwarna yang memiliki tiga kanal, yaitu <em>Red</em> (R), <em>Green</em> (G),
+            dan
+            <em>Blue</em> (B). Terdapat beberapa metode yang umum digunakan untuk mengubah citra RGB menjadi citra
+            grayscale,
+            di antaranya adalah <em>Lightness Method</em>, <em>Average Method</em>, dan <em>Luminosity Method</em>.
+          </p>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- page 2 -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-book-open me-2"></i> 1. Lightness Method
+        </h3>
+
+        <div class="text-secondary" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-3">
+            Metode Lightness mengubah citra RGB menjadi grayscale dengan cara mengambil nilai minimum dan maksimum dari
+            komponen warna R, G, dan B, kemudian menghitung rata-ratanya. Rumus yang digunakan adalah:
+          </p>
+
+          <div class="bg-light p-4 rounded-3 border text-center mb-4 position-relative shadow-sm">
+            <span class="fs-5 fw-semibold text-dark">\( \text{Grayscale} = \frac{\max(R, G, B) + \min(R, G, B)}{2}
+              \)</span>
+            <div class="position-absolute bottom-0 end-0 p-2 text-muted small">
+              <em>Persamaan (1.2)</em>
+            </div>
+          </div>
+
+          <p class="mb-5">
+            Metode ini bekerja dengan mengambil dua nilai ekstrem dari ketiga komponen warna, yaitu nilai paling rendah
+            dan paling tinggi. Kemudian kedua nilai tersebut dirata-ratakan untuk menghasilkan nilai grayscale. Cara ini
+            memberikan hasil yang cukup seimbang karena mempertimbangkan perbedaan intensitas warna paling terang dan
+            paling gelap.
+          </p>
+        </div>
+
+        <hr class="border-2 opacity-10 mb-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-laptop-code me-2"></i> Praktek Lightness Method pada Python
+        </h3>
+
+        <div class="text-secondary" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+
+          <p class="fw-bold text-dark mb-3">Langkah-langkah lightness method pada Python:</p>
+
+          <p class="mb-2">1) Download gambar yang sudah disediakan pada link berikut: <a href="https://bit.ly/4wXduAa"
+              target="_blank" class="text-decoration-none fw-semibold">https://bit.ly/4wXduAa</a></p>
+
+          <p class="mb-4">2) Upload gambar sampel kedalam kode editor yang digunakan.</p>
+
+          <p class="mb-2">3) Import library OpenCV sebagai inisiasi awal untuk image processing.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div><span class="text-warning">import</span> cv2</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">4) Untuk membaca gambar dalam python menggunakan OpenCV dapat dilakukan dengan menuliskan
+            perintah cv2.imread().</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>image = cv2.imread(<span class="text-success">'gambar.jpg'</span>)</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">5) Langkah selanjutnya adalah mengambil nilai channel warna RGB. Berdasarkan format OpenCV
+            adalah BGR, maka setiap channel harus dipisahkan terlebih dahulu.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2<br>3
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>B = image[:, :, <span class="text-info">0</span>]</div>
+                <div>G = image[:, :, <span class="text-info">1</span>]</div>
+                <div>R = image[:, :, <span class="text-info">2</span>]</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">6) Selanjutnya adalah menghitung nilai grayscale dengan metode Lightness.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2<br>3
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>max_rgb = cv2.max(cv2.max(R, G), B)</div>
+                <div>min_rgb = cv2.min(cv2.min(R, G), B)</div>
+                <div>gray_lightness = ((max_rgb + min_rgb) / <span class="text-info">2</span>).astype(<span
+                    class="text-success">'uint8'</span>)</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">7) Selanjutnya tampilkan gambar asli dan hasil dari metode lightness menggunakan fungsi
+            cv2.imshow().</p>
+
+          <div class="rounded-3 overflow-hidden mb-5 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2<br>3<br>4
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>cv2.imshow(<span class="text-success">'Gambar Asli'</span>, image)</div>
+                <div>cv2.imshow(<span class="text-success">'Grayscale Lightness'</span>, gray_lightness)</div>
+                <div>cv2.waitKey(<span class="text-info">0</span>)</div>
+                <div>cv2.destroyAllWindows()</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- page 3 -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-book-open me-2"></i> 2. Average Method
+        </h3>
+
+        <div class="text-secondary" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-3">
+            Metode Average merupakan cara yang paling sederhana untuk mengubah citra RGB menjadi grayscale. Pada metode
+            ini, nilai grayscale diperoleh dengan menghitung rata-rata dari ketiga komponen warna, yaitu <em>red</em>
+            (R), <em>green</em> (G), dan <em>blue</em> (B). Rumusnya adalah:
+          </p>
+
+          <div class="bg-light p-4 rounded-3 border text-center mb-4 position-relative shadow-sm">
+            <span class="fs-5 fw-semibold text-dark">\( \text{Grayscale} = \frac{R + G + B}{3} \)</span>
+            <div class="position-absolute bottom-0 end-0 p-2 text-muted small">
+              <em>Persamaan (1.3)</em>
+            </div>
+          </div>
+
+          <p class="mb-5">
+            Metode ini menganggap bahwa ketiga komponen warna memiliki pengaruh yang sama terhadap tingkat kecerahan
+            gambar. Oleh karena itu, nilai grayscale diperoleh dengan menjumlahkan nilai R, G, dan B, lalu membaginya
+            dengan tiga.
+          </p>
+        </div>
+
+        <hr class="border-2 opacity-10 mb-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-laptop-code me-2"></i> Praktek Average Method pada Python
+        </h3>
+
+        <div class="text-secondary" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+
+          <p class="fw-bold text-dark mb-3">Langkah-langkah average method pada Python:</p>
+
+          <p class="mb-2">1) Download gambar yang sudah disediakan pada link berikut: <a href="https://bit.ly/4wXduAa"
+              target="_blank" class="text-decoration-none fw-semibold">https://bit.ly/4wXduAa</a></p>
+
+          <p class="mb-4">2) Upload gambar sampel kedalam kode editor yang digunakan.</p>
+
+          <p class="mb-2">3) Import library OpenCV sebagai inisiasi awal untuk image processing.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div><span class="text-warning">import</span> cv2</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">4) Untuk membaca gambar dalam python menggunakan OpenCV dapat dilakukan dengan menuliskan
+            perintah cv2.imread().</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>image = cv2.imread(<span class="text-success">'gambar.jpg'</span>)</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">5) Langkah selanjutnya adalah mengambil nilai channel warna RGB. Berdasarkan format OpenCV
+            adalah BGR, maka setiap channel harus dipisahkan terlebih dahulu.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2<br>3
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>B = image[:, :, <span class="text-info">0</span>]</div>
+                <div>G = image[:, :, <span class="text-info">1</span>]</div>
+                <div>R = image[:, :, <span class="text-info">2</span>]</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">6) Selanjutnya adalah menghitung nilai grayscale dengan metode Average.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>gray_average = ((R + G + B) / <span class="text-info">3</span>).astype(<span
+                    class="text-success">'uint8'</span>)</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">7) Selanjutnya tampilkan gambar asli dan hasil dari metode average menggunakan fungsi
+            cv2.imshow().</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2<br>3<br>4
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>cv2.imshow(<span class="text-success">'Gambar Asli'</span>, image)</div>
+                <div>cv2.imshow(<span class="text-success">'Grayscale Average'</span>, gray_average)</div>
+                <div>cv2.waitKey(<span class="text-info">0</span>)</div>
+                <div>cv2.destroyAllWindows()</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- page 4 -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-book-open me-2"></i> 3. Luminosity Method
+        </h3>
+
+        <div class="text-secondary" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-3">
+            Metode Luminosity merupakan metode yang lebih akurat karena mempertimbangkan sensitivitas mata manusia
+            terhadap warna tertentu. Mata manusia lebih peka terhadap warna hijau dibandingkan warna merah dan biru.
+            Oleh karena itu, pada metode ini setiap komponen warna diberi bobot yang berbeda. Rumusnya adalah:
+          </p>
+
+          <div class="bg-light p-4 rounded-3 border text-center mb-4 position-relative shadow-sm">
+            <span class="fs-5 fw-semibold text-dark">\( \text{Grayscale} = 0.21R + 0.72G + 0.07B \)</span>
+            <div class="position-absolute bottom-0 end-0 p-2 text-muted small">
+              <em>Persamaan (1.4)</em>
+            </div>
+          </div>
+
+          <p class="mb-5">
+            Dalam rumus tersebut, warna hijau (G) memiliki bobot terbesar karena paling memengaruhi persepsi kecerahan
+            oleh mata manusia. Sementara itu, warna merah (R) memiliki pengaruh sedang, dan warna biru (B) memiliki
+            pengaruh paling kecil.
+          </p>
+        </div>
+
+        <hr class="border-2 opacity-10 mb-5">
+
+        <h3 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-laptop-code me-2"></i> Praktek Luminosity Method pada Python
+        </h3>
+
+        <div class="text-secondary" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+
+          <p class="fw-bold text-dark mb-3">Langkah-langkah luminosity method pada Python:</p>
+
+          <p class="mb-2">1) Download gambar yang sudah disediakan pada link berikut: <a href="https://bit.ly/4wXduAa"
+              target="_blank" class="text-decoration-none fw-semibold">https://bit.ly/4wXduAa</a></p>
+
+          <p class="mb-4">2) Upload gambar sampel kedalam kode editor yang digunakan.</p>
+
+          <p class="mb-2">3) Import library OpenCV sebagai inisiasi awal untuk image processing.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div><span class="text-warning">import</span> cv2</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">4) Untuk membaca gambar dalam python menggunakan OpenCV dapat dilakukan dengan menuliskan
+            perintah cv2.imread().</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>image = cv2.imread(<span class="text-success">'gambar.jpg'</span>)</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">5) Langkah selanjutnya adalah mengambil nilai channel warna RGB. Berdasarkan format OpenCV
+            adalah BGR, maka setiap channel harus dipisahkan terlebih dahulu.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2<br>3
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>B = image[:, :, <span class="text-info">0</span>]</div>
+                <div>G = image[:, :, <span class="text-info">1</span>]</div>
+                <div>R = image[:, :, <span class="text-info">2</span>]</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">6) Selanjutnya adalah menghitung nilai grayscale dengan metode Luminosity.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>gray_luminosity = ((<span class="text-info">0.21</span> * R) + (<span class="text-info">0.72</span>
+                  * G) + (<span class="text-info">0.07</span> * B)).astype(<span class="text-success">'uint8'</span>)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">7) Selanjutnya tampilkan gambar asli dan hasil dari metode luminosity menggunakan fungsi
+            cv2.imshow().</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2<br>3<br>4
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>cv2.imshow(<span class="text-success">'Gambar Asli'</span>, image)</div>
+                <div>cv2.imshow(<span class="text-success">'Grayscale Luminosity'</span>, gray_luminosity)</div>
+                <div>cv2.waitKey(<span class="text-info">0</span>)</div>
+                <div>cv2.destroyAllWindows()</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- page 5 perhitungan grayscale -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4 overflow-hidden">
+      <div class="card-body p-4 p-md-5">
+
+        <h4 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-calculator me-2"></i> Contoh Perhitungan: Lightness Method
+        </h4>
+        <p class="text-secondary mb-4" style="font-size: 1.05rem;">
+          Berikut adalah simulasi bagaimana sebuah matriks citra RGB berukuran 3x3 dikonversi menjadi citra grayscale.
+          Klik tombol <strong>Mulai Animasi</strong> untuk melihat perhitungan per piksel.
+        </p>
+
+        <div class="row text-center mb-4 g-3">
+          <div class="col-md-4">
+            <div class="p-3 border rounded-3 bg-light h-100 shadow-sm">
+              <h6 class="fw-bold" style="color: #dc2626;">Kanal Red (R)</h6>
+              <table class="table table-bordered border-secondary mt-3 mb-0 anim-matrix">
+                <tr>
+                  <td id="r-0-0">110</td>
+                  <td id="r-0-1">80</td>
+                  <td id="r-0-2">90</td>
+                </tr>
+                <tr>
+                  <td id="r-1-0">50</td>
+                  <td id="r-1-1">60</td>
+                  <td id="r-1-2">100</td>
+                </tr>
+                <tr>
+                  <td id="r-2-0">20</td>
+                  <td id="r-2-1">40</td>
+                  <td id="r-2-2">120</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="p-3 border rounded-3 bg-light h-100 shadow-sm">
+              <h6 class="fw-bold" style="color: #16a34a;">Kanal Green (G)</h6>
+              <table class="table table-bordered border-secondary mt-3 mb-0 anim-matrix">
+                <tr>
+                  <td id="g-0-0">15</td>
+                  <td id="g-0-1">20</td>
+                  <td id="g-0-2">160</td>
+                </tr>
+                <tr>
+                  <td id="g-1-0">10</td>
+                  <td id="g-1-1">150</td>
+                  <td id="g-1-2">80</td>
+                </tr>
+                <tr>
+                  <td id="g-2-0">110</td>
+                  <td id="g-2-1">50</td>
+                  <td id="g-2-2">90</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="p-3 border rounded-3 bg-light h-100 shadow-sm">
+              <h6 class="fw-bold" style="color: #2563eb;">Kanal Blue (B)</h6>
+              <table class="table table-bordered border-secondary mt-3 mb-0 anim-matrix">
+                <tr>
+                  <td id="b-0-0">120</td>
+                  <td id="b-0-1">60</td>
+                  <td id="b-0-2">80</td>
+                </tr>
+                <tr>
+                  <td id="b-1-0">30</td>
+                  <td id="b-1-1">140</td>
+                  <td id="b-1-2">170</td>
+                </tr>
+                <tr>
+                  <td id="b-2-0">80</td>
+                  <td id="b-2-1">110</td>
+                  <td id="b-2-2">100</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark text-white p-4 rounded-4 mb-4 shadow position-relative">
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0 text-warning"><i class="fa-solid fa-microchip me-2"></i> Proses Perhitungan Piksel
+            </h6>
+            <div class="mt-3 mt-md-0 d-flex gap-2">
+              <button id="btn-reset" class="btn btn-outline-light btn-sm rounded-pill px-3" onclick="resetAnimation()"
+                disabled>Reset</button>
+              <button id="btn-play" class="btn btn-primary btn-sm rounded-pill px-4 fw-bold"
+                onclick="startAnimation()"><i class="fa-solid fa-play me-1"></i> Mulai Animasi</button>
+            </div>
+          </div>
+
+          <div id="process-box" class="p-3 rounded-3 font-monospace text-center"
+            style="background-color: #1e1e1e; font-size: 1.1rem; min-height: 60px;">
+            <span class="text-muted">Klik tombol mulai untuk melihat perhitungan...</span>
+          </div>
+        </div>
+
+        <div class="row justify-content-center">
+          <div class="col-md-5">
+            <div class="p-3 border rounded-3 text-center shadow-sm" style="background-color: #f1f5f9;">
+              <h6 class="fw-bold text-custom-blue">Hasil Citra Grayscale</h6>
+              <table class="table table-bordered border-secondary mt-3 mb-0 anim-matrix bg-white">
+                <tr>
+                  <td id="res-0-0">?</td>
+                  <td id="res-0-1">?</td>
+                  <td id="res-0-2">?</td>
+                </tr>
+                <tr>
+                  <td id="res-1-0">?</td>
+                  <td id="res-1-1">?</td>
+                  <td id="res-1-2">?</td>
+                </tr>
+                <tr>
+                  <td id="res-2-0">?</td>
+                  <td id="res-2-1">?</td>
+                  <td id="res-2-2">?</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- page 6 -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <div class="mt-2 mb-5 text-center">
+          <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+            <div class="px-4 py-2 rounded-3 text-white shadow-sm" style="background-color: #1e293b;">
+              <h5 class="fw-bold mb-0">
+                <i class="fa-solid fa-rocket me-2"></i> Ayo Coba Sendiri!
+              </h5>
+            </div>
+            <button type="button"
+              class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-medium shadow-sm d-flex align-items-center"
+              data-bs-toggle="modal" data-bs-target="#panduanModal" style="height: 100%;">
+              <i class="fa-solid fa-circle-question me-2"></i> Cara Penggunaan
+            </button>
+          </div>
+          <p class="text-secondary mt-3 mb-0 fw-medium" style="font-size: 1.05rem;">
+            Upload gambarmu dan lengkapi potongan kode program pada <em class="text-dark fw-bold">Live Code
+              Notebook</em> di bawah ini untuk menghitung konversi grayscale.
+          </p>
+        </div>
+
+        <div class="modal fade" id="panduanModal" tabindex="-1" aria-labelledby="panduanModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+              <div class="modal-header border-bottom-0 px-4 px-md-5 pt-4 pb-2">
+                <h5 class="modal-title fw-bold text-custom-blue" id="panduanModalLabel">
+                  <i class="fa-solid fa-circle-info me-2"></i> Panduan Penggunaan Live Code
                 </h5>
-
-                <p>
-                    Pada citra grayscale, gambar hanya memiliki satu kanal (<i>channel</i>) yang berisi nilai
-                    intensitas atau tingkat kecerahan dari setiap piksel. Artinya, citra grayscale tidak
-                    menyimpan informasi warna seperti merah, hijau, dan biru, tetapi hanya menyimpan tingkat
-                    terang atau gelap suatu gambar.
-                </p>
-
-                <p>
-                    Nilai piksel pada citra grayscale selalu berupa angka positif karena menunjukkan intensitas
-                    cahaya atau kecerahan pada suatu titik dalam gambar. Nilai ini tidak mungkin bernilai
-                    negatif karena kecerahan tidak dapat lebih kecil dari nol.
-                </p>
-
-                <div class="alert border rounded-3" style="background:#f8f9fc;">
-                    <b>Rentang nilai intensitas:</b><br>
-                    0 ≤ f(x,y) ≤ 2<sup>k</sup> − 1
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body px-4 px-md-5 pb-4">
+                <div class="row g-4 text-secondary mt-1" style="font-size: 0.95rem; line-height: 1.7;">
+                  <div class="col-md-6">
+                    <div class="d-flex mb-3">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">1</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Upload Gambar</strong><br>
+                        Klik area <em>"Upload Image"</em> di sebelah kiri atau <em>drag & drop</em> gambarmu ke kotak
+                        tersebut. Pastikan nama filenya muncul di daftar <em>File Anda</em> (contoh:
+                        <code>pohon.jpg</code>).
+                      </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">2</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Lengkapi Kode Program</strong><br>
+                        Isi bagian kode yang rumpang (ditandai dengan <code>.....</code>). <strong>Sangat
+                          Penting:</strong> Sesuaikan nama file di dalam fungsi <code>imread('...')</code> dengan nama
+                        gambar yang baru saja kamu upload!
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="d-flex mb-3">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">3</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Jalankan Kode (Run)</strong><br>
+                        Klik tombol <strong>Play</strong> <i class="fa-solid fa-play text-primary mx-1"></i> berwarna
+                        biru di pojok kanan atas cell. Hasil eksekusi akan langsung muncul di kotak terminal hitam di
+                        bawahnya.
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                      <div class="me-3">
+                        <span class="badge bg-custom-blue rounded-circle p-2"
+                          style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">4</span>
+                      </div>
+                      <div>
+                        <strong class="text-dark">Manajemen Cell</strong><br>
+                        Gunakan tombol <strong class="text-primary">+ Add Cell</strong> di pojok kanan atas untuk
+                        menambah area kode baru. Jika ingin mengulang atau menghapus, klik ikon <strong>Trash</strong>
+                        <i class="fa-solid fa-trash text-danger mx-1"></i> merah.
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li><b>f(x,y)</b> = nilai intensitas piksel pada koordinat (x,y)</li>
-                    <li><b>k</b> = jumlah bit (bit depth)</li>
-                </ul>
-
-                <p>
-                    Contoh yang paling umum adalah citra grayscale 8-bit, yaitu citra yang menggunakan
-                    8 bit (1 byte) untuk setiap piksel.
-                </p>
-
-                <div class="alert border rounded-3" style="background:#f8f9fc;">
-                    2<sup>8</sup> = 256<br>
-                    2<sup>8</sup> − 1 = 255
-                </div>
-
-                <p>
-                    Sehingga rentang nilai piksel pada citra grayscale 8-bit adalah:
-                </p>
-
-                <div class="alert border rounded-3" style="background:#f8f9fc;">
-                    0 ≤ f(x,y) ≤ 255
-                </div>
-
-                <p><b>Interpretasi nilai:</b></p>
-                <ul>
-                    <li><b>0</b> → warna hitam (tidak ada cahaya)</li>
-                    <li><b>255</b> → warna putih (intensitas maksimum)</li>
-                    <li>Nilai di antaranya → berbagai tingkatan abu-abu</li>
-                </ul>
-
-                <p>
-                    Dengan demikian, citra grayscale dapat dipahami sebagai gambar yang terdiri dari berbagai
-                    tingkatan warna abu-abu. Semakin besar nilai piksel, maka gambar akan terlihat semakin terang,
-                    sedangkan semakin kecil nilainya maka gambar akan terlihat semakin gelap.
-                </p>
-
-                <!-- Gambar Ilustrasi -->
-                <div class="text-center my-4">
-                    <img src="{{ url_for('static', filename='img/sub1/grayscale_example.png') }}"
-                        class="img-fluid rounded" style="max-width: 800px;">
-                    <p class="mt-2"><em>Gambar 1.3 Contoh citra grayscale beserta nilai piksel</em></p>
-                </div>
+              </div>
+              <div class="modal-footer border-top-0 px-4 px-md-5 pb-4 pt-0 justify-content-end">
+                <button type="button" class="btn text-white rounded-pill px-4" style="background-color: #1e293b;"
+                  data-bs-dismiss="modal">
+                  Saya Mengerti
+                </button>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-    <!-- page 2 -->
-    <div class="page-section">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
 
-                <h5 class="fw-bold mt-4 text-dark">
-                    Konversi RGB ke Grayscale
+        <div class="notebook-wrapper border border-2 rounded-4 shadow-sm overflow-hidden mb-3">
+          <aside class="sidebar">
+            <div class="sidebar-header">
+              <h6><i class="fa-solid fa-folder-open me-2"></i>File Anda</h6>
+            </div>
+            <div class="upload-area" onclick="triggerUpload()">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+              <p class="mb-1">Upload Image</p>
+              <span>Drag & drop atau klik</span>
+            </div>
+            <ul id="fileList" class="file-list">
+              <li class="empty">
+                <i class="fa-regular fa-file me-2"></i>Belum ada file
+              </li>
+            </ul>
+            <input type="file" id="fileInput" hidden onchange="handleUpload(event)">
+          </aside>
+
+          <main class="workspace">
+            <div class="workspace-header">
+              <div class="title">
+                <i class="fa-solid fa-code me-2"></i>Live Code Notebook
+              </div>
+              <div class="actions">
+                <button class="btn-add" onclick="addCell()">
+                  <i class="fa-solid fa-plus"></i> Add Cell
+                </button>
+              </div>
+            </div>
+
+            <div id="notebook" class="cells"></div>
+          </main>
+        </div>
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+
+            <div class="modal-content rounded-4 border-0 shadow-lg" style="background-color: #1e293b;">
+
+              <div class="modal-header border-bottom-0 px-4 pt-4 pb-0">
+                <h5 class="modal-title fw-bold text-white">
+                  <i class="fa-solid fa-image text-info me-2"></i> Preview Gambar
                 </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+              </div>
 
-                <p>
-                    Dalam pengolahan citra digital, citra berwarna (RGB) sering kali diubah menjadi citra
-                    grayscale untuk menyederhanakan proses analisis. Hal ini karena citra grayscale hanya
-                    memiliki satu nilai intensitas, sehingga perhitungan menjadi lebih sederhana dibandingkan
-                    citra berwarna yang memiliki tiga kanal, yaitu Red (R), Green (G), dan Blue (B).
-                </p>
+              <div class="modal-body text-center p-4">
+                <img id="modalImage" src="" class="img-fluid rounded-3 shadow-lg border border-secondary"
+                  style="max-height: 70vh; width: auto;">
+              </div>
 
-                <p>
-                    Beberapa metode yang umum digunakan untuk konversi tersebut antara lain:
-                </p>
-
-                <h6 class="fw-bold mt-3">1. Lightness Method</h6>
-                <p>
-                    Metode Lightness mengubah citra RGB menjadi grayscale dengan cara mengambil nilai minimum dan
-                    maksimum
-                    dari komponen warna R, G, dan B, kemudian menghitung rata-ratanya. Rumus yang digunakan adalah:
-                </p>
-
-                <div class="alert border rounded-3 text-center" style="background:#f8f9fc;">
-                    y = (min(R,G,B) + max(R,G,B)) / 2
-                </div>
-
-                <p>
-                    Metode ini bekerja dengan mengambil dua nilai ekstrem dari ketiga komponen warna, yaitu nilai paling
-                    rendah dan paling tinggi. Kemudian kedua nilai tersebut dirata-ratakan untuk menghasilkan nilai
-                    grayscale.
-                    Cara ini memberikan hasil yang cukup seimbang karena mempertimbangkan perbedaan intensitas warna
-                    paling
-                    terang dan paling gelap.
-                </p>
-
-                <h6 class="fw-bold mt-3">2. Average Method</h6>
-                <p>
-                    Metode Average merupakan cara yang paling sederhana untuk mengubah citra RGB menjadi grayscale. Pada
-                    metode
-                    ini, nilai grayscale diperoleh dengan menghitung rata-rata dari ketiga komponen warna, yaitu merah
-                    (R),
-                    hijau (G), dan biru (B). Rumusnya adalah:
-                </p>
-
-                <div class="alert border rounded-3 text-center" style="background:#f8f9fc;">
-                    y = (R + G + B) / 3
-                </div>
-
-                <p>
-                    Metode ini menganggap bahwa ketiga komponen warna memiliki pengaruh yang sama terhadap tingkat
-                    kecerahan
-                    gambar. Oleh karena itu, nilai grayscale diperoleh dengan menjumlahkan nilai R, G, dan B, lalu
-                    membaginya
-                    dengan tiga.
-                </p>
-
-                <h6 class="fw-bold mt-3">3. Luminosity Method</h6>
-                <p>
-                    Metode Luminosity merupakan metode yang lebih akurat karena mempertimbangkan sensitivitas mata
-                    manusia
-                    terhadap warna tertentu. Mata manusia lebih peka terhadap warna hijau dibandingkan warna merah dan
-                    biru.
-                    Oleh karena itu, pada metode ini setiap komponen warna diberi bobot yang berbeda. Rumusnya adalah:
-                </p>
-
-                <div class="alert border rounded-3 text-center" style="background:#f8f9fc;">
-                    y = 0.3R + 0.59G + 0.11B
-                </div>
-
-                <p>
-                    Dalam rumus tersebut, warna hijau (G) memiliki bobot terbesar karena paling memengaruhi persepsi
-                    kecerahan
-                    oleh mata manusia. Sementara itu, warna merah (R) memiliki pengaruh sedang, dan warna biru (B)
-                    memiliki
-                    pengaruh paling kecil.
-                </p>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-    <!-- page 3 -->
-    <div class="page-section">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-                <h5 class="fw-bold mt-4">Contoh Perhitungan Konversi Nilai Grayscale</h5>
-                <p>
-                    Sebuah matriks RGB dengan masing-masing kanal sebagai berikut:
-                </p>
+  </div>
 
-                <div class="row text-center mb-4">
+  <!-- page 7 -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
 
-                    <!-- Kanal R -->
-                    <div class="col-md-4 mb-3">
-                        <div class="p-3 border rounded-3 bg-light kanal-r">
-                            <b>Kanal R</b>
-                            <table class="table table-sm table-bordered mt-2 mb-0">
-                                <tr>
-                                    <td>110</td>
-                                    <td>80</td>
-                                    <td>90</td>
-                                </tr>
-                                <tr>
-                                    <td>50</td>
-                                    <td>60</td>
-                                    <td>100</td>
-                                </tr>
-                                <tr>
-                                    <td>20</td>
-                                    <td>40</td>
-                                    <td>120</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
+        <h4 class="fw-bold mb-4 text-custom-blue">
+          b) Citra Biner
+        </h4>
 
-                    <!-- Kanal G -->
-                    <div class="col-md-4 mb-3">
-                        <div class="p-3 border rounded-3 bg-light kanal-g">
-                            <b>Kanal G</b>
-                            <table class="table table-sm table-bordered mt-2 mb-0">
-                                <tr>
-                                    <td>15</td>
-                                    <td>20</td>
-                                    <td>160</td>
-                                </tr>
-                                <tr>
-                                    <td>10</td>
-                                    <td>150</td>
-                                    <td>80</td>
-                                </tr>
-                                <tr>
-                                    <td>110</td>
-                                    <td>50</td>
-                                    <td>90</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
+        <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+          <p class="mb-4">
+            Citra biner adalah jenis citra digital yang paling sederhana, karena setiap pikselnya hanya memiliki dua
+            kemungkinan nilai, yaitu <strong>hitam</strong> atau <strong>putih</strong>. Biasanya, nilai ini disimpan
+            menggunakan 1 bit per piksel, di mana <code>0</code> menyatakan hitam dan <code>1</code> menyatakan putih.
+            Lihatlah gambar di bawah ini untuk melihat nilai intensitas piksel dari citra biner.
+          </p>
 
-                    <!-- Kanal B -->
-                    <div class="col-md-4 mb-3">
-                        <div class="p-3 border rounded-3 bg-light kanal-b">
-                            <b>Kanal B</b>
-                            <table class="table table-sm table-bordered mt-2 mb-0">
-                                <tr>
-                                    <td>120</td>
-                                    <td>60</td>
-                                    <td>80</td>
-                                </tr>
-                                <tr>
-                                    <td>30</td>
-                                    <td>140</td>
-                                    <td>170</td>
-                                </tr>
-                                <tr>
-                                    <td>80</td>
-                                    <td>110</td>
-                                    <td>100</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
+          <div id="gambar1_4" class="text-center bg-light border rounded-4 p-4 my-5 shadow-sm">
+            <img src="{{ url_for('static', filename='img/sub1/thresholding_example.png') }}"
+              class="img-fluid rounded-3 shadow-sm" style="max-width: 800px; width: 100%; height: auto;">
+            <p class="mt-3 mb-0 text-muted small">
+              <em>Gambar 1.4 Contoh citra biner beserta nilai piksel</em>
+            </p>
+          </div>
 
-                </div>
+          <p class="mb-3">
+            Karena hanya memiliki dua nilai, citra biner tidak menyimpan informasi warna maupun tingkat keabuan seperti
+            pada citra grayscale. Hal ini membuat citra biner menjadi lebih ringan dan efisien dalam penyimpanan data.
+          </p>
 
-                <p>
-                    Maka jika menggunakan rumus <b>Lightness</b>:
-                </p>
+          <p class="mb-2 fw-bold text-dark">Citra biner banyak digunakan dalam berbagai aplikasi, seperti:</p>
+          <ul class="mb-4">
+            <li>Grafik garis (<em>line graphics</em>), misalnya gambar sederhana atau sketsa</li>
+            <li>Pengarsipan dokumen, seperti hasil <em>scan</em> hitam-putih</li>
+            <li>Pengiriman melalui faks (<em>fax</em>)</li>
+            <li>Pencetakan elektronik (<em>printing</em>)</li>
+          </ul>
 
-                <div class="perhitungan-box">
-                    <div class="perhitungan-grid">
+          <hr class="border-2 opacity-10 my-5">
 
-                        <div class="perhitungan-item">(min(110,15,120)+max(110,15,120))/2</div>
-                        <div class="perhitungan-item">(min(80,20,60)+max(80,20,60))/2</div>
-                        <div class="perhitungan-item">(min(90,160,80)+max(90,160,80))/2</div>
+          <h5 class="fw-bold text-dark mb-3">Proses Thresholding</h5>
+          <p class="mb-4">
+            Citra biner sering diperoleh dari proses yang disebut <strong>thresholding</strong>, yaitu proses mengubah
+            citra grayscale menjadi hitam-putih berdasarkan suatu nilai ambang (<em>threshold</em>). Nilai ambang atau
+            threshold (\( T \)) dapat dihitung dengan rumus:
+          </p>
 
-                        <div class="perhitungan-item">(min(50,10,30)+max(50,10,30))/2</div>
-                        <div class="perhitungan-item">(min(60,150,140)+max(60,150,140))/2</div>
-                        <div class="perhitungan-item">(min(100,80,170)+max(100,80,170))/2</div>
+          <div class="bg-light p-4 rounded-3 border text-center mb-4 position-relative shadow-sm overflow-auto">
+            <span class="fs-5 fw-semibold text-dark">\[ T = \frac{\text{jumlah seluruh nilai piksel}}{M \times N}
+              \]</span>
+          </div>
 
-                        <div class="perhitungan-item">(min(20,110,80)+max(20,110,80))/2</div>
-                        <div class="perhitungan-item">(min(40,50,110)+max(40,50,110))/2</div>
-                        <div class="perhitungan-item">(min(120,90,100)+max(120,90,100))/2</div>
+          <p class="mb-2 fw-semibold text-dark">Keterangan:</p>
+          <ul class="mb-4">
+            <li>\( M \times N \) adalah ukuran citra (jumlah baris × jumlah kolom)</li>
+            <li>\( T \) adalah nilai rata-rata intensitas piksel yang digunakan sebagai batas</li>
+          </ul>
 
-                    </div>
-                </div>
+          <p class="mb-4">
+            Setelah nilai threshold diperoleh, setiap piksel pada citra akan dibandingkan dengan nilai tersebut
+            menggunakan aturan berikut:
+          </p>
 
-                <p>
-                    Hasil konversi grayscale menggunakan metode Lightness adalah:
-                </p>
-
-                <div class="d-flex justify-content-center">
-                    <div class="hasil-gray">
-
-                        <table class="table table-bordered text-center mb-0">
-                            <tr>
-                                <td>67.5</td>
-                                <td>50</td>
-                                <td>120</td>
-                            </tr>
-                            <tr>
-                                <td>30</td>
-                                <td>105</td>
-                                <td>125</td>
-                            </tr>
-                            <tr>
-                                <td>65</td>
-                                <td>75</td>
-                                <td>105</td>
-                            </tr>
-                        </table>
-
-                    </div>
-                </div>
+          <div class="bg-light p-4 rounded-3 border text-center mb-4 position-relative shadow-sm">
+            <span class="fs-5 fw-semibold text-dark">
+              \[ g(x,y)= \begin{cases} 1, & \text{jika } f(x,y) > T \\ 0, & \text{jika } f(x,y) \le T \end{cases} \]
+            </span>
+            <div class="position-absolute bottom-0 end-0 p-2 text-muted small">
+              <em>Persamaan (1.5)</em>
             </div>
-        </div>
-    </div>
-    <!-- page 4 -->
-    <div class="page-section">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-                <h5 class="fw-bold mt-4">b) Citra Biner</h5>
+          </div>
 
-                <p>
-                    Citra biner adalah jenis citra digital yang paling sederhana, karena setiap pikselnya hanya memiliki
-                    dua
-                    kemungkinan nilai, yaitu hitam atau putih. Biasanya, nilai ini disimpan menggunakan 1 bit per
-                    piksel, di
-                    mana 0 menyatakan hitam dan 1 menyatakan putih. Lihatlah gambar dibawah ini untuk melihat nilai
-                    intensitas piksel dari citra biner
-                </p>
-
-                <!-- Gambar Ilustrasi -->
-                <div class="text-center my-4">
-                    <img src="{{ url_for('static', filename='img/sub1/thresholding_example.png') }}"
-                        class="img-fluid rounded" style="max-width: 800px;">
-                    <p class="mt-2"><em>Gambar 1.4 Contoh citra biner beserta nilai piksel</em></p>
-                </div>
-
-                <p>
-                    Karena hanya memiliki dua nilai, citra biner tidak menyimpan informasi warna maupun tingkat keabuan
-                    seperti pada citra grayscale. Hal ini membuat citra biner menjadi lebih ringan dan efisien dalam
-                    penyimpanan data.
-                </p>
-
-                <p>Citra biner banyak digunakan dalam berbagai aplikasi, seperti:</p>
-
-                <ul>
-                    <li>Grafik garis (line graphics), misalnya gambar sederhana atau sketsa</li>
-                    <li>Pengarsipan dokumen, seperti hasil scan hitam-putih</li>
-                    <li>Pengiriman melalui faks (fax)</li>
-                    <li>Pencetakan elektronik (printing)</li>
-                </ul>
-
-                <p>
-                    Selain itu, citra biner sering diperoleh dari proses yang disebut thresholding, yaitu proses
-                    mengubah
-                    citra grayscale menjadi hitam-putih berdasarkan suatu nilai ambang (threshold).
-                </p>
-
-                <p>
-                    Nilai ambang atau threshold (T) dapat dihitung dengan rumus:
-                </p>
-
-
-
-                <div class="alert border rounded-3 bg-light text-center">
-                    \[
-                    T = \frac{\text{jumlah seluruh nilai piksel}}{(M \times N)}
-                    \]
-
-                </div>
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>M × N adalah ukuran citra (jumlah baris × jumlah kolom)</li>
-                    <li>T adalah nilai rata-rata intensitas piksel yang digunakan sebagai batas</li>
-                </ul>
-
-                <p>
-                    Setelah nilai threshold diperoleh, setiap piksel pada citra akan dibandingkan dengan nilai tersebut
-                    menggunakan aturan berikut:
-                </p>
-
-                <div class="alert border rounded-3 bg-light text-center">
-                    \[
-                    g(x,y)=
-                    \begin{cases}
-                    1, & \text{jika } f(x,y) > T \\
-                    0, & \text{jika } f(x,y) \le T
-                    \end{cases}
-                    \]
-                </div>
-
-                <p><b>Artinya:</b></p>
-                <ul>
-                    <li>Jika nilai piksel lebih besar dari T, maka diubah menjadi putih (1)</li>
-                    <li>Jika nilai piksel lebih kecil atau sama dengan T, maka diubah menjadi hitam (0)</li>
-                </ul>
-
-                <p>
-                    Dengan cara ini, citra grayscale dapat diubah menjadi citra biner yang hanya terdiri dari dua warna,
-                    sehingga lebih mudah diproses untuk keperluan tertentu.
-                </p>
-
-                <p>
-                    Sebagai contoh, terdapat citra grayscale berukuran 4 × 4 piksel dengan nilai intensitas sebagai
-                    berikut:
-                </p>
-
-                <div class="d-flex justify-content-center my-3">
-                    <table class="table table-bordered text-center w-auto">
-                        <tr>
-                            <td>100</td>
-                            <td>120</td>
-                            <td>130</td>
-                            <td>140</td>
-                        </tr>
-                        <tr>
-                            <td>90</td>
-                            <td>110</td>
-                            <td>150</td>
-                            <td>160</td>
-                        </tr>
-                        <tr>
-                            <td>80</td>
-                            <td>100</td>
-                            <td>120</td>
-                            <td>140</td>
-                        </tr>
-                        <tr>
-                            <td>70</td>
-                            <td>90</td>
-                            <td>110</td>
-                            <td>130</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <p><b>Hitung nilai threshold</b></p>
-
-                <div class="alert border rounded-3 bg-light text-center">
-                    \[
-                    T = \frac{100+120+130+140+90+110+150+160+80+100+120+140+70+90+110+130}{4 \times 4}
-                    \]
-
-                    \[
-                    T = \frac{1840}{16} = 115
-                    \]
-                </div>
-
-                <p>
-                    Nilai threshold yang diperoleh adalah 115, dengan nilai tersebut maka dapat dilakukan aturan sebagai
-                    berikut:
-                </p>
-
-                <div class="alert border rounded-3 bg-light text-center">
-                    \[
-                    g(x,y)=
-                    \begin{cases}
-                    1, & \text{jika } f(x,y) > 115 \\
-                    0, & \text{jika } f(x,y) \le 115
-                    \end{cases}
-                    \]
-                </div>
-
-                <p><b>Berikut adalah hasil dari thresholding tersebut</b></p>
-
-                <div class="d-flex justify-content-center my-4">
-                    <div class="p-3 rounded-3 shadow-sm" style="background:#f8f9fc;">
-                        <table class="table text-center mb-0 custom-biner-table">
-                            <tr>
-                                <td class="zero">0</td>
-                                <td class="one">1</td>
-                                <td class="one">1</td>
-                                <td class="one">1</td>
-                            </tr>
-                            <tr>
-                                <td class="zero">0</td>
-                                <td class="zero">0</td>
-                                <td class="one">1</td>
-                                <td class="one">1</td>
-                            </tr>
-                            <tr>
-                                <td class="zero">0</td>
-                                <td class="zero">0</td>
-                                <td class="one">1</td>
-                                <td class="one">1</td>
-                            </tr>
-                            <tr>
-                                <td class="zero">0</td>
-                                <td class="zero">0</td>
-                                <td class="zero">0</td>
-                                <td class="one">1</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- page 5 -->
-    <div class="page-section">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-
-
-                <!-- Citra RGB -->
-                <h5 class="fw-bold mt-4">c) Citra Berwarna</h5>
-
-                <p>
-                    Sebagian besar citra berwarna dibentuk dari tiga warna dasar, yaitu merah (Red), hijau (Green), dan
-                    biru
-                    (Blue) yang dikenal sebagai RGB. Pada citra RGB, setiap warna disimpan dalam bentuk angka untuk
-                    menunjukkan tingkat intensitas warna.
-                </p>
-
-                <p>
-                    Biasanya, setiap komponen warna (R, G, dan B) menggunakan 8 bit, sehingga memiliki rentang nilai
-                    dari 0
-                    hingga 255. Nilai 0 menunjukkan intensitas warna paling rendah (tidak ada warna), sedangkan nilai
-                    255
-                    menunjukkan intensitas warna paling tinggi.
-                </p>
-
-                <p>
-                    Karena terdapat tiga komponen warna, maka satu piksel pada citra RGB membutuhkan:
-                </p>
-
-                <div class="alert border rounded-3 bg-light text-center">
-                    \[
-                    3 \times 8 = 24 \ \text{bit}
-                    \]
-                </div>
-
-                <p>
-                    Artinya, setiap piksel menyimpan tiga nilai sekaligus, yaitu nilai merah, hijau, dan biru. Lihat
-                    gambar
-                    berikut untuk visualiasi dari nilai pikselnya
-                </p>
-
-                <!-- Gambar Ilustrasi -->
-                <div class="text-center my-4">
-                    <img src="{{ url_for('static', filename='img/sub1/rgb_example.png') }}"
-                        class="img-fluid rounded shadow-sm" style="max-width:800px;">
-                    <p class="mt-2"><em>Gambar 1.5 contoh citra rgb beserta nilai piksel</em></p>
-
-                </div>
-                <p>
-                    Ruang warna RGB sering digambarkan dalam bentuk kubus RGB. Pada kubus ini:
-                </p>
-
-                <ul>
-                    <li>Sumbu X menunjukkan warna merah (Red)</li>
-                    <li>Sumbu Y menunjukkan warna hijau (Green)</li>
-                    <li>Sumbu Z menunjukkan warna biru (Blue)</li>
-                </ul>
-
-                <p>
-                    Lihatlah gambar berikut untuk visualisasi
-                </p>
-
-                <div class="text-center my-4">
-                    <img src="{{ url_for('static', filename='img/sub1/model warna rgb.png') }}"
-                        class="img-fluid rounded shadow-sm" style="max-width:350px;">
-                    <p class="mt-2"><em>Gambar 1.6 Contoh ruang warna RGB</em></p>
-
-                </div>
-
-                <p>
-                    Beberapa kombinasi nilai RGB menghasilkan warna tertentu, misalnya:
-                </p>
-
-                <div class="row text-center my-3">
-
-                    <div class="col-md-4 mb-2">
-                        <div class="p-2 border rounded-3 bg-dark text-white">(0, 0, 0)<br>hitam</div>
-                    </div>
-
-                    <div class="col-md-4 mb-2">
-                        <div class="p-2 border rounded-3 bg-white">(255, 255, 255)<br>putih</div>
-                    </div>
-
-                    <div class="col-md-4 mb-2">
-                        <div class="p-2 border rounded-3" style="background:red;color:white;">(255, 0, 0)<br>merah</div>
-                    </div>
-
-                    <div class="col-md-4 mb-2">
-                        <div class="p-2 border rounded-3" style="background:green;color:white;">(0, 255, 0)<br>hijau
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 mb-2">
-                        <div class="p-2 border rounded-3" style="background:blue;color:white;">(0, 0, 255)<br>biru</div>
-                    </div>
-
-                </div>
-
-                <p>
-                    Selain itu, kombinasi dua warna dasar juga dapat menghasilkan warna lain, seperti:
-                </p>
-
-                <div class="row text-center my-3">
-
-                    <div class="col-md-4 mb-2">
-                        <div class="p-2 border rounded-3" style="background:cyan;">cyan (hijau + biru)</div>
-                    </div>
-
-                    <div class="col-md-4 mb-2">
-                        <div class="p-2 border rounded-3" style="background:magenta;color:white;">magenta (merah + biru)
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 mb-2">
-                        <div class="p-2 border rounded-3" style="background:yellow;">yellow (merah + hijau)</div>
-                    </div>
-
-                </div>
-
-                <p>
-                    Dengan demikian, citra RGB memungkinkan kita menampilkan berbagai macam warna melalui kombinasi tiga
-                    warna dasar tersebut.
-                </p>
-            </div>
-        </div>
-    </div>
-    <!-- Page 6 -->
-    <div class="page-section">
-        <div class="card-mb-4 shadow-sm">
-            <div class="card-body">
-                <!-- aktivitas -->
-                <div class="quiz-card">
-
-                    <h5 class="quiz-title">
-                        <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
-                    </h5>
-                    <p class="quiz-desc">Untuk menguji pemahaman kamu pada materi di atas, kerjakan kuis berikut ini!
-                    </p>
-
-                    <!-- PROGRESS -->
-                    <div class="quiz-progress" id="quizProgress"></div>
-
-                    <!-- SOAL -->
-                    <div id="quizContainer" data-activity="{{ id_activity }}"></div>
-
-                    <!-- FEEDBACK -->
-                    <div id="feedback" class="mt-3 fw-bold"></div>
-
-                    <!-- BUTTON -->
-                    <div class="quiz-nav">
-                        <button id="nextBtn" class="btn-lanjut" disabled>LANJUT</button>
-                        <button id="ulangBtn" class="btn-kembali d-none">KEMBALI</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <nav class="mt-4 d-flex justify-content-center">
-        <ul class="pagination pagination-sm custom-pagination">
-
-            <li class="page-item" id="prevPageItem">
-                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+          <p class="mb-2 fw-semibold text-dark">Artinya:</p>
+          <ul class="mb-5">
+            <li>Jika nilai piksel <strong>lebih besar</strong> dari \( T \), maka diubah menjadi putih (<code>1</code>)
             </li>
+            <li>Jika nilai piksel <strong>lebih kecil atau sama dengan</strong> \( T \), maka diubah menjadi hitam
+              (<code>0</code>)</li>
+          </ul>
 
-            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(3)">4</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(4)">5</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(5)">6</a></li>
-            <li class="page-item" id="nextPageItem">
-                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
-            </li>
+          <div class="bg-custom-blue text-white p-3 rounded-top-3 fw-bold">
+            <i class="fa-solid fa-calculator me-2"></i> Contoh Perhitungan Thresholding
+          </div>
+          <div class="border border-top-0 rounded-bottom-3 p-4 mb-4 bg-white shadow-sm">
+            <p class="mb-4">
+              Sebagai contoh, terdapat citra grayscale berukuran 4 × 4 piksel dengan nilai intensitas sebagai berikut:
+            </p>
 
-        </ul>
-    </nav>
+            <div class="d-flex justify-content-center mb-4">
+              <table class="table table-bordered text-center w-auto shadow-sm"
+                style="font-size: 1.1rem; background-color: #f8fafc;">
+                <tbody>
+                  <tr>
+                    <td class="p-3">100</td>
+                    <td class="p-3">120</td>
+                    <td class="p-3">130</td>
+                    <td class="p-3">140</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3">90</td>
+                    <td class="p-3">110</td>
+                    <td class="p-3">150</td>
+                    <td class="p-3">160</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3">80</td>
+                    <td class="p-3">100</td>
+                    <td class="p-3">120</td>
+                    <td class="p-3">140</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3">70</td>
+                    <td class="p-3">90</td>
+                    <td class="p-3">110</td>
+                    <td class="p-3">130</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="fw-bold text-dark mb-3">Langkah 1: Hitung nilai threshold (\( T \))</p>
+            <div class="bg-light p-3 rounded-3 border text-center mb-4 overflow-auto">
+              <span class="text-dark">\[ T = \frac{100+120+130+140+90+110+150+160+80+100+120+140+70+90+110+130}{4 \times
+                4} \]</span>
+              <span class="fs-5 fw-bold text-custom-blue">\[ T = \frac{1840}{16} = 115 \]</span>
+            </div>
+
+            <p class="mb-3">
+              Nilai threshold yang diperoleh adalah <strong>115</strong>. Dengan nilai tersebut, maka dapat diterapkan
+              aturan:
+            </p>
+
+            <div class="bg-light p-3 rounded-3 border text-center mb-4">
+              <span class="text-dark">
+                \[ g(x,y)= \begin{cases} \text{Putih (1)}, & \text{jika piksel} > 115 \\ \text{Hitam (0)}, &
+                \text{jikapiksel} \le 115 \end{cases} \]
+              </span>
+            </div>
+
+            <p class="fw-bold text-dark mb-3">Langkah 2: Hasil Citra Biner</p>
+            <div class="d-flex justify-content-center my-4">
+              <table class="biner-matrix">
+                <tbody>
+                  <tr>
+                    <td class="pixel-0">0</td>
+                    <td class="pixel-1">1</td>
+                    <td class="pixel-1">1</td>
+                    <td class="pixel-1">1</td>
+                  </tr>
+                  <tr>
+                    <td class="pixel-0">0</td>
+                    <td class="pixel-0">0</td>
+                    <td class="pixel-1">1</td>
+                    <td class="pixel-1">1</td>
+                  </tr>
+                  <tr>
+                    <td class="pixel-0">0</td>
+                    <td class="pixel-0">0</td>
+                    <td class="pixel-1">1</td>
+                    <td class="pixel-1">1</td>
+                  </tr>
+                  <tr>
+                    <td class="pixel-0">0</td>
+                    <td class="pixel-0">0</td>
+                    <td class="pixel-0">0</td>
+                    <td class="pixel-1">1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="text-center text-muted small mt-2">
+              <em>(Kotak hitam merepresentasikan 0, kotak putih merepresentasikan 1)</em>
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- page 8 -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+        <h4 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-laptop-code me-2"></i> Praktek Thresholding pada Python
+        </h4>
+
+        <div class="text-secondary mb-5" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+
+          <p class="fw-bold text-dark mb-3">Langkah-langkah mengubah citra grayscale menjadi biner pada Python:</p>
+
+          <p class="mb-2">1) Download gambar yang sudah disediakan pada link berikut: <a href="https://bit.ly/4wXduAa"
+              target="_blank" class="text-decoration-none fw-semibold">https://bit.ly/4wXduAa</a></p>
+
+          <p class="mb-4">2) Upload gambar sampel kedalam kode editor yang digunakan.</p>
+
+          <p class="mb-2">3) Import library OpenCV sebagai inisiasi awal untuk image processing serta gunakan library
+            NumPy untuk perhitungan matriks nantinya.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div><span class="text-warning">import</span> cv2</div>
+                <div><span class="text-warning">import</span> numpy <span class="text-warning">as</span> np</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">4) Untuk membaca gambar dalam python menggunakan OpenCV dapat dilakukan dengan menuliskan
+            perintah <code>cv2.imread()</code>. Membaca gambar agar langsung menjadi citra grayscale dapat menggunakan
+            parameter tambahan yaitu <code>cv2.IMREAD_GRAYSCALE</code>.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>image = cv2.imread(<span class="text-success">'gambar.jpg'</span>, cv2.IMREAD_GRAYSCALE)</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">5) Selanjutnya hitung nilai threshold yang diperoleh dari rata-rata seluruh nilai intensitas
+            piksel pada citra grayscale menggunakan Persamaan sebelumnya.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>threshold = np.mean(image)</div>
+                <div><span class="text-info">print</span>(<span class="text-success">"Nilai Threshold:"</span>,
+                  threshold)</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">6) Setelah nilai threshold diperoleh, setiap piksel dibandingkan dengan nilai threshold
+            menggunakan aturan pada persamaan.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>_, binary_image = cv2.threshold(image, threshold, <span class="text-info">255</span>,
+                  cv2.THRESH_BINARY)</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">7) Selanjutnya tampilkan gambar grayscale dan citra biner berdasarkan proses yang sudah
+            dilakukan. Caranya adalah gunakan fungsi <code>cv2.imshow()</code> untuk menampilkan hasil thresholding.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2<br>3<br>4
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>cv2.imshow(<span class="text-success">'Citra Grayscale'</span>, image)</div>
+                <div>cv2.imshow(<span class="text-success">'Citra Biner'</span>, binary_image)</div>
+                <div>cv2.waitKey(<span class="text-info">0</span>)</div>
+                <div>cv2.destroyAllWindows()</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="mt-2 mb-5 text-center">
+          <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+            <div class="px-4 py-2 rounded-3 text-white shadow-sm" style="background-color: #1e293b;">
+              <h5 class="fw-bold mb-0">
+                <i class="fa-solid fa-rocket me-2"></i> Ayo Coba Sendiri!
+              </h5>
+            </div>
+            <button type="button"
+              class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-medium shadow-sm d-flex align-items-center"
+              data-bs-toggle="modal" data-bs-target="#panduanModal2" style="height: 100%;">
+              <i class="fa-solid fa-circle-question me-2"></i> Cara Penggunaan
+            </button>
+          </div>
+          <p class="text-secondary mt-3 mb-0 fw-medium" style="font-size: 1.05rem;">
+            Upload gambarmu dan lengkapi potongan kode program pada <em class="text-dark fw-bold">Live Code
+              Notebook</em> di bawah ini untuk melihat hasil <strong>Thresholding</strong>.
+          </p>
+        </div>
+        <div class="notebook-wrapper border border-2 rounded-4 shadow-sm overflow-hidden mb-3">
+
+          <aside class="sidebar">
+            <div class="sidebar-header">
+              <h6><i class="fa-solid fa-folder-open me-2"></i>File Anda</h6>
+            </div>
+
+            <div class="upload-area" onclick="triggerThresholdUpload()">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+              <p class="mb-1">Upload Citra</p>
+              <span>Drag & drop atau klik</span>
+            </div>
+
+            <ul id="thresholdFileList" class="file-list">
+              <li class="empty">
+                <i class="fa-regular fa-file me-2"></i>Belum ada file
+              </li>
+            </ul>
+
+            <input type="file" id="thresholdFileInput" hidden onchange="handleThresholdUpload(event)">
+          </aside>
+
+          <main class="workspace">
+            <div class="workspace-header">
+              <div class="title">
+                <i class="fa-solid fa-code me-2"></i>Live Threshold Notebook
+              </div>
+              <div class="actions">
+                <button class="btn-add" onclick="addThresholdCell()">
+                  <i class="fa-solid fa-plus"></i> Add Cell
+                </button>
+              </div>
+            </div>
+
+            <div id="thresholdNotebook" class="cells"></div>
+          </main>
+
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="thresholdImageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+
+      <div class="modal-content rounded-4 border-0 shadow-lg" style="background-color: #1e293b;">
+
+        <div class="modal-header border-bottom-0 px-4 pt-4 pb-0">
+          <h5 class="modal-title fw-bold text-white">
+            <i class="fa-solid fa-image text-info me-2"></i> Preview Gambar
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body text-center p-4">
+          <img id="thresholdModalImage" src="" class="img-fluid rounded-3 shadow-lg border border-secondary"
+            style="max-height: 70vh; width: auto;">
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="panduanModal2" tabindex="-1" aria-labelledby="panduanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow-lg">
+
+        <div class="modal-header border-bottom-0 px-4 px-md-5 pt-4 pb-2">
+          <h5 class="modal-title fw-bold text-custom-blue" id="panduanModalLabel">
+            <i class="fa-solid fa-circle-info me-2"></i> Panduan Penggunaan Live Code
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body px-4 px-md-5 pb-4">
+          <div class="row g-4 text-secondary mt-1" style="font-size: 0.95rem; line-height: 1.7;">
+
+            <div class="col-md-6">
+              <div class="d-flex mb-3">
+                <div class="me-3">
+                  <span class="badge bg-custom-blue rounded-circle p-2"
+                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">1</span>
+                </div>
+                <div>
+                  <strong class="text-dark">Upload Gambar</strong><br>
+                  Klik area <em>"Upload Image"</em> di sebelah kiri atau <em>drag & drop</em> gambarmu ke kotak
+                  tersebut. Pastikan nama filenya muncul di daftar <em>File Anda</em> (contoh:
+                  <code>pohon.jpg</code>).
+                </div>
+              </div>
+              <div class="d-flex mb-3">
+                <div class="me-3">
+                  <span class="badge bg-custom-blue rounded-circle p-2"
+                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">2</span>
+                </div>
+                <div>
+                  <strong class="text-dark">Lengkapi Kode Program</strong><br>
+                  Isi bagian kode yang rumpang (ditandai dengan <code>.....</code>). <strong>Sangat
+                    Penting:</strong> Sesuaikan nama file di dalam fungsi <code>imread('...')</code> dengan nama
+                  gambar yang baru saja kamu upload!
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="d-flex mb-3">
+                <div class="me-3">
+                  <span class="badge bg-custom-blue rounded-circle p-2"
+                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">3</span>
+                </div>
+                <div>
+                  <strong class="text-dark">Jalankan Kode (Run)</strong><br>
+                  Klik tombol <strong>Play</strong> <i class="fa-solid fa-play text-primary mx-1"></i> berwarna
+                  biru di pojok kanan atas cell. Hasil eksekusi akan langsung muncul di kotak terminal hitam di
+                  bawahnya.
+                </div>
+              </div>
+              <div class="d-flex">
+                <div class="me-3">
+                  <span class="badge bg-custom-blue rounded-circle p-2"
+                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">4</span>
+                </div>
+                <div>
+                  <strong class="text-dark">Manajemen Cell</strong><br>
+                  Gunakan tombol <strong class="text-primary">+ Add Cell</strong> di pojok kanan atas untuk
+                  menambah area kode baru. Jika ingin mengulang atau menghapus, klik ikon <strong>Trash</strong>
+                  <i class="fa-solid fa-trash text-danger mx-1"></i> merah.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="modal-footer border-top-0 px-4 px-md-5 pb-4 pt-0 justify-content-end">
+          <button type="button" class="btn text-white rounded-pill px-4" style="background-color: #1e293b;"
+            data-bs-dismiss="modal">
+            Saya Mengerti
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- page 9 -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h4 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-palette me-2"></i> c) Citra Berwarna (RGB)
+        </h4>
+
+        <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+
+          <p class="mb-4">
+            Sebagian besar citra berwarna dibentuk dari tiga warna dasar, yaitu merah (<em>Red</em>), hijau
+            (<em>Green</em>), dan biru (<em>Blue</em>) yang dikenal sebagai <strong>RGB</strong>. Pada citra RGB, setiap
+            warna disimpan dalam bentuk angka untuk menunjukkan tingkat intensitas warna. Perhatikan gambar 1.5 berikut
+            sebagai visualisasi Citra RGB yang memperlihatkan kanal merah, hijau dan biru.
+          </p>
+
+          <div class="text-center bg-light border rounded-4 p-4 my-4 shadow-sm">
+            <img src="{{ url_for('static', filename='img/sub1/PecahanCitraRGB.jpg') }}"
+              class="img-fluid rounded-3 shadow-sm" style="max-width: 800px; width: 100%; height: auto;"
+              alt="Kanal RGB">
+            <p class="mt-3 mb-0 text-muted small">
+              <em>Gambar 1.5 Visualisasi Citra RGB dan pemisahan kanal warna</em>
+            </p>
+          </div>
+
+          <p class="mb-4">
+            Biasanya, setiap komponen warna (R, G, dan B) menggunakan 8 bit, sehingga memiliki rentang nilai dari 0
+            hingga 255. Nilai 0 menunjukkan intensitas warna paling rendah (tidak ada warna), sedangkan nilai 255
+            menunjukkan intensitas warna paling tinggi. Karena terdapat tiga komponen warna, maka setiap komponen warna
+            direpresentasikan menggunakan 8 bit, sehingga jumlah bit yang dibutuhkan untuk merepresentasikan satu piksel
+            pada citra RGB adalah sebanyak:
+          </p>
+
+          <div class="bg-light p-3 rounded-3 border text-center mb-4" style="text-align: center !important;">
+            <span class="fs-5 fw-semibold text-dark">
+              \[ 3 \times 8 \text{ bit} = 24 \text{ bit} \]
+            </span>
+          </div>
+
+          <p class="mb-4">
+            Artinya, setiap piksel menyimpan tiga nilai sekaligus, yaitu nilai merah, hijau, dan biru. Lihat gambar
+            berikut untuk visualiasi dari nilai pikselnya:
+          </p>
+
+          <div class="text-center bg-light border rounded-4 p-4 my-4 shadow-sm">
+            <img src="{{ url_for('static', filename='img/sub1/rgb_example.png') }}"
+              class="img-fluid rounded-3 shadow-sm" style="max-width: 800px; width: 100%; height: auto;"
+              alt="Nilai Piksel RGB">
+            <p class="mt-3 mb-0 text-muted small">
+              <em>Gambar 1.6 Contoh citra RGB beserta nilai piksel</em>
+            </p>
+          </div>
+
+          <p class="mb-3">
+            Ruang warna RGB sering digambarkan dalam bentuk kubus RGB. Pada kubus ini:
+          </p>
+          <ul class="mb-4">
+            <li><strong class="text-danger">Sumbu X</strong> menunjukkan warna merah (Red)</li>
+            <li><strong class="text-success">Sumbu Y</strong> menunjukkan warna hijau (Green)</li>
+            <li><strong class="text-primary">Sumbu Z</strong> menunjukkan warna biru (Blue)</li>
+          </ul>
+          <p class="mb-4">Lihatlah gambar berikut untuk visualisasi:</p>
+
+          <div class="text-center bg-light border rounded-4 p-4 my-4 shadow-sm">
+            <img src="{{ url_for('static', filename='img/sub1/model warna rgb.png') }}"
+              class="img-fluid rounded-3 shadow-sm" style="max-width: 350px; width: 100%; height: auto;"
+              alt="Kubus RGB">
+            <p class="mt-3 mb-0 text-muted small">
+              <em>Gambar 1.7 Contoh ruang warna RGB</em>
+            </p>
+          </div>
+
+          <hr class="border-2 opacity-10 my-5">
+
+          <p class="fw-bold text-dark mb-3">Beberapa kombinasi nilai RGB menghasilkan warna tertentu, misalnya:</p>
+
+          <div class="row text-center my-4 g-3 justify-content-center">
+            <div class="col-md-2 col-sm-4 col-6">
+              <div
+                class="p-3 border border-dark rounded-3 bg-dark text-white shadow-sm h-100 d-flex flex-column justify-content-center">
+                <span class="fw-bold fs-5">Hitam</span>
+                <small class="text-white-50 mt-1">(0, 0, 0)</small>
+              </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+              <div
+                class="p-3 border border-secondary rounded-3 bg-white text-dark shadow-sm h-100 d-flex flex-column justify-content-center">
+                <span class="fw-bold fs-5">Putih</span>
+                <small class="text-muted mt-1">(255, 255, 255)</small>
+              </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+              <div class="p-3 border border-danger rounded-3 shadow-sm h-100 d-flex flex-column justify-content-center"
+                style="background-color: #dc2626; color: white;">
+                <span class="fw-bold fs-5">Merah</span>
+                <small class="text-white-50 mt-1">(255, 0, 0)</small>
+              </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+              <div class="p-3 border border-success rounded-3 shadow-sm h-100 d-flex flex-column justify-content-center"
+                style="background-color: #16a34a; color: white;">
+                <span class="fw-bold fs-5">Hijau</span>
+                <small class="text-white-50 mt-1">(0, 255, 0)</small>
+              </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+              <div class="p-3 border border-primary rounded-3 shadow-sm h-100 d-flex flex-column justify-content-center"
+                style="background-color: #2563eb; color: white;">
+                <span class="fw-bold fs-5">Biru</span>
+                <small class="text-white-50 mt-1">(0, 0, 255)</small>
+              </div>
+            </div>
+          </div>
+
+          <p class="fw-bold text-dark mt-5 mb-3">Selain itu, kombinasi dua warna dasar juga dapat menghasilkan warna
+            lain, seperti:</p>
+
+          <div class="row text-center my-4 g-3 justify-content-center">
+            <div class="col-md-3 col-sm-4">
+              <div class="p-3 border rounded-3 shadow-sm h-100 d-flex flex-column justify-content-center"
+                style="background-color: #00FFFF; color: #1e293b;">
+                <span class="fw-bold fs-5">Cyan</span>
+                <small class="mt-1 fw-medium">(Hijau + Biru)</small>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-4">
+              <div class="p-3 border rounded-3 shadow-sm h-100 d-flex flex-column justify-content-center"
+                style="background-color: #FF00FF; color: white;">
+                <span class="fw-bold fs-5">Magenta</span>
+                <small class="mt-1 fw-medium">(Merah + Biru)</small>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-4">
+              <div class="p-3 border rounded-3 shadow-sm h-100 d-flex flex-column justify-content-center"
+                style="background-color: #FFFF00; color: #1e293b;">
+                <span class="fw-bold fs-5">Yellow</span>
+                <small class="mt-1 fw-medium">(Merah + Hijau)</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-light border border-secondary border-opacity-25 rounded-3 shadow-sm mt-4 text-center">
+            <i class="fa-solid fa-lightbulb text-warning me-2 fs-5"></i>
+            Dengan demikian, citra RGB memungkinkan kita menampilkan berbagai macam warna melalui kombinasi tiga warna
+            dasar tersebut.
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- page 10 -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+
+        <h4 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-laptop-code me-2"></i> Praktek Membaca Citra RGB pada Python
+        </h4>
+
+        <div class="text-secondary" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+
+          <p class="fw-bold text-dark mb-3">Langkah-langkah membaca citra RGB pada Python:</p>
+
+          <p class="mb-2">1) Download gambar yang sudah disediakan pada link berikut: <a href="https://bit.ly/4wXduAa"
+              target="_blank" class="text-decoration-none fw-semibold">https://bit.ly/4wXduAa</a></p>
+
+          <p class="mb-4">2) Upload gambar sampel kedalam kode editor yang digunakan.</p>
+
+          <p class="mb-2">3) Import library OpenCV sebagai inisiasi awal untuk <em>image processing</em>.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div><span class="text-warning">import</span> cv2</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">4) Untuk membaca gambar dalam python menggunakan OpenCV dapat dilakukan dengan menuliskan
+            perintah <code>cv2.imread()</code>.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>image = cv2.imread(<span class="text-success">'gambar.jpg'</span>)</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">5) Selanjutnya ambil setiap nilai pada masing-masing channel RGB menggunakan <em>indexing
+              array</em>.</p>
+
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2<br>3
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>B = image[:, :, <span class="text-info">0</span>]</div>
+                <div>G = image[:, :, <span class="text-info">1</span>]</div>
+                <div>R = image[:, :, <span class="text-info">2</span>]</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-2">6) Setiap channel warna dapat ditampilkan secara terpisah. Caranya adalah menggunakan
+            <code>cv2.imshow()</code>.
+          </p>
+
+          <div class="rounded-3 overflow-hidden mb-5 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
+                1<br>2<br>3<br>4<br>5
+              </div>
+              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                <div>cv2.imshow(<span class="text-success">'Channel Blue'</span>, B)</div>
+                <div>cv2.imshow(<span class="text-success">'Channel Green'</span>, G)</div>
+                <div>cv2.imshow(<span class="text-success">'Channel Red'</span>, R)</div>
+                <div>cv2.waitKey(<span class="text-info">0</span>)</div>
+                <div>cv2.destroyAllWindows()</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-2 mb-5 text-center">
+          <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+            <div class="px-4 py-2 rounded-3 text-white shadow-sm" style="background-color: #1e293b;">
+              <h5 class="fw-bold mb-0">
+                <i class="fa-solid fa-rocket me-2"></i> Ayo Coba Sendiri!
+              </h5>
+            </div>
+          </div>
+          <p class="text-secondary mt-3 mb-0 fw-medium" style="font-size: 1.05rem;">
+            Upload gambar dan jalankan kode berikut untuk memisahkan kanal warna <strong>Red, Green, dan Blue</strong>.
+          </p>
+        </div>
+
+        <div class="notebook-wrapper border border-2 rounded-4 shadow-sm overflow-hidden mb-3">
+          <aside class="sidebar">
+            <div class="sidebar-header">
+              <h6><i class="fa-solid fa-folder-open me-2"></i> File RGB</h6>
+            </div>
+            <div class="upload-area" onclick="triggerRGBUpload()">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+              <p class="mb-1">Upload Image</p>
+              <span>Drag & drop atau klik</span>
+            </div>
+            <ul id="rgbFileList" class="file-list">
+              <li class="empty"><i class="fa-regular fa-file me-2"></i> Belum ada file</li>
+            </ul>
+            <input type="file" id="rgbFileInput" hidden onchange="handleRGBUpload(event)">
+          </aside>
+
+          <main class="workspace">
+            <div class="workspace-header">
+              <div class="title"><i class="fa-solid fa-code me-2"></i> Live RGB Notebook</div>
+              <div class="actions">
+                <button class="btn-add" onclick="addRGBCell()"><i class="fa-solid fa-plus"></i> Add Cell</button>
+              </div>
+            </div>
+            <div id="rgbNotebook" class="cells"></div>
+          </main>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="rgbImageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content rounded-4 border-0 shadow-lg" style="background-color: #1e293b;">
+        <div class="modal-header border-bottom-0 px-4 pt-4 pb-0">
+          <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-image text-info me-2"></i> Preview Kanal RGB
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center p-4">
+          <img id="rgbModalImage" src="" class="img-fluid rounded-3 shadow-lg border border-secondary"
+            style="max-height: 70vh; width: auto;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 11 -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
+
+      <div class="bg-custom-blue text-white p-4">
+        <h3 class="fw-bold mb-0">
+          <i class="fa-solid fa-pen-to-square me-2"></i> Aktivitas {{ id_activity }}
+        </h3>
+      </div>
+
+      <div class="card-body p-4 p-md-5">
+
+        <p class="mb-4" style="font-size: 1.05rem;">
+          Untuk menguji pemahaman kamu pada materi di atas, silakan kerjakan aktivitas berikut ini!
+        </p>
+
+        <div class="border border-custom-blue border-2 rounded-3 p-4 mb-5 bg-white">
+          <h5 class="fw-bold text-custom-blue mb-3">
+            <i class="fa-solid fa-clipboard-list me-2"></i> Petunjuk Pengerjaan
+          </h5>
+          <ul class="mb-0" style="line-height: 1.8;">
+            <li>Baca setiap pertanyaan dengan teliti sebelum menjawab.</li>
+            <li>Pilih salah satu opsi jawaban yang menurutmu paling tepat.</li>
+            <li>Tombol <strong>LANJUT</strong> baru akan aktif setelah kamu memilih jawaban.</li>
+            <li>Perhatikan <em>feedback</em> (umpan balik) yang muncul di bawah soal untuk mengetahui apakah jawabanmu
+              benar atau salah.</li>
+            <li>Setelah selesai, kamu bisa menekan tombol <strong>ULANGI</strong> jika ingin mengulang aktivitas.</li>
+          </ul>
+        </div>
+
+        <div class="quiz-area border-top pt-4">
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold text-dark mb-0">Soal Aktivitas</h5>
+            <span class="badge bg-custom-blue rounded-pill px-3 py-2 fs-6 shadow-sm" id="quizProgress"></span>
+          </div>
+
+          <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+          <div id="feedback" class="mt-3 fw-bold"></div>
+
+          <div class="quiz-nav mt-5 d-flex justify-content-end gap-3">
+            <button id="ulangBtn" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold shadow-sm d-none">
+              <i class="fa-solid fa-rotate-left me-2"></i> ULANG
+            </button>
+            <button id="nextBtn" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm" disabled>
+              LANJUT <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination pagination-sm custom-pagination">
+      <li class="page-item" id="prevPageItem">
+        <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+      </li>
+
+      <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(3)">4</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(4)">5</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(5)">6</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(6)">7</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(7)">8</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(8)">9</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(9)">10</a></li>
+      <li class="page-item"><a class="page-link" onclick="goPage(10)">11</a></li>
+      <li class="page-item" id="nextPageItem">
+        <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+      </li>
+    </ul>
+  </nav>
 </div>
-
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 <script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
-{% endblock %}
-{% endblock %}
+<script src="{{ url_for('static', filename='js/sub1/perhitungangs.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sub1/praktekgs.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sub1/threshold.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sub1/rgb.js') }}"></script>
+<script>
+</script>
+{% endblock %} {% endblock %}

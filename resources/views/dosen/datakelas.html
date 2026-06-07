@@ -1,0 +1,345 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f8fafc;
+    }
+
+    .card-custom {
+        border: none;
+        border-radius: 14px;
+        transition: 0.25s;
+        background-color: #ffffff;
+    }
+
+    .card-custom:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .badge-count {
+        background-color: #1E293B;
+        color: #fff;
+        font-size: 11px;
+        border-radius: 8px;
+        padding: 5px 10px;
+        font-weight: 500;
+    }
+
+    .info-label {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .info-value {
+        font-size: 13px;
+        font-weight: 500;
+        color: #1E293B;
+        background: #f1f5f9;
+        padding: 4px 10px;
+        border-radius: 8px;
+    }
+
+    .btn-token {
+        background-color: #e2e8f0;
+        color: #334155;
+    }
+
+    .text-subtle {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .section {
+        margin-top: 12px;
+    }
+
+    .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .btn-guide {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        border-radius: 10px;
+        transition: 0.2s;
+        font-weight: 600;
+    }
+
+    .btn-guide:hover {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+    }
+
+    .modal-header-modern {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .guide-box {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 18px;
+        margin-bottom: 16px;
+    }
+
+    .guide-box:last-child {
+        margin-bottom: 0;
+    }
+</style>
+
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h3 class="fw-bold">Daftar Kelas Anda</h3>
+        <p class="text-subtle">Informasi kelas, materi, dan aktivitas pembelajaran.</p>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button class="btn btn-guide btn-sm fw-medium" data-bs-toggle="modal" data-bs-target="#modalPanduan">
+
+            <i class="bi bi-book-half"></i>
+            Panduan Penggunaan
+        </button>
+
+        <button class="btn btn-primary btn-sm fw-medium" data-bs-toggle="modal" data-bs-target="#modalTambah">
+            + Tambah Kelas
+        </button>
+
+        <button class="btn btn-outline-primary btn-sm fw-medium" data-bs-toggle="modal" data-bs-target="#modalGabung">
+            Gabung Kelas
+        </button>
+    </div>
+</div>
+
+<div class="row">
+
+    {% for item in data %}
+    <div class="col-md-4 mb-4">
+        <div class="card card-custom p-3 h-100">
+
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-semibold text-primary">
+                    {{ item.class.name }}
+                </h5>
+                <span class="badge badge-count">
+                    {{ item.topics|length }} Topik
+                </span>
+            </div>
+
+            <p class="text-subtle mt-1 mb-1">
+                Semester: <b class="text-dark">{{ item.class.semester }}</b>
+            </p>
+            <p class="text-subtle mb-0">
+                Tahun: <b class="text-dark">{{ item.class.tahun }}</b>
+            </p>
+
+            <div class="d-flex justify-content-between mt-3 align-items-center">
+                <span class="info-label">Token</span>
+                <div class="d-flex gap-2">
+                    <span class="info-value">{{ item.class.token }}</span>
+                    <button class="btn btn-sm btn-token"
+                        onclick="navigator.clipboard.writeText('{{ item.class.token }}')">
+                        Salin
+                    </button>
+                </div>
+            </div>
+
+            <div class="section mt-3">
+                <div class="section-title">Topik</div>
+                <div class="text-subtle">
+                    {% if item.topics %}
+                    <ul class="list-unstyled mb-0">
+                        {% for t in item.topics %}
+                        <li>{{ loop.index }}. {{ t.topic_name }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <i>Tidak ada topik</i>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="section mt-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <div class="section-title mb-0">Aktivitas</div>
+                    <span class="badge badge-count">
+                        {{ item.aktivitas_list|length }} Aktivitas
+                    </span>
+                </div>
+
+                <div class="text-subtle">
+                    {% if item.aktivitas_list %}
+                    <ul class="list-unstyled mb-0">
+                        {% for a in item.aktivitas_list %}
+                        <li>{{ loop.index }}. {{ a.title }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <i>Tidak ada aktivitas</i>
+
+                    <form method="POST" action="{{ url_for('user.claim_package') }}">
+                        <input type="hidden" name="id_class" value="{{ item.class.id }}">
+                        <button type="submit" class="btn btn-sm btn-primary w-100 mt-3">
+                            Klaim Paket Pembelajaran
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+<div class="modal fade" id="modalTambah" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('user.tambah_kelas') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Tambah Kelas Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="text" name="name" class="form-control mb-3" placeholder="Nama Kelas" required>
+                    <select name="semester" class="form-select mb-3" required>
+                        <option value="">Pilih Semester</option>
+                        <option value="ganjil">Ganjil</option>
+                        <option value="genap">Genap</option>
+                    </select>
+                    <input type="text" name="tahun" class="form-control mb-3" placeholder="Tahun, contoh 2025" required>
+                    <textarea name="description" class="form-control" rows="3" placeholder="Deskripsi"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalGabung" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('user.gabung_kelas') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Gabung Kelas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body text-center">
+                    <p class="text-muted small mb-3">
+                        Masukkan token kelas dari pengajar lain untuk bergabung ke kelas kolaborasi.
+                    </p>
+                    <input type="text" name="token" class="form-control text-center mb-2" placeholder="Masukkan Token"
+                        required>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary w-100">Gabung</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- panduan -->
+<div class="modal fade" id="modalPanduan" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header modal-header-modern p-4">
+
+                <div>
+                    <h4 class="fw-bold text-primary mb-1">
+                        Panduan Penggunaan
+                    </h4>
+
+                    <p class="text-subtle mb-0">
+                        Pelajari fungsi fitur pada halaman kelas pembelajaran.
+                    </p>
+                </div>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body pt-2 px-4 pb-4">
+
+                <div class="guide-box">
+                    <div class="fw-bold text-primary mb-2">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Tambah Kelas
+                    </div>
+
+                    <div class="text-subtle">
+                        Digunakan untuk membuat kelas baru dan mendapatkan token kelas yang dapat dibagikan kepada
+                        siswa.
+                    </div>
+                </div>
+
+                <div class="guide-box">
+                    <div class="fw-bold text-success mb-2">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>
+                        Gabung Kelas
+                    </div>
+
+                    <div class="text-subtle">
+                        Masukkan token kelas dari pengajar lain untuk bergabung ke kelas kolaborasi.
+                    </div>
+                </div>
+
+                <div class="guide-box">
+                    <div class="fw-bold text-warning mb-2">
+                        <i class="bi bi-copy me-1"></i>
+                        Token Kelas
+                    </div>
+
+                    <div class="text-subtle">
+                        Gunakan tombol salin untuk menyalin token kelas dan membagikannya kepada peserta didik.
+                    </div>
+                </div>
+
+                <div class="guide-box">
+                    <div class="fw-bold text-danger mb-2">
+                        <i class="bi bi-journal-check me-1"></i>
+                        Klaim Paket Pembelajaran
+                    </div>
+
+                    <div class="text-subtle">
+                        Fitur ini akan otomatis menambahkan template modul, aktivitas, dan materi pembelajaran ke dalam
+                        kelas kosong.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                <button class="btn btn-primary px-4" data-bs-dismiss="modal">
+
+                    Saya Mengerti
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

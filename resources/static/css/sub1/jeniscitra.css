@@ -118,3 +118,44 @@
 .custom-biner-table td:hover {
   transform: scale(1.05);
 }
+
+/* Styling khusus untuk matriks citra biner */
+.biner-matrix {
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.biner-matrix td {
+  width: 70px;
+  height: 70px;
+  vertical-align: middle;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+/* Efek interaktif ringan saat disorot */
+.biner-matrix td:hover {
+  transform: scale(1.05);
+  z-index: 10;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+/* Kotak Hitam (0) */
+.pixel-0 {
+  background-color: #000000; /* Warna gelap senada dengan tema */
+  color: #ffffff;
+  border: 1px solid #1e293b; /* Border disamakan dengan background agar menyatu */
+}
+
+/* Kotak Putih (1) */
+.pixel-1 {
+  background-color: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0; /* Border abu-abu super halus */
+}

@@ -1,0 +1,325 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+
+<style>
+    .btn-guide {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 8px 14px;
+        transition: 0.2s;
+    }
+
+    .btn-guide:hover {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+    }
+
+    .text-subtle {
+        color: #64748b;
+        font-size: 14px;
+    }
+</style>
+
+<div class="card shadow-sm p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+
+        <div>
+
+            <h3 class="fw-bold mb-1">
+                Setting KKM
+            </h3>
+
+            <p class="text-muted mb-0">
+                Pengaturan nilai KKM tiap kelas
+            </p>
+
+        </div>
+
+        <div class="d-flex gap-2">
+
+            <button class="btn btn-guide" data-bs-toggle="modal" data-bs-target="#modalPanduan">
+
+                <i class="bi bi-book-half"></i>
+                Panduan Penggunaan
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle">
+
+            <thead class="table-light">
+
+                <tr>
+                    <th>Kelas</th>
+                    <th width="220">KKM Kuis</th>
+                    <th width="220">KKM Evaluasi</th>
+                    <th width="150" class="text-center">Aksi</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in settings_data %}
+
+                <tr>
+
+                    <form id="form-{{ item.id_class }}" class="form-kkm" method="POST"
+                        action="{{ url_for('user.update_settings_kelas') }}">
+                    </form>
+
+                    <td>
+
+                        <strong class="text-primary">
+                            {{ item.nama_kelas }}
+                        </strong>
+
+                        <input type="hidden" form="form-{{ item.id_class }}" name="id_class"
+                            value="{{ item.id_class }}" />
+
+                    </td>
+
+                    <td>
+
+                        <input type="number" form="form-{{ item.id_class }}" class="form-control text-center input-kkm"
+                            name="nilai_kkm_kuis" value="{{ item.nilai_kkm_kuis }}" min="0" max="100" required />
+
+                    </td>
+
+                    <td>
+
+                        <input type="number" form="form-{{ item.id_class }}" class="form-control text-center input-kkm"
+                            name="nilai_kkm_evaluasi" value="{{ item.nilai_kkm_evaluasi }}" min="0" max="100"
+                            required />
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <button type="submit" form="form-{{ item.id_class }}" class="btn btn-primary w-100">
+
+                            <i class="bi bi-save me-1"></i>
+                            Simpan
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- MODAL PANDUAN -->
+<div class="modal fade" id="modalPanduan" tabindex="-1">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header border-0 pb-0">
+
+                <div>
+
+                    <h4 class="fw-bold text-primary mb-1">
+                        Panduan Pengaturan KKM
+                    </h4>
+
+                    <p class="text-subtle mb-0">
+                        Informasi cara menggunakan fitur pada halaman ini.
+                    </p>
+
+                </div>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body pt-4">
+
+                <div class="p-3 rounded-4 bg-light mb-3">
+
+                    <div class="fw-bold text-primary mb-1">
+
+                        <i class="bi bi-pencil-square me-1"></i>
+                        Ubah Nilai KKM
+
+                    </div>
+
+                    <div class="text-subtle">
+
+                        Anda dapat menyesuaikan standar ketuntasan dengan mengetikkan nilai KKM baru pada kolom Kuis
+                        maupun Evaluasi.
+
+                    </div>
+
+                </div>
+
+                <div class="p-3 rounded-4 bg-light mb-3">
+
+                    <div class="fw-bold text-success mb-1">
+
+                        <i class="bi bi-save me-1"></i>
+                        Simpan Perubahan
+
+                    </div>
+
+                    <div class="text-subtle">
+
+                        Klik tombol Simpan untuk memperbarui nilai KKM pada kelas yang dipilih.
+
+                    </div>
+
+                </div>
+
+                <div class="p-3 rounded-4 bg-light">
+
+                    <div class="fw-bold text-warning mb-1">
+
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        Validasi Nilai
+
+                    </div>
+
+                    <div class="text-subtle">
+
+                        Nilai hanya diperbolehkan dari angka 0 sampai 100.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer border-0 pt-0">
+
+                <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">
+
+                    Saya Mengerti
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+    // VALIDASI INPUT 0 - 100
+    document.querySelectorAll('.input-kkm').forEach(input => {
+
+        input.addEventListener('input', function () {
+
+            let value = parseInt(this.value);
+
+            if (this.value === '') {
+                return;
+            }
+
+            // MINIMAL 0
+            if (value < 0) {
+                this.value = 0;
+            }
+
+            // MAKSIMAL 100
+            if (value > 100) {
+
+                this.value = 100;
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Nilai Tidak Valid',
+                    text: 'Nilai maksimal hanya 100',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+            }
+
+        });
+
+    });
+
+</script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const forms = document.querySelectorAll('.form-kkm');
+
+        forms.forEach(form => {
+
+            form.addEventListener('submit', function (e) {
+
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Simpan Perubahan?',
+                    text: "Nilai KKM untuk kelas ini akan diperbarui.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#0d6efd',
+                    cancelButtonColor: '#dc3545',
+                    confirmButtonText: 'Ya, Simpan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Perubahan nilai KKM sedang disimpan...',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+
+                            form.submit();
+
+                        });
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    });
+
+</script>
+
+{% endblock %}

@@ -1,264 +1,121 @@
 {% extends 'layouts/base.html' %}
 
-{% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}">
-{% endblock %}
-
 {% block content %}
 <div class="container mt-4">
 
-    <!-- PAGE 1 -->
-    <div class="page-section active">
-        <div class="card shadow-sm">
-            <div class="card-body">
-
-                <h4 class="fw-bold mb-4">Rangkuman</h4>
-
-                <h5 class="fw-bold">1. Pengertian Thresholding</h5>
-                <p>
-                    Thresholding adalah metode segmentasi citra untuk memisahkan objek dan background berdasarkan
-                    nilai intensitas <br>
-                    Mengubah citra grayscale menjadi citra biner
-                </p>
-
-                <h5 class="fw-bold mt-4">2. Algoritma Thresholding Sederhana</h5>
-                <p>
-                    \[
-                    g(x,y)=
-                    \begin{cases}
-                    1,& \mathrm{jika}\ f(x,y)>T\\
-                    0,& \mathrm{jika}\ f(x,y)\le T
-                    \end{cases}
-                    \]
-                </p>
-
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>f(x,y)= nilai intensitas piksel pada citra grayscale</li>
-                    <li>g(x,y)= nilai piksel pada citra hasil (biner)</li>
-                    <li>xy= koordinat piksel</li>
-                    <li>T= nilai threshold (ambang batas)</li>
-                    <li>1= objek (foreground)</li>
-                    <li>0= background</li>
-                </ul>
-
-            </div>
+  <div class="card border shadow-sm mb-4 rounded-4">
+    <div class="card-body px-4 py-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold text-dark">Progress Belajar</span>
+        <span class="text-success fw-bold">{{ progress }}%</span>
+      </div>
+      <div class="progress rounded-pill bg-light" style="height: 10px;">
+        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill" role="progressbar"
+          style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
         </div>
+      </div>
     </div>
+  </div>
 
-    <!-- PAGE 2 -->
-    <div class="page-section">
-        <div class="card shadow-sm">
-            <div class="card-body">
+  <div class="card border shadow-sm rounded-4 mb-4">
+    <div class="card-body p-4 p-md-5">
+      <h3 class="fw-bold mb-4 text-custom-blue">
+        <i class="fa-solid fa-book-bookmark me-2"></i> Rangkuman Materi
+      </h3>
 
-                <h5 class="fw-bold">3. Jenis-Jenis Thresholding</h5>
+      <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+        <p class="mb-4">Berikut adalah rangkuman berdasarkan materi yang sudah dijelaskan pada bab Threshold-based
+          segmentation yaitu:</p>
 
-                <p><b>a. Global Thresholding</b></p>
-                <p>\[ T=\mathrm{konstan} \]</p>
+        <ol class="list-group list-group-numbered list-group-flush text-dark">
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Threshold-Based Segmentation</strong> merupakan metode segmentasi citra yang memisahkan objek dan
+            background berdasarkan nilai intensitas piksel menggunakan suatu nilai ambang (threshold). Piksel dengan
+            intensitas di atas threshold diklasifikasikan sebagai objek, sedangkan piksel dengan intensitas di bawah
+            atau sama dengan threshold diklasifikasikan sebagai background.
+          </li>
 
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>T= satu nilai threshold untuk seluruh citra</li>
-                </ul>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Proses thresholding sederhana</strong> dilakukan dengan membandingkan setiap piksel pada citra
+            terhadap nilai threshold yang telah ditentukan. Hasil proses ini berupa citra biner yang hanya memiliki dua
+            kelas, yaitu objek dan background.
+          </li>
 
-                <p><b>b. Adaptive Thresholding</b></p>
-                <p>\[ T=T(x,y) \]</p>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Histogram digunakan</strong> untuk membantu menentukan nilai threshold yang sesuai. Histogram
+            menunjukkan distribusi intensitas piksel pada citra sehingga dapat digunakan untuk melihat pemisahan antara
+            objek dan background.
+          </li>
 
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>T(x,y)= threshold lokal yang bergantung pada posisi piksel</li>
-                    <li>xy= koordinat piksel</li>
-                </ul>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Pada histogram bimodal</strong>, objek dan background biasanya direpresentasikan oleh dua puncak
+            histogram yang dipisahkan oleh sebuah lembah (valley). Nilai intensitas pada lembah tersebut sering dipilih
+            sebagai threshold karena mampu memisahkan kedua kelas dengan baik.
+          </li>
 
-            </div>
-        </div>
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Jika histogram memiliki lebih dari dua puncak</strong> (multimodal histogram), maka dapat digunakan
+            lebih dari satu nilai threshold untuk membagi citra menjadi beberapa kelas intensitas. Pendekatan ini
+            dikenal sebagai <em>multi-thresholding</em>.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Keberhasilan proses thresholding</strong> dipengaruhi oleh beberapa faktor, yaitu derau (noise),
+            pencahayaan yang tidak merata (illumination), dan reflektansi objek (reflectance). Faktor-faktor tersebut
+            dapat menyebabkan distribusi intensitas objek dan background saling tumpang tindih sehingga proses penentuan
+            threshold menjadi lebih sulit.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Global Thresholding</strong> menggunakan satu nilai threshold untuk seluruh citra. Salah satu metode
+            yang umum digunakan adalah <em>Iterative Threshold Selection</em>, yaitu metode yang menentukan threshold
+            secara bertahap melalui proses iterasi hingga diperoleh nilai threshold yang stabil.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Langkah utama Iterative Threshold Selection</strong> meliputi menentukan threshold awal, membagi
+            piksel ke dalam dua kelompok, menghitung rata-rata intensitas masing-masing kelompok, menentukan threshold
+            baru, dan mengulangi proses hingga nilai threshold konvergen.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Kualitas hasil Global Thresholding</strong> dapat ditingkatkan melalui reduksi noise (smoothing) dan
+            pemanfaatan informasi tepi (edge information). Kedua pendekatan tersebut membantu menghasilkan histogram
+            yang lebih representatif sehingga nilai threshold dapat ditentukan dengan lebih akurat.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Otsu Thresholding</strong> merupakan metode thresholding otomatis yang menentukan nilai threshold
+            berdasarkan analisis histogram citra. Metode ini memilih threshold yang menghasilkan pemisahan terbaik
+            antara objek dan background dengan meminimalkan variansi total berbobot.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Proses Otsu Thresholding</strong> dilakukan dengan menghitung histogram, menormalisasi histogram
+            menjadi probabilitas, menguji setiap kemungkinan threshold, menghitung probabilitas dan variansi
+            masing-masing kelas, kemudian memilih threshold yang menghasilkan nilai variansi total berbobot terkecil.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3 text-dark">
+            <strong>Implementasi Global Thresholding dan Otsu Thresholding</strong> dapat dilakukan menggunakan Python
+            dan OpenCV. Hasil segmentasi umumnya berupa citra biner yang menunjukkan pemisahan antara objek dan
+            background berdasarkan nilai threshold yang diperoleh.
+          </li>
+        </ol>
+      </div>
+
     </div>
-
-    <!-- PAGE 3 -->
-    <div class="page-section">
-        <div class="card shadow-sm">
-            <div class="card-body">
-
-                <p><b>c. Band Thresholding</b></p>
-                <p>
-                    \[
-                    g(x,y)=
-                    \begin{cases}
-                    1,& T_1\le f(x,y)\le T_2\\
-                    0,& \mathrm{lainnya}
-                    \end{cases}
-                    \]
-                </p>
-
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>T_1= batas bawah threshold</li>
-                    <li>T_2= batas atas threshold</li>
-                    <li>f(x,y)= intensitas piksel</li>
-                    <li>g(x,y)= hasil segmentasi</li>
-                </ul>
-
-                <p><b>d. Multi-Thresholding</b></p>
-                <p>
-                    \[
-                    D_1=[0,T_1],\ D_2=[T_1+1,T_2],\ D_3=[T_2+1,255]
-                    \]
-                </p>
-
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>D_1,D_2,D_3= kelas hasil segmentasi</li>
-                    <li>T_1,T_2= nilai threshold</li>
-                    <li>255 = nilai maksimum intensitas (8-bit)</li>
-                </ul>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- PAGE 4 -->
-    <div class="page-section">
-        <div class="card shadow-sm">
-            <div class="card-body">
-
-                <h5 class="fw-bold">4. Penentuan Nilai Threshold</h5>
-
-                <p><b>a. Metode p-tile</b></p>
-                <p>\[ \mathrm{Objek}\approx\frac{1}{p} \]</p>
-
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>p= pembagi (proporsi)</li>
-                    <li>\(\frac{1}{p}\)= persentase piksel objek</li>
-                </ul>
-
-                <p><b>b. Histogram Bimodal</b></p>
-                <p>\[ T\approx\mathrm{nilai\ minimum\ di\ antara\ dua\ puncak} \]</p>
-
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>T= threshold</li>
-                    <li>Puncak histogram = objek dan background</li>
-                </ul>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- PAGE 5 -->
-    <div class="page-section">
-        <div class="card shadow-sm">
-            <div class="card-body">
-
-                <h5 class="fw-bold">5. Metode Otsu</h5>
-
-                <p><b>(1) Normalisasi Histogram</b></p>
-                <p>\[ H(i)=\frac{n_i}{N} \]</p>
-
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>H(i)= probabilitas tingkat keabuan ke-i</li>
-                    <li>n_i= jumlah piksel dengan intensitas i</li>
-                    <li>N= total jumlah piksel</li>
-                    <li>i= nilai keabuan</li>
-                </ul>
-
-                <p><b>(2) Probabilitas Kelas</b></p>
-                <p>
-                    \[
-                    \omega_B(t)=\sum_{i=0}^{t}H(i)
-                    \]
-                    \[
-                    \omega_F(t)=\sum_{i=t+1}^{G}H(i)
-                    \]
-                    \[
-                    \omega_F(t)=1-\omega_B(t)
-                    \]
-                </p>
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>\(\omega_B(t)\)= probabilitas background</li>
-                    <li>\(\omega_F(t)\)= probabilitas foreground</li>
-                    <li>t= nilai threshold</li>
-                    <li>G= nilai keabuan maksimum</li>
-                </ul>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- PAGE 6 -->
-    <div class="page-section">
-        <div class="card shadow-sm">
-            <div class="card-body">
-
-                <p><b>(3) Mean (Rata-rata)</b></p>
-                <p>
-                    \[
-                    \mu_B=\frac{\sum_{i=0}^{t} i\cdot H(i)}{\omega_B(t)}
-                    \]
-                    \[
-                    \mu_F=\frac{\sum_{i=t+1}^{G} i\cdot H(i)}{\omega_F(t)}
-                    \]
-                </p>
-                <p><b>(4) Variansi</b></p>
-                <p>
-                    \[
-                    \sigma_B^2=\frac{\sum_{i=0}^{t}(i-\mu_B)^2H(i)}{\omega_B(t)}
-                    \]
-                    \[
-                    \sigma_F^2=\frac{\sum_{i=t+1}^{G}(i-\mu_F)^2H(i)}{\omega_F(t)}
-                    \]
-                </p>
-
-                <p><b>(5) Variansi Total</b></p>
-                <p>
-                    \[
-                    \sigma^2(t)=\omega_B(t)\sigma_B^2+\omega_F(t)\sigma_F^2
-                    \]
-                </p>
-
-                <p><b>(6) Threshold Terbaik</b></p>
-                <p>
-                    \[
-                    t^\ast=\min \sigma^2(t)
-                    \]
-                </p>
-
-                <p><b>Keterangan:</b></p>
-                <ul>
-                    <li>\(t^\ast\)= threshold optimal</li>
-                    <li>\(\arg\min\)= nilai yang meminimalkan fungsi</li>
-                </ul>
-
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- PAGINATION -->
-    <nav class="mt-4 d-flex justify-content-center">
-        <ul class="pagination pagination-sm custom-pagination">
-
-            <li class="page-item"><a class="page-link" onclick="prevPage()">Sebelumnya</a></li>
-
-            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(3)">4</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(4)">5</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(5)">6</a></li>
-
-
-            <li class="page-item"><a class="page-link" onclick="nextPage()">Selanjutnya</a></li>
-
-        </ul>
-    </nav>
-
+  </div>
 </div>
+<div class="text-center mt-4 mb-5">
+
+  <button id="btnSelesaiRangkuman" class="btn btn-success rounded-pill px-5 py-3 fw-bold shadow-sm" data-topic="4"
+    data-subtopic="18">
+    <i class="fa-solid fa-circle-check me-2"></i>
+    Selesai Membaca Rangkuman
+  </button>
 
 
-<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
-
+  <script src="{{ url_for('static', filename='js/rangkuman.js') }}"></script>
+</div>
 {% endblock %}

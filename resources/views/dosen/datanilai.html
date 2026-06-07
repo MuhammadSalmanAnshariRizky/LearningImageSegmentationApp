@@ -1,0 +1,318 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f8fafc;
+    }
+
+    .card-custom {
+        border: none;
+        border-radius: 14px;
+        transition: 0.25s;
+        background-color: #ffffff;
+    }
+
+    .card-custom:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .badge-count {
+        background-color: #1E293B;
+        color: #fff;
+        font-size: 11px;
+        border-radius: 8px;
+        padding: 5px 10px;
+        font-weight: 500;
+    }
+
+    .activity-item {
+        padding: 12px;
+        border-radius: 10px;
+        transition: 0.2s;
+        border: 1px solid transparent;
+    }
+
+    .activity-item:hover {
+        background-color: #f1f5f9;
+        border: 1px solid #e2e8f0;
+    }
+
+    .activity-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: #1E293B;
+    }
+
+    .btn-nilai {
+        border-radius: 8px;
+        background-color: #e2e8f0;
+        color: #334155;
+        font-size: 12px;
+        border: none;
+    }
+
+    .btn-lihat {
+        background-color: #1E293B;
+        color: white;
+        border-radius: 8px;
+        font-size: 12px;
+        transition: 0.2s;
+    }
+
+    .btn-lihat:hover {
+        background-color: #334155;
+    }
+
+    .btn-export {
+        background-color: #16a34a;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        padding: 8px 14px;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    .btn-export:hover {
+        background-color: #15803d;
+        color: white;
+    }
+
+    .text-subtle {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #94a3b8;
+    }
+
+    .btn-guide {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .btn-guide:hover {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+    }
+
+    .modal-content {
+        border: none !important;
+        border-radius: 18px !important;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+    }
+
+    .guide-box {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 18px;
+        margin-bottom: 16px;
+    }
+
+    .guide-box:last-child {
+        margin-bottom: 0;
+    }
+</style>
+
+<div class="mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+    <div>
+        <h3 class="fw-bold">
+            Data Nilai
+        </h3>
+        <p class="text-subtle mb-0">
+            Daftar kelas, aktivitas pembelajaran, dan evaluasi.
+        </p>
+    </div>
+
+    <div class="d-flex gap-2">
+        <!--TOMBOL PANDUAN PENGGUNA -->
+        <button class="btn btn-guide fw-medium d-flex align-items-center gap-1" data-bs-toggle="modal"
+            data-bs-target="#modalPanduanNilai">
+
+            <i class="bi bi-book-half"></i>
+            Panduan Penggunaan
+        </button>
+
+        <!--TOMBOL EXPORT SEMUA -->
+        <a href="{{ url_for('user.export_semua_nilai') }}"
+            class="btn-export d-flex align-items-center gap-1 text-decoration-none">
+            <i class="bi bi-file-earmark-excel"></i> Export Semua
+        </a>
+    </div>
+
+</div>
+
+<div class="row">
+
+    {% if data %}
+    {% for kelas in data %}
+    <div class="col-md-4 mb-4">
+        <div class="card card-custom p-3 h-100">
+
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <h5 class="mb-0 fw-semibold text-primary">
+                    {{ kelas.class_name }}
+                </h5>
+                <span class="badge badge-count">
+                    {{ kelas.total_activity }} aktivitas
+                </span>
+            </div>
+
+            <!-- SISWA -->
+            <p class="text-subtle mt-1 mb-3">
+                Siswa:
+                <b class="text-dark">
+                    {{ kelas.total_siswa or 0 }} orang
+                </b>
+            </p>
+
+            <!-- LIST ACTIVITY -->
+            {% if kelas.activities %}
+            {% for item in kelas.activities %}
+            <div class="activity-item mb-2 bg-light">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <!--TITLE -->
+                    <span class="activity-title text-truncate me-2" style="max-width: 60%;"
+                        title="{{ item.title or 'Tanpa Judul' }}">
+                        {{ item.title or 'Tanpa Judul' }}
+                    </span>
+
+                    <!--ACTION -->
+                    <div class="d-flex gap-2 align-items-center">
+
+                        <span class="btn btn-sm btn-nilai" title="Jumlah siswa yang sudah mengerjakan">
+                            {{ item.total or 0 }} Orang
+                        </span>
+
+                        <a href="{{ url_for('user.detail_nilai', activity_id=item.id) }}" class="btn btn-lihat btn-sm"
+                            title="Lihat Detail Nilai">
+                            <i class="bi bi-eye"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state bg-light rounded-3 mt-2 py-4">
+                <i class="bi bi-journal-x fs-3 d-block mb-2 text-muted"></i>
+                Belum ada aktivitas kuis/evaluasi
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="col-12">
+        <div class="empty-state bg-white rounded-3 shadow-sm py-5">
+            <i class="bi bi-folder-x fs-1 d-block mb-3 text-muted"></i>
+            <h4>Tidak ada data kelas</h4>
+            <p class="text-subtle">Silakan buat kelas terlebih dahulu di menu Daftar Kelas.</p>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<!--MODAL PANDUAN PENGGUNA -->
+<!-- MODAL PANDUAN -->
+<div class="modal fade" id="modalPanduanNilai" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header border-0 pb-0 p-4">
+
+                <div>
+                    <h4 class="fw-bold text-primary mb-1">
+                        Panduan Penggunaan
+                    </h4>
+
+                    <p class="text-subtle mb-0">
+                        Informasi fitur pada halaman data nilai siswa.
+                    </p>
+                </div>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body pt-2 px-4 pb-4">
+
+                <div class="guide-box">
+                    <div class="fw-bold text-primary mb-2">
+                        <i class="bi bi-building me-1"></i>
+                        Informasi Kelas
+                    </div>
+
+                    <div class="text-subtle">
+                        Setiap kartu menampilkan daftar aktivitas evaluasi berdasarkan kelas yang Anda kelola.
+                    </div>
+                </div>
+
+                <div class="guide-box">
+                    <div class="fw-bold text-success mb-2">
+                        <i class="bi bi-people me-1"></i>
+                        Jumlah Pengumpulan
+                    </div>
+
+                    <div class="text-subtle">
+                        Label jumlah orang menunjukkan total siswa yang telah mengerjakan aktivitas tersebut.
+                    </div>
+                </div>
+
+                <div class="guide-box">
+                    <div class="fw-bold text-warning mb-2">
+                        <i class="bi bi-eye me-1"></i>
+                        Detail Nilai
+                    </div>
+
+                    <div class="text-subtle">
+                        Klik tombol ikon mata untuk melihat jawaban siswa dan memberikan penilaian.
+                    </div>
+                </div>
+
+                <div class="guide-box">
+                    <div class="fw-bold text-danger mb-2">
+                        <i class="bi bi-file-earmark-excel me-1"></i>
+                        Export Nilai
+                    </div>
+
+                    <div class="text-subtle">
+                        Gunakan tombol Export Semua untuk mengunduh seluruh rekap nilai siswa ke dalam file Excel.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                <button class="btn btn-primary px-4" data-bs-dismiss="modal">
+
+                    Saya Mengerti
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

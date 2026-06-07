@@ -1,198 +1,105 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
-
 <div class="container mt-4">
-    <!-- proggress -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-                <span class="fw-semibold">Progress Belajar</span>
-                <span class="text-success fw-bold">8%</span>
-            </div>
 
-            <div class="progress" style="height: 10px;">
-                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 8%">8%
-                </div>
-            </div>
+  <div class="card border shadow-sm mb-4 rounded-4">
+    <div class="card-body px-4 py-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold text-dark">Progress Belajar</span>
+        <span class="text-success fw-bold">{{ progress }}%</span>
+      </div>
+      <div class="progress rounded-pill bg-light" style="height: 10px;">
+        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill" role="progressbar"
+          style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
         </div>
+      </div>
     </div>
-    <!-- page 1 -->
-    <div class="page-section active">
-        <div class="card mb-4 shadow-sm ">
-            <div class="card-body">
-                <h4 class="fw-bold mb-4">Rangkuman</h4>
+  </div>
 
-                <!-- 1 -->
-                <h5 class="fw-bold">1. Pengertian Citra Digital</h5>
-                <ul class="custom-list">
-                    <li>Representasi visual dunia nyata dalam bentuk digital</li>
-                    <li>Dapat diolah oleh komputer</li>
-                    <li>Tersusun dari elemen kecil bernama piksel (pixel)</li>
-                    <li>Setiap piksel memiliki:
-                        <ul>
-                            <li>Koordinat (x, y)</li>
-                            <li>Nilai intensitas (kecerahan/warna)</li>
-                        </ul>
-                    </li>
-                    <li>Representasi matematis: f(x, y)</li>
-                </ul>
+  <div class="card border shadow-sm rounded-4 mb-4">
+    <div class="card-body p-4 p-md-5">
+      <h3 class="fw-bold mb-4 text-custom-blue">
+        <i class="fa-solid fa-book-bookmark me-2"></i> Rangkuman Materi
+      </h3>
 
-                <!-- 2 -->
-                <h5 class="fw-bold mt-4">2. Representasi Citra</h5>
-                <ul class="custom-list">
-                    <li>Berbentuk matriks M × N
-                        <ul>
-                            <li>M = jumlah baris</li>
-                            <li>N = jumlah kolom</li>
-                        </ul>
-                    </li>
-                    <li>Koordinat dimulai dari (0,0) (pojok kiri atas)</li>
-                    <li>Setiap elemen matriks = nilai piksel</li>
-                    <li>Bersifat diskrit (hasil discretization)</li>
-                </ul>
-            </div>
-        </div>
+      <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+        <p class="mb-4">Berikut adalah rangkuman berdasarkan materi yang sudah dijelaskan pada bab Pengantar Citra
+          Digital yaitu:</p>
+
+        <ol class="list-group list-group-numbered list-group-flush">
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3">
+            <strong>Citra digital</strong> merupakan representasi visual dunia nyata dalam bentuk digital yang dapat
+            diolah oleh komputer. Citra tersusun atas elemen-elemen kecil yang disebut piksel (pixel), di mana setiap
+            piksel memiliki koordinat <span class="math-tex">\( (x,y) \)</span> dan nilai intensitas yang menunjukkan
+            tingkat kecerahan atau warna. Secara matematis, citra dapat direpresentasikan sebagai fungsi <span
+              class="math-tex">\( f(x,y) \)</span>.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3">
+            <strong>Representasi citra</strong> berbentuk matriks berukuran <span class="math-tex">\( M \times N
+              \)</span>, dengan <span class="math-tex">\( M \)</span> menyatakan jumlah baris dan <span
+              class="math-tex">\( N \)</span> jumlah kolom. Setiap elemen matriks merepresentasikan nilai suatu piksel,
+            sementara koordinat citra umumnya dimulai dari titik <span class="math-tex">\( (0,0) \)</span> di pojok kiri
+            atas. Representasi ini bersifat diskrit karena merupakan hasil proses digitalisasi (discretization).
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3">
+            <strong>Citra grayscale</strong> merupakan citra yang hanya memiliki satu kanal intensitas tanpa informasi
+            warna. Pada citra 8-bit, nilai piksel berada pada rentang 0–255, di mana nilai 0 menunjukkan hitam dan 255
+            menunjukkan putih. Karena strukturnya lebih sederhana dibanding citra berwarna, citra grayscale banyak
+            digunakan dalam proses pengolahan citra.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3">
+            <strong>Citra biner</strong> hanya memiliki dua kemungkinan nilai piksel, yaitu 0 (hitam) dan 1 (putih),
+            sehingga hanya memerlukan 1 bit untuk setiap piksel. Jenis citra ini lebih hemat dalam penyimpanan data dan
+            sering digunakan pada hasil pemindaian dokumen, mesin fax, maupun grafik sederhana.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3">
+            <strong>Citra RGB</strong> merupakan citra berwarna yang terdiri atas tiga kanal, yaitu Red (R), Green (G),
+            dan Blue (B). Setiap kanal memiliki rentang nilai 0–255 sehingga total representasinya menggunakan 24-bit
+            per piksel. Kombinasi nilai ketiga kanal tersebut menghasilkan berbagai warna, misalnya <span
+              class="math-tex">\( (255,0,0) \)</span> untuk merah, <span class="math-tex">\( (0,255,0) \)</span> untuk
+            hijau, <span class="math-tex">\( (0,0,255) \)</span> untuk biru, dan <span class="math-tex">\( (255,255,255)
+              \)</span> untuk putih.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3">
+            <strong>Bit depth</strong> menunjukkan jumlah bit yang digunakan untuk menyimpan nilai piksel. Banyaknya
+            kemungkinan nilai yang dapat direpresentasikan ditentukan oleh rumus <span class="math-tex">\( 2^k
+              \)</span>, dengan <span class="math-tex">\( k \)</span> adalah jumlah bit. Sebagai contoh, 1 bit dapat
+            merepresentasikan 2 nilai, sedangkan 8 bit dapat merepresentasikan 256 nilai.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3">
+            <strong>Konversi citra RGB ke grayscale</strong> dilakukan untuk menyederhanakan proses pengolahan citra.
+            Beberapa metode yang umum digunakan adalah metode Lightness, Average, dan Luminosity, yang menghasilkan
+            citra dengan satu kanal intensitas dari tiga kanal warna RGB.
+          </li>
+
+          <li class="list-group-item bg-transparent px-0 border-0 mb-3">
+            <strong>Konversi citra grayscale ke biner (thresholding)</strong> dilakukan dengan menggunakan nilai ambang
+            (threshold) tertentu. Piksel yang memiliki nilai lebih besar dari nilai ambang akan diubah menjadi putih
+            (1), sedangkan piksel yang memiliki nilai lebih kecil atau sama dengan nilai ambang akan diubah menjadi
+            hitam (0). Teknik ini banyak digunakan untuk memisahkan objek dari latar belakang pada citra.
+          </li>
+        </ol>
+      </div>
+
     </div>
-    <!-- page 2 -->
-    <div class="page-section">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-
-                <!-- 3 -->
-                <h5 class="fw-bold mt-4">3. Jenis-Jenis Citra</h5>
-
-                <div class="mb-3">
-                    <b>a. Citra Grayscale</b>
-                    <ul class="custom-list">
-                        <li>1 kanal (intensitas saja)</li>
-                        <li>Tidak memiliki warna</li>
-                        <li>Rentang nilai (8-bit): 0 – 255
-                            <ul>
-                                <li>0 = hitam</li>
-                                <li>255 = putih</li>
-                            </ul>
-                        </li>
-                        <li>Lebih sederhana untuk pengolahan</li>
-                    </ul>
-                </div>
-
-                <div class="mb-3">
-                    <b>b. Citra Biner</b>
-                    <ul class="custom-list">
-                        <li>Hanya 2 nilai:
-                            <ul>
-                                <li>0 = hitam</li>
-                                <li>1 = putih</li>
-                            </ul>
-                        </li>
-                        <li>Menggunakan 1 bit/piksel</li>
-                        <li>Lebih hemat penyimpanan</li>
-                        <li>Digunakan pada:
-                            <ul>
-                                <li>Scan dokumen</li>
-                                <li>Fax</li>
-                                <li>Grafik sederhana</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="mb-3">
-                    <b>c. Citra RGB</b>
-                    <ul class="custom-list">
-                        <li>3 kanal warna:
-                            <ul>
-                                <li>Red (R)</li>
-                                <li>Green (G)</li>
-                                <li>Blue (B)</li>
-                            </ul>
-                        </li>
-                        <li>Tiap kanal: 0 – 255</li>
-                        <li>Total: 24-bit/piksel</li>
-                        <li>Contoh:
-                            <ul>
-                                <li>(255,0,0) = merah</li>
-                                <li>(0,255,0) = hijau</li>
-                                <li>(0,0,255) = biru</li>
-                                <li>(255,255,255) = putih</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- page 3 -->
-    <div class="page-section">
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-                <!-- 4 -->
-                <h5 class="fw-bold mt-4">4. Bit Depth</h5>
-                <ul class="custom-list">
-                    <li>Jumlah bit untuk menyimpan nilai piksel</li>
-                    <li>Rumus kemungkinan nilai: 2<sup>k</sup></li>
-                    <li>Contoh:
-                        <ul>
-                            <li>1 bit → 2 nilai</li>
-                            <li>8 bit → 256 nilai</li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <!-- 5 -->
-                <h5 class="fw-bold mt-4">5. Konversi Citra</h5>
-
-                <div class="mb-3">
-                    <b>a. RGB → Grayscale</b>
-                    <ul class="custom-list">
-                        <li>Tujuan: menyederhanakan pengolahan</li>
-                        <li>Metode:
-                            <ul>
-                                <li>Lightness</li>
-                                <li>Average</li>
-                                <li>Luminosity</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <b>b. Grayscale → Biner (Thresholding)</b>
-                    <ul class="custom-list">
-                        <li>Menggunakan nilai ambang T</li>
-                        <li>Aturan:
-                            <ul>
-                                <li>f(x,y) > T → putih (1)</li>
-                                <li>f(x,y) ≤ T → hitam (0)</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <nav class="mt-4 d-flex justify-content-center">
-        <ul class="pagination pagination-sm custom-pagination">
-
-            <li class="page-item" id="prevPageItem">
-                <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
-            </li>
-
-            <li class="page-item"><a class="page-link" onclick="goPage(0)">1</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(1)">2</a></li>
-            <li class="page-item"><a class="page-link" onclick="goPage(2)">3</a></li>
-
-            <li class="page-item" id="nextPageItem">
-                <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
-            </li>
-
-        </ul>
-    </nav>
+  </div>
 </div>
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
-{% endblock %}
+<div class="text-center mt-4 mb-5">
+
+  <button id="btnSelesaiRangkuman" class="btn btn-success rounded-pill px-5 py-3 fw-bold shadow-sm" data-topic="1"
+    data-subtopic="3">
+    <i class="fa-solid fa-circle-check me-2"></i>
+    Selesai Membaca Rangkuman
+  </button>
+
+
+  <script src="{{ url_for('static', filename='js/rangkuman.js') }}"></script>
+</div>
 {% endblock %}
