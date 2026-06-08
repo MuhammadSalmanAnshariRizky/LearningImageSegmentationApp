@@ -6,59 +6,73 @@ from app.model.activity_result import ActivityResult
 from app.model.user import User
 
 def seed_activity_result():
-    # 🎯 ambil user tertentu
-    user = User.query.get(1)
+    # 🎯 Ambil semua user dengan role Student
+    students = User.query.filter_by(role='Student').all()
 
-    # 🎯 ambil activity ID 16 - 20
-    activities = Activity.query.filter(Activity.id.in_([15,16, 17, 18, 19, 20])).all()
+    # 🎯 Ambil activity kuis & evaluasi (ID: 3, 6, 10, 14, 18, 19)
+    activities = Activity.query.filter(Activity.id.in_([3, 6, 10, 14, 18, 19])).all()
 
-    if not user or not activities:
-        print("❌ User atau Activity tidak ditemukan")
+    if not students or not activities:
+        print("❌ Data Student atau Activity tidak ditemukan")
         return
 
-    for activity in activities:
+    data_to_insert = []
 
-        # 🔥 CEK biar tidak double (opsional)
-        existing = ActivityResult.query.filter_by(
-            id_user=user.id,
-            id_activity=activity.id
-        ).first()
+    # Looping untuk setiap siswa
+    for student in students:
+        # Looping untuk setiap aktivitas
+        for activity in activities:
 
-        if existing:
-            continue
+            # 🔥 CEK biar tidak double (Pengecekan spesifik ke percobaan 1)
+            existing = ActivityResult.query.filter_by(
+                id_user=student.id,
+                id_activity=activity.id,
+                percobaan_ke=1 
+            ).first()
 
-        # 🔢 jumlah soal (default 10 kalau tidak ada field)
-        total_soal = getattr(activity, 'jumlah_soal', 10)
+            if existing:
+                continue
 
-        # 🎯 hasil realistis
-        benar = random.randint(int(total_soal * 0.5), total_soal)
-        salah = total_soal - benar
+            # 🔢 Jumlah soal (default 10 kalau tidak ada field)
+            total_soal = getattr(activity, 'jumlah_soal', 10)
 
-        # 💯 nilai
-        nilai = (benar / total_soal) * 100
+            # 🎯 Hasil realistis (Misal: minimal betul 40% sampai 100%)
+            benar = random.randint(int(total_soal * 0.4), total_soal)
+            salah = total_soal - benar
 
-        # ⏱ waktu (5–20 menit)
-        waktu = random.randint(300, 1200)
+            # 💯 Nilai
+            nilai = (benar / total_soal) * 100
 
-        start_time = datetime.now() - timedelta(minutes=random.randint(10, 60))
-        end_time = start_time + timedelta(seconds=waktu)
+            # ⏱ Waktu (5–20 menit)
+            waktu = random.randint(300, 1200)
 
-        # 📊 status
-        status = "lulus" if nilai >= 60 else "tidak lulus"
+            start_time = datetime.now() - timedelta(minutes=random.randint(10, 60))
+            end_time = start_time + timedelta(seconds=waktu)
 
-        result = ActivityResult(
-            id_user=user.id,
-            id_activity=activity.id,
-            nilai_akhir=round(nilai, 2),
-            result_status=status,
-            waktu_mengerjakan=waktu,
-            start_time=start_time,
-            end_time=end_time,
-            total_benar=benar,
-            total_salah=salah
-        )
+            # 📊 Status kelulusan (KKM default 60)
+            status = "lulus" if nilai >= 60 else "tidak lulus"
 
-        db.session.add(result)
+            result = ActivityResult(
+                id_user=student.id,
+                id_activity=activity.id,
+                percobaan_ke=1, # WAJIB DIISI karena tabel sudah diupdate
+                nilai_akhir=round(nilai, 2),
+                result_status=status,
+                waktu_mengerjakan=waktu,
+                start_time=start_time,
+                end_time=end_time,
+                total_benar=benar,
+                total_salah=salah
+            )
 
+            data_to_insert.append(result)
+
+    if not data_to_insert:
+        print("⚠️ Semua data ActivityResult sudah ada, skip")
+        return
+
+    # Eksekusi insert massal agar lebih cepat
+    db.session.add_all(data_to_insert)
     db.session.commit()
-    print("✅ Seeder ActivityResult (ID 16–20, User 1) berhasil!")
+    
+    print(f"✅ Seeder ActivityResult berhasil! Data ditambahkan untuk {len(students)} siswa pada aktivitas [3, 6, 10, 14, 18, 19].")

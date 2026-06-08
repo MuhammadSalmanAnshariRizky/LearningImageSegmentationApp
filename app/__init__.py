@@ -147,6 +147,8 @@ def db_fresh():
     from app.seeder.seed_subtopic import seed_subtopic_topic1, seed_subtopic_topic2, seed_subtopic_topic3, seed_subtopic_topic4, seed_subtopic_topic5,seed_subtopic_topic6
     from app.seeder.seed_progress import seed_progress_history
     from app.seeder.soal_soal import aktivitas1,aktivitas2,kuis1,aktivitas3,aktivitas4,kuis2,aktivitas5,aktivitas6,aktivitas7,kuis3,aktivitas8,aktivitas9,aktivitas10,kuis4,aktivitas11,aktivitas12,aktivitas13,kuis5,evaluasi
+    from app.seeder.setting import seed_settings
+    from app.seeder.activity_answer import seed_activity_answer
     
     print("🔥 Dropping all tables...")
     db.drop_all()
@@ -154,10 +156,10 @@ def db_fresh():
     print("🚀 Creating all tables...")
     db.create_all()
 
-    print("🌱 Seeding data...")
+    print("🌱 Seeding data...")   
     seed_user()          
-    seed_class()          
-    
+    seed_class() 
+        
     seed_teacher_class()  
     seed_student_class()  
     
@@ -202,8 +204,10 @@ def db_fresh():
     # seed_question_evaluasi()
     # seed_evaluasi()
     # seed_activity_question()
-    # seed_activity_result() 
+    seed_activity_result() 
+    seed_activity_answer()
+    seed_progress_history()
+    seed_settings()
     
-    # seed_progress_history()
     
     print("✅ Database fresh + seed done!")
