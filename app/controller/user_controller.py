@@ -1975,14 +1975,17 @@ def get_soal(id_activity):
     return jsonify(hasil)
 
 # Load Soal
-@user_bp.route('/api/kuis/<string:title>')
-def api_kuis(title):
+@user_bp.route('/api/kuis/<slug>')
+def api_kuis(slug):
+
     import json, random
+
     from app.model.activity import Activity
     from app.model.activity_question import ActivityQuestion
     from app.model.question import Question
 
-    activity = Activity.query.filter_by(title=title).first_or_404()
+    # LANGSUNG CARI SLUG
+    activity = Activity.query.filter_by(title=slug).first_or_404()
 
     relasi = ActivityQuestion.query.filter_by(id_activity=activity.id).all()
     question_ids = [r.id_question for r in relasi]
@@ -1992,24 +1995,27 @@ def api_kuis(title):
     result = []
 
     for q in questions:
+
         soal = json.loads(q.question)
         opsi = json.loads(q.MC_option)
 
-        # 🔹 cari teks jawaban benar SEBELUM shuffle
         correct_text = None
+
         for opt in opsi:
             for k, v in opt.items():
+
                 if k.lower() == q.MC_Answer.lower():
                     correct_text = v["teks"]
 
-        # 🔹 shuffle opsi
         random.shuffle(opsi)
 
         letters = ['a', 'b', 'c', 'd', 'e']
+
         new_options = []
-        correct_key = None  #  kunci jawaban setelah shuffle
+        correct_key = None
 
         for i, opt in enumerate(opsi):
+
             key = letters[i]
             val = list(opt.values())[0]['teks']
 
@@ -2026,27 +2032,23 @@ def api_kuis(title):
             "text": soal["text"],
             "URL": soal.get("URL", ""),
             "options": new_options,
-            "correct_key": correct_key  #  WAJIB
+            "correct_key": correct_key
         })
 
-    # 🔹 shuffle soal
     random.shuffle(result)
 
     return jsonify(result)
 
-# load soal kuis
 @user_bp.route('/kuis/mulai/<slug>')
 def mulai_kuis(slug):
 
-    title = slug.replace('-', ' ')
-
-    activity = Activity.query.filter_by(title=title).first_or_404()
+    activity = Activity.query.filter_by(title=slug).first_or_404()
 
     return render_template(
         'layouts/kuis.html',
         activity=activity
     )
-
+    
 @user_bp.route('/evaluasi')
 @student_required # Pastikan decorator ini dipasang agar session aman
 def evaluasi():
