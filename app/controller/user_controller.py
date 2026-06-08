@@ -3314,19 +3314,19 @@ def export_nilai():
         as_attachment=True,
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    
+
 @user_bp.route('/export_semua_nilai')
 def export_semua_nilai():
 
     # ====================================
-    # 1. AMBIL SEMUA DATA (JOIN LENGKAP)
-    # Ditambah filter StudentClass agar tidak ada siswa nyasar ke kelas lain
+    # 1. AMBIL SEMUA DATA (DENGAN QUERY YANG LEBIH AMAN)
     # ====================================
     results = db.session.query(Class, Activity, User, ActivityResult)\
         .join(Activity, Activity.id_class == Class.id)\
         .join(ActivityResult, ActivityResult.id_activity == Activity.id)\
         .join(User, User.id == ActivityResult.id_user)\
-        .join(StudentClass, db.and_(StudentClass.id_student == User.id, StudentClass.id_class == Class.id))\
+        .join(StudentClass, StudentClass.id_student == User.id)\
+        .filter(StudentClass.id_class == Class.id)\
         .all()
 
     if not results:
@@ -3335,7 +3335,6 @@ def export_semua_nilai():
     # ====================================
     # 2. FILTER PERCOBAAN TERBAIK (Mencegah Duplikat)
     # ====================================
-    # Kelompokkan berdasarkan (Activity ID, User ID)
     attempts_dict = {}
     for kelas, activity, user, result in results:
         key = (activity.id, user.id)
@@ -3345,7 +3344,6 @@ def export_semua_nilai():
 
     best_attempts = []
     for key, attempts in attempts_dict.items():
-        # Cari nilai terbaik berdasarkan Status Lulus -> Nilai Terbesar -> Percobaan Terbaru
         best_attempt = max(attempts, key=lambda x: (
             1 if x[3].result_status and x[3].result_status.lower() == 'lulus' else 0,
             x[3].nilai_akhir or 0,
@@ -3354,13 +3352,20 @@ def export_semua_nilai():
         best_attempts.append(best_attempt)
 
     # ====================================
-    # 3. KELOMPOKKAN DATA BERDASARKAN NAMA AKTIVITAS (Untuk Sheet Excel)
+    # 3. KELOMPOKKAN DATA BERDASARKAN NAMA AKTIVITAS (DENGAN PEMBERSIH EMOJI)
     # ====================================
     sheets_data = {}
     
     for kelas, activity, user, result in best_attempts:
-        # Bersihkan nama aktivitas untuk dijadikan nama sheet (Excel max 31 karakter & melarang simbol tertentu)
-        sheet_name = re.sub(r'[\\/*?:\[\]]', '', activity.title).strip()
+        
+        # Bersihkan nama sheet dari Emoji & Simbol Terlarang
+        raw_title = activity.title if activity.title else f"Aktivitas_{activity.id}"
+        ascii_title = raw_title.encode('ascii', 'ignore').decode('ascii')
+        sheet_name = re.sub(r'[\\/*?:\[\]]', '', ascii_title).strip()
+        
+        if not sheet_name:
+            sheet_name = f"Activity_{activity.id}"
+            
         sheet_name = sheet_name[:31]
 
         if sheet_name not in sheets_data:
@@ -3369,11 +3374,11 @@ def export_semua_nilai():
         sheets_data[sheet_name].append({
             "Kelas": kelas.name,
             "Nama Siswa": user.name,
-            "Nilai": result.nilai_akhir,
+            "Nilai": result.nilai_akhir or 0,
             "Status": "Lulus" if result.result_status and result.result_status.lower() == "lulus" else "Tidak Lulus",
-            "Total Benar": result.total_benar,
-            "Total Salah": result.total_salah,
-            "Durasi (detik)": result.waktu_mengerjakan
+            "Total Benar": result.total_benar or 0,
+            "Total Salah": result.total_salah or 0,
+            "Durasi (detik)": result.waktu_mengerjakan or 0
         })
 
     # ====================================
@@ -3382,7 +3387,6 @@ def export_semua_nilai():
     output = BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         
-        # Definisikan Gaya
         header_fill = PatternFill(start_color="C6E0B4", end_color="C6E0B4", fill_type="solid")
         header_font = Font(bold=True)
         center_align = Alignment(horizontal="center", vertical="center")
@@ -3391,18 +3395,13 @@ def export_semua_nilai():
             top=Side(style='thin'), bottom=Side(style='thin')
         )
 
-        # Looping setiap aktivitas untuk dijadikan sheet
         for sheet_name, data in sheets_data.items():
             df = pd.DataFrame(data)
-            
-            # Urutkan data berdasarkan Kelas lalu Nama Siswa agar rapi
             df = df.sort_values(by=["Kelas", "Nama Siswa"])
             
-            # Tulis ke sheet spesifik
             df.to_excel(writer, index=False, sheet_name=sheet_name)
             worksheet = writer.sheets[sheet_name]
 
-            # Terapkan Gaya ke Header (Baris 1)
             for col_num in range(1, len(df.columns) + 1):
                 cell = worksheet.cell(row=1, column=col_num)
                 cell.fill = header_fill
@@ -3410,25 +3409,19 @@ def export_semua_nilai():
                 cell.alignment = center_align
                 cell.border = thin_border
 
-            # Terapkan Border ke Data & Alignment (Baris 2 dst)
             for row in range(2, len(df) + 2):
                 for col in range(1, len(df.columns) + 1):
                     cell = worksheet.cell(row=row, column=col)
                     cell.border = thin_border
-                    
-                    # Kolom 2 (Nama Siswa) rata kiri, selain itu rata tengah
                     if col != 2:
                         cell.alignment = Alignment(horizontal="center")
 
-            # Atur Lebar Kolom Otomatis
             for col_num, col_name in enumerate(df.columns, 1):
                 column_letter = get_column_letter(col_num)
                 max_length = max(df[col_name].astype(str).map(len).max(), len(col_name))
                 worksheet.column_dimensions[column_letter].width = max_length + 2
 
-    # Pindahkan kursor memory
     output.seek(0)
-
     filename = "rekap_nilai_semua_kelas.xlsx"
 
     return send_file(
