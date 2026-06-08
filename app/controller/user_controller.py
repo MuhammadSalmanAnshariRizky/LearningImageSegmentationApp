@@ -111,7 +111,8 @@ def dashboard():
             total_materi=0,
             selesai=0,
             progress_percent=0,
-            materi_list=[]
+            materi_list=[],
+            hasil_belajar=[]
         )
 
     kelas = Class.query.get(student_class.id_class)
@@ -292,23 +293,18 @@ def dashboard():
 
             "href": href
         })
-        
+
     # =========================
     # HASIL BELAJAR SISWA
     # =========================
     hasil_belajar = []
 
-    activities_result = (
+    # AMBIL SEMUA ACTIVITY
+    activities = (
 
-        db.session.query(ActivityResult, Activity)
-
-        .join(
-            Activity,
-            Activity.id == ActivityResult.id_activity
-        )
+        Activity.query
 
         .filter(
-            ActivityResult.id_user == user_id,
             Activity.type.in_(["kuis", "evaluasi"])
         )
 
@@ -317,21 +313,44 @@ def dashboard():
         .all()
     )
 
-    for result, activity in activities_result:
+    # LOOP ACTIVITY
+    for activity in activities:
 
-        hasil_belajar.append({
+        # =========================
+        # AMBIL RESULT TERBARU
+        # =========================
+        latest_result = (
 
-            "title": activity.title,
+            ActivityResult.query
 
-            "nilai": result.nilai_akhir,
+            .filter_by(
+                id_user=user_id,
+                id_activity=activity.id
+            )
 
-            "status": result.result_status,
+            .order_by(
+                ActivityResult.id.desc()
+            )
 
-            "benar": result.total_benar,
+            .first()
+        )
 
-            "salah": result.total_salah
-        })
-        
+        # JIKA ADA RESULT
+        if latest_result:
+
+            hasil_belajar.append({
+
+                "title": activity.title,
+
+                "nilai": latest_result.nilai_akhir,
+
+                "status": latest_result.result_status,
+
+                "benar": latest_result.total_benar,
+
+                "salah": latest_result.total_salah
+            })
+
     return render_template(
         'dashboard.html',
         kelas=kelas,
@@ -689,7 +708,6 @@ def rangkuman1():
 @user_bp.route('/materi1/kuis')
 @student_required
 def kuis1():
-
     user_id = session.get('user_id')
 
     if not user_id:
@@ -698,9 +716,7 @@ def kuis1():
     # ===============================
     # AMBIL KELAS USER
     # ===============================
-    student_class = StudentClass.query.filter_by(
-        id_student=user_id
-    ).first()
+    student_class = StudentClass.query.filter_by(id_student=user_id).first()
 
     if not student_class:
         return "User belum masuk kelas"
@@ -708,27 +724,18 @@ def kuis1():
     kelas_id = student_class.id_class
 
     # ===============================
-    # AMBIL TOPIC
+    # AMBIL TOPIC & SUBTOPIC
     # ===============================
-    topic = Topic.query.filter_by(
-        topic_name="Pengantar Citra Digital"
-    ).first()
-
+    topic = Topic.query.filter_by(topic_name="Pengantar Citra Digital").first()
     if not topic:
         return "Topic tidak ditemukan"
 
-    # ===============================
-    # AMBIL SUBTOPIC
-    # ===============================
-    subtopic = SubTopic.query.filter_by(
-        sub_topic_name="Kuis 1"
-    ).first()
-
+    subtopic = SubTopic.query.filter_by(sub_topic_name="Kuis 1").first()
     if not subtopic:
         return "Subtopik tidak ditemukan"
 
     # ===============================
-    # AMBIL ACTIVITY (PALING PENTING)
+    # AMBIL ACTIVITY
     # ===============================
     activity = Activity.query.filter_by(
         id_class=kelas_id,
@@ -743,51 +750,58 @@ def kuis1():
     id_activity = activity.id
 
     # ===============================
-    # AMBIL RIWAYAT HASIL
+    # AMBIL RIWAYAT HASIL (Diurutkan dari percobaan terbaru)
     # ===============================
     results = ActivityResult.query.filter_by(
         id_user=user_id,
         id_activity=id_activity
-    ).order_by(ActivityResult.start_time.desc()).all()
+    ).order_by(ActivityResult.percobaan_ke.desc()).all()
 
     result = results[0] if results else None
 
-    detail = []
-
     # ===============================
-    # AMBIL DETAIL JAWABAN (FIX)
+    # AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
     # ===============================
-    if result:
-        answers = ActivityAnswer.query.filter_by(
-            id_user=user_id,
-            id_activity=id_activity,
-        ).order_by(ActivityAnswer.id.asc()).all()
+    # Kita menggunakan list agar mudah di-looping di Jinja2
+    grouped_details = []
 
-        for ans in answers:
-            q = Question.query.get(ans.id_question)
+    if results:
+        # Kita urutkan ascending (1, 2, 3...) khusus untuk tampilan Tab Modal
+        results_asc = sorted(results, key=lambda x: x.percobaan_ke)
+        
+        for r in results_asc:
+            # Ambil jawaban khusus untuk ActivityResult ini saja
+            answers = ActivityAnswer.query.filter_by(
+                id_activity_result=r.id
+            ).order_by(ActivityAnswer.id.asc()).all()
 
-            if not q:
-                continue
+            attempt_details = []
+            for ans in answers:
+                q = Question.query.get(ans.id_question)
+                if not q:
+                    continue
 
-            try:
-                soal_json = json.loads(q.question)
-                text = soal_json.get("text", "")
-            except:
-                text = q.question
+                try:
+                    soal_json = json.loads(q.question)
+                    text = soal_json.get("text", "")
+                except:
+                    text = q.question
 
-            detail.append({
-                "soal": text,
-                "jawaban_user": ans.user_answer,
-                "status": ans.status
+                attempt_details.append({
+                    "soal": text,
+                    "jawaban_user": ans.user_answer,
+                    "status": ans.status
+                })
+
+            grouped_details.append({
+                "percobaan_ke": r.percobaan_ke,
+                "details": attempt_details
             })
 
     # ===============================
-    # PROGRESS (FIX)
+    # PROGRESS
     # ===============================
-    progress_data = Progress.query.filter_by(
-        id_user=user_id,
-    ).first()
-
+    progress_data = Progress.query.filter_by(id_user=user_id).first()
     progress_percent = progress_data.progres_value if progress_data else 0
 
     # ===============================
@@ -797,10 +811,11 @@ def kuis1():
         'mahasiswa/sub1/kuis1.html',
         activity=activity,
         result=result,
-        detail=detail,
+        grouped_details=grouped_details, # Pass data yang sudah dikelompokkan
         results=results,
         progress=progress_percent
     )
+    
 # materi 2
 @user_bp.route('/materi2/pengantarsegmentasi')
 @student_required
@@ -982,42 +997,52 @@ def kuis2():
     id_activity = activity.id
 
     # ===============================
-    # AMBIL RIWAYAT HASIL
+    # AMBIL RIWAYAT HASIL (Diurutkan dari percobaan terbaru)
     # ===============================
     results = ActivityResult.query.filter_by(
         id_user=user_id,
         id_activity=id_activity
-    ).order_by(ActivityResult.start_time.desc()).all()
+    ).order_by(ActivityResult.percobaan_ke.desc()).all()
 
     result = results[0] if results else None
 
-    detail = []
-
     # ===============================
-    # AMBIL DETAIL JAWABAN (FIX)
+    # AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
     # ===============================
-    if result:
-        answers = ActivityAnswer.query.filter_by(
-            id_user=user_id,
-            id_activity=id_activity,
-        ).order_by(ActivityAnswer.id.asc()).all()
+    grouped_details = []
 
-        for ans in answers:
-            q = Question.query.get(ans.id_question)
+    if results:
+        # Urutkan ascending khusus untuk tampilan Tab Modal (1, 2, 3...)
+        results_asc = sorted(results, key=lambda x: x.percobaan_ke)
+        
+        for r in results_asc:
+            # Ambil jawaban khusus untuk ActivityResult ini saja
+            answers = ActivityAnswer.query.filter_by(
+                id_activity_result=r.id
+            ).order_by(ActivityAnswer.id.asc()).all()
 
-            if not q:
-                continue
+            attempt_details = []
+            for ans in answers:
+                q = Question.query.get(ans.id_question)
 
-            try:
-                soal_json = json.loads(q.question)
-                text = soal_json.get("text", "")
-            except:
-                text = q.question
+                if not q:
+                    continue
 
-            detail.append({
-                "soal": text,
-                "jawaban_user": ans.user_answer,
-                "status": ans.status
+                try:
+                    soal_json = json.loads(q.question)
+                    text = soal_json.get("text", "")
+                except:
+                    text = q.question
+
+                attempt_details.append({
+                    "soal": text,
+                    "jawaban_user": ans.user_answer,
+                    "status": ans.status
+                })
+
+            grouped_details.append({
+                "percobaan_ke": r.percobaan_ke,
+                "details": attempt_details
             })
 
     # ===============================
@@ -1036,7 +1061,7 @@ def kuis2():
         'mahasiswa/sub2/kuis2.html',
         activity=activity,
         result=result,
-        detail=detail,
+        grouped_details=grouped_details, # Pass data yang sudah dikelompokkan
         results=results,
         progress=progress_percent
     )
@@ -1274,42 +1299,52 @@ def kuis3():
     id_activity = activity.id
 
     # ===============================
-    # AMBIL RIWAYAT HASIL
+    # AMBIL RIWAYAT HASIL (Diurutkan dari percobaan terbaru)
     # ===============================
     results = ActivityResult.query.filter_by(
         id_user=user_id,
         id_activity=id_activity
-    ).order_by(ActivityResult.start_time.desc()).all()
+    ).order_by(ActivityResult.percobaan_ke.desc()).all()
 
     result = results[0] if results else None
 
-    detail = []
-
     # ===============================
-    # AMBIL DETAIL JAWABAN (FIX)
+    # AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
     # ===============================
-    if result:
-        answers = ActivityAnswer.query.filter_by(
-            id_user=user_id,
-            id_activity=id_activity,
-        ).order_by(ActivityAnswer.id.asc()).all()
+    grouped_details = []
 
-        for ans in answers:
-            q = Question.query.get(ans.id_question)
+    if results:
+        # Urutkan ascending khusus untuk tampilan Tab Modal (1, 2, 3...)
+        results_asc = sorted(results, key=lambda x: x.percobaan_ke)
+        
+        for r in results_asc:
+            # Ambil jawaban khusus untuk ActivityResult ini saja
+            answers = ActivityAnswer.query.filter_by(
+                id_activity_result=r.id
+            ).order_by(ActivityAnswer.id.asc()).all()
 
-            if not q:
-                continue
+            attempt_details = []
+            for ans in answers:
+                q = Question.query.get(ans.id_question)
 
-            try:
-                soal_json = json.loads(q.question)
-                text = soal_json.get("text", "")
-            except:
-                text = q.question
+                if not q:
+                    continue
 
-            detail.append({
-                "soal": text,
-                "jawaban_user": ans.user_answer,
-                "status": ans.status
+                try:
+                    soal_json = json.loads(q.question)
+                    text = soal_json.get("text", "")
+                except:
+                    text = q.question
+
+                attempt_details.append({
+                    "soal": text,
+                    "jawaban_user": ans.user_answer,
+                    "status": ans.status
+                })
+
+            grouped_details.append({
+                "percobaan_ke": r.percobaan_ke,
+                "details": attempt_details
             })
 
     # ===============================
@@ -1325,7 +1360,7 @@ def kuis3():
         'mahasiswa/sub3/kuis3.html',
         activity=activity,
         result=result,
-        detail=detail,
+        grouped_details=grouped_details, # Pass data yang sudah dikelompokkan
         results=results,
         progress=progress_percent
     )
@@ -1552,42 +1587,52 @@ def kuis4():
     id_activity = activity.id
 
     # ===============================
-    # AMBIL RIWAYAT HASIL
+    # AMBIL RIWAYAT HASIL (Diurutkan dari percobaan terbaru)
     # ===============================
     results = ActivityResult.query.filter_by(
         id_user=user_id,
         id_activity=id_activity
-    ).order_by(ActivityResult.start_time.desc()).all()
+    ).order_by(ActivityResult.percobaan_ke.desc()).all()
 
     result = results[0] if results else None
 
-    detail = []
-
     # ===============================
-    # AMBIL DETAIL JAWABAN (FIX)
+    # AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
     # ===============================
-    if result:
-        answers = ActivityAnswer.query.filter_by(
-            id_user=user_id,
-            id_activity=id_activity,
-        ).order_by(ActivityAnswer.id.asc()).all()
+    grouped_details = []
 
-        for ans in answers:
-            q = Question.query.get(ans.id_question)
+    if results:
+        # Urutkan ascending khusus untuk tampilan Tab Modal (1, 2, 3...)
+        results_asc = sorted(results, key=lambda x: x.percobaan_ke)
+        
+        for r in results_asc:
+            # Ambil jawaban khusus untuk ActivityResult ini saja
+            answers = ActivityAnswer.query.filter_by(
+                id_activity_result=r.id
+            ).order_by(ActivityAnswer.id.asc()).all()
 
-            if not q:
-                continue
+            attempt_details = []
+            for ans in answers:
+                q = Question.query.get(ans.id_question)
 
-            try:
-                soal_json = json.loads(q.question)
-                text = soal_json.get("text", "")
-            except:
-                text = q.question
+                if not q:
+                    continue
 
-            detail.append({
-                "soal": text,
-                "jawaban_user": ans.user_answer,
-                "status": ans.status
+                try:
+                    soal_json = json.loads(q.question)
+                    text = soal_json.get("text", "")
+                except:
+                    text = q.question
+
+                attempt_details.append({
+                    "soal": text,
+                    "jawaban_user": ans.user_answer,
+                    "status": ans.status
+                })
+
+            grouped_details.append({
+                "percobaan_ke": r.percobaan_ke,
+                "details": attempt_details
             })
 
     # ===============================
@@ -1598,11 +1643,12 @@ def kuis4():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
+
     return render_template(
         'mahasiswa/sub4/kuis4.html',
         activity=activity,
         result=result,
-        detail=detail,
+        grouped_details=grouped_details, # Pass data yang sudah dikelompokkan
         results=results,
         progress=progress_percent
     )
@@ -1771,7 +1817,6 @@ def rangkuman5():
 
     progress_percent = progress_data.progres_value if progress_data else 0
     return render_template('mahasiswa/sub5/rangkuman5.html', progress=progress_percent)
-
 @user_bp.route('/materi5/kuis')
 @student_required
 def kuis5():
@@ -1828,42 +1873,52 @@ def kuis5():
     id_activity = activity.id
 
     # ===============================
-    # AMBIL RIWAYAT HASIL
+    # AMBIL RIWAYAT HASIL (Diurutkan dari percobaan terbaru)
     # ===============================
     results = ActivityResult.query.filter_by(
         id_user=user_id,
         id_activity=id_activity
-    ).order_by(ActivityResult.start_time.desc()).all()
+    ).order_by(ActivityResult.percobaan_ke.desc()).all()
 
     result = results[0] if results else None
 
-    detail = []
-
     # ===============================
-    # AMBIL DETAIL JAWABAN (FIX)
+    # AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
     # ===============================
-    if result:
-        answers = ActivityAnswer.query.filter_by(
-            id_user=user_id,
-            id_activity=id_activity,
-        ).order_by(ActivityAnswer.id.asc()).all()
+    grouped_details = []
 
-        for ans in answers:
-            q = Question.query.get(ans.id_question)
+    if results:
+        # Urutkan ascending khusus untuk tampilan Tab Modal (1, 2, 3...)
+        results_asc = sorted(results, key=lambda x: x.percobaan_ke)
+        
+        for r in results_asc:
+            # Ambil jawaban khusus untuk ActivityResult ini saja
+            answers = ActivityAnswer.query.filter_by(
+                id_activity_result=r.id
+            ).order_by(ActivityAnswer.id.asc()).all()
 
-            if not q:
-                continue
+            attempt_details = []
+            for ans in answers:
+                q = Question.query.get(ans.id_question)
 
-            try:
-                soal_json = json.loads(q.question)
-                text = soal_json.get("text", "")
-            except:
-                text = q.question
+                if not q:
+                    continue
 
-            detail.append({
-                "soal": text,
-                "jawaban_user": ans.user_answer,
-                "status": ans.status
+                try:
+                    soal_json = json.loads(q.question)
+                    text = soal_json.get("text", "")
+                except:
+                    text = q.question
+
+                attempt_details.append({
+                    "soal": text,
+                    "jawaban_user": ans.user_answer,
+                    "status": ans.status
+                })
+
+            grouped_details.append({
+                "percobaan_ke": r.percobaan_ke,
+                "details": attempt_details
             })
 
     # ===============================
@@ -1879,7 +1934,7 @@ def kuis5():
         'mahasiswa/sub5/kuis5.html',
         activity=activity,
         result=result,
-        detail=detail,
+        grouped_details=grouped_details, # Pass data yang sudah dikelompokkan
         results=results,
         progress=progress_percent
     )
@@ -1987,254 +2042,210 @@ def mulai_kuis(title):
         'layouts/kuis.html',
         activity=activity
     )
-    
-# evaluasi
-@user_bp.route('/evaluasi')
-@student_required
-def evaluasi():
 
+@user_bp.route('/evaluasi')
+@student_required # Pastikan decorator ini dipasang agar session aman
+def evaluasi():
+    # 1. Ambil dari session, JANGAN di-hardcode angka 1
     user_id = session.get('user_id')
 
     if not user_id:
         return redirect(url_for('user.login'))
 
-    # =========================
-    # AMBIL SUBTOPIC
-    # =========================
-    subtopic = SubTopic.query.filter_by(
-        sub_topic_name="evaluasi akhir"
-    ).first()
-
-    if not subtopic:
-        return "Subtopik evaluasi tidak ditemukan"
-
-    # =========================
-    # AMBIL ACTIVITY EVALUASI
-    # =========================
+    # 2. Cari activity evaluasi
     activity = Activity.query.filter_by(
         type="evaluasi",
-        id_topic=6,
-        id_subtopic=subtopic.id
+        id_topic=6
     ).first()
 
     if not activity:
         return "Aktivitas Evaluasi tidak ditemukan"
 
-    # =========================
-    # AMBIL RIWAYAT HASIL
-    # =========================
+    # 3. Ambil semua riwayat berdasarkan user_id yang login (Urutkan dari percobaan terbaru)
     results = ActivityResult.query.filter_by(
         id_user=user_id,
         id_activity=activity.id
-    ).order_by(ActivityResult.start_time.desc()).all()
+    ).order_by(ActivityResult.percobaan_ke.desc()).all()
 
     result = results[0] if results else None
 
-    detail = []
+    # ===============================
+    # 4. AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
+    # ===============================
+    grouped_details = []
 
-    # =========================
-    # DETAIL JAWABAN
-    # =========================
-    if result:
+    if results:
+        # Urutkan ascending khusus untuk tampilan Tab Modal (1, 2, 3...)
+        results_asc = sorted(results, key=lambda x: x.percobaan_ke)
+        
+        for r in results_asc:
+            # Ambil jawaban khusus untuk ActivityResult ini saja
+            answers = ActivityAnswer.query.filter_by(
+                id_activity_result=r.id
+            ).order_by(ActivityAnswer.id.asc()).all()
 
-        answers = ActivityAnswer.query.filter_by(
-            id_user=user_id,
-            id_activity=activity.id
-        ).order_by(
-            ActivityAnswer.id.desc()
-        ).limit(activity.jumlah_soal).all()
-
-        for ans in answers:
-
-            q = Question.query.get(ans.id_question)
-
-            if q:
+            attempt_details = []
+            for ans in answers:
+                q = Question.query.get(ans.id_question)
+                
+                if not q:
+                    continue
 
                 try:
                     soal = json.loads(q.question)
-                    text_soal = soal["text"]
-
+                    text_soal = soal.get("text", "")
                 except:
                     text_soal = q.question
 
-                detail.append({
+                attempt_details.append({
                     "soal": text_soal,
                     "jawaban_user": ans.user_answer,
                     "status": ans.status
                 })
 
+            grouped_details.append({
+                "percobaan_ke": r.percobaan_ke,
+                "details": attempt_details
+            })
+
     return render_template(
         'mahasiswa/evaluasi_mahasiswa.html',
         activity=activity,
         result=result,
-        detail=detail,
+        grouped_details=grouped_details, # Pass data yang sudah dikelompokkan
         results=results
     )
 
-#load soal evaluasi
-@user_bp.route('/evaluasi/mulai/<string:title>')
-def mulai_evaluasi(title):
-    from app.model.activity import Activity
-    from app.model.activity_question import ActivityQuestion
-    from app.model.question import Question
-
-    # cari activity evaluasi berdasarkan title
-    activity = Activity.query.filter_by(
-        title=title,
-        type="evaluasi"  #  pastikan hanya evaluasi
-    ).first_or_404()
-
-    # ambil relasi soal
-    relasi = ActivityQuestion.query.filter_by(
-        id_activity=activity.id
-    ).all()
-
-    question_ids = [r.id_question for r in relasi]
-
-    # ambil soal berdasarkan relasi
-    questions = Question.query.filter(
-        Question.id.in_(question_ids)
-    ).all()
-
-    return render_template(
-        'layouts/evaluasi.html', 
-        activity=activity,
-        questions=questions
-    )
-    
-    
 @user_bp.route('/submit-kuis-evaluasi', methods=['POST'])
 def submit_kuis_evaluasi():
 
     user_id = session.get('user_id')
-
     activity_id = request.form.get('activity_id')
 
     # =========================
     # AMBIL DATA
     # =========================
-    answers = json.loads(
-        request.form.get('answers', '{}')
-    )
-
-    correct_map = json.loads(
-        request.form.get('correct_map', '{}')
-    )
-
-    total_benar = 0
-    total_salah = 0
+    answers = json.loads(request.form.get('answers', '{}'))
+    correct_map = json.loads(request.form.get('correct_map', '{}'))
 
     start_time = datetime.now()
 
     activity = Activity.query.get(activity_id)
 
+    if not activity:
+        return redirect('/')
+
     total_waktu = activity.durasi_pengerjaan * 60
+
+    # =========================
+    # AMBIL KKM BERDASARKAN KELAS
+    # =========================
+    setting = Setting.query.filter_by(id_class=activity.id_class).first()
+
+    # DEFAULT
+    kkm = 60
+    if setting:
+        if activity.type == 'kuis' and setting.nilai_kkm_kuis:
+            kkm = setting.nilai_kkm_kuis
+        elif activity.type == 'evaluasi' and setting.nilai_kkm_evaluasi:
+            kkm = setting.nilai_kkm_evaluasi
+
+    # =========================
+    # CEK PERCOBAAN KE-BERAPA (UPDATE BARU)
+    # =========================
+    last_attempt = ActivityResult.query.filter_by(
+        id_user=user_id,
+        id_activity=activity_id
+    ).order_by(
+        ActivityResult.percobaan_ke.desc() # Ambil data percobaan terakhir
+    ).first()
+
+    if last_attempt:
+        is_retry = True
+        percobaan_ke = last_attempt.percobaan_ke + 1
+    else:
+        is_retry = False
+        percobaan_ke = 1
 
     # =========================
     # WAKTU
     # =========================
     try:
-        sisa_waktu = int(
-            request.form.get('time_left', 0)
-        )
-
+        sisa_waktu = int(request.form.get('time_left', 0))
     except:
         sisa_waktu = 0
 
     if sisa_waktu < 0:
         sisa_waktu = 0
-
     if sisa_waktu > total_waktu:
         sisa_waktu = total_waktu
 
     waktu_mengerjakan = total_waktu - sisa_waktu
 
     # =========================
-    # TOTAL SOAL
+    # CEK JAWABAN (SIMPAN SEMENTARA DULU)
     # =========================
-    activity_questions = ActivityQuestion.query.filter_by(
-        id_activity=activity_id
-    ).all()
-
+    activity_questions = ActivityQuestion.query.filter_by(id_activity=activity_id).all()
     total_soal = len(activity_questions)
+    
+    total_benar = 0
+    total_salah = 0
+    
+    # List untuk menyimpan jawaban sementara sebelum disimpan ke DB
+    temp_answers = [] 
 
-    # =========================
-    # CEK JAWABAN
-    # =========================
     for aq in activity_questions:
-
         q_id = str(aq.id_question)
-
         user_ans = answers.get(q_id, "")
-
         question = Question.query.get(aq.id_question)
-
         is_correct = False
 
         if user_ans:
-
             if question.type == 'mc':
-
                 correct_key = correct_map.get(q_id)
-
-                if correct_key and (
-                    user_ans.lower() ==
-                    correct_key.lower()
-                ):
+                if correct_key and (user_ans.lower() == correct_key.lower()):
                     is_correct = True
-
             else:
-
-                if (
-                    user_ans.strip().lower() ==
-                    question.SA_Answer.strip().lower()
-                ):
+                if (user_ans.strip().lower() == question.SA_Answer.strip().lower()):
                     is_correct = True
 
-        # =========================
-        # STATUS
-        # =========================
+        # Status & Kalkulasi
         if is_correct:
-
             total_benar += 1
             status = 'benar'
-
         else:
-
             total_salah += 1
             status = 'salah'
 
-        # =========================
-        # SIMPAN JAWABAN
-        # =========================
-        answer = ActivityAnswer(
-            id_activity=activity_id,
-            id_user=user_id,
-            id_question=aq.id_question,
-            user_answer=user_ans,
-            status=status
-        )
-
-        db.session.add(answer)
+        # Masukkan ke list sementara
+        temp_answers.append({
+            'id_question': aq.id_question,
+            'user_answer': user_ans,
+            'status': status
+        })
 
     # =========================
-    # HITUNG NILAI
+    # HITUNG NILAI AKHIR
     # =========================
-    nilai = (
-        (total_benar / total_soal) * 100
-        if total_soal > 0 else 0
-    )
+    nilai_asli = ((total_benar / total_soal) * 100) if total_soal > 0 else 0
+    nilai_final = nilai_asli
+
+    # JIKA SUDAH PERNAH MENGERJAKAN DAN NILAI MELEBIHI KKM MAKA NILAI DIJADIKAN KKM
+    if is_retry and nilai_asli >= kkm:
+        nilai_final = kkm
 
     end_time = datetime.now()
+    result_status = 'lulus' if nilai_final >= kkm else 'tidak lulus'
 
     # =========================
-    # SIMPAN RESULT
+    # 1. SIMPAN RESULT DULU (UPDATE BARU)
     # =========================
     result = ActivityResult(
         id_user=user_id,
         id_activity=activity_id,
-        nilai_akhir=nilai,
-        result_status='lulus' if nilai >= 60 else 'tidak lulus',
+        percobaan_ke=percobaan_ke, # Kolom baru
+        nilai_akhir=nilai_final,
+        result_status=result_status,
         waktu_mengerjakan=waktu_mengerjakan,
         start_time=start_time,
         end_time=end_time,
@@ -2243,13 +2254,28 @@ def submit_kuis_evaluasi():
     )
 
     db.session.add(result)
+    db.session.flush() # Penting! Flush agar `result` mendapat ID dari database sebelum di-commit
 
+    # =========================
+    # 2. SIMPAN JAWABAN (UPDATE BARU)
+    # =========================
+    for ans_data in temp_answers:
+        answer = ActivityAnswer(
+            id_activity_result=result.id, # Ambil ID dari result yang baru saja di-flush
+            id_activity=activity_id,
+            id_user=user_id,
+            id_question=ans_data['id_question'],
+            user_answer=ans_data['user_answer'],
+            status=ans_data['status']
+        )
+        db.session.add(answer)
+
+    # Commit semua data (Result & Answers) secara bersamaan
     db.session.commit()
 
     # ==================================================
     # UPDATE HISTORY PROGRESS
     # ==================================================
-
     existing = HistoryProgress.query.filter_by(
         id_user=user_id,
         id_topic=activity.id_topic,
@@ -2257,57 +2283,33 @@ def submit_kuis_evaluasi():
     ).first()
 
     if not existing:
-
         history = HistoryProgress(
             id_user=user_id,
             id_topic=activity.id_topic,
             id_subtopic=activity.id_subtopic,
             updated_at=datetime.now()
         )
-
         db.session.add(history)
-
         db.session.commit()
 
         # =========================
-        # TOTAL SUBTOPIC
+        # UPDATE TOTAL PROGRESS
         # =========================
         total_subtopic = SubTopic.query.count()
+        completed = HistoryProgress.query.filter_by(id_user=user_id).count()
+        progress_value = round((completed / total_subtopic) * 100)
 
-        # =========================
-        # TOTAL COMPLETED
-        # =========================
-        completed = HistoryProgress.query.filter_by(
-            id_user=user_id
-        ).count()
-
-        # =========================
-        # HITUNG PERSEN
-        # =========================
-        progress_value = round(
-            (completed / total_subtopic) * 100
-        )
-
-        # =========================
-        # CEK PROGRESS USER
-        # =========================
-        progress = Progress.query.filter_by(
-            id_user=user_id
-        ).first()
+        progress = Progress.query.filter_by(id_user=user_id).first()
 
         if progress:
-
             progress.progres_value = progress_value
             progress.last_updated = datetime.now()
-
         else:
-
             progress = Progress(
                 id_user=user_id,
                 progres_value=progress_value,
                 last_updated=datetime.now()
             )
-
             db.session.add(progress)
 
         db.session.commit()
@@ -2322,21 +2324,16 @@ def submit_kuis_evaluasi():
 
     if topic.topic_name == 'Pengantar Citra Digital':
         return redirect('/materi1/kuis')
-
     elif topic.topic_name == 'Segmentasi Citra':
         return redirect('/materi2/kuis')
-
     elif topic.topic_name == 'Edge-Based Segmentation':
         return redirect('/materi3/kuis')
-
     elif topic.topic_name == 'Threshold-Based Segmentation':
         return redirect('/materi4/kuis')
-
     elif topic.topic_name == 'Region-Based Segmentation':
         return redirect('/materi5/kuis')
 
     return redirect('/')
-
 
 @user_bp.route('/update-progress', methods=['POST'])
 @student_required
@@ -2455,9 +2452,87 @@ def update_progress():
 
 # guru / pengajar
 @user_bp.route('/dashboard-dosen')
+# @dosen_required  <-- Pastikan ini diaktifkan nanti
 def dashboard_dosen():
-    return render_template('dashboard-dosen.html')
+    # Ambil ID dosen yang sedang login
+    dosen_id = session.get('user_id')
 
+    if not dosen_id:
+        return redirect(url_for('user.login'))
+
+    # ==========================================
+    # 1. AMBIL KELAS MILIK DOSEN INI SAJA
+    # ==========================================
+    # Asumsi: kelas yang dimiliki dosen dicatat di kolom 'created_by' pada tabel Classes.
+    # Jika kamu menggunakan tabel TeacherClass, ubah query-nya menyesuaikan relasi tersebut.
+    kelas_dosen = Class.query.filter_by(created_by=dosen_id).all()
+    
+    total_kelas = len(kelas_dosen)
+    
+    # Kumpulkan semua ID kelas milik dosen ini ke dalam list
+    kelas_ids = [k.id for k in kelas_dosen]
+
+    # ==========================================
+    # 2. HITUNG TOTAL SISWA DI KELAS DOSEN INI
+    # ==========================================
+    if kelas_ids:
+        # Ambil data StudentClass HANYA yang id_class-nya ada di daftar kelas dosen ini
+        siswa_di_kelas_dosen = StudentClass.query.filter(StudentClass.id_class.in_(kelas_ids)).all()
+        # Gunakan set() agar jika 1 siswa ikut 2 kelas milik dosen ini, tetap dihitung 1 siswa unik
+        total_siswa = len(set([sc.id_student for sc in siswa_di_kelas_dosen]))
+    else:
+        total_siswa = 0
+
+    # ==========================================
+    # 3. HITUNG TOTAL SOAL
+    # ==========================================
+    # Total seluruh soal di database (Jika ingin difilter milik dosen ini saja, 
+    # ganti jadi: Question.query.filter_by(created_by=dosen_id).count() )
+    total_soal = Question.query.count()
+
+    # ==========================================
+    # 4. HITUNG RATA-RATA PROGRESS PER KELAS (MILIK DOSEN SAJA)
+    # ==========================================
+    progress_kelas = []
+
+    for kelas in kelas_dosen:
+        siswa_di_kelas = StudentClass.query.filter_by(id_class=kelas.id).all()
+        jumlah_siswa = len(siswa_di_kelas)
+        
+        rata_rata_progress = 0
+        
+        if jumlah_siswa > 0:
+            total_progress_kelas = 0
+            for sk in siswa_di_kelas:
+                prog = Progress.query.filter_by(id_user=sk.id_student).first()
+                if prog:
+                    total_progress_kelas += prog.progres_value
+            
+            rata_rata_progress = round(total_progress_kelas / jumlah_siswa)
+
+        # Tentukan warna bar
+        if rata_rata_progress >= 75:
+            color = "primary"
+        elif rata_rata_progress >= 50:
+            color = "warning"
+        else:
+            color = "danger"
+
+        progress_kelas.append({
+            'nama_kelas': kelas.name,
+            'deskripsi': kelas.description,
+            'jumlah_siswa': jumlah_siswa,
+            'rata_progress': rata_rata_progress,
+            'color': color
+        })
+
+    return render_template(
+        'dashboard-dosen.html',
+        total_kelas=total_kelas,
+        total_siswa=total_siswa,
+        total_soal=total_soal,
+        progress_kelas=progress_kelas
+    )
 @user_bp.route('/datasiswa')
 def data_siswa():
 
@@ -2804,22 +2879,33 @@ def data_nilai():
     if not user_id:
         return redirect(url_for('user.login'))
 
+    # =========================
     # AMBIL SEMUA KELAS DOSEN
+    # =========================
     classes = db.session.query(Class)\
-        .join(TeacherClass, Class.id == TeacherClass.id_class)\
-        .filter(TeacherClass.id_teacher == user_id)\
+        .join(
+            TeacherClass,
+            Class.id == TeacherClass.id_class
+        )\
+        .filter(
+            TeacherClass.id_teacher == user_id
+        )\
         .all()
 
     data = []
 
     for cls in classes:
 
+        # =========================
         # TOTAL SISWA
+        # =========================
         total_siswa = StudentClass.query.filter_by(
             id_class=cls.id
         ).count()
 
+        # =========================
         # AMBIL ACTIVITY
+        # =========================
         activities = Activity.query.filter(
             Activity.id_class == cls.id,
             Activity.status == 'aktif',
@@ -2830,24 +2916,43 @@ def data_nilai():
 
         for act in activities:
 
-            # TOTAL HASIL
-            total = ActivityResult.query.filter_by(
-                id_activity=act.id
-            ).count()
+            # =========================
+            # TOTAL SISWA YANG MENGERJAKAN
+            # =========================
+            total = db.session.query(
+                ActivityResult.id_user
+            ).filter(
+                ActivityResult.id_activity == act.id
+            ).distinct().count()
 
+            # =========================
             # TOPIC
-            topic = Topic.query.get(act.id_topic)
+            # =========================
+            topic = Topic.query.get(
+                act.id_topic
+            )
 
             activity_list.append({
+
                 "id": act.id,
-                "title": topic.topic_name if topic else act.title,
+
+                "title": (
+                    topic.topic_name
+                    if topic
+                    else act.title
+                ),
+
                 "total": total
             })
 
         data.append({
+
             "class_name": cls.name,
+
             "total_activity": len(activity_list),
+
             "total_siswa": total_siswa,
+
             "activities": activity_list
         })
 
