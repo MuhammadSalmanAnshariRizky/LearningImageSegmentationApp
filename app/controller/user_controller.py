@@ -3320,26 +3320,54 @@ def export_semua_nilai():
 
     try:
 
-        results = db.session.query(Class, Activity, User, ActivityResult)\
-            .join(Activity, Activity.id_class == Class.id)\
-            .join(ActivityResult, ActivityResult.id_activity == Activity.id)\
-            .join(User, User.id == ActivityResult.id_user)\
-            .join(StudentClass, StudentClass.id_student == User.id)\
-            .filter(StudentClass.id_class == Class.id)\
-            .all()
+        import re
+        import pandas as pd
 
-        if not results:
-            return "Belum ada data nilai untuk diexport."
+        from io import BytesIO
+        from flask import send_file
+        from openpyxl.styles import (
+            PatternFill,
+            Font,
+            Alignment,
+            Border,
+            Side
+        )
+        from openpyxl.utils import get_column_letter
 
+        # ====================================
+        # 1. AMBIL DATA BERTAHAP (ANTI MYSQL PUTUS)
+        # ====================================
+        results = db.session.query(
+            Class,
+            Activity,
+            User,
+            ActivityResult
+        )\
+        .join(Activity, Activity.id_class == Class.id)\
+        .join(ActivityResult, ActivityResult.id_activity == Activity.id)\
+        .join(User, User.id == ActivityResult.id_user)\
+        .join(StudentClass, StudentClass.id_student == User.id)\
+        .filter(StudentClass.id_class == Class.id)\
+        .yield_per(100)
+
+        # ====================================
+        # 2. FILTER PERCOBAAN TERBAIK
+        # ====================================
         attempts_dict = {}
 
         for kelas, activity, user, result in results:
+
             key = (activity.id, user.id)
 
             if key not in attempts_dict:
                 attempts_dict[key] = []
 
-            attempts_dict[key].append((kelas, activity, user, result))
+            attempts_dict[key].append(
+                (kelas, activity, user, result)
+            )
+
+        if not attempts_dict:
+            return "Belum ada data nilai untuk diexport."
 
         best_attempts = []
 
@@ -3356,6 +3384,9 @@ def export_semua_nilai():
 
             best_attempts.append(best_attempt)
 
+        # ====================================
+        # 3. KELOMPOKKAN DATA PER SHEET
+        # ====================================
         sheets_data = {}
         used_sheet_names = set()
 
@@ -3363,11 +3394,13 @@ def export_semua_nilai():
 
             raw_title = activity.title if activity.title else f"Aktivitas_{activity.id}"
 
+            # Hapus emoji / unicode aneh
             ascii_title = raw_title.encode(
                 'ascii',
                 'ignore'
             ).decode('ascii')
 
+            # Hapus karakter terlarang excel
             sheet_name = re.sub(
                 r'[\\/*?:\[\]]',
                 '',
@@ -3379,15 +3412,20 @@ def export_semua_nilai():
 
             sheet_name = sheet_name[:31]
 
-            # =========================
+            # ====================================
             # ANTI DUPLICATE SHEET NAME
-            # =========================
+            # ====================================
             base_name = sheet_name
             counter = 1
 
             while sheet_name in used_sheet_names:
+
                 suffix = f"_{counter}"
-                sheet_name = f"{base_name[:31-len(suffix)]}{suffix}"
+
+                sheet_name = (
+                    f"{base_name[:31-len(suffix)]}{suffix}"
+                )
+
                 counter += 1
 
             used_sheet_names.add(sheet_name)
@@ -3399,19 +3437,55 @@ def export_semua_nilai():
                 "Kelas": kelas.name,
                 "Nama Siswa": user.name,
                 "Nilai": result.nilai_akhir or 0,
-                "Status": "Lulus" if result.result_status and result.result_status.lower() == "lulus" else "Tidak Lulus",
+                "Status": (
+                    "Lulus"
+                    if result.result_status
+                    and result.result_status.lower() == "lulus"
+                    else "Tidak Lulus"
+                ),
                 "Total Benar": result.total_benar or 0,
                 "Total Salah": result.total_salah or 0,
                 "Durasi (detik)": result.waktu_mengerjakan or 0
             })
 
+        # ====================================
+        # 4. BUAT FILE EXCEL
+        # ====================================
         output = BytesIO()
 
-        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        with pd.ExcelWriter(
+            output,
+            engine='openpyxl'
+        ) as writer:
+
+            # STYLE
+            header_fill = PatternFill(
+                start_color="C6E0B4",
+                end_color="C6E0B4",
+                fill_type="solid"
+            )
+
+            header_font = Font(bold=True)
+
+            center_align = Alignment(
+                horizontal="center",
+                vertical="center"
+            )
+
+            thin_border = Border(
+                left=Side(style='thin'),
+                right=Side(style='thin'),
+                top=Side(style='thin'),
+                bottom=Side(style='thin')
+            )
 
             for sheet_name, data in sheets_data.items():
 
                 df = pd.DataFrame(data)
+
+                df = df.sort_values(
+                    by=["Kelas", "Nama Siswa"]
+                )
 
                 df.to_excel(
                     writer,
@@ -3419,11 +3493,72 @@ def export_semua_nilai():
                     sheet_name=sheet_name
                 )
 
+                worksheet = writer.sheets[sheet_name]
+
+                # HEADER STYLE
+                for col_num in range(
+                    1,
+                    len(df.columns) + 1
+                ):
+
+                    cell = worksheet.cell(
+                        row=1,
+                        column=col_num
+                    )
+
+                    cell.fill = header_fill
+                    cell.font = header_font
+                    cell.alignment = center_align
+                    cell.border = thin_border
+
+                # BODY STYLE
+                for row in range(2, len(df) + 2):
+
+                    for col in range(
+                        1,
+                        len(df.columns) + 1
+                    ):
+
+                        cell = worksheet.cell(
+                            row=row,
+                            column=col
+                        )
+
+                        cell.border = thin_border
+
+                        if col != 2:
+                            cell.alignment = Alignment(
+                                horizontal="center"
+                            )
+
+                # AUTO WIDTH
+                for col_num, col_name in enumerate(
+                    df.columns,
+                    1
+                ):
+
+                    column_letter = get_column_letter(col_num)
+
+                    max_length = max(
+                        df[col_name]
+                        .astype(str)
+                        .map(len)
+                        .max(),
+                        len(col_name)
+                    )
+
+                    worksheet.column_dimensions[
+                        column_letter
+                    ].width = max_length + 2
+
         output.seek(0)
 
+        # ====================================
+        # 5. DOWNLOAD FILE
+        # ====================================
         return send_file(
             output,
-            download_name="rekap.xlsx",
+            download_name="rekap_nilai_semua_kelas.xlsx",
             as_attachment=True,
             mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
