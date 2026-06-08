@@ -575,7 +575,7 @@ def kuis1():
     # =========================
     activity = Activity(
         id_class=1,
-        title='Kuis 1',
+        title='Kuis-1',
         type='kuis',
         durasi_pengerjaan=15,
         jumlah_soal=10,
@@ -1448,7 +1448,7 @@ def kuis2():
     # =========================
     activity = Activity(
         id_class=1,
-        title='Kuis 2',
+        title='Kuis-2',
         type='kuis',
         durasi_pengerjaan=15,
         jumlah_soal=10,
@@ -2639,7 +2639,7 @@ def kuis3():
     # =========================
     activity = Activity(
         id_class=1,
-        title='Kuis 3',
+        title='Kuis-3',
         type='kuis',
         durasi_pengerjaan=15,
         jumlah_soal=10,
@@ -4061,7 +4061,7 @@ def kuis4():
     # =========================
     activity = Activity(
         id_class=1,
-        title='Kuis 4',
+        title='Kuis-4',
         type='kuis',
         durasi_pengerjaan=15,
         jumlah_soal=10,
@@ -5517,7 +5517,7 @@ def kuis5():
     # =========================
     activity = Activity(
         id_class=1,
-        title='Kuis 5',
+        title='Kuis-5',
         type='kuis',
         durasi_pengerjaan=15,
         jumlah_soal=10,
