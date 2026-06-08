@@ -22,7 +22,6 @@ def create_app():
     # Menambahkan ?unix_socket=/var/lib/mysql/mysql.sock di akhir URL
     app.config['SQLALCHEMY_DATABASE_URI'] = (
         'mysql+pymysql://researc4_salman:MsalmanAr13@localhost/researc4_segmentasi'
-        '?unix_socket=/var/lib/mysql/mysql.sock'
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
