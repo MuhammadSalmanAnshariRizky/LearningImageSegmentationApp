@@ -3318,118 +3318,124 @@ def export_nilai():
 @user_bp.route('/export_semua_nilai')
 def export_semua_nilai():
 
-    # ====================================
-    # 1. AMBIL SEMUA DATA (DENGAN QUERY YANG LEBIH AMAN)
-    # ====================================
-    results = db.session.query(Class, Activity, User, ActivityResult)\
-        .join(Activity, Activity.id_class == Class.id)\
-        .join(ActivityResult, ActivityResult.id_activity == Activity.id)\
-        .join(User, User.id == ActivityResult.id_user)\
-        .join(StudentClass, StudentClass.id_student == User.id)\
-        .filter(StudentClass.id_class == Class.id)\
-        .all()
+    try:
 
-    if not results:
-        return "Belum ada data nilai untuk diexport."
+        results = db.session.query(Class, Activity, User, ActivityResult)\
+            .join(Activity, Activity.id_class == Class.id)\
+            .join(ActivityResult, ActivityResult.id_activity == Activity.id)\
+            .join(User, User.id == ActivityResult.id_user)\
+            .join(StudentClass, StudentClass.id_student == User.id)\
+            .filter(StudentClass.id_class == Class.id)\
+            .all()
 
-    # ====================================
-    # 2. FILTER PERCOBAAN TERBAIK (Mencegah Duplikat)
-    # ====================================
-    attempts_dict = {}
-    for kelas, activity, user, result in results:
-        key = (activity.id, user.id)
-        if key not in attempts_dict:
-            attempts_dict[key] = []
-        attempts_dict[key].append((kelas, activity, user, result))
+        if not results:
+            return "Belum ada data nilai untuk diexport."
 
-    best_attempts = []
-    for key, attempts in attempts_dict.items():
-        best_attempt = max(attempts, key=lambda x: (
-            1 if x[3].result_status and x[3].result_status.lower() == 'lulus' else 0,
-            x[3].nilai_akhir or 0,
-            x[3].percobaan_ke or 0
-        ))
-        best_attempts.append(best_attempt)
+        attempts_dict = {}
 
-    # ====================================
-    # 3. KELOMPOKKAN DATA BERDASARKAN NAMA AKTIVITAS (DENGAN PEMBERSIH EMOJI)
-    # ====================================
-    sheets_data = {}
-    
-    for kelas, activity, user, result in best_attempts:
-        
-        # Bersihkan nama sheet dari Emoji & Simbol Terlarang
-        raw_title = activity.title if activity.title else f"Aktivitas_{activity.id}"
-        ascii_title = raw_title.encode('ascii', 'ignore').decode('ascii')
-        sheet_name = re.sub(r'[\\/*?:\[\]]', '', ascii_title).strip()
-        
-        if not sheet_name:
-            sheet_name = f"Activity_{activity.id}"
-            
-        sheet_name = sheet_name[:31]
+        for kelas, activity, user, result in results:
+            key = (activity.id, user.id)
 
-        if sheet_name not in sheets_data:
-            sheets_data[sheet_name] = []
+            if key not in attempts_dict:
+                attempts_dict[key] = []
 
-        sheets_data[sheet_name].append({
-            "Kelas": kelas.name,
-            "Nama Siswa": user.name,
-            "Nilai": result.nilai_akhir or 0,
-            "Status": "Lulus" if result.result_status and result.result_status.lower() == "lulus" else "Tidak Lulus",
-            "Total Benar": result.total_benar or 0,
-            "Total Salah": result.total_salah or 0,
-            "Durasi (detik)": result.waktu_mengerjakan or 0
-        })
+            attempts_dict[key].append((kelas, activity, user, result))
 
-    # ====================================
-    # 4. BUAT EXCEL BANYAK SHEET & STYLING
-    # ====================================
-    output = BytesIO()
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        
-        header_fill = PatternFill(start_color="C6E0B4", end_color="C6E0B4", fill_type="solid")
-        header_font = Font(bold=True)
-        center_align = Alignment(horizontal="center", vertical="center")
-        thin_border = Border(
-            left=Side(style='thin'), right=Side(style='thin'),
-            top=Side(style='thin'), bottom=Side(style='thin')
+        best_attempts = []
+
+        for key, attempts in attempts_dict.items():
+
+            best_attempt = max(
+                attempts,
+                key=lambda x: (
+                    1 if x[3].result_status and x[3].result_status.lower() == 'lulus' else 0,
+                    x[3].nilai_akhir or 0,
+                    x[3].percobaan_ke or 0
+                )
+            )
+
+            best_attempts.append(best_attempt)
+
+        sheets_data = {}
+        used_sheet_names = set()
+
+        for kelas, activity, user, result in best_attempts:
+
+            raw_title = activity.title if activity.title else f"Aktivitas_{activity.id}"
+
+            ascii_title = raw_title.encode(
+                'ascii',
+                'ignore'
+            ).decode('ascii')
+
+            sheet_name = re.sub(
+                r'[\\/*?:\[\]]',
+                '',
+                ascii_title
+            ).strip()
+
+            if not sheet_name:
+                sheet_name = f"Activity_{activity.id}"
+
+            sheet_name = sheet_name[:31]
+
+            # =========================
+            # ANTI DUPLICATE SHEET NAME
+            # =========================
+            base_name = sheet_name
+            counter = 1
+
+            while sheet_name in used_sheet_names:
+                suffix = f"_{counter}"
+                sheet_name = f"{base_name[:31-len(suffix)]}{suffix}"
+                counter += 1
+
+            used_sheet_names.add(sheet_name)
+
+            if sheet_name not in sheets_data:
+                sheets_data[sheet_name] = []
+
+            sheets_data[sheet_name].append({
+                "Kelas": kelas.name,
+                "Nama Siswa": user.name,
+                "Nilai": result.nilai_akhir or 0,
+                "Status": "Lulus" if result.result_status and result.result_status.lower() == "lulus" else "Tidak Lulus",
+                "Total Benar": result.total_benar or 0,
+                "Total Salah": result.total_salah or 0,
+                "Durasi (detik)": result.waktu_mengerjakan or 0
+            })
+
+        output = BytesIO()
+
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+
+            for sheet_name, data in sheets_data.items():
+
+                df = pd.DataFrame(data)
+
+                df.to_excel(
+                    writer,
+                    index=False,
+                    sheet_name=sheet_name
+                )
+
+        output.seek(0)
+
+        return send_file(
+            output,
+            download_name="rekap.xlsx",
+            as_attachment=True,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
 
-        for sheet_name, data in sheets_data.items():
-            df = pd.DataFrame(data)
-            df = df.sort_values(by=["Kelas", "Nama Siswa"])
-            
-            df.to_excel(writer, index=False, sheet_name=sheet_name)
-            worksheet = writer.sheets[sheet_name]
+    except Exception as e:
 
-            for col_num in range(1, len(df.columns) + 1):
-                cell = worksheet.cell(row=1, column=col_num)
-                cell.fill = header_fill
-                cell.font = header_font
-                cell.alignment = center_align
-                cell.border = thin_border
+        import traceback
 
-            for row in range(2, len(df) + 2):
-                for col in range(1, len(df.columns) + 1):
-                    cell = worksheet.cell(row=row, column=col)
-                    cell.border = thin_border
-                    if col != 2:
-                        cell.alignment = Alignment(horizontal="center")
-
-            for col_num, col_name in enumerate(df.columns, 1):
-                column_letter = get_column_letter(col_num)
-                max_length = max(df[col_name].astype(str).map(len).max(), len(col_name))
-                worksheet.column_dimensions[column_letter].width = max_length + 2
-
-    output.seek(0)
-    filename = "rekap_nilai_semua_kelas.xlsx"
-
-    return send_file(
-        output,
-        download_name=filename,
-        as_attachment=True,
-        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
+        return f"""
+        <h1>ERROR EXPORT</h1>
+        <pre>{traceback.format_exc()}</pre>
+        """
     
 @user_bp.route('/datasoal')
 def data_soal():
