@@ -45,6 +45,9 @@ user_bp = Blueprint('user', __name__)
 def index():
     return render_template('index.html')
 
+@user_bp.route('/perihal')
+def perihal():
+    return render_template('perihal.html')
 # =========================
 # ROUTE SUBTOPIC
 # =========================

@@ -1,61 +1,31 @@
 document.addEventListener("DOMContentLoaded", function () {
   const links = document.querySelectorAll(".sidebar-sub");
-  const sidebar = document.querySelector("#sidebar");
-  const scrollContainer = document.querySelector(".sidebar-scroll");
+  const scrollContainer = document.querySelector(".sidebar-scroll"); // Pastikan class ini sesuai dengan wadah scroll sidebar Anda
 
   let currentPath = window.location.pathname.replace(/\/$/, "");
   let activeLink = null;
 
   // =========================
-  // LOAD ACCORDION STATE
-  // =========================
-  let activeAccordions =
-    JSON.parse(localStorage.getItem("activeAccordions")) || [];
-
-  activeAccordions.forEach((id) => {
-    const el = document.querySelector(id);
-    if (el) {
-      el.classList.add("show");
-
-      const button =
-        el.previousElementSibling?.querySelector(".accordion-button");
-
-      if (button) {
-        button.classList.remove("collapsed");
-        button.setAttribute("aria-expanded", "true");
-      }
-    }
-  });
-
-  // =========================
-  // ACTIVE LINK
+  // 1. SET ACTIVE LINK & BUKA ACCORDION
   // =========================
   links.forEach((link) => {
     let linkPath = link.getAttribute("href").replace(/\/$/, "");
 
+    // Jika URL saat ini cocok dengan href pada link sidebar
     if (linkPath === currentPath) {
       activeLink = link;
-
       link.classList.add("active");
 
+      // Cari elemen accordion yang membungkus link ini
       const collapse = link.closest(".accordion-collapse");
 
       if (collapse) {
+        // Buka isi accordion
         collapse.classList.add("show");
 
-        const id = "#" + collapse.id;
-
-        if (!activeAccordions.includes(id)) {
-          activeAccordions.push(id);
-          localStorage.setItem(
-            "activeAccordions",
-            JSON.stringify(activeAccordions)
-          );
-        }
-
+        // Ubah status tombol accordion parent menjadi terbuka
         const button =
           collapse.previousElementSibling?.querySelector(".accordion-button");
-
         if (button) {
           button.classList.remove("collapsed");
           button.setAttribute("aria-expanded", "true");
@@ -65,38 +35,15 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // =========================
-  // SAVE CLICK ACCORDION
-  // =========================
-  document.querySelectorAll(".accordion-button").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      const target = this.getAttribute("data-bs-target");
-
-      let activeAccordions =
-        JSON.parse(localStorage.getItem("activeAccordions")) || [];
-
-      if (activeAccordions.includes(target)) {
-        activeAccordions = activeAccordions.filter((id) => id !== target);
-      } else {
-        activeAccordions.push(target);
-      }
-
-      localStorage.setItem(
-        "activeAccordions",
-        JSON.stringify(activeAccordions)
-      );
-    });
-  });
-
-  // =========================
-  // AUTO SCROLL FIX (FINAL 🔥)
+  // 2. AUTO SCROLL KE MENU YANG AKTIF
   // =========================
   if (activeLink && scrollContainer) {
-    // tunggu accordion benar-benar kebuka
+    // Jeda sedikit agar transisi accordion selesai sebelum scroll
     setTimeout(() => {
       activeLink.scrollIntoView({
         behavior: "smooth",
-        block: "center",
+        block: "center", // Posisikan elemen di tengah layar sidebar
       });
-    }, 400);
+    }, 300);
   }
 });
