@@ -304,7 +304,7 @@
 <script>
     $(document).ready(function () {
 
-        // DataTables
+        // 1. DataTables
         let table = $('#tableProgress').DataTable({
             pageLength: 10,
             lengthMenu: [10, 25, 50],
@@ -320,7 +320,7 @@
             }
         });
 
-        // Filter by Tab
+        // 2. Filter by Tab
         window.filterKelas = function (e, kelas) {
             $('.nav-tabs .nav-link').removeClass('active');
             $(e.target).closest('.nav-link').addClass('active');
@@ -333,14 +333,26 @@
             }
         }
 
-        // Progress animation
-        document.querySelectorAll(".progress-bar").forEach(el => {
-            const value = el.getAttribute("data-progress") || 0;
-            el.style.width = "0%";
+        // 3. Buat fungsi khusus untuk Progress Animation
+        function animateProgressBars() {
+            document.querySelectorAll(".progress-bar").forEach(el => {
+                const value = el.getAttribute("data-progress") || 0;
+                // Set ke 0% dulu setiap kali dirender
+                el.style.width = "0%";
 
-            setTimeout(() => {
-                el.style.width = value + "%";
-            }, 150);
+                // Beri jeda sedikit agar transisi CSS terlihat
+                setTimeout(() => {
+                    el.style.width = value + "%";
+                }, 150);
+            });
+        }
+
+        // 4. Jalankan animasi saat halaman pertama kali diload
+        animateProgressBars();
+
+        // 5. JALANKAN ULANG animasi setiap kali DataTables merender ulang (ganti halaman, search, filter)
+        table.on('draw', function () {
+            animateProgressBars();
         });
 
     });

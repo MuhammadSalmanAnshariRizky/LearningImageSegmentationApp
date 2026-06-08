@@ -36,6 +36,8 @@ import glob
 import uuid
 from flask import send_from_directory
 from sqlalchemy import func
+from openpyxl.styles import PatternFill, Border, Side, Font, Alignment
+from openpyxl.utils import get_column_letter
 
 from app.seeder.klaimpaket import generate_learning_package
 
@@ -2050,16 +2052,31 @@ def mulai_kuis(slug):
     )
     
 @user_bp.route('/evaluasi')
-@student_required # Pastikan decorator ini dipasang agar session aman
+@student_required
 def evaluasi():
-    # 1. Ambil dari session, JANGAN di-hardcode angka 1
+
     user_id = session.get('user_id')
 
     if not user_id:
         return redirect(url_for('user.login'))
 
-    # 2. Cari activity evaluasi
+    # ===============================
+    # AMBIL KELAS USER
+    # ===============================
+    student_class = StudentClass.query.filter_by(
+        id_student=user_id
+    ).first()
+
+    if not student_class:
+        return "User belum masuk kelas"
+
+    kelas_id = student_class.id_class
+
+    # ===============================
+    # AMBIL ACTIVITY EVALUASI
+    # ===============================
     activity = Activity.query.filter_by(
+        id_class=kelas_id,
         type="evaluasi",
         id_topic=6
     ).first()
@@ -2067,39 +2084,51 @@ def evaluasi():
     if not activity:
         return "Aktivitas Evaluasi tidak ditemukan"
 
-    # 3. Ambil semua riwayat berdasarkan user_id yang login (Urutkan dari percobaan terbaru)
+    # ===============================
+    # AMBIL HASIL EVALUASI
+    # ===============================
     results = ActivityResult.query.filter_by(
         id_user=user_id,
         id_activity=activity.id
-    ).order_by(ActivityResult.percobaan_ke.desc()).all()
+    ).order_by(
+        ActivityResult.percobaan_ke.desc()
+    ).all()
 
     result = results[0] if results else None
 
     # ===============================
-    # 4. AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
+    # DETAIL JAWABAN
     # ===============================
     grouped_details = []
 
     if results:
-        # Urutkan ascending khusus untuk tampilan Tab Modal (1, 2, 3...)
-        results_asc = sorted(results, key=lambda x: x.percobaan_ke)
-        
+
+        results_asc = sorted(
+            results,
+            key=lambda x: x.percobaan_ke
+        )
+
         for r in results_asc:
-            # Ambil jawaban khusus untuk ActivityResult ini saja
+
             answers = ActivityAnswer.query.filter_by(
                 id_activity_result=r.id
-            ).order_by(ActivityAnswer.id.asc()).all()
+            ).order_by(
+                ActivityAnswer.id.asc()
+            ).all()
 
             attempt_details = []
+
             for ans in answers:
+
                 q = Question.query.get(ans.id_question)
-                
+
                 if not q:
                     continue
 
                 try:
                     soal = json.loads(q.question)
                     text_soal = soal.get("text", "")
+
                 except:
                     text_soal = q.question
 
@@ -2114,14 +2143,30 @@ def evaluasi():
                 "details": attempt_details
             })
 
+    # ===============================
+    # PROGRESS
+    # ===============================
+    progress_data = Progress.query.filter_by(
+        id_user=user_id
+    ).first()
+
+    progress_percent = (
+        progress_data.progres_value
+        if progress_data else 0
+    )
+
+    # ===============================
+    # RENDER
+    # ===============================
     return render_template(
         'mahasiswa/evaluasi_mahasiswa.html',
         activity=activity,
         result=result,
-        grouped_details=grouped_details, # Pass data yang sudah dikelompokkan
-        results=results
+        grouped_details=grouped_details,
+        results=results,
+        progress=progress_percent
     )
-
+    
 @user_bp.route('/submit-kuis-evaluasi', methods=['POST'])
 def submit_kuis_evaluasi():
 
@@ -2458,85 +2503,126 @@ def update_progress():
 
 # guru / pengajar
 @user_bp.route('/dashboard-dosen')
-# @dosen_required  <-- Pastikan ini diaktifkan nanti
+# @dosen_required
 def dashboard_dosen():
-    # Ambil ID dosen yang sedang login
+
+    # ==========================================
+    # AMBIL ID DOSEN LOGIN
+    # ==========================================
     dosen_id = session.get('user_id')
 
     if not dosen_id:
         return redirect(url_for('user.login'))
 
     # ==========================================
-    # 1. AMBIL KELAS MILIK DOSEN INI SAJA
+    # AMBIL KELAS YANG DIAJAR DOSEN
+    # DARI TABEL teacher_classes
     # ==========================================
-    # Asumsi: kelas yang dimiliki dosen dicatat di kolom 'created_by' pada tabel Classes.
-    # Jika kamu menggunakan tabel TeacherClass, ubah query-nya menyesuaikan relasi tersebut.
-    kelas_dosen = Class.query.filter_by(created_by=dosen_id).all()
-    
+    teacher_classes = TeacherClass.query.filter_by(
+        id_teacher=dosen_id
+    ).all()
+
+    # Ambil semua id_class
+    kelas_ids = [tc.id_class for tc in teacher_classes]
+
+    # Ambil data kelas
+    kelas_dosen = Class.query.filter(
+        Class.id.in_(kelas_ids)
+    ).all()
+
     total_kelas = len(kelas_dosen)
-    
-    # Kumpulkan semua ID kelas milik dosen ini ke dalam list
-    kelas_ids = [k.id for k in kelas_dosen]
 
     # ==========================================
-    # 2. HITUNG TOTAL SISWA DI KELAS DOSEN INI
+    # HITUNG TOTAL SISWA
     # ==========================================
     if kelas_ids:
-        # Ambil data StudentClass HANYA yang id_class-nya ada di daftar kelas dosen ini
-        siswa_di_kelas_dosen = StudentClass.query.filter(StudentClass.id_class.in_(kelas_ids)).all()
-        # Gunakan set() agar jika 1 siswa ikut 2 kelas milik dosen ini, tetap dihitung 1 siswa unik
-        total_siswa = len(set([sc.id_student for sc in siswa_di_kelas_dosen]))
+
+        siswa_di_kelas_dosen = StudentClass.query.filter(
+            StudentClass.id_class.in_(kelas_ids)
+        ).all()
+
+        # siswa unik
+        total_siswa = len(
+            set([sc.id_student for sc in siswa_di_kelas_dosen])
+        )
+
     else:
         total_siswa = 0
 
     # ==========================================
-    # 3. HITUNG TOTAL SOAL
+    # TOTAL SOAL
     # ==========================================
-    # Total seluruh soal di database (Jika ingin difilter milik dosen ini saja, 
-    # ganti jadi: Question.query.filter_by(created_by=dosen_id).count() )
     total_soal = Question.query.count()
 
     # ==========================================
-    # 4. HITUNG RATA-RATA PROGRESS PER KELAS (MILIK DOSEN SAJA)
+    # RATA-RATA PROGRESS PER KELAS
     # ==========================================
     progress_kelas = []
 
     for kelas in kelas_dosen:
-        siswa_di_kelas = StudentClass.query.filter_by(id_class=kelas.id).all()
+
+        siswa_di_kelas = StudentClass.query.filter_by(
+            id_class=kelas.id
+        ).all()
+
         jumlah_siswa = len(siswa_di_kelas)
-        
+
         rata_rata_progress = 0
-        
+
         if jumlah_siswa > 0:
+
             total_progress_kelas = 0
+
             for sk in siswa_di_kelas:
-                prog = Progress.query.filter_by(id_user=sk.id_student).first()
+
+                prog = Progress.query.filter_by(
+                    id_user=sk.id_student
+                ).first()
+
                 if prog:
                     total_progress_kelas += prog.progres_value
-            
-            rata_rata_progress = round(total_progress_kelas / jumlah_siswa)
 
-        # Tentukan warna bar
+            rata_rata_progress = round(
+                total_progress_kelas / jumlah_siswa
+            )
+
+        # ==========================================
+        # WARNA PROGRESS
+        # ==========================================
         if rata_rata_progress >= 75:
             color = "primary"
+
         elif rata_rata_progress >= 50:
             color = "warning"
+
         else:
             color = "danger"
 
         progress_kelas.append({
+
             'nama_kelas': kelas.name,
+
             'deskripsi': kelas.description,
+
             'jumlah_siswa': jumlah_siswa,
+
             'rata_progress': rata_rata_progress,
+
             'color': color
         })
 
+    # ==========================================
+    # RENDER
+    # ==========================================
     return render_template(
         'dashboard-dosen.html',
+
         total_kelas=total_kelas,
+
         total_siswa=total_siswa,
+
         total_soal=total_soal,
+
         progress_kelas=progress_kelas
     )
 @user_bp.route('/datasiswa')
@@ -2926,11 +3012,14 @@ def data_nilai():
             # TOTAL SISWA YANG MENGERJAKAN
             # =========================
             total = db.session.query(
-                ActivityResult.id_user
-            ).filter(
-                ActivityResult.id_activity == act.id
-            ).distinct().count()
-
+                            ActivityResult.id_user
+                        ).join(
+                            StudentClass,
+                            ActivityResult.id_user == StudentClass.id_student # Sesuaikan nama kolom jika di modelmu namanya id_student
+                        ).filter(
+                            ActivityResult.id_activity == act.id,
+                            StudentClass.id_class == cls.id  # <-- Kunci utamanya ada di sini!
+                        ).distinct().count()
             # =========================
             # TOPIC
             # =========================
@@ -2989,7 +3078,7 @@ def detail_nilai():
     subtopic_name = subtopic.sub_topic_name if subtopic else "-"
 
     # ====================================
-    # MODE 1: MODAL (DETAIL USER)
+    # MODE 1: MODAL (DETAIL USER) - Menampilkan histori semua pengerjaan
     # ====================================
     if user_id:
 
@@ -3041,24 +3130,50 @@ def detail_nilai():
         """
 
     # ====================================
-    # MODE 2: HALAMAN UTAMA
+    # MODE 2: HALAMAN UTAMA (Tabel Seluruh Siswa)
     # ====================================
+    
+    # 1. HITUNG TOTAL SELURUH SISWA DI KELAS TERSEBUT
+    total_siswa_kelas = StudentClass.query.filter_by(
+        id_class=activity.id_class
+    ).count()
+
+    # 2. AMBIL SEMUA HASIL NILAI (DIFILTER HANYA UNTUK KELAS INI)
     results = db.session.query(ActivityResult, User)\
         .join(User, User.id == ActivityResult.id_user)\
-        .filter(ActivityResult.id_activity == activity_id)\
-        .order_by(ActivityResult.start_time.desc())\
-        .all()
+        .join(StudentClass, StudentClass.id_student == User.id)\
+        .filter(
+            ActivityResult.id_activity == activity_id,
+            StudentClass.id_class == activity.id_class
+        ).all()
 
-    latest_per_user = {}
-
+    # Kelompokkan semua percobaan berdasarkan user_id
+    user_attempts = {}
     for res, user in results:
-        if user.id not in latest_per_user:
-            latest_per_user[user.id] = (res, user)
+        if user.id not in user_attempts:
+            user_attempts[user.id] = []
+        user_attempts[user.id].append((res, user))
+
+    best_per_user = {}
+    
+    # 3. CARI PERCOBAAN TERBAIK UNTUK MASING-MASING SISWA
+    for uid, attempts in user_attempts.items():
+        # max() akan mengambil data berdasarkan urutan prioritas di dalam lambda:
+        # 1. Lulus (1) > Tidak Lulus (0)
+        # 2. Nilai Akhir Terbesar
+        # 3. Percobaan Ke (terbesar/terbaru)
+        best_attempt = max(attempts, key=lambda x: (
+            1 if x[0].result_status and x[0].result_status.lower() == 'lulus' else 0,
+            x[0].nilai_akhir or 0,
+            x[0].percobaan_ke or 0
+        ))
+        best_per_user[uid] = best_attempt
 
     data_siswa = []
     total_nilai = 0
 
-    for res, user in latest_per_user.values():
+    # Format data untuk ditampilkan ke HTML
+    for res, user in best_per_user.values():
         nilai = res.nilai_akhir or 0
         total_nilai += nilai
 
@@ -3077,6 +3192,7 @@ def detail_nilai():
             "badge": badge
         })
 
+    # 4. HITUNG RATA-RATA NILAI DARI PERCOBAAN TERBAIK
     rata = round(total_nilai / len(data_siswa), 2) if data_siswa else 0
 
     return render_template(
@@ -3085,10 +3201,11 @@ def detail_nilai():
         topic_name=topic_name,
         subtopic_name=subtopic_name,
         data_siswa=data_siswa,
-        total_siswa=len(data_siswa),
+        total_siswa=total_siswa_kelas,
         rata=rata,
         activity_id=activity_id
     )
+
 
 @user_bp.route('/export_nilai')
 def export_nilai():
@@ -3102,33 +3219,92 @@ def export_nilai():
     if not activity:
         return "Activity tidak ditemukan"
 
-    # ambil data
-    results = db.session.query(User, ActivityResult)\
-        .join(ActivityResult, User.id == ActivityResult.id_user)\
-        .filter(ActivityResult.id_activity == activity_id)\
-        .all()
+    # ====================================
+    # AMBIL DATA, FILTER KELAS, & KELOMPOKKAN
+    # ====================================
+    results = db.session.query(ActivityResult, User)\
+        .join(User, User.id == ActivityResult.id_user)\
+        .join(StudentClass, StudentClass.id_student == User.id)\
+        .filter(
+            ActivityResult.id_activity == activity_id,
+            StudentClass.id_class == activity.id_class
+        ).all()
+
+    user_attempts = {}
+    for res, user in results:
+        if user.id not in user_attempts:
+            user_attempts[user.id] = []
+        user_attempts[user.id].append((res, user))
+
+    # CARI PERCOBAAN TERBAIK (Sama seperti logika di halaman detail nilai)
+    best_per_user = {}
+    for uid, attempts in user_attempts.items():
+        best_attempt = max(attempts, key=lambda x: (
+            1 if x[0].result_status and x[0].result_status.lower() == 'lulus' else 0,
+            x[0].nilai_akhir or 0,
+            x[0].percobaan_ke or 0
+        ))
+        best_per_user[uid] = best_attempt
 
     data = []
 
-    for user, result in results:
+    # Masukkan percobaan terbaik yang sudah disaring ke dalam list Pandas
+    for res, user in best_per_user.values():
         data.append({
             "Nama Siswa": user.name,
-            "Nilai": result.nilai_akhir,
-            "Status": result.result_status,
-            "Total Benar": result.total_benar,
-            "Total Salah": result.total_salah,
-            "Durasi (detik)": result.waktu_mengerjakan
+            "Nilai": res.nilai_akhir,
+            "Status": "Lulus" if res.result_status and res.result_status.lower() == "lulus" else "Tidak Lulus",
+            "Total Benar": res.total_benar,
+            "Total Salah": res.total_salah,
+            "Durasi (detik)": res.waktu_mengerjakan
         })
 
-    # buat dataframe
+    # Buat dataframe
     df = pd.DataFrame(data)
 
-    # simpan ke memory
+    # Simpan ke memory dengan styling Excel
     output = BytesIO()
-    df.to_excel(output, index=False, engine='openpyxl')
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Nilai Siswa')
+        worksheet = writer.sheets['Nilai Siswa']
+
+        # Definisikan Gaya
+        header_fill = PatternFill(start_color="C6E0B4", end_color="C6E0B4", fill_type="solid")
+        header_font = Font(bold=True)
+        center_align = Alignment(horizontal="center", vertical="center")
+        thin_border = Border(
+            left=Side(style='thin'), right=Side(style='thin'),
+            top=Side(style='thin'), bottom=Side(style='thin')
+        )
+
+        # Terapkan ke Header (Baris 1)
+        for col_num, value in enumerate(df.columns.values):
+            cell = worksheet.cell(row=1, column=col_num + 1)
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = center_align
+            cell.border = thin_border
+
+        # Terapkan Border ke Data (Baris 2 dst)
+        for row in range(2, len(df) + 2):
+            for col in range(1, len(df.columns) + 1):
+                cell = worksheet.cell(row=row, column=col)
+                cell.border = thin_border
+                
+                # Nama siswa rata kiri, selain itu rata tengah
+                if col > 1:
+                    cell.alignment = Alignment(horizontal="center")
+
+        # Atur Lebar Kolom Otomatis
+        for col_num, col_name in enumerate(df.columns, 1):
+            column_letter = get_column_letter(col_num)
+            max_length = max(df[col_name].astype(str).map(len).max(), len(col_name))
+            worksheet.column_dimensions[column_letter].width = max_length + 2
+
+    # Reset memory pointer
     output.seek(0)
 
-    # bikin nama file aman
+    # Bikin nama file aman
     safe_title = re.sub(r'[^\w\s-]', '', activity.title).strip().replace(' ', '_')
     filename = f"nilai_mahasiswa_{safe_title}.xlsx"
 
@@ -3142,36 +3318,118 @@ def export_nilai():
 @user_bp.route('/export_semua_nilai')
 def export_semua_nilai():
 
-    # ambil semua data (join lengkap)
+    # ====================================
+    # 1. AMBIL SEMUA DATA (JOIN LENGKAP)
+    # Ditambah filter StudentClass agar tidak ada siswa nyasar ke kelas lain
+    # ====================================
     results = db.session.query(Class, Activity, User, ActivityResult)\
         .join(Activity, Activity.id_class == Class.id)\
         .join(ActivityResult, ActivityResult.id_activity == Activity.id)\
         .join(User, User.id == ActivityResult.id_user)\
+        .join(StudentClass, db.and_(StudentClass.id_student == User.id, StudentClass.id_class == Class.id))\
         .all()
 
-    data = []
+    if not results:
+        return "Belum ada data nilai untuk diexport."
 
+    # ====================================
+    # 2. FILTER PERCOBAAN TERBAIK (Mencegah Duplikat)
+    # ====================================
+    # Kelompokkan berdasarkan (Activity ID, User ID)
+    attempts_dict = {}
     for kelas, activity, user, result in results:
-        data.append({
+        key = (activity.id, user.id)
+        if key not in attempts_dict:
+            attempts_dict[key] = []
+        attempts_dict[key].append((kelas, activity, user, result))
+
+    best_attempts = []
+    for key, attempts in attempts_dict.items():
+        # Cari nilai terbaik berdasarkan Status Lulus -> Nilai Terbesar -> Percobaan Terbaru
+        best_attempt = max(attempts, key=lambda x: (
+            1 if x[3].result_status and x[3].result_status.lower() == 'lulus' else 0,
+            x[3].nilai_akhir or 0,
+            x[3].percobaan_ke or 0
+        ))
+        best_attempts.append(best_attempt)
+
+    # ====================================
+    # 3. KELOMPOKKAN DATA BERDASARKAN NAMA AKTIVITAS (Untuk Sheet Excel)
+    # ====================================
+    sheets_data = {}
+    
+    for kelas, activity, user, result in best_attempts:
+        # Bersihkan nama aktivitas untuk dijadikan nama sheet (Excel max 31 karakter & melarang simbol tertentu)
+        sheet_name = re.sub(r'[\\/*?:\[\]]', '', activity.title).strip()
+        sheet_name = sheet_name[:31]
+
+        if sheet_name not in sheets_data:
+            sheets_data[sheet_name] = []
+
+        sheets_data[sheet_name].append({
             "Kelas": kelas.name,
-            "Nama Aktivitas": activity.title,
             "Nama Siswa": user.name,
             "Nilai": result.nilai_akhir,
-            "Status": result.result_status,
+            "Status": "Lulus" if result.result_status and result.result_status.lower() == "lulus" else "Tidak Lulus",
             "Total Benar": result.total_benar,
             "Total Salah": result.total_salah,
             "Durasi (detik)": result.waktu_mengerjakan
         })
 
-    df = pd.DataFrame(data)
-
-    # simpan ke memory
+    # ====================================
+    # 4. BUAT EXCEL BANYAK SHEET & STYLING
+    # ====================================
     output = BytesIO()
-    df.to_excel(output, index=False, engine='openpyxl')
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        
+        # Definisikan Gaya
+        header_fill = PatternFill(start_color="C6E0B4", end_color="C6E0B4", fill_type="solid")
+        header_font = Font(bold=True)
+        center_align = Alignment(horizontal="center", vertical="center")
+        thin_border = Border(
+            left=Side(style='thin'), right=Side(style='thin'),
+            top=Side(style='thin'), bottom=Side(style='thin')
+        )
+
+        # Looping setiap aktivitas untuk dijadikan sheet
+        for sheet_name, data in sheets_data.items():
+            df = pd.DataFrame(data)
+            
+            # Urutkan data berdasarkan Kelas lalu Nama Siswa agar rapi
+            df = df.sort_values(by=["Kelas", "Nama Siswa"])
+            
+            # Tulis ke sheet spesifik
+            df.to_excel(writer, index=False, sheet_name=sheet_name)
+            worksheet = writer.sheets[sheet_name]
+
+            # Terapkan Gaya ke Header (Baris 1)
+            for col_num in range(1, len(df.columns) + 1):
+                cell = worksheet.cell(row=1, column=col_num)
+                cell.fill = header_fill
+                cell.font = header_font
+                cell.alignment = center_align
+                cell.border = thin_border
+
+            # Terapkan Border ke Data & Alignment (Baris 2 dst)
+            for row in range(2, len(df) + 2):
+                for col in range(1, len(df.columns) + 1):
+                    cell = worksheet.cell(row=row, column=col)
+                    cell.border = thin_border
+                    
+                    # Kolom 2 (Nama Siswa) rata kiri, selain itu rata tengah
+                    if col != 2:
+                        cell.alignment = Alignment(horizontal="center")
+
+            # Atur Lebar Kolom Otomatis
+            for col_num, col_name in enumerate(df.columns, 1):
+                column_letter = get_column_letter(col_num)
+                max_length = max(df[col_name].astype(str).map(len).max(), len(col_name))
+                worksheet.column_dimensions[column_letter].width = max_length + 2
+
+    # Pindahkan kursor memory
     output.seek(0)
 
-    # nama file
-    filename = "nilai_semua_kelas.xlsx"
+    filename = "rekap_nilai_semua_kelas.xlsx"
 
     return send_file(
         output,

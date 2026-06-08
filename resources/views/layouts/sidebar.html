@@ -409,30 +409,41 @@
             </div>
 
             <div class="accordion-item bg-transparent border-0">
-                <h2 class="accordion-header">
-                    {% if
-                    (1, 4) in completed_materi and
-                    (2, 8) in completed_materi and
-                    (3, 13) in completed_materi and
-                    (4, 18) in completed_materi and
-                    (5, 23) in completed_materi
-                    %}
-                    {% if (id_class, 6, 24) in aktif_materi %}
-                    <a href="/evaluasi" class="accordion-button no-arrow text-white bg-transparent sidebar-link">
-                        <i
-                            class="bi {% if (6, 24) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-clipboard-check{% endif %} me-2"></i>
-                        Evaluasi
-                    </a>
-                    {% endif %}
-                    {% else %}
-                    <div class="accordion-button no-arrow text-secondary bg-transparent sidebar-link opacity-50">
-                        <i class="bi bi-lock-fill me-2"></i>
-                        Evaluasi Terkunci
-                    </div>
-                    {% endif %}
-                </h2>
-            </div>
 
+                <h2 class="accordion-header">
+
+                    {% if (1,4) in completed_materi
+                    and (2,8) in completed_materi
+                    and (3,13) in completed_materi
+                    and (4,18) in completed_materi
+                    and (5,23) in completed_materi
+                    and (id_class,6,24) in aktif_materi %}
+
+                    <a href="/evaluasi" class="accordion-button no-arrow text-white bg-transparent sidebar-link
+            {% if request.path == '/evaluasi' %}sidebar-active{% endif %}">
+
+                        <i
+                            class="bi {% if (6,24) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-clipboard-check{% endif %} me-2"></i>
+
+                        Evaluasi
+
+                    </a>
+
+                    {% else %}
+
+                    <div class="accordion-button no-arrow text-secondary bg-transparent sidebar-link opacity-50">
+
+                        <i class="bi bi-lock-fill me-2"></i>
+
+                        Evaluasi
+
+                    </div>
+
+                    {% endif %}
+
+                </h2>
+
+            </div>
             {% endif %}
 
             {% if role == 'Teacher' %}
