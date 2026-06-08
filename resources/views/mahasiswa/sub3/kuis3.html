@@ -206,9 +206,12 @@
       </div>
 
       <div class="d-grid mt-4">
-        <a href="{{ url_for('user.mulai_kuis', title=activity.title) }}" class="btn btn-start text-white shadow-sm"
-          onclick="startExam(event)">
-          Mulai Menjawab Kuis <i class="fa-solid fa-arrow-right ms-2"></i>
+        <a href="{{ url_for('user.mulai_kuis', slug=activity.title.replace(' ', '-')) }}"
+          class="btn btn-start text-white shadow-sm" onclick="startExam(event)">
+
+          Mulai Menjawab Kuis
+          <i class="fa-solid fa-arrow-right ms-2"></i>
+
         </a>
       </div>
     </div>
@@ -278,9 +281,12 @@
           data-bs-toggle="modal" data-bs-target="#detailModal">
           <i class="fa-solid fa-eye me-1"></i> Lihat Detail Jawaban
         </button>
-        <a href="{{ url_for('user.mulai_kuis', title=activity.title) }}"
+        <a href="{{ url_for('user.mulai_kuis', slug=activity.title.replace(' ', '-')) }}"
           class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold" style="font-size: 0.9rem;">
-          <i class="fa-solid fa-rotate-left me-1"></i> Ulangi Kuis
+
+          <i class="fa-solid fa-rotate-left me-1"></i>
+          Ulangi Kuis
+
         </a>
       </div>
     </div>

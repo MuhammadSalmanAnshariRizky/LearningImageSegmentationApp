@@ -6,7 +6,7 @@ def seed_subtopic_topic1():
         "Pengertian Citra Digital",
         "Jenis Citra",
         "Rangkuman",
-        "Kuis 1"
+        "Kuis-1"
     ]
 
     for s in subtopics:
@@ -29,7 +29,7 @@ def seed_subtopic_topic2():
         "Segmentasi Citra",
         "Metode Segmentasi Citra",
         "Rangkuman",
-        "Kuis 2"
+        "Kuis-2"
     ]
 
     for s in subtopics:
@@ -54,7 +54,7 @@ def seed_subtopic_topic3():
         "Tahapan Edge Based Segmentation",
         "Praktek Edge-based Segmentation",
         "Rangkuman",
-        "Kuis 3"
+        "Kuis-3"
     ]
 
     for s in subtopics:
@@ -79,7 +79,7 @@ def seed_subtopic_topic4():
         "Histogram",
         "Metode Thresholding",
         "Rangkuman",
-        "Kuis 4"
+        "Kuis-4"
     ]
 
     for s in subtopics:
@@ -103,7 +103,7 @@ def seed_subtopic_topic5():
         "Region Growing",
         "Split and Merge",
         "Rangkuman",
-        "Kuis 5"
+        "Kuis-5"
     ]
 
     for s in subtopics:

@@ -733,7 +733,7 @@ def kuis1():
     if not topic:
         return "Topic tidak ditemukan"
 
-    subtopic = SubTopic.query.filter_by(sub_topic_name="Kuis 1").first()
+    subtopic = SubTopic.query.filter_by(sub_topic_name="Kuis-1").first()
     if not subtopic:
         return "Subtopik tidak ditemukan"
 
@@ -978,7 +978,7 @@ def kuis2():
     # AMBIL SUBTOPIC
     # ===============================
     subtopic = SubTopic.query.filter_by(
-        sub_topic_name="Kuis 2"
+        sub_topic_name="Kuis-2"
     ).first()
 
     if not subtopic:
@@ -1280,7 +1280,7 @@ def kuis3():
     # AMBIL SUBTOPIC
     # ===============================
     subtopic = SubTopic.query.filter_by(
-        sub_topic_name="Kuis 3"
+        sub_topic_name="Kuis-3"
     ).first()
 
     if not subtopic:
@@ -1568,7 +1568,7 @@ def kuis4():
     # AMBIL SUBTOPIC
     # ===============================
     subtopic = SubTopic.query.filter_by(
-        sub_topic_name="Kuis 4"
+        sub_topic_name="Kuis-4"
     ).first()
 
     if not subtopic:
@@ -1854,7 +1854,7 @@ def kuis5():
     # AMBIL SUBTOPIC
     # ===============================
     subtopic = SubTopic.query.filter_by(
-        sub_topic_name="Kuis 5"
+        sub_topic_name="Kuis-5"
     ).first()
 
     if not subtopic:
@@ -2035,9 +2035,10 @@ def api_kuis(title):
     return jsonify(result)
 
 # load soal kuis
-@user_bp.route('/kuis/mulai/<string:title>')
-def mulai_kuis(title):
-    from app.model.activity import Activity
+@user_bp.route('/kuis/mulai/<slug>')
+def mulai_kuis(slug):
+
+    title = slug.replace('-', ' ')
 
     activity = Activity.query.filter_by(title=title).first_or_404()
 
