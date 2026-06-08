@@ -3209,185 +3209,112 @@ def detail_nilai():
 
 @user_bp.route('/export_nilai')
 def export_nilai():
+    activity_id = request.args.get('activity_id', type=int)
 
-    try:
+    if not activity_id:
+        return "Activity tidak ditemukan"
 
-        activity_id = request.args.get(
-            'activity_id',
-            type=int
-        )
+    activity = Activity.query.get(activity_id)
 
-        if not activity_id:
-            return "Activity tidak ditemukan"
+    if not activity:
+        return "Activity tidak ditemukan"
 
-        # ====================================
-        # AMBIL DATA AKTIVITAS
-        # ====================================
-        activity = Activity.query.get(activity_id)
-
-        if not activity:
-            return "Activity tidak ditemukan"
-
-        # ====================================
-        # QUERY LEBIH RINGAN
-        # ====================================
-        results = db.session.query(
-            ActivityResult,
-            User
-        )\
-        .join(
-            User,
-            User.id == ActivityResult.id_user
-        )\
-        .join(
-            StudentClass,
-            StudentClass.id_student == User.id
-        )\
+    # ====================================
+    # AMBIL DATA, FILTER KELAS, & KELOMPOKKAN
+    # ====================================
+    results = db.session.query(ActivityResult, User)\
+        .join(User, User.id == ActivityResult.id_user)\
+        .join(StudentClass, StudentClass.id_student == User.id)\
         .filter(
             ActivityResult.id_activity == activity_id,
             StudentClass.id_class == activity.id_class
-        )\
-        .yield_per(50)
+        ).all()
 
-        # ====================================
-        # KELOMPOKKAN PER USER
-        # ====================================
-        user_attempts = {}
+    user_attempts = {}
+    for res, user in results:
+        if user.id not in user_attempts:
+            user_attempts[user.id] = []
+        user_attempts[user.id].append((res, user))
 
-        for res, user in results:
+    # CARI PERCOBAAN TERBAIK (Sama seperti logika di halaman detail nilai)
+    best_per_user = {}
+    for uid, attempts in user_attempts.items():
+        best_attempt = max(attempts, key=lambda x: (
+            1 if x[0].result_status and x[0].result_status.lower() == 'lulus' else 0,
+            x[0].nilai_akhir or 0,
+            x[0].percobaan_ke or 0
+        ))
+        best_per_user[uid] = best_attempt
 
-            if user.id not in user_attempts:
-                user_attempts[user.id] = []
+    data = []
 
-            user_attempts[user.id].append(
-                (res, user)
-            )
+    # Masukkan percobaan terbaik yang sudah disaring ke dalam list Pandas
+    for res, user in best_per_user.values():
+        data.append({
+            "Nama Siswa": user.name,
+            "Nilai": res.nilai_akhir,
+            "Status": "Lulus" if res.result_status and res.result_status.lower() == "lulus" else "Tidak Lulus",
+            "Total Benar": res.total_benar,
+            "Total Salah": res.total_salah,
+            "Durasi (detik)": res.waktu_mengerjakan
+        })
 
-        # ====================================
-        # AMBIL PERCOBAAN TERBAIK
-        # ====================================
-        best_per_user = {}
+    # Buat dataframe
+    df = pd.DataFrame(data)
 
-        for uid, attempts in user_attempts.items():
+    # Simpan ke memory dengan styling Excel
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Nilai Siswa')
+        worksheet = writer.sheets['Nilai Siswa']
 
-            best_attempt = max(
-                attempts,
-                key=lambda x: (
-                    1 if x[0].result_status
-                    and x[0].result_status.lower() == 'lulus'
-                    else 0,
-
-                    x[0].nilai_akhir or 0,
-
-                    x[0].percobaan_ke or 0
-                )
-            )
-
-            best_per_user[uid] = best_attempt
-
-        # ====================================
-        # SIAPKAN DATA EXCEL
-        # ====================================
-        data = []
-
-        for res, user in best_per_user.values():
-
-            data.append({
-                "Nama Siswa": user.name,
-                "Nilai": res.nilai_akhir or 0,
-                "Status": (
-                    "Lulus"
-                    if res.result_status
-                    and res.result_status.lower() == "lulus"
-                    else "Tidak Lulus"
-                ),
-                "Total Benar": res.total_benar or 0,
-                "Total Salah": res.total_salah or 0,
-                "Durasi (detik)": res.waktu_mengerjakan or 0
-            })
-
-        # ====================================
-        # CEK DATA KOSONG
-        # ====================================
-        if not data:
-            return "Belum ada data nilai"
-
-        # ====================================
-        # BUAT DATAFRAME
-        # ====================================
-        df = pd.DataFrame(data)
-
-        # ====================================
-        # EXPORT EXCEL TANPA STYLING
-        # ====================================
-        output = BytesIO()
-
-        with pd.ExcelWriter(
-            output,
-            engine='openpyxl'
-        ) as writer:
-
-            df.to_excel(
-                writer,
-                index=False,
-                sheet_name='Nilai Siswa'
-            )
-
-        output.seek(0)
-
-        # ====================================
-        # NAMA FILE AMAN
-        # ====================================
-        raw_title = (
-            activity.title
-            if activity.title
-            else "aktivitas"
+        # Definisikan Gaya
+        header_fill = PatternFill(start_color="C6E0B4", end_color="C6E0B4", fill_type="solid")
+        header_font = Font(bold=True)
+        center_align = Alignment(horizontal="center", vertical="center")
+        thin_border = Border(
+            left=Side(style='thin'), right=Side(style='thin'),
+            top=Side(style='thin'), bottom=Side(style='thin')
         )
 
-        safe_title = re.sub(
-            r'[^\w\s-]',
-            '',
-            raw_title
-        ).strip()
+        # Terapkan ke Header (Baris 1)
+        for col_num, value in enumerate(df.columns.values):
+            cell = worksheet.cell(row=1, column=col_num + 1)
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = center_align
+            cell.border = thin_border
 
-        safe_title = safe_title.replace(
-            ' ',
-            '_'
-        )
+        # Terapkan Border ke Data (Baris 2 dst)
+        for row in range(2, len(df) + 2):
+            for col in range(1, len(df.columns) + 1):
+                cell = worksheet.cell(row=row, column=col)
+                cell.border = thin_border
+                
+                # Nama siswa rata kiri, selain itu rata tengah
+                if col > 1:
+                    cell.alignment = Alignment(horizontal="center")
 
-        filename = (
-            f"nilai_mahasiswa_{safe_title}.xlsx"
-        )
+        # Atur Lebar Kolom Otomatis
+        for col_num, col_name in enumerate(df.columns, 1):
+            column_letter = get_column_letter(col_num)
+            max_length = max(df[col_name].astype(str).map(len).max(), len(col_name))
+            worksheet.column_dimensions[column_letter].width = max_length + 2
 
-        # ====================================
-        # DOWNLOAD FILE
-        # ====================================
-        return send_file(
-            output,
-            download_name=filename,
-            as_attachment=True,
-            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
+    # Reset memory pointer
+    output.seek(0)
 
-    except OperationalError:
+    # Bikin nama file aman
+    safe_title = re.sub(r'[^\w\s-]', '', activity.title).strip().replace(' ', '_')
+    filename = f"nilai_mahasiswa_{safe_title}.xlsx"
 
-        db.session.rollback()
-        db.session.remove()
+    return send_file(
+        output,
+        download_name=filename,
+        as_attachment=True,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
 
-        return """
-        Koneksi database terputus.
-        Silakan coba export lagi.
-        """
-
-    except Exception as e:
-
-        import traceback
-
-        return f"""
-        <h1>ERROR EXPORT</h1>
-        <pre>{traceback.format_exc()}</pre>
-        """
-        
 @user_bp.route('/export_semua_nilai')
 def export_semua_nilai():
 
