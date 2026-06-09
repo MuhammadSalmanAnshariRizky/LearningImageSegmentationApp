@@ -50,6 +50,10 @@ def index():
 @user_bp.route('/perihal')
 def perihal():
     return render_template('perihal.html')
+
+@user_bp.route('/panduan')
+def panduan():
+    return render_template('panduan.html')
 # =========================
 # ROUTE SUBTOPIC
 # =========================
