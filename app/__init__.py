@@ -5,6 +5,7 @@ import click
 import os
 from flask.cli import with_appcontext
 
+
 # 🔥 BARIS IMPOR MODEL DI SINI SUDAH DIHAPUS AGAR TIDAK ERROR CIRCULAR IMPORT
 
 db = SQLAlchemy()
@@ -49,14 +50,19 @@ def create_app():
     from app.model.progress import Progress
     from app.model.historyprogress import HistoryProgress
         
+# Di dalam create_app()
     @app.context_processor
     def inject_sidebar():
-
         user_id = session.get('user_id')
         user_role = session.get('user_role')
 
+        # 1. Ambil objek User dari database (untuk current_user)
+        user = User.query.get(user_id) if user_id else None
+
+        # Jika user tidak ada atau bukan student, kirim None untuk sidebar
         if not user_id or user_role != 'Student':
             return dict(
+                current_user=user, # Masih tetap dikirim walaupun None/Guest
                 aktif_materi=[],
                 completed_materi=[]
             )
@@ -64,14 +70,12 @@ def create_app():
         # =========================
         # AMBIL KELAS SISWA
         # =========================
-        kelas_siswa = StudentClass.query.filter_by(
-            id_student=user_id
-        ).all()
-
+        kelas_siswa = StudentClass.query.filter_by(id_student=user_id).all()
         kelas_ids = [k.id_class for k in kelas_siswa]
 
         if not kelas_ids:
             return dict(
+                current_user=user,
                 aktif_materi=[],
                 completed_materi=[]
             )
@@ -84,32 +88,17 @@ def create_app():
             Activity.status == 'aktif'
         ).all()
 
-        aktif_materi = []
-
-        for a in activities:
-
-            if a.id_topic and a.id_subtopic:
-
-                aktif_materi.append(
-                    (a.id_class, a.id_topic, a.id_subtopic)
-                )
+        aktif_materi = [(a.id_class, a.id_topic, a.id_subtopic) for a in activities]
 
         # =========================
         # HISTORY PROGRESS
         # =========================
-        histories = HistoryProgress.query.filter_by(
-            id_user=user_id
-        ).all()
+        histories = HistoryProgress.query.filter_by(id_user=user_id).all()
+        completed_materi = [(h.id_topic, h.id_subtopic) for h in histories]
 
-        completed_materi = []
-
-        for h in histories:
-
-            completed_materi.append(
-                (h.id_topic, h.id_subtopic)
-            )
-
+        # Return semua variabel termasuk current_user
         return dict(
+            current_user=user, # <--- INI KUNCI ERROR ANDA
             aktif_materi=aktif_materi,
             completed_materi=completed_materi
         )

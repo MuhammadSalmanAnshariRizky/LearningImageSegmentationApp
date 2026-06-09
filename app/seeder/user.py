@@ -7,7 +7,7 @@ def seed_user():
     # DATA NAMA MAHASISWA & DOSEN
     # ==========================================
     nama_mahasiswa = [
-        "Ahmad Fauzi", "Siti Nurhaliza", "Muhammad Rizky", "Putri Rahmawati",
+        "Ahmad Fauzi", "Siti Nurhaliza", "Muhammad Salman", "Putri Rahmawati",
         "Budi Santoso", "Ayu Lestari", "Dimas Pratama", "Rina Sari",
         "Hendra Saputra", "Maya Indah", "Reza Aditya", "Dinda Permata",
         "Rahmat Hidayat", "Fitriani", "Ade Putra", "Siska Amalia",
@@ -23,11 +23,14 @@ def seed_user():
 
     # 1. Buat 40 Mahasiswa
     for i, nama in enumerate(nama_mahasiswa, start=1):
+        # Format email: "Ahmad Fauzi" -> "ahmad_fauzi@example.com"
+        email_format = f"{nama.lower().replace(' ', '_')}@example.com"
+        
         user = User(
             id_other=f"1000{i:02d}",
             type_id_other="NIM",
             name=nama,
-            email=f"mhs_{i}@example.com",
+            email=email_format,
             password=generate_password_hash("password123"),
             role="Student"
         )
@@ -35,9 +38,9 @@ def seed_user():
 
     # 2. Buat 2 Dosen
     dosen_1 = User(
-        id_other="198805122015041001", 
+        id_other="199311102020121008", 
         type_id_other="NIP",
-        name="Nuruddin Wiranda, S.Kom., M.Cs.",
+        name="Novan Alkaf Bahraini Saputra, S.Kom., M.T.",
         email="dosen1@example.com",
         password=generate_password_hash("password123"),
         role="Teacher"

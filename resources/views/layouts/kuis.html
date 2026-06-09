@@ -34,7 +34,11 @@
             <!-- Info user -->
             <div class="user-info text-end">
                 <strong>
-                    salman
+                    {% if current_user %}
+                    {{ current_user.name }}
+                    {% else %}
+                    Guest
+                    {% endif %}
                 </strong>
             </div>
 

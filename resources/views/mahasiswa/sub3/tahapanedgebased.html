@@ -23,28 +23,107 @@
       <div class="card-body p-4 p-md-5">
 
         <h3 class="fw-bold mb-4 text-custom-blue">
-          <i class="fa-solid fa-crop-simple me-2"></i>3.1 Pengantar Edge-based Segmentation
+          <i class="fa-solid fa-crop-simple me-2"></i>3.2 Pengantar Edge-based Segmentation
         </h3>
 
         <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
           <p class="mb-4">
-            Edge-based segmentation merupakan metode segmentasi citra yang memanfaatkan informasi tepi untuk memisahkan
+
+            Edge-Based Segmentation merupakan metode segmentasi citra yang memanfaatkan informasi tepi untuk memisahkan
+
             objek dari latar belakang. Metode ini didasarkan pada asumsi bahwa batas objek ditandai oleh perubahan
+
             intensitas piksel yang signifikan dibandingkan dengan area di sekitarnya. Oleh karena itu, proses segmentasi
+
             diawali dengan mendeteksi tepi objek, kemudian menghubungkan piksel-piksel tepi yang saling berkaitan hingga
+
             membentuk batas yang utuh, dan diakhiri dengan mengekstraksi wilayah objek berdasarkan batas yang telah
-            diperoleh. Secara umum, tahapan edge-based segmentation terdiri atas edge detection, edge linking, dan
+
+            diperoleh. Secara umum, tahapan Edge-Based Segmentation terdiri atas edge detection, edge linking, dan
+
             region extraction/segmentation.
+
           </p>
+
+
 
           <h4 class="fw-bold mb-3 text-custom-blue">1. Edge Detection (Deteksi Tepi)</h4>
+
           <p class="mb-4">
-            Deteksi tepi merupakan proses untuk menemukan perubahan intensitas yang signifikan pada citra. Perubahan
-            intensitas tersebut biasanya menunjukkan batas antara objek dan latar belakang. Hasil dari proses ini berupa
-            citra tepi (edge map) yang berisi piksel-piksel yang diduga sebagai batas objek. Beberapa metode deteksi
-            tepi yang umum digunakan adalah sebagai berikut:
+
+            Deteksi tepi (edge detection) adalah teknik dalam pengolahan citra digital untuk menemukan batas-batas objek
+            di dalam gambar. Tepi (edge) terjadi ketika ada perubahan intensitas warna atau kecerahan yang signifikan
+            tinggi antara satu piksel dengan piksel tetangganya. Perubahan intensitas tersebut biasanya menunjukkan
+            batas antara objek dan latar belakang. Hasil dari proses ini berupa citra tepi (edge map) yang berisi
+            piksel-piksel yang diduga sebagai batas objek. Beberapa metode deteksi tepi yang umum digunakan adalah
+            sebagai berikut:
+
           </p>
 
+
+
+          <div class="row text-center mt-4 mb-2">
+
+            <div class="col-6 col-md-3 mb-3">
+
+              <img src="{{ url_for('static', filename='img/sub3/1_citra_input_asli.png') }}"
+                class="img-fluid rounded border" alt="Visualisasi A">
+
+              <span class="d-block mt-2 fw-medium">(a)</span>
+
+            </div>
+
+
+
+            <div class="col-6 col-md-3 mb-3">
+
+              <img src="{{ url_for('static', filename='img/sub3/2_hasil_canny_full.png') }}"
+                class="img-fluid rounded border" alt="Visualisasi B">
+
+              <span class="d-block mt-2 fw-medium">(b)</span>
+
+            </div>
+
+
+
+            <div class="col-6 col-md-3 mb-3">
+
+              <img src="{{ url_for('static', filename='img/sub3/3_potongan_canny_8x8.png') }}"
+                class="img-fluid rounded border" alt="Visualisasi C">
+
+              <span class="d-block mt-2 fw-medium">(c)</span>
+
+            </div>
+
+
+
+            <div class="col-6 col-md-3 mb-3">
+
+              <img src="{{ url_for('static', filename='img/sub3/4_koordinat_tepi_lokal.png') }}"
+                class="img-fluid rounded border" alt="Visualisasi D">
+
+              <span class="d-block mt-2 fw-medium">(d)</span>
+
+            </div>
+
+          </div>
+
+
+
+          <div class="text-center text-muted mb-5">
+
+            <i>Gambar 3.2 Visualisasi Edge Detection</i>
+
+          </div>
+          <p class="mb-4 text-justify">
+            Berdasarkan Gambar 3.2, proses dimulai dari gambar asli sebuah kendaraan militer dalam format grayscale pada
+            gambar 3.2 (a), yang kemudian diproses menggunakan algoritma deteksi tepi untuk mengekstrak garis-garis
+            kontur objek dan latar belakangnya menjadi warna hitam pada gambar 3.2 (b). Selanjutnya, gambar 3.2 (c)
+            memperlihatkan representasi matriks piksel biner dari tepi citra tersebut, di mana nilai 0 (hitam) mewakili
+            latar belakang dan nilai 255 (putih) menandakan piksel yang terdeteksi sebagai tepi. Terakhir, gambar 3.2
+            (d) memetakan piksel-piksel tepi tersebut ke dalam sistem koordinat, yang menunjukkan bagaimana data visual
+            dikonversi menjadi titik-titik koordinat matematis agar dapat dianalisis lebih lanjut oleh komputer.
+          </p>
           <div class="mb-4">
             <p class="mb-2"><strong>a) Roberts Edge Detector</strong><br>
               Operator Roberts merupakan salah satu metode deteksi tepi paling sederhana yang menggunakan operator
