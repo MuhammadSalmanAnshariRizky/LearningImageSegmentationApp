@@ -2721,7 +2721,6 @@ def export_siswa():
             ).all()
 
         nama_kelas = Class.query.get(class_id).name
-
         filename = f"data_siswa_kelas_{nama_kelas}.xlsx"
 
     # =========================
@@ -2751,14 +2750,20 @@ def export_siswa():
     df = pd.DataFrame(rows)
 
     # =========================
-    # EXPORT
+    # EXPORT (VERSI AMAN UNTUK SERVER WSGI)
     # =========================
     output = io.BytesIO()
-    df.to_excel(output, index=False)
+    
+    # Memastikan file excel ditulis ke memori dengan benar dan ditutup
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False)
+        
     output.seek(0)
 
+    # Mengembalikan file dengan mimetype spesifik untuk .xlsx
     return send_file(
         output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         download_name=filename,
         as_attachment=True
     )
