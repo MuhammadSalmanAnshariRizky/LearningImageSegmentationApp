@@ -3399,6 +3399,7 @@ def export_semua_nilai():
             if sheet_name not in sheets_data:
                 sheets_data[sheet_name] = []
 
+            # PERHATIAN: Tidak perlu memasukkan "No" di sini
             sheets_data[sheet_name].append({
                 "Kelas": kelas.name,
                 "Nama Siswa": user.name,
@@ -3423,6 +3424,7 @@ def export_semua_nilai():
             header_fill = PatternFill(start_color="C6E0B4", end_color="C6E0B4", fill_type="solid")
             header_font = Font(bold=True)
             center_align = Alignment(horizontal="center", vertical="center")
+            left_align = Alignment(horizontal="left", vertical="center")
             thin_border = Border(
                 left=Side(style='thin'), right=Side(style='thin'),
                 top=Side(style='thin'), bottom=Side(style='thin')
@@ -3430,7 +3432,13 @@ def export_semua_nilai():
 
             for sheet_name, data in sheets_data.items():
                 df = pd.DataFrame(data)
-                df = df.sort_values(by=["Kelas", "Nama Siswa"])
+                
+                # Urutkan berdasarkan Kelas lalu Nama Siswa
+                df = df.sort_values(by=["Kelas", "Nama Siswa"]).reset_index(drop=True)
+                
+                # Tambahkan kolom "No" di posisi paling depan (index 0) secara berurutan
+                df.insert(0, 'No', range(1, len(df) + 1))
+
                 df.to_excel(writer, index=False, sheet_name=sheet_name)
 
                 worksheet = writer.sheets[sheet_name]
@@ -3448,8 +3456,12 @@ def export_semua_nilai():
                     for col in range(1, len(df.columns) + 1):
                         cell = worksheet.cell(row=row, column=col)
                         cell.border = thin_border
-                        if col != 2:
-                            cell.alignment = Alignment(horizontal="center")
+                        
+                        # Kolom 3 sekarang adalah "Nama Siswa" (1: No, 2: Kelas, 3: Nama Siswa)
+                        if col == 3:
+                            cell.alignment = left_align
+                        else:
+                            cell.alignment = center_align
 
                 # AUTO WIDTH
                 for col_num, col_name in enumerate(df.columns, 1):
