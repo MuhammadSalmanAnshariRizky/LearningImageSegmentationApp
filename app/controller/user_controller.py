@@ -3319,175 +3319,52 @@ def export_nilai():
         as_attachment=True
     )
 
-
 @user_bp.route('/export_semua_nilai')
 def export_semua_nilai():
-    try:
-        # ====================================
-        # 1. AMBIL DATA BERTAHAP (ANTI MYSQL PUTUS)
-        # ====================================
-        results = db.session.query(
-            Class, Activity, User, ActivityResult
-        )\
+
+    # ambil semua data (join lengkap) - LOGIKA ANDA TETAP
+    results = db.session.query(Class, Activity, User, ActivityResult)\
         .join(Activity, Activity.id_class == Class.id)\
         .join(ActivityResult, ActivityResult.id_activity == Activity.id)\
         .join(User, User.id == ActivityResult.id_user)\
-        .join(StudentClass, StudentClass.id_student == User.id)\
-        .filter(StudentClass.id_class == Class.id)\
-        .yield_per(100)
+        .all()
 
-        # ====================================
-        # 2. FILTER PERCOBAAN TERBAIK
-        # ====================================
-        attempts_dict = {}
+    data = []
 
-        for kelas, activity, user, result in results:
-            key = (activity.id, user.id)
-            if key not in attempts_dict:
-                attempts_dict[key] = []
-            attempts_dict[key].append((kelas, activity, user, result))
+    for kelas, activity, user, result in results:
+        data.append({
+            "Kelas": kelas.name,
+            "Nama Aktivitas": activity.title,
+            "Nama Siswa": user.name,
+            "Nilai": result.nilai_akhir,
+            "Status": result.result_status,
+            "Total Benar": result.total_benar,
+            "Total Salah": result.total_salah,
+            "Durasi (detik)": result.waktu_mengerjakan
+        })
 
-        if not attempts_dict:
-            return "Belum ada data nilai untuk diexport."
+    df = pd.DataFrame(data)
 
-        best_attempts = []
-
-        for key, attempts in attempts_dict.items():
-            best_attempt = max(
-                attempts,
-                key=lambda x: (
-                    1 if x[3].result_status and x[3].result_status.lower() == 'lulus' else 0,
-                    x[3].nilai_akhir or 0,
-                    x[3].percobaan_ke or 0
-                )
-            )
-            best_attempts.append(best_attempt)
-
-        # ====================================
-        # 3. KELOMPOKKAN DATA PER SHEET
-        # ====================================
-        sheets_data = {}
-        used_sheet_names = set()
-
-        for kelas, activity, user, result in best_attempts:
-            raw_title = activity.title if activity.title else f"Aktivitas_{activity.id}"
-
-            # Hapus emoji / unicode aneh
-            ascii_title = raw_title.encode('ascii', 'ignore').decode('ascii')
-
-            # Hapus karakter terlarang excel
-            sheet_name = re.sub(r'[\\/*?:\[\]]', '', ascii_title).strip()
-
-            if not sheet_name:
-                sheet_name = f"Activity_{activity.id}"
-
-            sheet_name = sheet_name[:31]
-
-            # ====================================
-            # ANTI DUPLICATE SHEET NAME
-            # ====================================
-            base_name = sheet_name
-            counter = 1
-
-            while sheet_name in used_sheet_names:
-                suffix = f"_{counter}"
-                sheet_name = f"{base_name[:31-len(suffix)]}{suffix}"
-                counter += 1
-
-            used_sheet_names.add(sheet_name)
-
-            if sheet_name not in sheets_data:
-                sheets_data[sheet_name] = []
-
-            # PERHATIAN: Tidak perlu memasukkan "No" di sini
-            sheets_data[sheet_name].append({
-                "Kelas": kelas.name,
-                "Nama Siswa": user.name,
-                "Nilai": result.nilai_akhir or 0,
-                "Status": (
-                    "Lulus" if result.result_status and result.result_status.lower() == "lulus"
-                    else "Tidak Lulus"
-                ),
-                "Total Benar": result.total_benar or 0,
-                "Total Salah": result.total_salah or 0,
-                "Durasi (detik)": result.waktu_mengerjakan or 0
-            })
-
-        # ====================================
-        # 4. BUAT FILE EXCEL FISIK
-        # ====================================
-        filename = "rekap_nilai_semua_kelas.xlsx"
-        file_path = os.path.join(os.getcwd(), filename)
-
-        with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
-            # STYLE
-            header_fill = PatternFill(start_color="C6E0B4", end_color="C6E0B4", fill_type="solid")
-            header_font = Font(bold=True)
-            center_align = Alignment(horizontal="center", vertical="center")
-            left_align = Alignment(horizontal="left", vertical="center")
-            thin_border = Border(
-                left=Side(style='thin'), right=Side(style='thin'),
-                top=Side(style='thin'), bottom=Side(style='thin')
-            )
-
-            for sheet_name, data in sheets_data.items():
-                df = pd.DataFrame(data)
-                
-                # Urutkan berdasarkan Kelas lalu Nama Siswa
-                df = df.sort_values(by=["Kelas", "Nama Siswa"]).reset_index(drop=True)
-                
-                # Tambahkan kolom "No" di posisi paling depan (index 0) secara berurutan
-                df.insert(0, 'No', range(1, len(df) + 1))
-
-                df.to_excel(writer, index=False, sheet_name=sheet_name)
-
-                worksheet = writer.sheets[sheet_name]
-
-                # HEADER STYLE
-                for col_num in range(1, len(df.columns) + 1):
-                    cell = worksheet.cell(row=1, column=col_num)
-                    cell.fill = header_fill
-                    cell.font = header_font
-                    cell.alignment = center_align
-                    cell.border = thin_border
-
-                # BODY STYLE
-                for row in range(2, len(df) + 2):
-                    for col in range(1, len(df.columns) + 1):
-                        cell = worksheet.cell(row=row, column=col)
-                        cell.border = thin_border
-                        
-                        # Kolom 3 sekarang adalah "Nama Siswa" (1: No, 2: Kelas, 3: Nama Siswa)
-                        if col == 3:
-                            cell.alignment = left_align
-                        else:
-                            cell.alignment = center_align
-
-                # AUTO WIDTH
-                for col_num, col_name in enumerate(df.columns, 1):
-                    column_letter = get_column_letter(col_num)
-                    max_length = max(
-                        df[col_name].astype(str).map(len).max(),
-                        len(col_name)
-                    )
-                    worksheet.column_dimensions[column_letter].width = max_length + 2
-
-        # ====================================
-        # 5. DOWNLOAD FILE
-        # ====================================
-        return send_file(
-            file_path,
-            download_name=filename,
-            as_attachment=True
-        )
-
-    except Exception as e:
-        import traceback
-        return f"""
-        <h1>ERROR EXPORT</h1>
-        <pre>{traceback.format_exc()}</pre>
-        """
+    # ==========================================
+    # PERUBAHAN HANYA DI SINI (AGAR BISA DI HOSTING)
+    # ==========================================
     
+    # nama file
+    filename = "nilai_semua_kelas.xlsx"
+    
+    # Buat path fisik di server
+    file_path = os.path.join(os.getcwd(), filename)
+
+    # Simpan langsung ke file fisik (tanpa BytesIO)
+    df.to_excel(file_path, index=False, engine='openpyxl')
+
+    return send_file(
+        file_path,
+        download_name=filename,
+        as_attachment=True
+    )
+
+
 @user_bp.route('/datasoal')
 def data_soal():
 
