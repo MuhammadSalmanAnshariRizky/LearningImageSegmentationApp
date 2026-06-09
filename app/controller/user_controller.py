@@ -3321,49 +3321,121 @@ def export_nilai():
 
 @user_bp.route('/export_semua_nilai')
 def export_semua_nilai():
+    try:
+      
 
-    # ambil semua data (join lengkap) - LOGIKA ANDA TETAP
-    results = db.session.query(Class, Activity, User, ActivityResult)\
-        .join(Activity, Activity.id_class == Class.id)\
-        .join(ActivityResult, ActivityResult.id_activity == Activity.id)\
-        .join(User, User.id == ActivityResult.id_user)\
-        .all()
+        # ==========================================
+        # 1. AMBIL DATA (LOGIKA ANDA TETAP 100%)
+        # ==========================================
+        results = db.session.query(Class, Activity, User, ActivityResult)\
+            .join(Activity, Activity.id_class == Class.id)\
+            .join(ActivityResult, ActivityResult.id_activity == Activity.id)\
+            .join(User, User.id == ActivityResult.id_user)\
+            .all()
 
-    data = []
+        # ==========================================
+        # 2. PISAHKAN DATA PER SHEET (Berdasarkan Aktivitas)
+        # ==========================================
+        sheets_data = {}
 
-    for kelas, activity, user, result in results:
-        data.append({
-            "Kelas": kelas.name,
-            "Nama Aktivitas": activity.title,
-            "Nama Siswa": user.name,
-            "Nilai": result.nilai_akhir,
-            "Status": result.result_status,
-            "Total Benar": result.total_benar,
-            "Total Salah": result.total_salah,
-            "Durasi (detik)": result.waktu_mengerjakan
-        })
+        for kelas, activity, user, result in results:
+            # Bersihkan nama aktivitas untuk nama sheet Excel (Max 31 karakter, tanpa simbol terlarang)
+            raw_title = activity.title if activity.title else f"Aktivitas_{activity.id}"
+            sheet_name = re.sub(r'[\\/*?:\[\]]', '', raw_title).strip()[:31]
 
-    df = pd.DataFrame(data)
+            if not sheet_name:
+                sheet_name = "Data_Nilai"
 
-    # ==========================================
-    # PERUBAHAN HANYA DI SINI (AGAR BISA DI HOSTING)
-    # ==========================================
-    
-    # nama file
-    filename = "nilai_semua_kelas.xlsx"
-    
-    # Buat path fisik di server
-    file_path = os.path.join(os.getcwd(), filename)
+            # Buat list baru jika sheet ini belum ada
+            if sheet_name not in sheets_data:
+                sheets_data[sheet_name] = []
 
-    # Simpan langsung ke file fisik (tanpa BytesIO)
-    df.to_excel(file_path, index=False, engine='openpyxl')
+            # Masukkan data ke sheet yang sesuai (Format sama seperti contoh file Anda)
+            sheets_data[sheet_name].append({
+                "No": len(sheets_data[sheet_name]) + 1,
+                "Kelas": kelas.name,
+                "Nama Siswa": user.name,
+                "Nilai": result.nilai_akhir,
+                "Status": result.result_status,
+                "Total Benar": result.total_benar,
+                "Total Salah": result.total_salah,
+                "Durasi (detik)": result.waktu_mengerjakan
+            })
 
-    return send_file(
-        file_path,
-        download_name=filename,
-        as_attachment=True
-    )
+        # ==========================================
+        # 3. EXPORT KE FILE FISIK & STYLING (BISA DI HOSTING)
+        # ==========================================
+        filename = "rekap_nilai_semua_kelas.xlsx"
+        file_path = os.path.join(os.getcwd(), filename)
 
+        # Gunakan openpyxl untuk styling dan penulisan file fisik
+        with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+            
+            # Definisi Gaya (Styling)
+            header_fill = PatternFill(start_color="C6E0B4", end_color="C6E0B4", fill_type="solid") # Hijau Muda
+            header_font = Font(bold=True)
+            center_align = Alignment(horizontal="center", vertical="center")
+            left_align = Alignment(horizontal="left", vertical="center")
+            thin_border = Border(
+                left=Side(style='thin'), right=Side(style='thin'),
+                top=Side(style='thin'), bottom=Side(style='thin')
+            )
+
+            # Jika data ternyata kosong dari database, cegah error file excel kosong
+            if not sheets_data:
+                pd.DataFrame(["Belum ada data nilai"]).to_excel(writer, index=False, sheet_name="Data Kosong")
+
+            # Mulai menulis dan men-styling setiap sheet
+            for sheet_name, data in sheets_data.items():
+                df = pd.DataFrame(data)
+                
+                # Urutkan berdasarkan Kelas dan Nama Siswa biar rapi di tiap sheet
+                df = df.sort_values(by=["Kelas", "Nama Siswa"]).reset_index(drop=True)
+                df['No'] = range(1, len(df) + 1) # Perbarui urutan No
+
+                # Tulis Dataframe ke Excel
+                df.to_excel(writer, index=False, sheet_name=sheet_name)
+                
+                worksheet = writer.sheets[sheet_name]
+
+                # A. Terapkan Style untuk Header (Baris Pertama)
+                for col_num in range(1, len(df.columns) + 1):
+                    cell = worksheet.cell(row=1, column=col_num)
+                    cell.fill = header_fill
+                    cell.font = header_font
+                    cell.alignment = center_align
+                    cell.border = thin_border
+
+                # B. Terapkan Border dan Alignment untuk Isi Tabel (Baris Kedua dst)
+                for row in range(2, len(df) + 2):
+                    for col in range(1, len(df.columns) + 1):
+                        cell = worksheet.cell(row=row, column=col)
+                        cell.border = thin_border
+                        
+                        # Kolom "Nama Siswa" (kolom ke-3) dibuat rata kiri, sisanya rata tengah
+                        if col == 3:
+                            cell.alignment = left_align
+                        else:
+                            cell.alignment = center_align
+
+                # C. Lebarkan Kolom Otomatis Menyesuaikan Isi Teks Terpanjang
+                for col_num, col_name in enumerate(df.columns, 1):
+                    column_letter = get_column_letter(col_num)
+                    max_length = max(df[col_name].astype(str).map(len).max(), len(col_name))
+                    worksheet.column_dimensions[column_letter].width = max_length + 2
+
+        # ==========================================
+        # 4. KIRIM FILE FISIK KE PENGGUNA
+        # ==========================================
+        return send_file(
+            file_path,
+            download_name=filename,
+            as_attachment=True
+        )
+
+    except Exception as e:
+        import traceback
+        return f"<h1>ERROR EXPORT</h1><pre>{traceback.format_exc()}</pre>"
 
 @user_bp.route('/datasoal')
 def data_soal():
