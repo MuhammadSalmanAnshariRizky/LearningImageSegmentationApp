@@ -2750,22 +2750,21 @@ def export_siswa():
     df = pd.DataFrame(rows)
 
     # =========================
-    # EXPORT (VERSI AMAN UNTUK SERVER WSGI)
+    # EXPORT (TEKNIS BARU: FILE FISIK)
     # =========================
-    output = io.BytesIO()
+    # 1. Tentukan lokasi simpan fisik (misal: di folder yang sama dengan file script ini)
+    # Anda juga bisa mengubahnya ke folder tertentu misal: file_path = f"/tmp/{filename}"
+    file_path = os.path.join(os.getcwd(), filename)
     
-    # Memastikan file excel ditulis ke memori dengan benar dan ditutup
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False)
-        
-    output.seek(0)
+    # 2. Simpan DataFrame secara fisik ke hardisk server
+    df.to_excel(file_path, index=False)
 
-    # Mengembalikan file dengan mimetype spesifik untuk .xlsx
+    # 3. Kirim file fisik tersebut ke browser pengguna
+    # File fisik di hardisk sudah pasti memiliki 'fileno' sehingga aman di cPanel
     return send_file(
-        output,
-        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        download_name=filename,
-        as_attachment=True
+        file_path,
+        as_attachment=True,
+        download_name=filename
     )
 
 @user_bp.route('/datakelas')
