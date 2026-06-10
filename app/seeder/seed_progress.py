@@ -6,7 +6,7 @@ from app.model.historyprogress import HistoryProgress
 from app.model.activity_result import ActivityResult
 from app.model.subtopic import SubTopic
 from app.model.user import User
-from app.model.activity import Activity # Pastikan model Activity di-import
+from app.model.activity import Activity 
 
 def seed_progress_history():
     # 1. Ambil semua siswa
@@ -23,14 +23,11 @@ def seed_progress_history():
     
     total_sub = len(all_subtopics)
 
-    # 🎯 PERBAIKAN: Mapping Dinamis ID Aktivitas -> ID Subtopic
-    # Tentukan ID subtopik mana saja yang merupakan "gerbang" / milestone
-    milestone_subtopics = [4, 8, 13, 14, 15, 16]
+    # 🎯 Mapping Dinamis ID Aktivitas -> ID Subtopic
+    milestone_subtopics = [4, 8, 13, 18, 23, 24]
     
-    # Ambil semua aktivitas (baik dari Kelas 1, Kelas 2, dst) yang mengarah ke milestone tersebut
     gate_activities = Activity.query.filter(Activity.id_subtopic.in_(milestone_subtopics)).all()
     
-    # Bentuk dictionary secara otomatis (contoh output: {3:4, ..., 21:4, 24:8, ...})
     activity_subtopic_map = {act.id: act.id_subtopic for act in gate_activities}
 
     # 3. Reset data lama
@@ -40,11 +37,9 @@ def seed_progress_history():
 
     # 4. Loop untuk setiap student
     for student in students:
-        # Ambil hasil aktivitas siswa, urutkan berdasarkan ID aktivitas (sesuai urutan belajar)
         results = ActivityResult.query.filter_by(id_user=student.id)\
                                       .order_by(ActivityResult.id_activity.asc()).all()
         
-        # Tentukan batas akhir subtopik yang bisa diakses
         max_subtopic_id = 0
         
         for res in results:
@@ -52,20 +47,18 @@ def seed_progress_history():
                 subtopic_terkait = activity_subtopic_map[res.id_activity]
                 
                 if res.result_status == 'lulus':
-                    # Jika lulus, update batas max subtopik ke subtopik aktivitas ini
-                    # Gunakan fungsi max() agar jika ada data yang tidak berurutan, nilainya tidak mundur
+                    # JIKA LULUS: Update progres ke subtopik kuis ini
                     max_subtopic_id = max(max_subtopic_id, subtopic_terkait)
                 else:
-                    # Jika tidak lulus, progres berhenti tepat di aktivitas ini (break)
-                    max_subtopic_id = max(max_subtopic_id, subtopic_terkait)
+                    # JIKA TIDAK LULUS: 
+                    # Jangan update max_subtopic_id! Langsung hentikan pengecekan.
+                    # Progres akan otomatis tertahan di titik kelulusan terakhir.
                     break 
 
-        # Jika siswa belum mengerjakan apapun, beri progress minimal (misal subtopik ke-1)
+        # Jika siswa belum mengerjakan apapun (atau gagal di kuis pertama)
         if max_subtopic_id == 0:
             jumlah_history = 1 
         else:
-            # Hitung berapa subtopik yang valid berdasarkan max_subtopic_id
-            # Kita ambil subtopik yang ID-nya <= max_subtopic_id
             valid_subtopics = [s for s in all_subtopics if s.id <= max_subtopic_id]
             jumlah_history = len(valid_subtopics)
 
@@ -95,4 +88,4 @@ def seed_progress_history():
 
     # Final commit
     db.session.commit()
-    print(f"✅ Seeder Progress selaras berhasil untuk {len(students)} siswa!")
+    print(f"✅ Seeder Progress selaras berhasil untuk {len(students)} siswa! Progres mandek jika tidak lulus.")
