@@ -254,7 +254,7 @@ def aktivitas1_2():
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='mudah',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -548,7 +548,7 @@ maka hasil grayscales pada \\( f(1,2) \\) yang benar adalah …
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='mudah',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -856,7 +856,7 @@ maka nilai grayscales pada posisi \\( f(2,2) \\) adalah…
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='sedang',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -1143,7 +1143,7 @@ Jika suatu wilayah memiliki nilai piksel yang tidak seragam, maka…
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='mudah',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -1419,7 +1419,7 @@ Dalam region-based segmentation, penggunaan standar deviasi bertujuan untuk…
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='mudah',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -1731,7 +1731,7 @@ Jika dua wilayah bertetangga memiliki karakteristik yang sama dan digabung masih
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='sedang',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -2007,7 +2007,7 @@ Edge chain tertutup dalam segmentasi citra berfungsi untuk....
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='mudah',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -2299,7 +2299,7 @@ Alasan utama penggunaan kedua kriteria tersebut adalah....
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='sedang',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -2612,7 +2612,7 @@ Berdasarkan penjelasan pada modul, kondisi tersebut terjadi karena....
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='sedang',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -3202,7 +3202,7 @@ Kode program yang tepat untuk melakukan <i>Edge linking</i> menggunakan Morpholo
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='sedang',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -3479,7 +3479,7 @@ maka piksel dengan nilai intensitas kurang dari atau sama dengan 150 akan diklas
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='mudah',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -3758,7 +3758,7 @@ Apabila histogram citra memiliki lebih dari dua puncak, maka pendekatan yang ses
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='mudah',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -4033,7 +4033,7 @@ Perhatikan potongan kode dibawah, Pada metode <i>Iterative Threshold Selection</
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='sedang',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -4647,7 +4647,7 @@ Perhatikan potongan gambar di bawah. Tujuan dari kondisi tersebut adalah....
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='sulit',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -4931,7 +4931,7 @@ Perbedaan utama antara <i>Region-Based Segmentation</i> dan <i>Edge-Based Segmen
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='mudah',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -5207,7 +5207,7 @@ Perhatikan potongan gambar di bawah. Potongan program tersebut digunakan untuk..
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='mudah',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -5488,7 +5488,7 @@ Perhatikan potongan gambar di bawah, Tujuan dari kode tersebut adalah....
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='mudah',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -6118,7 +6118,7 @@ Perhatikan potongan gambar di bawah, Baris program tersebut berfungsi untuk....
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='sulit',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)
@@ -6621,7 +6621,7 @@ Perhatikan potongan gambar di bawah. Baris program tersebut digunakan untuk ....
 
             MC_Answer=item['answer'],
             tingkat_kesulitan='sulit',
-            created_by=41
+            created_by=42
         )
 
         db.session.add(question)

@@ -614,12 +614,14 @@ def pengantarcitradigital():
     activity = Activity.query.filter_by(
         id_class=kelas_id,
         id_subtopic=id_subtopic
+        
     ).first()
 
     if not activity:
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
+    title = activity.title
 
     # ambil progress
     progress_data = Progress.query.filter_by(
@@ -631,7 +633,8 @@ def pengantarcitradigital():
     return render_template(
         'mahasiswa/sub1/pengertiancitradigital.html',
         id_activity=id_activity,
-        progress=progress_percent
+        progress=progress_percent,
+        title = title
     )
     
 @user_bp.route('/materi1/jeniscitra')
@@ -667,11 +670,12 @@ def jeniscitra():
         id_class=kelas_id,
         id_subtopic=id_subtopic
     ).first()
-
+    
     if not activity:
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
+    title = activity.title
 
     # ambil progress
     progress_data = Progress.query.filter_by(
@@ -683,7 +687,8 @@ def jeniscitra():
     return render_template(
         'mahasiswa/sub1/jeniscitra.html',
         id_activity=id_activity,
-        progress=progress_percent)
+        progress=progress_percent,
+        title = title)
 
 @user_bp.route('/materi1/rangkuman')
 @student_required
@@ -758,10 +763,6 @@ def kuis1():
 
     id_activity = activity.id
     
-    # --- TAMBAHKAN INI UNTUK DEBUGGING ---
-    print(f"DEBUG -> User ID Login: {user_id}")
-    print(f"DEBUG -> Berada di Kelas ID: {kelas_id}")
-    print(f"DEBUG -> Mencari Activity ID: {id_activity}")
     # ===============================
     # AMBIL RIWAYAT HASIL (Diurutkan dari percobaan terbaru)
     # ===============================
@@ -868,6 +869,7 @@ def pengantarsegmentasi():
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
+    title = activity.title
 
     # ambil progress
     progress_data = Progress.query.filter_by(
@@ -878,7 +880,8 @@ def pengantarsegmentasi():
     return render_template(
         'mahasiswa/sub2/pengantarsegmentasi.html', 
         id_activity=id_activity,
-        progress=progress_percent)
+        progress=progress_percent,
+        title = title)
     
 
 @user_bp.route('/materi2/metodesegmentasi')
@@ -919,6 +922,7 @@ def metodesegmentasi():
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
+    title = activity.title
 
     # ambil progress
     progress_data = Progress.query.filter_by(
@@ -928,7 +932,8 @@ def metodesegmentasi():
     return render_template(
         'mahasiswa/sub2/metodesegmentasi.html', 
         id_activity=id_activity,
-        progress=progress_percent)
+        progress=progress_percent,
+        title = title)
 
 @user_bp.route('/materi2/rangkuman')
 @student_required
@@ -1107,16 +1112,19 @@ def pengantaredgebased():
 
     id_subtopic = subtopic.id
 
+
     # ambil activity berdasarkan kelas + subtopic
     activity = Activity.query.filter_by(
         id_class=kelas_id,
         id_subtopic=id_subtopic
     ).first()
+    
 
     if not activity:
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
+    title = activity.title
 
     # ambil progress
     progress_data = Progress.query.filter_by(
@@ -1127,7 +1135,8 @@ def pengantaredgebased():
     return render_template(
         'mahasiswa/sub3/pengantaredgebased.html',
         id_activity=id_activity,
-        progress=progress_percent
+        progress=progress_percent,
+        title = title
     )
 
 @user_bp.route('/materi3/tahapanedgebased')
@@ -1158,6 +1167,7 @@ def tahapanedgebased():
 
     id_subtopic = subtopic.id
 
+
     # ambil activity berdasarkan kelas + subtopic
     activity = Activity.query.filter_by(
         id_class=kelas_id,
@@ -1168,7 +1178,7 @@ def tahapanedgebased():
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
-
+    title = activity.title
     # ambil progress
     progress_data = Progress.query.filter_by(
         id_user=user_id
@@ -1178,7 +1188,8 @@ def tahapanedgebased():
     return render_template(
         'mahasiswa/sub3/tahapanedgebased.html',
         id_activity=id_activity,
-        progress=progress_percent
+        progress=progress_percent,
+        title = title
     )
 
 @user_bp.route('/materi3/praktekedgebased')
@@ -1219,6 +1230,7 @@ def praktekedgebased():
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
+    title = activity.title
 
     # ambil progress
     progress_data = Progress.query.filter_by(
@@ -1229,7 +1241,8 @@ def praktekedgebased():
     return render_template(
         'mahasiswa/sub3/praktekedgebased.html',
         id_activity=id_activity,
-        progress=progress_percent
+        progress=progress_percent,
+        title = title
     )
 
 @user_bp.route('/materi3/rangkuman')
@@ -1417,6 +1430,7 @@ def pengantarthresholdbased():
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
+    title = activity.title
 
     # ambil progress
     progress_data = Progress.query.filter_by(
@@ -1424,7 +1438,7 @@ def pengantarthresholdbased():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub4/pengantarthresholdbased.html',id_activity=id_activity, progress=progress_percent)
+    return render_template('mahasiswa/sub4/pengantarthresholdbased.html',id_activity=id_activity, progress=progress_percent,title=title)
 
 @user_bp.route("/materi4/histogram")
 @student_required
@@ -1464,6 +1478,7 @@ def histogram():
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
+    title = activity.title
 
     # ambil progress
     progress_data = Progress.query.filter_by(
@@ -1471,7 +1486,7 @@ def histogram():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub4/histogram.html',id_activity=id_activity, progress=progress_percent)
+    return render_template('mahasiswa/sub4/histogram.html',id_activity=id_activity, progress=progress_percent,title=title)
 
 @user_bp.route("/materi4/metodethresholding")
 @student_required
@@ -1511,6 +1526,7 @@ def metodethresholding():
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
+    title = activity.title
 
     # ambil progress
     progress_data = Progress.query.filter_by(
@@ -1518,7 +1534,7 @@ def metodethresholding():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub4/metodethresholding.html', id_activity=id_activity, progress=progress_percent)
+    return render_template('mahasiswa/sub4/metodethresholding.html', id_activity=id_activity, progress=progress_percent,title=title)
 
 @user_bp.route("/materi4/rangkuman")
 @student_required
@@ -1704,14 +1720,14 @@ def pengantarregionbased():
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
-
+    title = activity.title
     # ambil progress
     progress_data = Progress.query.filter_by(
         id_user=user_id
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub5/pengantarregionbased.html',id_activity=id_activity, progress=progress_percent)
+    return render_template('mahasiswa/sub5/pengantarregionbased.html',id_activity=id_activity, progress=progress_percent,title=title)
 
 @user_bp.route('/materi5/regiongrowing')
 @student_required
@@ -1751,6 +1767,7 @@ def regiongrowing():
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
+    title = activity.title
 
     # ambil progress
     progress_data = Progress.query.filter_by(
@@ -1758,7 +1775,7 @@ def regiongrowing():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub5/regiongrowing.html',id_activity=id_activity, progress=progress_percent)
+    return render_template('mahasiswa/sub5/regiongrowing.html',id_activity=id_activity, progress=progress_percent,title=title)
 
 @user_bp.route('/materi5/splitandmerge')
 @student_required
@@ -1798,6 +1815,7 @@ def splitandmerge():
         return "Activity tidak ditemukan"
 
     id_activity = activity.id
+    title = activity.title
 
     # ambil progress
     progress_data = Progress.query.filter_by(
@@ -1805,7 +1823,7 @@ def splitandmerge():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub5/splitandmerge.html',id_activity=id_activity, progress=progress_percent)
+    return render_template('mahasiswa/sub5/splitandmerge.html',id_activity=id_activity, progress=progress_percent,title=title)
 
 @user_bp.route("/materi5/rangkuman")
 @student_required
@@ -1993,14 +2011,49 @@ def api_kuis(slug):
     from app.model.activity import Activity
     from app.model.activity_question import ActivityQuestion
     from app.model.question import Question
+    from app.model.student_class import StudentClass
+    from app.model.user import User
 
-    # LANGSUNG CARI SLUG
-    activity = Activity.query.filter_by(title=slug).first_or_404()
+    # =========================
+    # USER LOGIN
+    # =========================
+    user_id = session.get('user_id')
 
-    relasi = ActivityQuestion.query.filter_by(id_activity=activity.id).all()
+    if not user_id:
+        return jsonify([]), 401
+
+    user = User.query.get(user_id)
+
+    # =========================
+    # AMBIL KELAS SISWA
+    # =========================
+    student_class = StudentClass.query.filter_by(
+        id_student=user.id
+    ).first()
+
+    if not student_class:
+        return jsonify([]), 404
+
+    # =========================
+    # CARI ACTIVITY SESUAI KELAS
+    # =========================
+    activity = Activity.query.filter_by(
+        title=slug,
+        id_class=student_class.id_class
+    ).first_or_404()
+
+    # =========================
+    # AMBIL QUESTION
+    # =========================
+    relasi = ActivityQuestion.query.filter_by(
+        id_activity=activity.id
+    ).all()
+
     question_ids = [r.id_question for r in relasi]
 
-    questions = Question.query.filter(Question.id.in_(question_ids)).all()
+    questions = Question.query.filter(
+        Question.id.in_(question_ids)
+    ).all()
 
     result = []
 
@@ -2052,13 +2105,31 @@ def api_kuis(slug):
 @user_bp.route('/kuis/mulai/<slug>')
 def mulai_kuis(slug):
 
-    activity = Activity.query.filter_by(title=slug).first_or_404()
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return redirect('/login')
+
+    user = User.query.get(user_id)
+
+    # AMBIL KELAS SISWA
+    student_class = StudentClass.query.filter_by(
+        id_student=user.id
+    ).first()
+
+    if not student_class:
+        return redirect('/')
+
+    # CARI ACTIVITY SESUAI SLUG + KELAS SISWA
+    activity = Activity.query.filter_by(
+        title=slug,
+        id_class=student_class.id_class
+    ).first_or_404()
 
     return render_template(
         'layouts/kuis.html',
         activity=activity
     )
-    
 @user_bp.route('/evaluasi')
 @student_required
 def evaluasi():
@@ -2383,7 +2454,7 @@ def submit_kuis_evaluasi():
 
     if topic.topic_name == 'Pengantar Citra Digital':
         return redirect('/materi1/kuis')
-    elif topic.topic_name == 'Segmentasi Citra':
+    elif topic.topic_name == 'Pengantar Segmentasi Citra':
         return redirect('/materi2/kuis')
     elif topic.topic_name == 'Edge-Based Segmentation':
         return redirect('/materi3/kuis')

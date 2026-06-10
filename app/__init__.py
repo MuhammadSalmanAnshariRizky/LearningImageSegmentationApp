@@ -21,7 +21,7 @@ def create_app():
     # =========================
     # CONFIG DATABASE
     # =========================
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3307/db_segmind'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://researc4_salman:MsalmanAr13@localhost/researc4_segmentasi'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,  # Jurus ampuh: Cek nyawa database sebelum kirim query

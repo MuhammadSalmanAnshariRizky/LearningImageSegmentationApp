@@ -12,7 +12,7 @@ def seed_activity_answer():
     print("🧹 Data jawaban lama telah dibersihkan.")
 
     # 2. Ambil semua hasil aktivitas yang sudah ada (Ini adalah sumber kebenaran)
-    # Jika result tidak ada (karena progres belum sampai), maka tidak akan ada data jawaban
+    # Karena ActivityResult sudah disesuaikan untuk semua kelas, data yang ditarik pasti valid.
     results = ActivityResult.query.all()
     
     data_to_insert = []
@@ -33,16 +33,19 @@ def seed_activity_answer():
         total_benar_target = result.total_benar or 0
         
         for idx, q in enumerate(questions):
-            # 4. Tentukan status jawaban berdasarkan total_benar yang sudah ada di ActivityResult
+            # Normalisasi kunci jawaban ke huruf kecil untuk mencegah ValueError (case-sensitive)
+            kunci_jawaban = q.MC_Answer.lower() if q.MC_Answer else 'a'
+
+            # 4. Tentukan status jawaban berdasarkan total_benar_target
             if idx < total_benar_target:
                 status = 'benar'
-                user_answer = q.MC_Answer
+                user_answer = kunci_jawaban
             else:
                 status = 'salah'
                 # Pilih jawaban salah dari opsi yang tersedia
                 pilihan_jawaban = ['a', 'b', 'c', 'd', 'e']
-                if q.MC_Answer in pilihan_jawaban:
-                    pilihan_jawaban.remove(q.MC_Answer)
+                if kunci_jawaban in pilihan_jawaban:
+                    pilihan_jawaban.remove(kunci_jawaban)
                 user_answer = random.choice(pilihan_jawaban)
             
             # 5. Buat record Jawaban
@@ -61,6 +64,6 @@ def seed_activity_answer():
     if data_to_insert:
         db.session.add_all(data_to_insert)
         db.session.commit()
-        print(f"✅ Seeder ActivityAnswer berhasil! {len(data_to_insert)} jawaban dibuat selaras dengan status kelulusan.")
+        print(f"✅ Seeder ActivityAnswer berhasil! {len(data_to_insert)} jawaban dibuat selaras dengan status kelulusan tiap kelas.")
     else:
         print("⚠️ Tidak ada data jawaban yang dibuat.")
