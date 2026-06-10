@@ -6,6 +6,7 @@ from app.model.historyprogress import HistoryProgress
 from app.model.activity_result import ActivityResult
 from app.model.subtopic import SubTopic
 from app.model.user import User
+from app.model.activity import Activity # Pastikan model Activity di-import
 
 def seed_progress_history():
     # 1. Ambil semua siswa
@@ -22,16 +23,15 @@ def seed_progress_history():
     
     total_sub = len(all_subtopics)
 
-    # Mapping: ID Aktivitas -> ID Subtopic terkait
-    # SESUAIKAN ID ini dengan data di database Anda
-    activity_subtopic_map = {
-        3: 4, 
-        6: 8, 
-        10: 13, 
-        14: 14, 
-        18: 15, 
-        19: 16
-    }
+    # 🎯 PERBAIKAN: Mapping Dinamis ID Aktivitas -> ID Subtopic
+    # Tentukan ID subtopik mana saja yang merupakan "gerbang" / milestone
+    milestone_subtopics = [4, 8, 13, 14, 15, 16]
+    
+    # Ambil semua aktivitas (baik dari Kelas 1, Kelas 2, dst) yang mengarah ke milestone tersebut
+    gate_activities = Activity.query.filter(Activity.id_subtopic.in_(milestone_subtopics)).all()
+    
+    # Bentuk dictionary secara otomatis (contoh output: {3:4, ..., 21:4, 24:8, ...})
+    activity_subtopic_map = {act.id: act.id_subtopic for act in gate_activities}
 
     # 3. Reset data lama
     Progress.query.delete()
@@ -49,12 +49,15 @@ def seed_progress_history():
         
         for res in results:
             if res.id_activity in activity_subtopic_map:
+                subtopic_terkait = activity_subtopic_map[res.id_activity]
+                
                 if res.result_status == 'lulus':
                     # Jika lulus, update batas max subtopik ke subtopik aktivitas ini
-                    max_subtopic_id = activity_subtopic_map[res.id_activity]
+                    # Gunakan fungsi max() agar jika ada data yang tidak berurutan, nilainya tidak mundur
+                    max_subtopic_id = max(max_subtopic_id, subtopic_terkait)
                 else:
                     # Jika tidak lulus, progres berhenti tepat di aktivitas ini (break)
-                    max_subtopic_id = activity_subtopic_map[res.id_activity]
+                    max_subtopic_id = max(max_subtopic_id, subtopic_terkait)
                     break 
 
         # Jika siswa belum mengerjakan apapun, beri progress minimal (misal subtopik ke-1)

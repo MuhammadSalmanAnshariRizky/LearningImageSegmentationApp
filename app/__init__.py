@@ -21,7 +21,7 @@ def create_app():
     # =========================
     # CONFIG DATABASE
     # =========================
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://researc4_salman:MsalmanAr13@localhost/researc4_segmentasi'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3307/db_segmind'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,  # Jurus ampuh: Cek nyawa database sebelum kirim query
@@ -140,6 +140,7 @@ def db_fresh():
     from app.seeder.seed_subtopic import seed_subtopic_topic1, seed_subtopic_topic2, seed_subtopic_topic3, seed_subtopic_topic4, seed_subtopic_topic5,seed_subtopic_topic6
     from app.seeder.seed_progress import seed_progress_history
     from app.seeder.soal_soal import aktivitas1,aktivitas2,kuis1,aktivitas3,aktivitas4,kuis2,aktivitas5,aktivitas6,aktivitas7,kuis3,aktivitas8,aktivitas9,aktivitas10,kuis4,aktivitas11,aktivitas12,aktivitas13,kuis5,evaluasi
+    from app.seeder.soalkelas2 import aktivitas1_2,aktivitas2_2,kuis1_2,aktivitas3_2,aktivitas4_2,kuis2_2,aktivitas5_2,aktivitas6_2,aktivitas7_2,kuis3_2,aktivitas8_2,aktivitas9_2,aktivitas10_2,kuis4_2,aktivitas11_2,aktivitas12_2,aktivitas13_2,kuis5_2,evaluasi2
     from app.seeder.setting import seed_settings
     from app.seeder.activity_answer import seed_activity_answer
     
@@ -188,8 +189,33 @@ def db_fresh():
     aktivitas13()
     kuis5()
     
+    #kelas kedua
+    #bab 1
+    aktivitas1_2()
+    aktivitas2_2()
+    kuis1_2()
+    #bab 2
+    aktivitas3_2()
+    aktivitas4_2()
+    kuis2_2()
+    #bab 3
+    aktivitas5_2()
+    aktivitas6_2()
+    aktivitas7_2()
+    kuis3_2()
+    #bab4
+    aktivitas8_2()
+    aktivitas9_2()
+    aktivitas10_2()
+    kuis4_2()
+    #bab5
+    aktivitas11_2()
+    aktivitas12_2()   
+    aktivitas13_2()
+    kuis5_2()
+    
     #evaluasi
-    evaluasi()
+    evaluasi2()
     # seed_activity()
     # seed_question()
     # seed_question_kuis()

@@ -757,7 +757,11 @@ def kuis1():
         return "Activity kuis tidak ditemukan"
 
     id_activity = activity.id
-
+    
+    # --- TAMBAHKAN INI UNTUK DEBUGGING ---
+    print(f"DEBUG -> User ID Login: {user_id}")
+    print(f"DEBUG -> Berada di Kelas ID: {kelas_id}")
+    print(f"DEBUG -> Mencari Activity ID: {id_activity}")
     # ===============================
     # AMBIL RIWAYAT HASIL (Diurutkan dari percobaan terbaru)
     # ===============================

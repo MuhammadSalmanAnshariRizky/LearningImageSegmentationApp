@@ -5,41 +5,73 @@ from app.model.activity import Activity
 from app.model.activity_result import ActivityResult
 from app.model.user import User
 from app.model.subtopic import SubTopic
+from app.model.student_class import StudentClass  # Pastikan di-import untuk cek kelas siswa
 
 def seed_activity_result():
-    # 🎯 Ambil semua user dengan role Student
+    # 🎯 1. Ambil semua user dengan role Student
     students = User.query.filter_by(role='Student').all()
     
-    # 🎯 Ambil activity kuis & evaluasi, urutkan berdasarkan ID agar alur belajarnya urut
-    activities = Activity.query.filter(Activity.id.in_([3, 6, 10, 14, 18, 19])).order_by(Activity.id.asc()).all()
+    # 🎯 2. Definisikan ID Activity berdasarkan Kelas
+    class_activity_ids = {
+        1: [3, 6, 10, 14, 18, 19],        # ID Activity untuk Kelas 1
+        2: [21, 24, 28, 32, 36, 37]       # ID Activity untuk Kelas 2 (Sesuai database kamu)
+    }
     
-    # Mapping: ID Aktivitas -> ID Subtopic terkait
+    # 🎯 3. Mapping: ID Aktivitas (Kedua Kelas) -> ID Subtopic terkait
+    # Urutan subtopik milestone: Kuis-1 (4), Kuis-2 (8), Kuis-3 (13), Aktivitas 8 (14), Aktivitas 9 (15), Aktivitas 10 (16)
     activity_subtopic_map = {
-        3: 4, 6: 8, 10: 13, 14: 14, 18: 15, 19: 16
+        # Kelas 1
+        3: 4, 6: 8, 10: 13, 14: 14, 18: 15, 19: 16,
+        # Kelas 2
+        21: 4, 24: 8, 28: 13, 32: 14, 36: 15, 37: 16
     }
 
-    if not students or not activities:
+    # Ambil semua ID aktivitas yang digabung dari Kelas 1 dan Kelas 2
+    all_valid_ids = class_activity_ids[1] + class_activity_ids[2]
+    activities_pool = Activity.query.filter(Activity.id.in_(all_valid_ids)).all()
+    
+    # Ubah menjadi dictionary pool agar pencarian object di dalam loop lebih cepat (menghemat query)
+    activities_dict = {act.id: act for act in activities_pool}
+
+    # Ambil data kelas semua siswa sekaligus
+    student_classes = StudentClass.query.all()
+    student_to_class = {sc.id_student: sc.id_class for sc in student_classes}
+
+    # Ambil semua subtopic untuk menghitung batas progres
+    all_subtopics = SubTopic.query.order_by(SubTopic.id.asc()).all()
+    total_sub = len(all_subtopics)
+
+    if not students or not activities_pool:
         print("❌ Data Student atau Activity tidak ditemukan")
         return
 
     data_to_insert = []
     
-    # Ambil semua subtopic untuk menghitung batas progres
-    all_subtopics = SubTopic.query.order_by(SubTopic.id.asc()).all()
-    total_sub = len(all_subtopics)
-
+    # 🎯 4. Looping data siswa
     for index, student in enumerate(students):
-        # 1. Tentukan batas progres siswa (Samakan dengan logika seed_progress_history)
+        # Dapatkan ID kelas si siswa
+        kelas_id = student_to_class.get(student.id)
+        if not kelas_id:
+            continue  # Lewati jika siswa tidak terdaftar di kelas manapun
+            
+        # Ambil daftar ID aktivitas yang sah khusus untuk kelas siswa ini
+        valid_activity_ids = class_activity_ids.get(kelas_id, [])
+        
+        # Tentukan batas progres simulasi siswa
         if index == 0:
-            jumlah_history = total_sub # Siswa pertama 100%
+            jumlah_history = total_sub # Siswa pertama disimulasikan lulus 100%
         else:
             jumlah_history = random.randint(5, total_sub) 
             
         # ID subtopik terakhir yang dicapai
         max_subtopic_id = all_subtopics[jumlah_history - 1].id if jumlah_history > 0 else 0
 
-        # 2. Looping aktivitas
-        for activity in activities:
+        # 🎯 5. Looping aktivitas secara runtut sesuai urutan ID Kelasnya
+        for act_id in valid_activity_ids:
+            activity = activities_dict.get(act_id)
+            if not activity:
+                continue
+
             # GATE 1: Apakah siswa sudah mencapai subtopik yang dibutuhkan?
             required_subtopic = activity_subtopic_map.get(activity.id, 0)
             
@@ -47,7 +79,7 @@ def seed_activity_result():
                 # Progres belum sampai, jangan buat record hasil
                 continue
 
-            # Cek apakah data sudah ada
+            # Cek apakah data hasil sudah ada di database
             existing = ActivityResult.query.filter_by(
                 id_user=student.id,
                 id_activity=activity.id,
@@ -55,10 +87,9 @@ def seed_activity_result():
             ).first()
 
             if existing:
-                # Jika sudah ada, kita tetap harus cek statusnya untuk logika "Tidak Lulus"
                 status_terakhir = existing.result_status
             else:
-                # 3. Buat data baru
+                # 🎯 6. Buat data hasil baru
                 total_soal = getattr(activity, 'jumlah_soal', 10)
                 benar = random.randint(int(total_soal * 0.4), total_soal)
                 salah = total_soal - benar
@@ -83,17 +114,16 @@ def seed_activity_result():
                     total_salah=salah
                 )
                 data_to_insert.append(new_result)
-                # Tambahkan ke DB session sementara untuk pengecekan berikutnya
                 db.session.add(new_result)
-                db.session.flush() # Agar id tersedia untuk pengecekan/relasi
+                db.session.flush() # Amankan instance ID ke session
 
-            # GATE 2: Jika siswa tidak lulus, hentikan aktivitas selanjutnya untuk siswa ini
+            # GATE 2: Jika siswa tidak lulus, patahkan loop agar tidak mengerjakan aktivitas berikutnya
             if status_terakhir == "tidak lulus":
                 break 
 
-    # Eksekusi insert massal
+    # Eksekusi simpan data massal ke database
     if data_to_insert:
         db.session.commit()
-        print(f"✅ Seeder ActivityResult berhasil! Data diselaraskan dengan progres siswa.")
+        print(f"✅ Seeder ActivityResult sukses! Data Kelas 1 & Kelas 2 telah disinkronkan.")
     else:
-        print("⚠️ Tidak ada data baru atau siswa belum mencapai subtopik yang diperlukan.")
+        print("⚠️ Tidak ada data baru yang ditambahkan.")

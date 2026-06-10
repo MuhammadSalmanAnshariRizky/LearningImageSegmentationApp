@@ -6,13 +6,13 @@ from app.model.question import Question
 from app.model.activity_question import ActivityQuestion
 
 
-def aktivitas1():
+def aktivitas1_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 1',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -276,13 +276,13 @@ def aktivitas1():
     
     
 # aktivitas 2
-def aktivitas2():
+def aktivitas2_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 2',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -568,13 +568,13 @@ maka hasil grayscales pada \\( f(1,2) \\) yang benar adalah …
 
     print("✅ Aktivitas 2 berhasil dibuat")
     
-def kuis1():
+def kuis1_2():
 
     # =========================
     # CREATE QUIZ
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Kuis-1',
         type='kuis',
         durasi_pengerjaan=15,
@@ -877,13 +877,13 @@ maka nilai grayscales pada posisi \\( f(2,2) \\) adalah…
     print("✅ Kuis 1 berhasil dibuat")
     
 # aktivitas 3
-def aktivitas3():
+def aktivitas3_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 3',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -1165,13 +1165,13 @@ Jika suatu wilayah memiliki nilai piksel yang tidak seragam, maka…
 
 
 # aktivitas 4
-def aktivitas4():
+def aktivitas4_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 4',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -1441,13 +1441,13 @@ Dalam region-based segmentation, penggunaan standar deviasi bertujuan untuk…
 
 
 # kuis 2
-def kuis2():
+def kuis2_2():
 
     # =========================
     # CREATE QUIZ
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Kuis-2',
         type='kuis',
         durasi_pengerjaan=15,
@@ -1753,13 +1753,13 @@ Jika dua wilayah bertetangga memiliki karakteristik yang sama dan digabung masih
 
 
 # aktivitas 5
-def aktivitas5():
+def aktivitas5_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 5',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -2029,13 +2029,13 @@ Edge chain tertutup dalam segmentasi citra berfungsi untuk....
 
 
 # aktivitas 6
-def aktivitas6():
+def aktivitas6_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 6',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -2321,13 +2321,13 @@ Alasan utama penggunaan kedua kriteria tersebut adalah....
 
 
 # aktivitas 7
-def aktivitas7():
+def aktivitas7_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 7',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -2633,12 +2633,12 @@ Berdasarkan penjelasan pada modul, kondisi tersebut terjadi karena....
     print("✅ Aktivitas 7 berhasil dibuat")
     
     
-def kuis3():
+def kuis3_2():
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Kuis-3',
         type='kuis',
         durasi_pengerjaan=15,
@@ -3223,13 +3223,13 @@ Kode program yang tepat untuk melakukan <i>Edge linking</i> menggunakan Morpholo
     print("✅ Kuis 3 berhasil dibuat")
     
 # aktivitas 8
-def aktivitas8():
+def aktivitas8_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 8',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -3500,13 +3500,13 @@ maka piksel dengan nilai intensitas kurang dari atau sama dengan 150 akan diklas
     print("✅ Aktivitas 8 berhasil dibuat")
     
 # aktivitas 9
-def aktivitas9():
+def aktivitas9_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 9',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -3779,13 +3779,13 @@ Apabila histogram citra memiliki lebih dari dua puncak, maka pendekatan yang ses
     print("✅ Aktivitas 9 berhasil dibuat")
     
 # aktivitas 10
-def aktivitas10():
+def aktivitas10_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 10',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -4054,13 +4054,13 @@ Perhatikan potongan kode dibawah, Pada metode <i>Iterative Threshold Selection</
     print("✅ Aktivitas 10 berhasil dibuat")
     
 # kuis 4
-def kuis4():
+def kuis4_2():
 
     # =========================
     # CREATE QUIZ
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Kuis-4',
         type='kuis',
         durasi_pengerjaan=15,
@@ -4668,13 +4668,13 @@ Perhatikan potongan gambar di bawah. Tujuan dari kondisi tersebut adalah....
     print("✅ Kuis 4 berhasil dibuat")
     
 # aktivitas 11
-def aktivitas11():
+def aktivitas11_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 11',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -4951,13 +4951,13 @@ Perbedaan utama antara <i>Region-Based Segmentation</i> dan <i>Edge-Based Segmen
 
     print("✅ Aktivitas 11 berhasil dibuat")
 # aktivitas 12
-def aktivitas12():
+def aktivitas12_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 12',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -5228,13 +5228,13 @@ Perhatikan potongan gambar di bawah. Potongan program tersebut digunakan untuk..
     print("✅ Aktivitas 12 berhasil dibuat")
 
 # aktivitas 13
-def aktivitas13():
+def aktivitas13_2():
 
     # =========================
     # CREATE ACTIVITY
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Aktivitas 13',
         type='aktivitas',
         durasi_pengerjaan=5,
@@ -5510,13 +5510,13 @@ Perhatikan potongan gambar di bawah, Tujuan dari kode tersebut adalah....
     
 
 # Kuis 5
-def kuis5():
+def kuis5_2():
 
     # =========================
     # CREATE QUIZ
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Kuis-5',
         type='kuis',
         durasi_pengerjaan=15,
@@ -6139,13 +6139,13 @@ Perhatikan potongan gambar di bawah, Baris program tersebut berfungsi untuk....
     print("✅ Kuis 5 berhasil dibuat")
     
 # evaluasi
-def evaluasi():
+def evaluasi2():
 
     # =========================
     # CREATE EVALUASI
     # =========================
     activity = Activity(
-        id_class=1,
+        id_class=2,
         title='Evaluasi',
         type='evaluasi',
         durasi_pengerjaan=20,
