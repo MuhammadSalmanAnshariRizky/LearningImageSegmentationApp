@@ -2245,7 +2245,7 @@ def evaluasi():
         results=results,
         progress=progress_percent
     )
-    
+
 @user_bp.route('/submit-kuis-evaluasi', methods=['POST'])
 def submit_kuis_evaluasi():
 
@@ -2281,7 +2281,7 @@ def submit_kuis_evaluasi():
             kkm = setting.nilai_kkm_evaluasi
 
     # =========================
-    # CEK PERCOBAAN KE-BERAPA (UPDATE BARU)
+    # CEK PERCOBAAN KE-BERAPA
     # =========================
     last_attempt = ActivityResult.query.filter_by(
         id_user=user_id,
@@ -2368,12 +2368,12 @@ def submit_kuis_evaluasi():
     result_status = 'lulus' if nilai_final >= kkm else 'tidak lulus'
 
     # =========================
-    # 1. SIMPAN RESULT DULU (UPDATE BARU)
+    # 1. SIMPAN RESULT DULU
     # =========================
     result = ActivityResult(
         id_user=user_id,
         id_activity=activity_id,
-        percobaan_ke=percobaan_ke, # Kolom baru
+        percobaan_ke=percobaan_ke, 
         nilai_akhir=nilai_final,
         result_status=result_status,
         waktu_mengerjakan=waktu_mengerjakan,
@@ -2384,14 +2384,14 @@ def submit_kuis_evaluasi():
     )
 
     db.session.add(result)
-    db.session.flush() # Penting! Flush agar `result` mendapat ID dari database sebelum di-commit
+    db.session.flush() # Penting! Flush agar `result` mendapat ID
 
     # =========================
-    # 2. SIMPAN JAWABAN (UPDATE BARU)
+    # 2. SIMPAN JAWABAN
     # =========================
     for ans_data in temp_answers:
         answer = ActivityAnswer(
-            id_activity_result=result.id, # Ambil ID dari result yang baru saja di-flush
+            id_activity_result=result.id, 
             id_activity=activity_id,
             id_user=user_id,
             id_question=ans_data['id_question'],
@@ -2404,63 +2404,67 @@ def submit_kuis_evaluasi():
     db.session.commit()
 
     # ==================================================
-    # UPDATE HISTORY PROGRESS
+    # UPDATE HISTORY PROGRESS (HANYA JIKA LULUS)
     # ==================================================
-    existing = HistoryProgress.query.filter_by(
-        id_user=user_id,
-        id_topic=activity.id_topic,
-        id_subtopic=activity.id_subtopic
-    ).first()
-
-    if not existing:
-        history = HistoryProgress(
+    if result_status == 'lulus':
+        existing = HistoryProgress.query.filter_by(
             id_user=user_id,
             id_topic=activity.id_topic,
-            id_subtopic=activity.id_subtopic,
-            updated_at=datetime.now()
-        )
-        db.session.add(history)
-        db.session.commit()
+            id_subtopic=activity.id_subtopic
+        ).first()
 
-        # =========================
-        # UPDATE TOTAL PROGRESS
-        # =========================
-        total_subtopic = SubTopic.query.count()
-        completed = HistoryProgress.query.filter_by(id_user=user_id).count()
-        progress_value = round((completed / total_subtopic) * 100)
-
-        progress = Progress.query.filter_by(id_user=user_id).first()
-
-        if progress:
-            progress.progres_value = progress_value
-            progress.last_updated = datetime.now()
-        else:
-            progress = Progress(
+        if not existing:
+            history = HistoryProgress(
                 id_user=user_id,
-                progres_value=progress_value,
-                last_updated=datetime.now()
+                id_topic=activity.id_topic,
+                id_subtopic=activity.id_subtopic,
+                updated_at=datetime.now()
             )
-            db.session.add(progress)
+            db.session.add(history)
+            db.session.flush() # Gunakan flush sebelum menghitung total
 
-        db.session.commit()
+            # =========================
+            # UPDATE TOTAL PROGRESS
+            # =========================
+            total_subtopic = SubTopic.query.count()
+            completed = HistoryProgress.query.filter_by(id_user=user_id).count()
+            progress_value = round((completed / total_subtopic) * 100)
+
+            progress = Progress.query.filter_by(id_user=user_id).first()
+
+            if progress:
+                progress.progres_value = progress_value
+                progress.last_updated = datetime.now()
+            else:
+                progress = Progress(
+                    id_user=user_id,
+                    progres_value=progress_value,
+                    last_updated=datetime.now()
+                )
+                db.session.add(progress)
+
+            db.session.commit()
 
     # =========================
     # REDIRECT
     # =========================
     topic = Topic.query.get(activity.id_topic)
+    
+    # Mencegah bug spasi nyasar pada database
+    nama_topik = topic.topic_name.strip()
 
     if activity.type == 'evaluasi':
         return redirect('/evaluasi')
 
-    if topic.topic_name == 'Pengantar Citra Digital':
+    if nama_topik == 'Pengantar Citra Digital':
         return redirect('/materi1/kuis')
-    elif topic.topic_name == 'Pengantar Segmentasi Citra':
+    elif nama_topik == 'Pengantar Segmentasi Citra':
         return redirect('/materi2/kuis')
-    elif topic.topic_name == 'Edge-Based Segmentation':
+    elif nama_topik == 'Edge-Based Segmentation':
         return redirect('/materi3/kuis')
-    elif topic.topic_name == 'Threshold-Based Segmentation':
+    elif nama_topik == 'Threshold-Based Segmentation':
         return redirect('/materi4/kuis')
-    elif topic.topic_name == 'Region-Based Segmentation':
+    elif nama_topik == 'Region-Based Segmentation':
         return redirect('/materi5/kuis')
 
     return redirect('/')
