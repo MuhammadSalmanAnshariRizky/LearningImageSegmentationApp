@@ -14,21 +14,18 @@ def seed_activity_result():
     # 🎯 2. Definisikan ID Activity berdasarkan Kelas
     class_activity_ids = {
         1: [3, 6, 10, 14, 18, 19],        # Kelas 1
-        2: [21, 24, 28, 32, 36, 37]       # Kelas 2
+        2: [22, 25, 29, 33, 37, 38]       # Kelas 2
     }
     
     # Gabung semua valid ID untuk ditarik dari database sekaligus
     all_valid_ids = class_activity_ids[1] + class_activity_ids[2]
     activities_pool = Activity.query.filter(Activity.id.in_(all_valid_ids)).all()
     
-    # Ubah menjadi dictionary agar gampang dicari & langsung pakai id_subtopic bawaan db
+    # Ubah menjadi dictionary agar gampang dicari
     activities_dict = {act.id: act for act in activities_pool}
 
     student_classes = StudentClass.query.all()
     student_to_class = {sc.id_student: sc.id_class for sc in student_classes}
-
-    all_subtopics = SubTopic.query.order_by(SubTopic.id.asc()).all()
-    total_sub = len(all_subtopics)
 
     if not students or not activities_pool:
         print("❌ Data Student atau Activity tidak ditemukan")
@@ -43,27 +40,38 @@ def seed_activity_result():
             continue
             
         valid_activity_ids = class_activity_ids.get(kelas_id, [])
-        
-        # Tentukan batas progres simulasi siswa
-        if index == 0:
-            jumlah_history = total_sub # Siswa pertama 100% tembus sampai akhir
-        else:
-            jumlah_history = random.randint(5, total_sub) 
-            
-        max_subtopic_id = all_subtopics[jumlah_history - 1].id if jumlah_history > 0 else 0
+        if not valid_activity_ids:
+            continue
 
-        # 🎯 4. Looping aktivitas
+        # 🚀 PERBAIKAN DI SINI: Cari subtopik yang relevan HANYA untuk kelas siswa ini
+        current_class_activities = [activities_dict[aid] for aid in valid_activity_ids if aid in activities_dict]
+        if not current_class_activities:
+            continue
+            
+        # Ambil semua daftar id_subtopic unik untuk kelas ini dan urutkan
+        class_subtopic_ids = sorted(list(set(act.id_subtopic for act in current_class_activities)))
+        total_sub_kelas = len(class_subtopic_ids)
+
+        # Tentukan batas progres simulasi siswa berdasarkan subtopik kelasnya sendiri
+        if index == 0:
+            # Siswa pertama dijamin lulus semua kuis di kelasnya
+            max_subtopic_id = class_subtopic_ids[-1] 
+        else:
+            # Siswa lain akan berhenti di subtopik acak khusus di kelas mereka (misal dari subtopik ke-1 sampai terakhir kelas itu)
+            dapat_kuis_ke = random.randint(1, total_sub_kelas)
+            max_subtopic_id = class_subtopic_ids[dapat_kuis_ke - 1]
+
+        # 🎯 4. Looping aktivitas sesuai kelas siswa
         for act_id in valid_activity_ids:
             activity = activities_dict.get(act_id)
             if not activity:
                 continue
 
-            # FIX: Ambil langsung dari tabel Activity, bukan dari map manual!
             required_subtopic = activity.id_subtopic
             
             # GATE 1: Pengecekan Progres Berlapis
             if required_subtopic > max_subtopic_id:
-                # Jika subtopik kuis ini lebih besar dari batas progres siswa, hentikan eksekusi
+                # Jika subtopik kuis ini melampaui batas batas acak siswa, lewati kuis ini dan setelahnya
                 continue
 
             existing = ActivityResult.query.filter_by(
@@ -77,13 +85,12 @@ def seed_activity_result():
             else:
                 total_soal = getattr(activity, 'jumlah_soal', 10)
                 
-                # LOGIKA REALISTIS: 
-                # Jika progres siswa sudah melampaui kuis ini (required_subtopic < max_subtopic_id),
-                # mustahil dia tidak lulus. Jadi kita paksa "Lulus" (minimal nilai 60).
+                # LOGIKA REALISTIS:
+                # Jika kuis ini berada di bawah batas maksimalnya, dia dipaksa lulus
                 if required_subtopic < max_subtopic_id:
                     benar = random.randint(int(total_soal * 0.6), total_soal) 
                 else:
-                    # Jika kuis ini adalah pemberhentian terakhirnya, nilainya bisa Lulus / Tidak Lulus
+                    # Jika kuis ini adalah batas maksimalnya, buat nilainya random (bisa lulus / gagal)
                     benar = random.randint(int(total_soal * 0.3), total_soal)
                     
                 salah = total_soal - benar
@@ -109,15 +116,14 @@ def seed_activity_result():
                 )
                 data_to_insert.append(new_result)
                 db.session.add(new_result)
-                db.session.flush()
 
             # GATE 2: Anti-Bocor
             if status_terakhir == "tidak lulus":
-                # Jika siswa gagal di kuis ini, pastikan dia TIDAK BISA lanjut mengerjakan kuis berikutnya
+                # Jika terhenti karena tidak lulus, kuis berikutnya otomatis tidak dikerjakan
                 break 
 
     if data_to_insert:
         db.session.commit()
-        print(f"✅ Seeder ActivityResult sukses! Progres terjamin tidak bocor.")
+        print(f"✅ Seeder ActivityResult sukses! Data Kelas 1 dan Kelas 2 sekarang bervariasi proporsional.")
     else:
         print("⚠️ Tidak ada data baru yang ditambahkan.")
