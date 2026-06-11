@@ -38,7 +38,7 @@ from flask import send_from_directory
 from sqlalchemy import func
 from openpyxl.styles import PatternFill, Border, Side, Font, Alignment
 from openpyxl.utils import get_column_letter
-
+import sys
 from app.seeder.klaimpaket import generate_learning_package
 
 user_bp = Blueprint('user', __name__)
@@ -4904,7 +4904,7 @@ output_dir = r'''{RESULT_FOLDER}'''
         # RUN PROCESS
         # =====================================
         result = subprocess.run(
-            ["python", temp_path],
+            [sys.executable, temp_path],
             capture_output=True,
             text=True,
             timeout=120,
