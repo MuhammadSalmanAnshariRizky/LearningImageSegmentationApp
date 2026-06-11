@@ -139,7 +139,7 @@ function runCell(id) {
 
   outputBox.innerHTML = `<span class="text-warning font-monospace">⏳ Running...</span>`;
 
-  fetch("http://127.0.0.1:5000/run-code", {
+  fetch("/run-code", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -179,7 +179,7 @@ function handleUpload(event) {
   const formData = new FormData();
   formData.append("image", file);
 
-  fetch("http://127.0.0.1:5000/upload-image", {
+  fetch("/upload-image", {
     method: "POST",
     body: formData,
   })
