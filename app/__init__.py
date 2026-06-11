@@ -188,6 +188,7 @@ def db_fresh():
     aktivitas12()   
     aktivitas13()
     kuis5()
+    evaluasi2()
     
     #kelas kedua
     #bab 1
