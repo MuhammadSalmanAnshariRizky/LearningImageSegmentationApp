@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const notebook = document.getElementById("thresholdNotebook");
   if (notebook) {
-    observer.observe(notebook);
+    observer.observe(notebook.closest(".notebook-wrapper"));
   }
 });
 
@@ -64,11 +64,9 @@ function loadThresholdState() {
     thresholdImagePath = savedPath;
     document.getElementById("thresholdFileList").innerHTML = savedImageUI;
   }
-
   if (savedCellCount) {
     thresholdCellCount = parseInt(savedCellCount);
   }
-
   if (savedCells && savedCells.length > 0) {
     savedCells.forEach((cellData) => {
       createThresholdCellDOM(cellData.id, cellData.code, cellData.output);
@@ -82,54 +80,43 @@ function loadThresholdState() {
 function addThresholdCell() {
   thresholdCellCount++;
 
-  // Template Kode Rumpang untuk Materi Thresholding
   const defaultCode = `import cv2
 import numpy as np
 import os
 
-# =====================================
-# BACA GAMBAR GRAYSCALE
-# =====================================
-# Pastikan nama file sesuai dengan yang di-upload!
-img = cv2.imread('uploads/.....', cv2.IMREAD_GRAYSCALE)
+# 1. MEMBACA CITRA GRAYSCALE
+# tulis nama file dari gambar yang akan diproses
+image = cv2.imread('.....', cv2.IMREAD_GRAYSCALE)
 
-if img is None:
-    print("Gambar tidak ditemukan!")
-else:
-    # =====================================
-    # UKURAN CITRA
-    # =====================================
-    M, N = img.shape
+# 2. MENGHITUNG NILAI THRESHOLD
+# tuliskan 'np.mean' untuk menghitung rata-rata intensitas piksel
+threshold = ....(image)
 
-    # =====================================
-    # HITUNG NILAI THRESHOLD
-    # T = jumlah seluruh piksel / (M x N)
-    # =====================================
-    # Lengkapi variabel di bawah ini:
-    total_pixel = np.sum(.....)
-    T = total_pixel / (..... * .....)
+# Tampilkan nilai threshold yang telah dihitung.
+# Tuliskan nama variabel yang menyimpan nilai threshold.
+print("Nilai Threshold:", ...)
 
-    # =====================================
-    # PROSES THRESHOLDING
-    # Jika piksel > T maka jadikan 255 (putih), selain itu 0 (hitam)
-    # =====================================
-    threshold_img = np.where(img > ....., 255, 0).astype(np.uint8)
+# 3. MELAKUKAN THRESHOLDING
+# Lengkapi parameter pertama dengan variabel yang menyimpan citra grayscale.
+# Lengkapi parameter kedua dengan variabel yang menyimpan nilai threshold.
+_, binary_image = cv2.threshold(
+    ...,
+    ...,
+    255,
+    cv2.THRESH_BINARY
+)
 
-    # =====================================
-    # SIMPAN HASIL
-    # =====================================
-    save_path = os.path.join(output_dir, "hasil_threshold.jpg")
-    cv2.imwrite(save_path, threshold_img)
+# 4. MENYIMPAN HASIL
+# Lengkapi dengan variabel yang menyimpan hasil citra biner (binary image).
+cv2.imwrite(
+    os.path.join(output_dir, "hasil_threshold.jpg"),
+    ...
+)
 
-    # =====================================
-    # OUTPUT
-    # =====================================
-    print("Threshold berhasil dibuat!")
-    print(f"Ukuran citra: {M} x {N}")
-    print(f"Nilai Threshold: {T:.2f}")`;
+# 5. MENAMPILKAN INFORMASI
+print("Thresholding berhasil dilakukan!")`;
 
-  const defaultOutput = `<span class="text-muted">> Output threshold akan muncul di sini...</span>`;
-
+  const defaultOutput = `<span class="text-success font-monospace">> Output akan muncul di sini...</span>`;
   createThresholdCellDOM(thresholdCellCount, defaultCode, defaultOutput);
   saveThresholdState();
 }
@@ -144,7 +131,7 @@ function createThresholdCellDOM(id, codeText, outputHTML) {
 
   cell.innerHTML = `
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="text-muted small fw-bold">Threshold In [${id}]:</span>
+            <span class="text-muted small fw-bold">In [${id}]:</span>
             <div class="cell-actions">
                 <button class="btn-icon run" onclick="runThresholdCell(${id})" title="Run">
                     <i class="fa-solid fa-play"></i>
@@ -173,9 +160,7 @@ function createThresholdCellDOM(id, codeText, outputHTML) {
   editor.setValue(codeText);
   editor.setSize("100%", "auto");
 
-  setTimeout(() => {
-    editor.refresh();
-  }, 10);
+  setTimeout(() => editor.refresh(), 10);
 
   editor.on("change", function (cm) {
     cm.setSize(null, "auto");
@@ -194,76 +179,79 @@ function runThresholdCell(id) {
   const code = thresholdEditors[id].getValue();
   const outputBox = document.getElementById(`threshold-output-${id}`);
 
-  outputBox.innerHTML = `<span class="text-warning font-monospace">⏳ Menjalankan threshold...</span>`;
+  outputBox.innerHTML = `<span class="text-warning font-monospace"><i class="fa-solid fa-spinner fa-spin me-2"></i>⏳ Sedang memproses kodemu...</span>`;
 
   fetch("/run-code", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      code: code,
-      image_path: thresholdImagePath,
-    }),
+    body: JSON.stringify({ code: code, image_path: thresholdImagePath }),
   })
     .then(async (res) => {
       const text = await res.text();
       try {
         return JSON.parse(text);
       } catch (e) {
-        console.error("Bukan JSON:", text);
         throw new Error(text);
       }
     })
     .then((data) => {
-      outputBox.innerHTML = `
-            <div class="result-wrapper">
-                <div class="console-output mb-3">
-                    <pre class="text-success font-monospace mb-0">${data.output}</pre>
-                </div>
-                <div class="image-results d-flex gap-3 flex-wrap">
-                    ${
-                      data.before_image
-                        ? `
-                        <div class="image-card text-center border p-2 rounded-3 bg-white">
-                            <h6 class="fw-bold text-secondary mb-2" style="font-size:0.9rem;">Gambar Asli (Grayscale)</h6>
-                            <img src="${data.before_image}" class="result-image preview-image img-fluid rounded" 
-                                 style="max-height: 150px; cursor: pointer;"
-                                 data-bs-toggle="modal" data-bs-target="#thresholdImageModal" 
-                                 onclick="openThresholdModal('${data.before_image}')">
-                        </div>
-                    `
-                        : ""
-                    }
-                    
-                    ${
-                      data.after_image
-                        ? `
-                        <div class="image-card text-center border p-2 rounded-3 bg-white">
-                            <h6 class="fw-bold text-secondary mb-2" style="font-size:0.9rem;">Hasil Biner</h6>
-                            <img src="${data.after_image}" class="result-image preview-image img-fluid rounded" 
-                                 style="max-height: 150px; cursor: pointer;"
-                                 data-bs-toggle="modal" data-bs-target="#thresholdImageModal" 
-                                 onclick="openThresholdModal('${data.after_image}')">
-                        </div>
-                    `
-                        : ""
-                    }
-                </div>
+      if (data.error || (data.output && data.output.includes("Traceback"))) {
+        outputBox.innerHTML = `<div class="text-danger font-monospace"><strong>❌ Ups! Ada kesalahan:</strong><pre class="mt-2 text-danger">${data.error || data.output}</pre></div>`;
+      } else {
+        let outputHTML = `
+            <div class="text-success font-monospace mb-3">
+                <strong>✅ Hebat! Hasil konversi:</strong>
+                <pre class="mt-2 mb-0 text-success">${data.output}</pre>
             </div>
+            <div class="image-results d-flex gap-3 flex-wrap justify-content-start mt-3">
         `;
+
+        if (data.before_image)
+          outputHTML += createThresholdImageCard(
+            "Gambar Asli",
+            data.before_image,
+          );
+        if (data.after_image)
+          outputHTML += createThresholdImageCard(
+            "Hasil Biner",
+            data.after_image,
+          );
+
+        // Fallback jika backend mengirim array images
+        if (data.images && Array.isArray(data.images)) {
+          data.images.forEach((img) => {
+            outputHTML += createThresholdImageCard(img.title, img.url);
+          });
+        }
+
+        outputHTML += `</div>`;
+        outputBox.innerHTML = outputHTML;
+      }
       saveThresholdState();
     })
     .catch((err) => {
-      console.error(err);
-      outputBox.innerHTML = `<pre style="color:#ef4444;" class="font-monospace">Error: ${err.message}</pre>`;
+      outputBox.innerHTML = `<div class="text-danger font-monospace"><strong>🚨 Gagal terhubung ke server!</strong><br>${err.message}</div>`;
       saveThresholdState();
     });
+}
+
+function createThresholdImageCard(title, srcUrl) {
+  return `
+      <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm" style="width: fit-content;">
+          <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
+          <img src="${srcUrl}" class="result-image preview-image img-fluid rounded" 
+               style="max-height: 140px; cursor: pointer; object-fit: contain;"
+               data-bs-toggle="modal" data-bs-target="#imageModal" 
+               onclick="openThresholdModal('${srcUrl}')">
+      </div>
+    `;
 }
 
 // ==========================================
 // 5. MANAJEMEN MODAL, UPLOAD & HAPUS CELL
 // ==========================================
 function openThresholdModal(src) {
-  const modalImg = document.getElementById("thresholdModalImage");
+  const modalImg = document.getElementById("modalImage");
   if (modalImg) modalImg.src = src;
 }
 
@@ -280,33 +268,55 @@ function triggerThresholdUpload() {
 }
 
 function handleThresholdUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+  const originalFile = event.target.files[0];
+  if (!originalFile) return;
 
-  const formData = new FormData();
-  formData.append("image", file);
+  const extension = originalFile.name.substring(
+    originalFile.name.lastIndexOf("."),
+  );
+  const newFileName = "citra_grayscale" + extension;
 
-  // Menggunakan path relatif agar stabil
-  fetch("/upload-image", {
-    method: "POST",
-    body: formData,
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      thresholdImagePath = data.path;
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const imageSrc = e.target.result;
+    const formData = new FormData();
 
-      const fileListElem = document.getElementById("thresholdFileList");
-      if (fileListElem) {
-        fileListElem.innerHTML = `
-                <li>
-                    <i class="fa-solid fa-file-image me-2 text-primary"></i>
-                    ${file.name}
-                </li>
-            `;
-      }
-      saveThresholdState();
+    formData.append("image", originalFile, newFileName);
+
+    document.getElementById("thresholdFileList").innerHTML = `
+        <div class="text-center text-muted mt-3 small">
+            <i class="fa-solid fa-spinner fa-spin me-2"></i>Mengunggah...
+        </div>
+    `;
+
+    fetch("/upload-image", {
+      method: "POST",
+      body: formData,
     })
-    .catch((err) => {
-      alert("Gagal mengupload citra.");
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        thresholdImagePath = data.path;
+
+        document.getElementById("thresholdFileList").innerHTML = `
+        <div class="image-preview-card mt-3">
+            <div class="img-wrapper">
+                <img src="${imageSrc}" class="preview-img" alt="Preview File" style="max-width:100%; border-radius:8px;">
+            </div>
+            <div class="file-name-text mt-2 small text-truncate" title="${data.filename}">
+                <i class="fa-solid fa-file-image me-1 text-primary"></i>
+                ${data.filename}
+            </div>
+        </div>
+    `;
+        saveThresholdState();
+      })
+      .catch((err) => {
+        document.getElementById("thresholdFileList").innerHTML = `
+            <div class="text-danger mt-3 small text-center">
+                Gagal mengunggah gambar.
+            </div>
+        `;
+      });
+  };
+  reader.readAsDataURL(originalFile);
 }

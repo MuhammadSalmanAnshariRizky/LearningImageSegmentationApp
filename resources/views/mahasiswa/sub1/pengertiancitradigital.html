@@ -90,8 +90,8 @@
                 </div>
 
                 <div id="gambar1_1" class="text-center  p-4  my-4">
-                    <img src="{{ url_for('static', filename='img/sub1/Visualisasi citra.jpg') }}"
-                        class="img-fluid rounded-3 shadow-sm" style="max-width: 100%; height: auto;">
+                    <img src="{{ url_for('static', filename='img/sub1/Visualiasi_citra.jpg') }}"
+                        class="img-fluid rounded-3 " style="max-width: 70%; height: auto;">
 
                     <p class="mt-3 mb-0 text-muted small">
                         <em>Gambar 1.1 Contoh representasi citra digital pada dunia nyata dan komputer</em>
@@ -149,8 +149,8 @@
 
                 <!-- Gambar Matriks: menggunakan gaya "figura" yang sama dengan materi sebelumnya -->
                 <div id="gambar1_2" class="text-center  p-4  my-4">
-                    <img src="{{ url_for('static', filename='img/sub1/piksel.png') }}"
-                        class="img-fluid rounded-3 shadow-sm" style="max-width: 500px; width: 100%; height: auto;">
+                    <img src="{{ url_for('static', filename='img/sub1/piksel.png') }}" class="img-fluid"
+                        style="max-width: 500px; width: 80%; height: auto;">
 
                     <p class="mt-3 mb-0 text-muted small">
                         <em>Gambar 1.2 Representasi nilai citra digital</em>
@@ -217,21 +217,20 @@
                 </h3>
 
                 <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+
+
                     <p class="mb-4">
-                        Pada proses pengolahan citra digital, langkah pertama yang dilakukan adalah membaca gambar dari
-                        penyimpanan komputer ke dalam program. Pada Python, proses ini dapat dilakukan menggunakan
-                        library OpenCV dengan fungsi cv2.imread(). Setelah gambar berhasil dibaca, gambar juga dapat
-                        disimpan kembali ke penyimpanan lokal menggunakan fungsi cv2.imwrite().
+                        Pada proses pengolahan citra digital, langkah awal yang dilakukan adalah membaca gambar dari
+                        penyimpanan komputer ke dalam program. Pada Python, proses tersebut dapat dilakukan menggunakan
+                        library OpenCV dengan fungsi <code>cv2.imread()</code>. Fungsi ini digunakan untuk mengambil
+                        file gambar dan mengubahnya menjadi data matriks yang dapat diolah lebih lanjut.
                     </p>
 
-                    <p class="fw-bold text-dark mb-3">Langkah-langkah membaca gambar dengan python:</p>
-
-                    <p class="mb-2">1) Download gambar yang sudah disediakan pada link berikut: <a
-                            href="https://bit.ly/4wXduAa" target="_blank">https://bit.ly/4wXduAa</a></p>
-
-                    <p class="mb-4">2) Upload gambar sampel kedalam kode editor yang digunakan</p>
-
-                    <p class="mb-2">3) Import library OpenCV sebagai inisiasi awal untuk image processing</p>
+                    <p class="mb-3 p-3 rounded bg-warning-subtle border border-warning shadow-sm">
+                        <i class="bi bi-code-slash me-2 text-warning"></i>
+                        <strong>Contoh Program:</strong> Berikut contoh program sederhana untuk membaca citra grayscale
+                        dan menampilkan nilai pikselnya.
+                    </p>
 
                     <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary"
                         style="font-size: 0.95rem;">
@@ -245,210 +244,157 @@
                             </div>
                             <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
                         </div>
-                        <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+
+                        <div class="d-flex font-monospace"
+                            style="background-color: #2d2d2d; user-select: none; -webkit-user-select: none;"
+                            oncopy="return false" oncut="return false" onpaste="return false"
+                            oncontextmenu="return false">
+
                             <div class="text-secondary text-end py-3 px-3"
-                                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
-                                1
+                                style="background-color: #1e1e1e; min-width: 45px; border-right: 1px solid #333;">
+                                1<br>2<br>3<br>4<br>5<br>6<br>7<br>8
                             </div>
+
                             <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                                <div><span class="text-success"># Mengimpor library OpenCV untuk mengolah citra</span>
+                                </div>
                                 <div><span class="text-warning">import</span> cv2</div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <p class="mb-2">4) Untuk membaca gambar dalam python menggunakan OpenCV dapat dilakukan dengan
-                        menuliskan perintah cv2.imread()</p>
+                                <br>
 
-                    <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary"
-                        style="font-size: 0.95rem;">
-                        <div class="d-flex align-items-center px-3 py-2"
-                            style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
-                            <div class="rounded-circle me-1"
-                                style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
-                            <div class="rounded-circle me-1"
-                                style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
-                            <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;">
-                            </div>
-                            <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
-                        </div>
-                        <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
-                            <div class="text-secondary text-end py-3 px-3"
-                                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
-                                1
-                            </div>
-                            <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
-                                <div>image = cv2.imread(<span class="text-success">'gambar.jpg'</span>)</div>
-                            </div>
-                        </div>
-                    </div>
+                                <div>
+                                    <span class="text-success">
+                                        # Membaca file gambar 'tank(8x8).png' dalam mode grayscale (keabuan)
+                                    </span>
+                                </div>
 
-                    <p class="mb-2">5) Setelah gambar berhasil dibaca, isi nilai piksel atau matriks citra dapat
-                        ditampilkan menggunakan perintah print(). Nilai matriks tersebut berisi intensitas warna pada
-                        setiap piksel gambar.</p>
+                                <div>
+                                    image = cv2.imread(<span class="text-info">'tank(8x8).png'</span>,
+                                    cv2.IMREAD_GRAYSCALE)
+                                </div>
 
-                    <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary"
-                        style="font-size: 0.95rem;">
-                        <div class="d-flex align-items-center px-3 py-2"
-                            style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
-                            <div class="rounded-circle me-1"
-                                style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
-                            <div class="rounded-circle me-1"
-                                style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
-                            <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;">
-                            </div>
-                            <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
-                        </div>
-                        <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
-                            <div class="text-secondary text-end py-3 px-3"
-                                style="background-color: #1e1e1e; min-width: 45px; user-select: none; border-right: 1px solid #333;">
-                                1
-                            </div>
-                            <div class="text-light py-3 px-3 w-100" style="overflow-x: auto;">
+                                <br>
+
+                                <div>
+                                    <span class="text-success">
+                                        # Menampilkan seluruh nilai piksel citra dalam bentuk matriks
+                                    </span>
+                                </div>
+
                                 <div><span class="text-info">print</span>(image)</div>
                             </div>
+
                         </div>
                     </div>
+                    <p class="fw-bold mb-2">Penjelasan:</p>
 
-                    <p class="mb-2">6) Perhatikan output yang dihasilkan, jika memiliki nilai yang berbeda seperti
-                        contoh dibawah ini, maka merupakan gambar dengan format RGB</p>
+                    <ol class="mb-4">
+                        <li class="mb-2">
+                            Gambar dibaca menggunakan mode
+                            <code>cv2.IMREAD_GRAYSCALE</code> sehingga citra diubah menjadi
+                            grayscale atau citra keabuan.
+                        </li>
+
+                        <li class="mb-2">
+                            Pada citra grayscale, setiap piksel hanya memiliki satu nilai
+                            intensitas dengan rentang <strong>0–255</strong>.
+                        </li>
+
+                        <li class="mb-2">
+                            Nilai <strong>0</strong> menunjukkan warna hitam, sedangkan
+                            nilai <strong>255</strong> menunjukkan warna putih.
+                        </li>
+
+                        <li>
+                            Semakin besar nilai piksel, maka semakin terang intensitas warna
+                            pada citra tersebut.
+                        </li>
+                    </ol>
+
+                    <p class="mb-2">
+                        Setelah program dijalankan, perintah <code>print(image)</code> akan menampilkan nilai piksel
+                        citra dalam bentuk matriks seperti berikut:
+                    </p>
+
                     <div
-                        class="bg-light border-start border-4 border-primary p-3 rounded-end mb-3 font-monospace text-dark">
-                        <div class="text-muted small mb-2">Output:</div>
-                        [166 42 102]<br>
-                        [165 41 101]<br>
-                        [165 41 101]
+                        class="bg-light border-start border-4 border-secondary p-3 rounded-end mb-3 font-monospace text-dark">
+                        <div class="text-muted small mb-2">Output:</div> [[108 122 124 121 116 126 131 123]<br> [119
+                        122 124 126 124 125 126 118]<br> [122 125 126 127 129 129 133 131]<br> [125 129
+                        114&nbsp;&nbsp;99 108 134 135 136]<br> [131 131&nbsp;&nbsp;74&nbsp;&nbsp;57&nbsp;&nbsp;61 117
+                        133 133]<br> [135 134 139 138 140 135 136 137]<br> [142 143 143 142 140 144 145 142]<br>
+                        [145 143 145 146 146 146 144 146]]
                     </div>
-
-                    <p class="mb-2">Keterangan :</p>
-                    <ul class="mb-3">
-                        <li>Nilai 166 adalah kanal Blue</li>
-                        <li>Nilai 42 adalah kanal Green</li>
-                        <li>Nilai 102 adalah kanal Red</li>
-                    </ul>
 
                     <p class="mb-4">
-                        Pada OpenCV, urutan warna menggunakan format BGR (Blue, Green, Red), bukan RGB.Setiap piksel
-                        pada gambar berwarna memiliki tiga nilai intensitas warna dengan rentang nilai 0–255. Semakin
-                        besar nilai channel, maka semakin tinggi intensitas warna pada piksel tersebut.
-                    </p>
-
-                    <p class="mb-2">7) Tetapi jika memiliki nilai yang sama, artinya gambar tersebut adalah grayscale
-                    </p>
-                    <div
-                        class="bg-light border-start border-4 border-secondary p-3 rounded-end mb-0 font-monospace text-dark">
-                        <div class="text-muted small mb-2">Output:</div>
-                        [114 114 114]<br>
-                        [127 127 127]<br>
-                        [138 138 138]
-                    </div>
-                </div>
-                <div class="mt-5 mb-5 text-center">
-                    <div class="d-inline-block px-5 py-3 rounded-pill bg-custom-blue text-white shadow">
-                        <h4 class="fw-bold mb-0">
-                            <i class="fa-solid fa-rocket me-2"></i> Ayo Coba Sendiri!
-                        </h4>
-                    </div>
-                    <p class="text-secondary mt-3 mb-0 fw-medium" style="font-size: 1.05rem;">
-                        Upload gambarmu dan ketik kode program pada <em class="text-dark fw-bold">Live Code
-                            Notebook</em> di bawah ini, untuk melihat hasilnya secara langsung.
+                        Nilai-nilai piksel di atas merupakan representasi intensitas warna pada citra grayscale.
+                        Data piksel inilah yang nantinya akan digunakan dalam berbagai implementasi algoritma
+                        pengolahan citra (<i>image processing</i>), seperti <i>image segmentation</i>, dan berbagai
+                        algoritma pengolahan citra lainnya.
+                        Algoritma tersebut bekerja dengan menganalisis serta memproses nilai intensitas pada setiap
+                        piksel citra.
                     </p>
                 </div>
-                <div class="text-center mb-4">
-                    <button type="button" class="btn btn-outline-secondary rounded-pill fw-semibold shadow-sm px-4"
-                        data-bs-toggle="modal" data-bs-target="#panduanModal">
-                        <i class="fa-solid fa-circle-question text-custom-blue me-2"></i> Cara Penggunaan Kode Editor
-                    </button>
-                </div>
-                <!-- modal -->
-                <div class="modal fade" id="panduanModal" tabindex="-1" aria-labelledby="panduanModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                        <div class="modal-content rounded-4 border-0 shadow-lg">
-
-                            <div class="modal-header border-bottom-0 px-4 px-md-5 pt-4 pb-2">
-                                <h5 class="modal-title fw-bold text-custom-blue" id="panduanModalLabel">
-                                    <i class="fa-solid fa-circle-info me-2"></i> Panduan Penggunaan Live Code
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-
-                            <div class="modal-body px-4 px-md-5 pb-4">
-                                <div class="row g-4 text-secondary mt-1" style="font-size: 0.95rem; line-height: 1.7;">
-
-                                    <div class="col-md-6">
-                                        <div class="d-flex mb-3">
-                                            <div class="me-3">
-                                                <span class="badge bg-custom-blue rounded-circle p-2"
-                                                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">1</span>
-                                            </div>
-                                            <div>
-                                                <strong class="text-dark">Upload Gambar</strong><br>
-                                                Klik area <em>"Upload Image"</em> di sebelah kiri atau <em>drag &
-                                                    drop</em> gambarmu ke kotak tersebut. Pastikan nama filenya muncul
-                                                di daftar <em>File Anda</em> (contoh: <code>pohon.jpg</code>).
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex mb-3">
-                                            <div class="me-3">
-                                                <span class="badge bg-custom-blue rounded-circle p-2"
-                                                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">2</span>
-                                            </div>
-                                            <div>
-                                                <strong class="text-dark">Lengkapi Kode Program</strong><br>
-                                                Isi bagian kode yang rumpang (ditandai dengan <code>.....</code>).
-                                                <strong>Sangat Penting:</strong> Sesuaikan nama file di dalam fungsi
-                                                <code>imread('...')</code> dengan nama gambar yang baru saja kamu
-                                                upload!
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="d-flex mb-3">
-                                            <div class="me-3">
-                                                <span class="badge bg-custom-blue rounded-circle p-2"
-                                                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">3</span>
-                                            </div>
-                                            <div>
-                                                <strong class="text-dark">Jalankan Kode (Run)</strong><br>
-                                                Klik tombol <strong>Play</strong> <i
-                                                    class="fa-solid fa-play text-primary mx-1"></i> berwarna biru di
-                                                pojok kanan atas cell. Hasil eksekusi akan langsung muncul di kotak
-                                                terminal hitam di bawahnya.
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex">
-                                            <div class="me-3">
-                                                <span class="badge bg-custom-blue rounded-circle p-2"
-                                                    style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">4</span>
-                                            </div>
-                                            <div>
-                                                <strong class="text-dark">Manajemen Cell</strong><br>
-                                                Gunakan tombol <strong class="text-primary">+ Add Cell</strong> di pojok
-                                                kanan atas untuk menambah area kode baru. Jika ingin mengulang atau
-                                                menghapus, klik ikon <strong>Trash</strong> <i
-                                                    class="fa-solid fa-trash text-danger mx-1"></i> merah.
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="modal-footer border-top-0 px-4 px-md-5 pb-4 pt-0 justify-content-end">
-                                <button type="button" class="btn text-white rounded-pill px-4"
-                                    style="background-color: #1e293b;" data-bs-dismiss="modal">
-                                    Saya Mengerti
-                                </button>
-                            </div>
-
-                        </div>
+                <!-- Kode editor -->
+                <div class="mb-4 p-4 rounded bg-warning-subtle border border-warning shadow-sm">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-list-check me-2 text-dark"></i>
+                        <h5 class="fw-bold mb-0 text-dark">
+                            Petunjuk Praktik
+                        </h5>
                     </div>
+
+                    <p class="mb-4 text-dark">
+                        Ikuti langkah-langkah berikut untuk menjalankan program:
+                    </p>
+
+                    <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
+
+                        <li class="mb-2">
+                            Download gambar uji coba bernama <code>citra_tank(8x8).png</code> melalui tautan berikut:
+                            <a href="https://drive.google.com/file/d/1nAuPMLyYuI3jYKx1oxAHISM_UdU2k1Wh/view?usp=sharing"
+                                class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
+                                <i class="fa-solid fa-download me-1"></i>Download
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            Buka folder <strong>Downloads</strong> di komputer Anda, lalu upload file
+                            <code>citra_tank(8x8).png</code> tersebut pada area <strong>File Anda</strong> (bisa
+                            ditarik/<em>drag</em> atau diklik).
+                        </li>
+
+                        <li class="mb-2">
+                            Pastikan <em>preview</em> dan nama file gambar sudah muncul dengan benar pada daftar file
+                            upload.
+                        </li>
+
+                        <li class="mb-2">
+                            Klik tombol <strong>+ Add Cell</strong> berwarna biru untuk menambahkan blok kode baru pada
+                            area <strong>Live Code Notebook</strong>.
+                        </li>
+
+                        <li class="mb-2">
+                            Ketik dan lengkapi kode program yang masih kosong pada editor yang baru saja muncul
+                            tersebut.
+                        </li>
+
+                        <li class="mb-2">
+                            Klik tombol <strong>Run</strong> <i class="fa-solid fa-play text-primary mx-1"></i> yang
+                            berada di pojok kanan atas editor untuk menjalankan program.
+                        </li>
+
+                        <li class="mb-2">
+                            Amati hasil output matriks yang muncul pada kotak terminal di bawah area kode.
+                        </li>
+
+                        <li>
+                            Perhatikan output yang seharusnya dihasilkan pada bagian bawah kode editor, dan pastikan
+                            hasil program Anda sudah sesuai dengan matriks acuan tersebut.
+                        </li>
+
+                    </ol>
                 </div>
-                <!-- kode editor -->
+
                 <div class="notebook-wrapper border border-2 rounded-4 shadow-sm overflow-hidden mb-3">
 
                     <aside class="sidebar">
@@ -460,7 +406,7 @@
                         <div class="upload-area" onclick="triggerUpload()">
                             <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
                             <p class="mb-1">Upload Image</p>
-                            <span>Drag & drop atau klik</span>
+                            <span>klik disini!</span>
                         </div>
 
                         <ul id="fileList" class="file-list">
@@ -483,7 +429,6 @@
                                 <button class="btn-add" onclick="addCell()">
                                     <i class="fa-solid fa-plus"></i> Add Cell
                                 </button>
-
                             </div>
                         </div>
 
@@ -492,7 +437,24 @@
                     </main>
 
                 </div>
-
+                <!-- div penutup kode editor -->
+                <div class="mt-4">
+                    <p class="mb-2 text-dark">
+                        Hal ini menghasilkan keluaran matriks sebagai berikut &minus;
+                    </p>
+                    <div class="p-3 rounded"
+                        style="background-color: #f3f4f6; border: 1px solid #e5e7eb; overflow-x: auto;">
+                        <pre class="mb-0 text-dark"
+                            style="font-family: 'Consolas', 'Courier New', monospace; font-size: 0.95rem; line-height: 1.5;">[[108 122 124 121 116 126 131 123]
+ [119 122 124 126 124 125 126 118]
+ [122 125 126 127 129 129 133 131]
+ [125 129 114  99 108 134 135 136]
+ [131 131  74  57  61 117 133 133]
+ [135 134 139 138 140 135 136 137]
+ [142 143 143 142 140 144 145 142]
+ [145 143 145 146 146 146 144 146]]</pre>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -527,27 +489,27 @@
                     </ul>
                 </div>
 
-                <div class="quiz-area border-top pt-4">
+                <div class="quiz-area border-top pt-3">
 
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="fw-bold text-dark mb-0">Soal Aktivitas</h5>
-                        <span class="badge bg-custom-blue rounded-pill px-3 py-2 fs-6 shadow-sm"
-                            id="quizProgress"></span>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold text-dark mb-0">Soal Aktivitas</h6>
+                        <span class="badge bg-custom-blue rounded-pill px-2 py-1 shadow-sm" id="quizProgress"></span>
                     </div>
 
                     <div id="quizContainer" data-activity="{{ id_activity }}"></div>
 
-                    <div id="feedback" class="mt-3 fw-bold"></div>
+                    <div id="feedback" class="mt-2 fw-bold small"></div>
 
-                    <div class="quiz-nav mt-5 d-flex justify-content-end gap-3">
-                        <button id="ulangBtn"
-                            class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold shadow-sm d-none">
-                            <i class="fa-solid fa-rotate-left me-2"></i> ULANG
+                    <div class="quiz-nav mt-3 d-flex justify-content-end gap-2">
+
+                        <button id="ulangBtn" class="btn-kembali d-none">
+                            <i class="fa-solid fa-rotate-left me-1"></i> ULANG
                         </button>
-                        <button id="nextBtn" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm"
-                            disabled>
-                            LANJUT <i class="fa-solid fa-arrow-right ms-2"></i>
+
+                        <button id="nextBtn" class="btn-lanjut" disabled>
+                            Soal Berikutnya <i class="fa-solid fa-arrow-right ms-1"></i>
                         </button>
+
                     </div>
 
                 </div>

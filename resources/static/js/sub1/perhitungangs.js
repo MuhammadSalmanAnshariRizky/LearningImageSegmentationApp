@@ -2,6 +2,7 @@ let animInterval;
 let currentRow = 0;
 let currentCol = 0;
 let isAnimating = false;
+let isPaused = false;
 
 // Data mentah matriks
 const matrixR = [
@@ -21,36 +22,60 @@ const matrixB = [
 ];
 
 function startAnimation() {
-  if (isAnimating) return;
+  if (isAnimating && !isPaused) return;
 
   isAnimating = true;
-  document.getElementById("btn-play").disabled = true;
+  isPaused = false;
+
+  // Atur tampilan tombol
+  document.getElementById("btn-play").style.display = "none";
+  document.getElementById("btn-pause").style.display = "inline-block";
   document.getElementById("btn-reset").disabled = false;
 
-  // Mulai loop animasi setiap 2 detik (2000 ms) agar user sempat membaca
-  animInterval = setInterval(processNextPixel, 2000);
-  processNextPixel(); // Jalankan piksel pertama langsung
+  // Jika mulai dari awal, jalankan piksel pertama langsung tanpa menunggu delay
+  if (
+    currentRow === 0 &&
+    currentCol === 0 &&
+    !document.querySelector(".highlight-res")
+  ) {
+    processNextPixel();
+  }
+
+  // Mulai interval 2.5 detik agar user punya waktu membaca proses
+  animInterval = setInterval(processNextPixel, 2500);
+}
+
+function pauseAnimation() {
+  isPaused = true;
+  clearInterval(animInterval);
+
+  // Ubah tampilan tombol kembali ke Lanjut
+  document.getElementById("btn-pause").style.display = "none";
+  document.getElementById("btn-play").style.display = "inline-block";
+  document.getElementById("btn-play").innerHTML =
+    '<i class="fa-solid fa-play me-1"></i> Lanjut';
 }
 
 function processNextPixel() {
-  // 1. Bersihkan highlight dari piksel sebelumnya
   clearHighlights();
 
-  // Jika sudah mencapai ujung matriks (3x3), hentikan animasi
   if (currentRow >= 3) {
     clearInterval(animInterval);
-    document.getElementById("process-box").innerHTML =
-      `<span class="text-success"><i class="fa-solid fa-check-circle"></i> Selesai! Semua piksel berhasil dikonversi.</span>`;
-    isAnimating = false;
+    addLogToTerminal(
+      '<span class="text-success fw-bold">✓ Selesai! Matriks berhasil dikonversi.</span>',
+      "",
+    );
     return;
   }
 
-  // 2. Ambil nilai piksel saat ini
   let rVal = matrixR[currentRow][currentCol];
   let gVal = matrixG[currentRow][currentCol];
   let bVal = matrixB[currentRow][currentCol];
+  let minVal = Math.min(rVal, gVal, bVal);
+  let maxVal = Math.max(rVal, gVal, bVal);
+  let result = (minVal + maxVal) / 2;
 
-  // 3. Sorot (Highlight) sel di HTML
+  // Highlight Matriks
   document
     .getElementById(`r-${currentRow}-${currentCol}`)
     .classList.add("highlight-r");
@@ -61,31 +86,32 @@ function processNextPixel() {
     .getElementById(`b-${currentRow}-${currentCol}`)
     .classList.add("highlight-b");
 
-  // 4. Lakukan perhitungan Lightness
-  let minVal = Math.min(rVal, gVal, bVal);
-  let maxVal = Math.max(rVal, gVal, bVal);
-  let result = (minVal + maxVal) / 2;
+  // Tambahkan ke Terminal Log dengan warna spesifik
+  let logMsg = `
+    <div class="mb-2 pb-2 border-bottom border-secondary">
+      <div class="text-white fw-bold mb-1">[Baris ${currentRow}, Kolom ${currentCol}]</div>
+      <div>
+        min(<span class="text-danger fw-bold">${rVal}</span>, <span class="text-success fw-bold">${gVal}</span>, <span class="text-primary fw-bold">${bVal}</span>) = <span class="text-amber fw-bold">${minVal}</span>
+      </div>
+      <div>
+        max(<span class="text-danger fw-bold">${rVal}</span>, <span class="text-success fw-bold">${gVal}</span>, <span class="text-primary fw-bold">${bVal}</span>) = <span class="text-cyan fw-bold">${maxVal}</span>
+      </div>
+      <div class="text-white mt-1">
+        Grayscale = (${minVal} + ${maxVal}) / 2 = <span class="text-white fs-5 fw-bold bg-secondary px-2 rounded">${result}</span>
+      </div>
+    </div>`;
+  addLogToTerminal(logMsg);
 
-  // 5. Tampilkan proses di Kotak Proses
-  let processHTML = `
-        <span class="text-light">Posisi (${currentRow}, ${currentCol}):</span><br>
-        <span class="text-info">min</span>(<span class="text-danger">${rVal}</span>, <span class="text-success">${gVal}</span>, <span class="text-primary">${bVal}</span>) = <span class="text-warning">${minVal}</span> | 
-        <span class="text-info">max</span>(<span class="text-danger">${rVal}</span>, <span class="text-success">${gVal}</span>, <span class="text-primary">${bVal}</span>) = <span class="text-warning">${maxVal}</span><br>
-        <span class="text-white">(${minVal} + ${maxVal}) / 2 = </span><strong class="text-success fs-4">${result}</strong>
-    `;
-  document.getElementById("process-box").innerHTML = processHTML;
-
-  // 6. Masukkan hasil ke matriks Grayscale
+  // Update Hasil
   let resCell = document.getElementById(`res-${currentRow}-${currentCol}`);
   resCell.innerText = result;
   resCell.classList.add("highlight-res");
 
-  // Tambahkan class 'done-res' agar tetap punya warna setelah highlight hilang
   setTimeout(() => {
+    resCell.classList.remove("highlight-res");
     resCell.classList.add("done-res");
-  }, 1500);
+  }, 1800);
 
-  // 7. Pindah ke kolom/baris selanjutnya
   currentCol++;
   if (currentCol >= 3) {
     currentCol = 0;
@@ -93,8 +119,19 @@ function processNextPixel() {
   }
 }
 
+// Fungsi pembantu untuk menambah log
+function addLogToTerminal(html, extraClass = "") {
+  const container = document.getElementById("process-log-container");
+  if (document.getElementById("log-placeholder")) container.innerHTML = "";
+
+  const div = document.createElement("div");
+  div.className = "log-entry " + extraClass;
+  div.innerHTML = html;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight; // Auto-scroll ke paling bawah
+}
+
 function clearHighlights() {
-  // Hapus semua class highlight dari semua td
   const tds = document.querySelectorAll(".anim-matrix td");
   tds.forEach((td) => {
     td.classList.remove(
@@ -109,12 +146,13 @@ function clearHighlights() {
 function resetAnimation() {
   clearInterval(animInterval);
   isAnimating = false;
+  isPaused = false;
   currentRow = 0;
   currentCol = 0;
 
   clearHighlights();
 
-  // Reset isi matriks hasil dan kotak proses
+  // Reset nilai di tabel hasil
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       let resCell = document.getElementById(`res-${i}-${j}`);
@@ -123,8 +161,15 @@ function resetAnimation() {
     }
   }
 
+  // Reset UI dan Tombol
   document.getElementById("process-box").innerHTML =
-    `<span class="text-muted">Klik tombol mulai untuk melihat perhitungan...</span>`;
-  document.getElementById("btn-play").disabled = false;
+    `<span class="text-success">Klik tombol mulai untuk melihat perhitungan...</span>`;
+
+  let btnPlay = document.getElementById("btn-play");
+  btnPlay.style.display = "inline-block";
+  btnPlay.disabled = false;
+  btnPlay.innerHTML = '<i class="fa-solid fa-play me-1"></i> Mulai';
+
+  document.getElementById("btn-pause").style.display = "none";
   document.getElementById("btn-reset").disabled = true;
 }

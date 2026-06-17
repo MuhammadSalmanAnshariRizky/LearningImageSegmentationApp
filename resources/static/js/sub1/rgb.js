@@ -6,7 +6,9 @@ let rgbCellCount = 0;
 let rgbEditors = {};
 let rgbImagePath = "";
 
-// 1. Inisiasi
+// ==========================================
+// 1. INISIASI & INTERSECTION OBSERVER
+// ==========================================
 document.addEventListener("DOMContentLoaded", function () {
   loadRGBState();
   const observer = new IntersectionObserver((entries) => {
@@ -21,10 +23,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
   const notebook = document.getElementById("rgbNotebook");
-  if (notebook) observer.observe(notebook);
+  if (notebook) observer.observe(notebook.closest(".notebook-wrapper"));
 });
 
-// 2. Local Storage
+// ==========================================
+// 2. LOCAL STORAGE (SIMPAN & MUAT DATA)
+// ==========================================
 function saveRGBState() {
   const cellsData = [];
   for (const id in rgbEditors) {
@@ -36,9 +40,11 @@ function saveRGBState() {
   }
   localStorage.setItem("notebookCells_RGB", JSON.stringify(cellsData));
   localStorage.setItem("currentImagePath_RGB", rgbImagePath);
+
   const fileListElem = document.getElementById("rgbFileList");
-  if (fileListElem)
+  if (fileListElem) {
     localStorage.setItem("currentImageName_RGB", fileListElem.innerHTML);
+  }
   localStorage.setItem("cellCount_RGB", rgbCellCount);
 }
 
@@ -52,47 +58,65 @@ function loadRGBState() {
     rgbImagePath = savedPath;
     document.getElementById("rgbFileList").innerHTML = savedImageUI;
   }
-  if (savedCellCount) rgbCellCount = parseInt(savedCellCount);
+  if (savedCellCount) {
+    rgbCellCount = parseInt(savedCellCount);
+  }
   if (savedCells && savedCells.length > 0) {
-    savedCells.forEach((cellData) =>
-      createRGBCellDOM(cellData.id, cellData.code, cellData.output),
-    );
+    savedCells.forEach((cellData) => {
+      createRGBCellDOM(cellData.id, cellData.code, cellData.output);
+    });
   }
 }
 
-// 3. Tambah Cell
+// ==========================================
+// 3. TAMBAH CELL & RENDER DOM
+// ==========================================
 function addRGBCell() {
   rgbCellCount++;
   const defaultCode = `import cv2
 import numpy as np
 import os
 
-# 1. BACA GAMBAR
-img = cv2.imread('....')
+# LANGKAH 1 : MEMBACA GAMBAR
+# Isi parameter dengan nama file yang digunakan
+img = cv2.imread('...')
 
-# 2. PISAHKAN KANAL (Format OpenCV: BGR)
-B = img[:, :, 0]
-G = img[:, :, .....]
-R = img[:, :, .....]
+# LANGKAH 2 : MEMISAHKAN KANAL WARNA
+# OpenCV menggunakan format BGR (Blue, Green, Red)
+# Indeks kanal: 0 = Biru (Blue) 1 = Hijau (Green) 2 = Merah (Red)
 
-# 3. BUAT KANAL WARNA TERPISAH
+B = img[:, :, ...]  # Mengambil seluruh piksel kanal biru
+G = img[:, :, ...]  # Mengambil seluruh piksel kanal hijau
+R = img[:, :, ...]  # Mengambil seluruh piksel kanal merah
+
+# LANGKAH 3 : MEMBUAT GAMBAR KHUSUS KANAL MERAH
 red_img = np.zeros_like(img)
-red_img[:, :, 2] = R
 
+# Gunakan variabel R agar citra hanya menampilkan kanal merah
+red_img[:, :, 2] = ...
+
+# LANGKAH 4 : MEMBUAT GAMBAR KHUSUS KANAL HIJAU
 green_img = np.zeros_like(img)
-green_img[:, :, 1] = G
 
+# Gunakan variabel G agar citra hanya menampilkan kanal merah
+green_img[:, :, 1] = ...
+
+# LANGKAH 5 : MEMBUAT GAMBAR KHUSUS KANAL BIRU
 blue_img = np.zeros_like(img)
-blue_img[:, :, 0] = B
 
-# 4. SIMPAN HASIL
-cv2.imwrite(os.path.join(output_dir, "kanal_red.jpg"), red_img)
-cv2.imwrite(os.path.join(output_dir, "kanal_green.jpg"), green_img)
-cv2.imwrite(os.path.join(output_dir, "kanal_blue.jpg"), blue_img)
+# Gunakan variabel B agar citra hanya menampilkan kanal merah
+blue_img[:, :, 0] = ...
 
-print("Kanal RGB berhasil dipisahkan!")`;
+# LANGKAH 6 : MENYIMPAN HASIL PEMISAHAN KANAL, 
+# Lengkapi bagian yang kosong dengan menuliskan 'red_img', 'green_img', dan 'blue_img'
+cv2.imwrite(os.path.join(output_dir, "kanal_red.jpg"), ...)
+cv2.imwrite(os.path.join(output_dir, "kanal_green.jpg"), ...)
+cv2.imwrite(os.path.join(output_dir, "kanal_blue.jpg"), ...)
 
-  createRGBCellDOM(rgbCellCount, defaultCode, "Output RGB muncul di sini...");
+print("Pemisahan kanal RGB berhasil dilakukan.")`;
+
+  const defaultOutput = `<span class="text-success font-monospace">> Output akan muncul di sini...</span>`;
+  createRGBCellDOM(rgbCellCount, defaultCode, defaultOutput);
   saveRGBState();
 }
 
@@ -127,6 +151,9 @@ function createRGBCellDOM(id, codeText, outputHTML) {
   );
   editor.setValue(codeText);
   editor.setSize("100%", "auto");
+
+  setTimeout(() => editor.refresh(), 10);
+
   editor.on("change", () => {
     editor.setSize(null, "auto");
     saveRGBState();
@@ -134,69 +161,166 @@ function createRGBCellDOM(id, codeText, outputHTML) {
   rgbEditors[id] = editor;
 }
 
-// 4. Run Cell
+// ==========================================
+// 4. JALANKAN KODE (RUN CELL)
+// ==========================================
 function runRGBCell(id) {
+  if (!rgbEditors[id]) return;
+
   const code = rgbEditors[id].getValue();
   const outputBox = document.getElementById(`rgb-output-${id}`);
-  outputBox.innerHTML = "⏳ Running RGB...";
+
+  outputBox.innerHTML = `<span class="text-warning font-monospace"><i class="fa-solid fa-spinner fa-spin me-2"></i>⏳ Mengekstrak kanal warna...</span>`;
 
   fetch("/run-code", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ code: code, image_path: rgbImagePath }),
   })
-    .then((res) => res.json())
+    .then(async (res) => {
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        throw new Error(text);
+      }
+    })
     .then((data) => {
-      outputBox.innerHTML = `
-            <div class="result-wrapper">
-                <div class="console-output mb-3"><pre>${data.output}</pre></div>
-                <div class="image-results d-flex gap-3 flex-wrap">
-                    ${data.before_image ? renderRGBImgCard("Asli", data.before_image) : ""}
-                    ${renderRGBImgCard("Red", "/static/results/kanal_red.jpg")}
-                    ${renderRGBImgCard("Green", "/static/results/kanal_green.jpg")}
-                    ${renderRGBImgCard("Blue", "/static/results/kanal_blue.jpg")}
-                </div>
-            </div>`;
+      if (data.error || (data.output && data.output.includes("Traceback"))) {
+        outputBox.innerHTML = `<div class="text-danger font-monospace"><strong>❌ Ups! Ada kesalahan:</strong><pre class="mt-2 text-danger">${data.error || data.output}</pre></div>`;
+      } else {
+        let outputHTML = `
+            <div class="text-success font-monospace mb-3">
+                <strong>✅ Hebat! Hasil ekstraksi:</strong>
+                <pre class="mt-2 mb-0 text-success">${data.output}</pre>
+            </div>
+            <div class="image-results d-flex gap-3 flex-wrap justify-content-start mt-3">
+                ${data.before_image ? createRGBImageCard("Gambar Asli", data.before_image) : ""}
+        `;
+
+        // Logika Dinamis Penangkapan Gambar dari Backend (Mirip Grayscale)
+        if (data.images && Array.isArray(data.images)) {
+          data.images.forEach((img) => {
+            let titleLower = img.title.toLowerCase();
+
+            // Abaikan jika itu gambar asli, karena sudah di-render di atas
+            if (
+              !titleLower.includes("asli") &&
+              !titleLower.includes("before") &&
+              !titleLower.includes("rgb")
+            ) {
+              // Percantik judul secara otomatis berdasarkan nama filenya
+              let cleanTitle = img.title;
+              if (titleLower.includes("red")) cleanTitle = "Kanal Merah (Red)";
+              else if (titleLower.includes("green"))
+                cleanTitle = "Kanal Hijau (Green)";
+              else if (titleLower.includes("blue"))
+                cleanTitle = "Kanal Biru (Blue)";
+
+              outputHTML += createRGBImageCard(cleanTitle, img.url);
+            }
+          });
+        }
+
+        outputHTML += `</div>`;
+        outputBox.innerHTML = outputHTML;
+      }
+      saveRGBState();
+    })
+    .catch((err) => {
+      outputBox.innerHTML = `<div class="text-danger font-monospace"><strong>🚨 Gagal terhubung ke server!</strong><br>${err.message}</div>`;
       saveRGBState();
     });
 }
 
-function renderRGBImgCard(title, src) {
-  const t = Date.now();
+function createRGBImageCard(title, srcUrl) {
   return `
-    <div class="image-card text-center border p-2 rounded-3 bg-white">
-        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.8rem;">${title}</h6>
-        <img src="${src}?t=${t}" class="result-image preview-image img-fluid rounded" 
-             style="max-height: 120px; cursor: pointer;"
-             data-bs-toggle="modal" data-bs-target="#rgbImageModal" 
-             onclick="openRGBModal('${src}?t=${t}')">
+    <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm" style="width: fit-content;">
+        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
+        <img src="${srcUrl}" class="result-image preview-image img-fluid rounded" 
+             style="max-height: 140px; cursor: pointer; object-fit: contain;"
+             onclick="openRGBModal('${srcUrl}')">
     </div>`;
 }
 
-// 5. Utilitas
+// ==========================================
+// 5. MANAJEMEN MODAL & UPLOAD
+// ==========================================
 function openRGBModal(src) {
-  document.getElementById("rgbModalImage").src = src;
+  const modalImg = document.getElementById("rgbModalImg");
+  const modalElement = document.getElementById("rgbImageModal");
+
+  if (modalImg && modalElement) {
+    modalImg.src = src;
+    const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+    modalInstance.show();
+  } else {
+    console.error("Elemen Modal RGB tidak ditemukan di HTML!");
+  }
 }
+
 function deleteRGBCell(id) {
-  document.getElementById("rgb-cell-" + id).remove();
+  const cellElem = document.getElementById("rgb-cell-" + id);
+  if (cellElem) cellElem.remove();
   delete rgbEditors[id];
   saveRGBState();
 }
+
 function triggerRGBUpload() {
-  document.getElementById("rgbFileInput").click();
+  const fileInput = document.getElementById("rgbFileInput");
+  if (fileInput) fileInput.click();
 }
 
 function handleRGBUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const formData = new FormData();
-  formData.append("image", file);
-  fetch("/upload-image", { method: "POST", body: formData })
-    .then((res) => res.json())
-    .then((data) => {
-      rgbImagePath = data.path;
-      document.getElementById("rgbFileList").innerHTML =
-        `<li><i class="fa-solid fa-file-image me-2 text-danger"></i> ${file.name}</li>`;
-      saveRGBState();
-    });
+  const originalFile = event.target.files[0];
+  if (!originalFile) return;
+
+  const extension = originalFile.name.substring(
+    originalFile.name.lastIndexOf("."),
+  );
+  const newFileName = "citra_rgb" + extension;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const imageSrc = e.target.result;
+    const formData = new FormData();
+
+    formData.append("image", originalFile, newFileName);
+
+    document.getElementById("rgbFileList").innerHTML = `
+        <div class="text-center text-muted mt-3 small">
+            <i class="fa-solid fa-spinner fa-spin me-2"></i>Mengunggah...
+        </div>
+    `;
+
+    fetch("/upload-image", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        rgbImagePath = data.path;
+
+        document.getElementById("rgbFileList").innerHTML = `
+        <div class="image-preview-card mt-3">
+            <div class="img-wrapper">
+                <img src="${imageSrc}" class="preview-img" alt="Preview File" style="max-width:100%; border-radius:8px;">
+            </div>
+            <div class="file-name-text mt-2 small text-truncate" title="${data.filename}">
+                <i class="fa-solid fa-file-image me-1 text-primary"></i>
+                ${data.filename}
+            </div>
+        </div>
+    `;
+        saveRGBState();
+      })
+      .catch((err) => {
+        document.getElementById("rgbFileList").innerHTML = `
+            <div class="text-danger mt-3 small text-center">
+                Gagal mengunggah gambar.
+            </div>
+        `;
+      });
+  };
+  reader.readAsDataURL(originalFile);
 }

@@ -193,3 +193,56 @@
   border-radius: 8px;
   padding: 8px 0;
 }
+/* --- PREVIEW IMAGE UI --- */
+.image-preview-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+.img-wrapper {
+  width: 100%;
+  height: 140px; /* Gunakan height tetap agar kotaknya selalu berukuran sama */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px dashed #cbd5f5;
+  padding: 4px;
+}
+
+.preview-img {
+  width: 100%; /* Memaksa gambar meregang ke samping */
+  height: 100%; /* Memaksa gambar meregang ke atas/bawah */
+  object-fit: contain; /* Menjaga agar rasio gambar tetap pas dan tidak gepeng */
+
+  /* Trik penting untuk citra digital ukuran kecil (misal matriks 8x8) */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.file-name-text {
+  font-weight: 500;
+  color: #475569;
+  /* Efek titik-titik jika nama file terlalu panjang (membutuhkan width) */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -12,7 +12,6 @@ async function loadSoal() {
   try {
     const res = await fetch(`/api/soal/${activityId}`);
     soalData = await res.json();
-    console.log("Data soal:", soalData);
     if (!soalData || soalData.length === 0) {
       quizContainer.innerHTML = `
         <div class="alert alert-warning">
@@ -82,7 +81,7 @@ function tampilSoal() {
 
   let opsi = shuffle(Object.entries(data.opsi));
 
-  html += `<div class="d-flex flex-column gap-3">`;
+  html += `<div class="options-wrapper">`;
 
   // Tambahkan 'index' ke dalam forEach
   opsi.forEach(([key, value], index) => {
@@ -142,8 +141,8 @@ function pilihJawaban(el) {
       <div class="feedback-alert correct-alert">
         <i class="fa-solid fa-circle-check feedback-icon"></i>
         <div>
-          <span class="d-block fw-bold">Tepat Sekali!</span>
-          <span class="text-muted" style="font-size: 0.95rem;">Jawabanmu sudah benar. Silakan lanjut ke soal berikutnya.</span>
+          <span class="d-block fw-bold">Luar Biasa!</span>
+          <span class="text-muted" style="font-size: 0.95rem;">Jawabanmu sudah tepat. Lanjut ke soal berikutnya.</span>
         </div>
       </div>
     `;
@@ -160,8 +159,8 @@ function pilihJawaban(el) {
       <div class="feedback-alert wrong-alert">
         <i class="fa-solid fa-circle-xmark feedback-icon"></i>
         <div>
-          <span class="d-block fw-bold">Yah, Masih Kurang Tepat!</span>
-          <span class="text-muted" style="font-size: 0.95rem;">Jangan menyerah, coba pilih opsi yang lain.</span>
+          <span class="d-block fw-bold">Jawabanmu Belum Tepat</span>
+          <span class="text-muted" style="font-size: 0.95rem;">Yuk, baca kembali pertanyaannya dengan lebih teliti sebelum menjawab.</span>
         </div>
       </div>
     `;
@@ -207,9 +206,6 @@ function selesaiQuiz() {
         text: "Progress belajar berhasil diperbarui.",
         confirmButtonColor: "#0d6efd",
         confirmButtonText: "Lanjut",
-      }).then(() => {
-        // reload halaman agar progress langsung update
-        location.reload();
       });
     })
     .catch((err) => {

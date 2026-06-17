@@ -1,0 +1,82 @@
+/* CSS untuk Merapatkan Matriks & Menghindari Getar */
+
+/* Mengurangi ukuran grid & jarak antar kotak */
+.matrix-grid,
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 45px); /* Diperkecil dari 55px */
+  gap: 4px; /* Gutter diperkecil */
+  justify-content: center;
+}
+
+/* Kotak dibuat lebih kecil */
+.pixel-input,
+.result-cell {
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem; /* Font size disesuaikan */
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+/* Grayscale input statis */
+.pixel-input {
+  border: 1px solid #dee2e6;
+  background-color: #f8fafc;
+  color: #212529;
+}
+
+/* Biner belum dihitung */
+.pixel-pending {
+  background-color: #e9ecef;
+  color: #adb5bd;
+  border: 1px dashed #ced4da;
+}
+
+/* Warna hasil akhir biner */
+.pixel-0 {
+  background-color: #212529;
+  color: #ffffff;
+}
+.pixel-1 {
+  background-color: #ffffff;
+  color: #212529;
+  border: 1px solid #dee2e6;
+}
+
+/* Highlight saat diproses. 
+  Catatan: Properti 'transform: scale()' DIHAPUS agar UI tabel 
+  tidak "getar-getar" saat animasi berpindah piksel.
+*/
+.highlight-active {
+  box-shadow: 0 0 10px 4px rgba(13, 110, 253, 0.4);
+  border: 2px solid #0d6efd !important;
+  z-index: 10;
+  position: relative;
+}
+
+/* Merapatkan sedikit margin bawaan MathJax */
+.MathJax_Display {
+  margin: 0.5em 0 !important;
+}
+
+.log-entry {
+  animation: fadeIn 0.2s ease-in-out;
+  margin-bottom: 4px;
+  padding: 4px;
+  border-bottom: 1px solid #333;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

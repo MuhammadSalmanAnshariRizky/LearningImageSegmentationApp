@@ -1,0 +1,42 @@
+/* Styling Warna Bulatan (Thumb) Slider Khusus RGB */
+input[type="range"].custom-range-r::-webkit-slider-thumb {
+  background: #dc2626 !important;
+}
+input[type="range"].custom-range-r::-moz-range-thumb {
+  background: #dc2626 !important;
+}
+
+input[type="range"].custom-range-g::-webkit-slider-thumb {
+  background: #16a34a !important;
+}
+input[type="range"].custom-range-g::-moz-range-thumb {
+  background: #16a34a !important;
+}
+
+input[type="range"].custom-range-b::-webkit-slider-thumb {
+  background: #2563eb !important;
+}
+input[type="range"].custom-range-b::-moz-range-thumb {
+  background: #2563eb !important;
+}
+
+/* Mempertegas Garis Jalur (Track) Slider agar tidak hilang */
+input[type="range"].form-range::-webkit-slider-runnable-track {
+  background-color: #f1f5f9; /* Warna abu-abu sangat terang */
+  border: 1px solid #cbd5e1; /* Outline abu-abu agak gelap agar terlihat */
+  border-radius: 0.5rem;
+  height: 8px; /* Sedikit ditebalkan */
+}
+
+input[type="range"].form-range::-moz-range-track {
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  height: 8px;
+}
+
+/* Transisi halus saat warna berubah di preview */
+#color-preview {
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+}

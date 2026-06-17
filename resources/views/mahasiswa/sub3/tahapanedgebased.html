@@ -55,76 +55,58 @@
             di dalam gambar. Tepi (edge) terjadi ketika ada perubahan intensitas warna atau kecerahan yang signifikan
             tinggi antara satu piksel dengan piksel tetangganya. Perubahan intensitas tersebut biasanya menunjukkan
             batas antara objek dan latar belakang. Hasil dari proses ini berupa citra tepi (edge map) yang berisi
-            piksel-piksel yang diduga sebagai batas objek. Beberapa metode deteksi tepi yang umum digunakan adalah
-            sebagai berikut:
-
+            piksel-piksel yang diduga sebagai batas objek.
           </p>
 
 
 
-          <div class="row text-center mt-4 mb-2">
+          <div id="gambar3_2" class="my-4">
 
-            <div class="col-6 col-md-3 mb-3">
+            <div class="row justify-content-center text-center g-4">
 
-              <img src="{{ url_for('static', filename='img/sub3/1_citra_input_asli.png') }}"
-                class="img-fluid rounded border" alt="Visualisasi A">
+              <div class="col-12 col-md-4">
+                <img src="{{ url_for('static', filename='img/sub3/1_citra_input_asli.png') }}"
+                  class="img-fluid rounded border shadow-sm" alt="Visualisasi A">
 
-              <span class="d-block mt-2 fw-medium">(a)</span>
+                <p class="mt-2 mb-0 fw-medium">(a)</p>
+              </div>
 
-            </div>
+              <div class="col-12 col-md-4">
+                <img src="{{ url_for('static', filename='img/sub3/2_hasil_canny_full.png') }}"
+                  class="img-fluid rounded border shadow-sm" alt="Visualisasi B">
 
+                <p class="mt-2 mb-0 fw-medium">(b)</p>
+              </div>
 
+              <div class="col-12 col-md-4">
+                <img src="{{ url_for('static', filename='img/sub3/3_potongan_canny_8x8.png') }}"
+                  class="img-fluid rounded border shadow-sm" alt="Visualisasi C">
 
-            <div class="col-6 col-md-3 mb-3">
-
-              <img src="{{ url_for('static', filename='img/sub3/2_hasil_canny_full.png') }}"
-                class="img-fluid rounded border" alt="Visualisasi B">
-
-              <span class="d-block mt-2 fw-medium">(b)</span>
-
-            </div>
-
-
-
-            <div class="col-6 col-md-3 mb-3">
-
-              <img src="{{ url_for('static', filename='img/sub3/3_potongan_canny_8x8.png') }}"
-                class="img-fluid rounded border" alt="Visualisasi C">
-
-              <span class="d-block mt-2 fw-medium">(c)</span>
+                <p class="mt-2 mb-0 fw-medium">(c)</p>
+              </div>
 
             </div>
 
-
-
-            <div class="col-6 col-md-3 mb-3">
-
-              <img src="{{ url_for('static', filename='img/sub3/4_koordinat_tepi_lokal.png') }}"
-                class="img-fluid rounded border" alt="Visualisasi D">
-
-              <span class="d-block mt-2 fw-medium">(d)</span>
-
+            <div class="text-center mt-4">
+              <p class="mb-0 text-muted small">
+                <em>Gambar 3.2 Visualisasi Edge Detection</em>
+              </p>
             </div>
-
-          </div>
-
-
-
-          <div class="text-center text-muted mb-5">
-
-            <i>Gambar 3.2 Visualisasi Edge Detection</i>
 
           </div>
           <p class="mb-4 text-justify">
             Berdasarkan Gambar 3.2, proses dimulai dari gambar asli sebuah kendaraan militer dalam format grayscale pada
             gambar 3.2 (a), yang kemudian diproses menggunakan algoritma deteksi tepi untuk mengekstrak garis-garis
             kontur objek dan latar belakangnya menjadi warna hitam pada gambar 3.2 (b). Selanjutnya, gambar 3.2 (c)
-            memperlihatkan representasi matriks piksel biner dari tepi citra tersebut, di mana nilai 0 (hitam) mewakili
-            latar belakang dan nilai 255 (putih) menandakan piksel yang terdeteksi sebagai tepi. Terakhir, gambar 3.2
-            (d) memetakan piksel-piksel tepi tersebut ke dalam sistem koordinat, yang menunjukkan bagaimana data visual
-            dikonversi menjadi titik-titik koordinat matematis agar dapat dianalisis lebih lanjut oleh komputer.
-          </p>
+            memperlihatkan representasi nilai piksel dari hasil edge detection pada citra tersebut, di mana nilai 0
+            (hitam) mewakili latar belakang dan nilai 255 (putih) menandakan piksel yang terdeteksi sebagai tepi. </p>
           <div class="mb-4">
+            <div class="bg-light border-start border-4 border-primary rounded-end p-3 mb-4">
+              <strong>
+                <i class="fa-solid fa-lightbulb me-2"></i>
+                Beberapa metode deteksi tepi yang umum digunakan adalah sebagai berikut:
+              </strong>
+            </div>
             <p class="mb-2"><strong>a) Roberts Edge Detector</strong><br>
               Operator Roberts merupakan salah satu metode deteksi tepi paling sederhana yang menggunakan operator
               gradien berukuran 2×2. Metode ini menghitung perubahan intensitas secara diagonal sehingga mampu
@@ -324,7 +306,7 @@
             </ol>
           </div>
 
-          <p class="mb-2 mt-4"><strong>f) Contoh Perhitungan Kernel Robert</strong></p>
+          <p class="mb-2 mt-4"><strong>f) Contoh Perhitungan Kernel Prewitt</strong></p>
           <p class="mb-3">Misalkan diberikan citra grayscale berukuran 5×5 sebagai berikut:</p>
 
           <div class="table-responsive my-3">
@@ -366,31 +348,33 @@
               </tr>
             </table>
           </div>
+          <p class="mb-3">
+            Lakukan perhitungan pada piksel dengan koordinat <strong>(2,4)</strong> menggunakan operator Prewitt.
+            Piksel pusat ditandai dengan warna kuning, dan dilakukan dengan cara operasi ketetanggaan
+          </p>
 
-          <p class="mb-3">Lakukan perhitungan pada bagian koordinat (2,4) dengan operasi ketetanggan,</p>
-
-          <div class="table-responsive my-3">
-            <table class="table table-bordered text-center mx-auto bg-light" style="max-width: 300px;">
+          <div class="table-responsive my-4">
+            <table class="table table-bordered text-center mx-auto align-middle" style="max-width: 400px;">
               <tr>
                 <td>12</td>
                 <td>15</td>
-                <td>18</td>
-                <td>95</td>
-                <td>100</td>
+                <td class="bg-warning-subtle fw-bold">18</td>
+                <td class="bg-warning-subtle fw-bold">95</td>
+                <td class="bg-warning-subtle fw-bold">100</td>
               </tr>
               <tr>
                 <td>14</td>
                 <td>17</td>
-                <td>20</td>
-                <td class="bg-warning fw-bold text-dark" title="Koordinat (2,4)">98</td>
-                <td>105</td>
+                <td class="bg-warning-subtle fw-bold">20</td>
+                <td class="bg-warning fw-bold text-dark" title="Piksel pusat (2,4)">98</td>
+                <td class="bg-warning-subtle fw-bold">105</td>
               </tr>
               <tr>
                 <td>16</td>
                 <td>19</td>
-                <td>22</td>
-                <td>102</td>
-                <td>108</td>
+                <td class="bg-warning-subtle fw-bold">22</td>
+                <td class="bg-warning-subtle fw-bold">102</td>
+                <td class="bg-warning-subtle fw-bold">108</td>
               </tr>
               <tr>
                 <td>18</td>
@@ -409,39 +393,161 @@
             </table>
           </div>
 
-          <p class="mb-3">Selanjutnya dilakukan perhitungan dengan kernel preewit pada Gx dan Gy,</p>
+          <p class="mb-3">
+            Selanjutnya dilakukan perhitungan menggunakan kernel Prewitt untuk memperoleh gradien horizontal
+            (<strong>Gx</strong>) dan gradien vertikal (<strong>Gy</strong>).
+          </p>
 
+          <div class="row justify-content-center mb-4">
+            <div class="col-md-4 text-center">
+              <h6 class="fw-bold">Kernel Gx</h6>
+              <table class="table table-bordered text-center">
+                <tr>
+                  <td class="bg-danger-subtle">-1</td>
+                  <td>0</td>
+                  <td class="bg-primary-subtle">1</td>
+                </tr>
+                <tr>
+                  <td class="bg-danger-subtle">-1</td>
+                  <td>0</td>
+                  <td class="bg-primary-subtle">1</td>
+                </tr>
+                <tr>
+                  <td class="bg-danger-subtle">-1</td>
+                  <td>0</td>
+                  <td class="bg-primary-subtle">1</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="col-md-4 text-center">
+              <h6 class="fw-bold">Kernel Gy</h6>
+              <table class="table table-bordered text-center">
+                <tr>
+                  <td class="bg-primary-subtle">1</td>
+                  <td class="bg-primary-subtle">1</td>
+                  <td class="bg-primary-subtle">1</td>
+                </tr>
+                <tr>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td class="bg-danger-subtle">-1</td>
+                  <td class="bg-danger-subtle">-1</td>
+                  <td class="bg-danger-subtle">-1</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="alert alert-light border-start border-4 border-primary">
+            <strong>Keterangan:</strong><br>
+
+            <span class="badge text-dark" style="background-color:#ffc107;">
+              Warna Kuning Tua
+            </span>
+            Menunjukkan piksel pusat yang menjadi fokus perhitungan pada koordinat <strong>(2,4)</strong>.
+            <br>
+
+            <span class="badge text-dark" style="background-color:#f8e9b6;">
+              Warna Kuning Muda
+            </span>
+            Menunjukkan piksel-piksel tetangga yang digunakan dalam operasi ketetanggaan (neighborhood operation).
+            <br>
+
+            <span class="badge bg-danger">
+              Warna Merah
+            </span>
+            Menunjukkan piksel yang dikalikan dengan bobot <strong>-1</strong> pada proses perhitungan gradien
+            menggunakan kernel Prewitt.
+            <br>
+
+            <span class="badge bg-primary">
+              Warna Biru
+            </span>
+            Menunjukkan piksel yang dikalikan dengan bobot <strong>+1</strong> pada proses perhitungan gradien
+            menggunakan kernel Prewitt.
+          </div>
 
           <p class="mb-2"><strong>Gradien Horizontal (Gx)</strong></p>
-          <div class="bg-light p-3 rounded text-center mb-4 text-dark font-monospace"
-            style="font-size: 0.95rem; overflow-x: auto; white-space: nowrap;">
-            Gx = (18 × -1) + (95 × 0) + (100 × 1) + (20 × -1) + (98 × 0) + (105 × 1) + (22 × -1) + (102 × 0) + (108 ×
-            1) <br>
-            Gx = (-18 + 0 + 100) + (-20 + 0 + 105) + (-22 + 0 + 108) <br>
-            Gx = 82 + 85 + 86 <br>
-            <span class="text-custom-blue fw-bold">Gx = 253</span>
+
+          <div class="bg-light p-4 rounded mb-4 text-dark font-monospace" style="font-size: 0.95rem; line-height: 1.8;">
+            <div>
+              Gx = <span class="text-danger fw-bold">(18 × -1)</span> + (95 × 0) + <span
+                class="text-primary fw-bold">(100 × 1)</span>
+              + <span class="text-danger fw-bold">(20 × -1)</span> + (98 × 0) + <span class="text-primary fw-bold">(105
+                × 1)</span>
+              + <span class="text-danger fw-bold">(22 × -1)</span> + (102 × 0) + <span class="text-primary fw-bold">(108
+                × 1)</span>
+            </div>
+
+            <div class="mt-3">
+              Gx = (<span class="text-danger fw-bold">-18</span> + 0 + <span class="text-primary fw-bold">100</span>)
+              + (<span class="text-danger fw-bold">-20</span> + 0 + <span class="text-primary fw-bold">105</span>)
+              + (<span class="text-danger fw-bold">-22</span> + 0 + <span class="text-primary fw-bold">108</span>)
+            </div>
+
+            <div class="mt-3">
+              Gx = 82 + 85 + 86
+            </div>
+
+            <div class="mt-3 text-primary fw-bold fs-5">
+              Gx = 253
+            </div>
           </div>
 
           <p class="mb-2"><strong>Gradien Vertikal (Gy)</strong></p>
-          <div class="bg-light p-3 rounded text-center mb-4 text-dark font-monospace"
-            style="font-size: 0.95rem; overflow-x: auto; white-space: nowrap;">
-            Gy = (18 + 95 + 100) - (22 + 102 + 108) <br>
-            Gy = 213 - 232 <br>
-            <span class="text-custom-blue fw-bold">Gy = -19</span>
+
+          <div class="bg-light p-4 rounded mb-4 text-dark font-monospace" style="font-size: 0.95rem; line-height: 1.8;">
+            <div>
+              Gy = <span class="text-primary fw-bold">(18 × 1)</span> + <span class="text-primary fw-bold">(95 ×
+                1)</span> + <span class="text-primary fw-bold">(100 × 1)</span>
+              + (20 × 0) + (98 × 0) + (105 × 0)
+              + <span class="text-danger fw-bold">(22 × -1)</span> + <span class="text-danger fw-bold">(102 × -1)</span>
+              + <span class="text-danger fw-bold">(108 × -1)</span>
+            </div>
+
+            <div class="mt-3">
+              Gy = <span class="text-primary fw-bold">(18 + 95 + 100)</span> + (0 + 0 + 0) + <span
+                class="text-danger fw-bold">(-22 - 102 - 108)</span>
+            </div>
+
+            <div class="mt-3">
+              Gy = 213 + 0 - 232
+            </div>
+
+            <div class="mt-3 text-primary fw-bold fs-5">
+              Gy = -19
+            </div>
           </div>
 
           <p class="mb-2"><strong>Menghitung Magnitudo Gradien</strong></p>
-          <div class="bg-light p-3 rounded text-center mb-4 text-dark font-monospace" style="font-size: 0.95rem;">
-            G = \(\sqrt{Gx^2 + Gy^2}\) <br>
-            G = \(\sqrt{253^2 + (-19)^2}\) <br>
-            G = \(\sqrt{64009 + 361}\) <br>
-            G = \(\sqrt{64370}\) <br>
-            <span class="text-success fw-bold">G ≈ 253.71</span>
+
+          <div class="bg-light p-3 rounded text-center mb-4 text-dark font-monospace">
+
+            G = \(\sqrt{Gx^2 + Gy^2}\)
+            <br>
+
+            G = \(\sqrt{253^2 + (-19)^2}\)
+            <br>
+
+            G = \(\sqrt{64009 + 361}\)
+            <br>
+
+            G = \(\sqrt{64370}\)
+            <br><br>
+
+            <span class="text-success fw-bold fs-5">
+              G ≈ 253.71
+            </span>
           </div>
 
           <p class="mb-2"><strong>Matriks Magnitudo</strong></p>
+
           <div class="table-responsive my-3">
-            <table class="table table-bordered text-center mx-auto bg-light" style="max-width: 300px;">
+            <table class="table table-bordered text-center mx-auto bg-light" style="max-width: 400px;">
               <tr>
                 <td>x</td>
                 <td>x</td>
@@ -453,7 +559,9 @@
                 <td>x</td>
                 <td>x</td>
                 <td>x</td>
-                <td class="fw-bold text-success bg-white" title="Hasil Magnitudo Koordinat (2,4)">253.71</td>
+                <td class="bg-success-subtle fw-bold text-success">
+                  253.71
+                </td>
                 <td>x</td>
               </tr>
               <tr>
@@ -480,6 +588,11 @@
             </table>
           </div>
 
+          <p class="text-muted small text-center">
+            Nilai <strong>253.71</strong> merupakan magnitudo gradien pada piksel pusat (2,4)
+            yang diperoleh dari hasil perhitungan Gx dan Gy menggunakan operator Prewitt.
+          </p>
+
 
         </div>
       </div>
@@ -490,7 +603,7 @@
       <div class="card-body p-4 p-md-5">
 
         <h3 class="fw-bold mb-4 text-custom-blue">
-          <i class="fa-solid fa-link me-2"></i> 3.2 Edge Linking (Penghubungan Tepi)
+          <i class="fa-solid fa-link me-2"></i>2. Edge Linking (Penghubungan Tepi)
         </h3>
 
         <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
@@ -874,8 +987,8 @@
               citra medis, dan pengenalan objek industri.
             </p>
 
-            <div id="gambar3_2" class="text-center  rounded-4 p-4 my-4 shadow-sm">
-              <img src="{{ url_for('static', filename='img/sub3/Hough.png') }}" class="img-fluid rounded-3 shadow-sm"
+            <div id="gambar3_2" class="text-center p-4 my-4 ">
+              <img src="{{ url_for('static', filename='img/sub3/Hough.png') }}" class="img-fluid "
                 style="max-width: 550px; width: 100%; height: auto;">
               <p class="mt-3 mb-0 text-muted small">
                 <em>Gambar 3.2 Contoh Hough Transform</em>
@@ -889,7 +1002,421 @@
               sebagai dasar pembelajaran segmentasi berbasis tepi.
             </p>
           </div>
+          <h3 class="fw-bold mb-4 text-custom-blue mt-2">
+            <i class="fa-solid fa-link me-2"></i>3. Region Extraction/Segmentation
+          </h3>
 
+          <p>
+            Setelah proses <em>edge linking</em> berhasil menghasilkan batas objek (<em>boundary</em>) yang kontinu dan
+            tertutup, langkah krusial berikutnya adalah melakukan ekstraksi wilayah atau <strong>Region
+              Extraction/Segmentation</strong>
+          </p>
+
+          <p>
+            Proses ini memiliki tujuan utama untuk memisahkan objek dari latar belakangnya secara tegas, sehingga
+            diperoleh representasi objek yang lebih jelas dan memudahkan proses analisis selanjutnya. Dalam
+            pendekatan berbasis tepi (<em>edge-based</em>), batas objek yang telah terbentuk digunakan sebagai acuan
+            mutlak untuk menentukan area mana saja yang termasuk ke dalam objek.
+          </p>
+
+          <div class="alert alert-light border-start border-4 border-primary shadow-sm my-4">
+            <h6 class="fw-bold text-primary mb-2">Mekanisme Ekstraksi:</h6>
+            <p class="mb-0">
+              Piksel-piksel yang berada di dalam batas tertutup akan dikelompokkan sebagai satu wilayah
+              (<em>region</em>), sementara piksel yang berada di luar batas tersebut akan dianggap sebagai latar
+              belakang.
+            </p>
+
+            <div class="table-responsive mt-4 text-center">
+              <table class="mx-auto"
+                style="width: 320px; height: 320px; table-layout: fixed; border-collapse: collapse; border: none; text-align: center;">
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td
+                    style="background-color: #fff; color: #000; font-size: 9px; font-weight: bold; padding: 0; border: none;">
+                    255</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+                <tr>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                  <td style="background-color: #000; color: #666; font-size: 9px; padding: 0; border: none;">0</td>
+                </tr>
+
+              </table>
+
+
+              <div class="table-responsive mt-4 text-center">
+                <p class="mt-3 text-muted small text-center"><em>Gambar 3.3 Visualisasi batas wilayah (boundary) objek
+                    dalam citra 16x16 piksel.</em></p>
+              </div>
+
+
+            </div>
+            <p class="mb-3 ">
+              Piksel-piksel yang berada di dalam batas tertutup akan dikelompokkan sebagai satu wilayah
+              (<em>region</em>), sementara piksel yang berada di luar batas tersebut akan dianggap sebagai latar
+              belakang.
+              Pada Gambar 3.3 di bawah ini, angka <strong>255</strong> merepresentasikan piksel batas
+              (<em>boundary</em>) yang berwarna putih, sedangkan angka <strong>0</strong> merepresentasikan piksel
+              latar belakang yang berwarna hitam. Batas yang kontinu dan tertutup ini membentuk sebuah wilayah yang
+              nantinya dapat diekstraksi sebagai satu objek utuh melalui proses segmentasi.
+            </p>
+          </div>
+
+
+
+          <p>
+            Perlu diingat bahwa keberhasilan dari tahap ini sangat bergantung pada kualitas batas objek yang dihasilkan
+            pada tahap sebelumnya. Batas yang tidak lengkap atau terputus dapat menyebabkan objek tidak dapat
+            diekstraksi dengan tepat.
+          </p>
+
+          <p>
+            Hasil akhir dari proses ini adalah objek yang telah terpisah sepenuhnya dari latar belakang dan siap
+            digunakan untuk analisis lanjutan, seperti ekstraksi fitur, pengenalan pola, klasifikasi, maupun pengukuran
+            objek.
+          </p>
         </div>
       </div>
     </div>

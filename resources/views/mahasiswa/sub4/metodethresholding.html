@@ -58,8 +58,8 @@
                 </ul>
               </li>
               <li class="mb-2">
-                Hitung rata-rata intensitas masing-masing kelompok (\( m_1 \)
-                dan \( m_2 \.)).
+                Hitung rata-rata intensitas masing-masing kelompok \( m_1 \)
+                dan \( m_2 \).
               </li>
               <li class="mb-2">
                 Hitung threshold baru dengan rumus:
@@ -268,407 +268,179 @@
     <div class="card border shadow-sm rounded-4 mb-4">
       <div class="card-body p-4 p-md-5">
         <h4 class="fw-bold mb-4 text-custom-blue">
-          <i class="fa-solid fa-laptop-code me-2"></i>a) Praktek Global
-          Thresholding menggunakan Python
+          <i class="fa-solid fa-laptop-code me-2"></i> a) Praktek Global Thresholding menggunakan Python
         </h4>
 
         <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify">
+
           <p class="mb-4">
-            Perhatikan langkah-langkah dibawah ini untuk praktek Global
-            thresholding menggunakan python dengan implementasi library OpenCV:
+            <em>Global Thresholding</em> sangat bergantung pada pencarian satu nilai ambang batas (<em>threshold</em>)
+            yang paling optimal untuk memisahkan objek dari latar belakang. Perhatikan contoh kode utuh di bawah ini
+            untuk mempraktikkan proses <em>Iterative Threshold Selection</em> menggunakan bahasa pemrograman Python dan
+            pustaka OpenCV.
           </p>
 
-          <p class="fw-bold mb-2">1. Import Library</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
             <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
             </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                1<br />2<br />3
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                <pre class="m-0 text-secondary"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42</pre>
               </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-import cv2
+
+              <div class="text-light py-3 px-3 w-100"
+                style="overflow-x: auto; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;"
+                oncopy="return false;" oncut="return false;" oncontextmenu="return false;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">import cv2
 import numpy as np
 from matplotlib import pyplot as plt
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Baris 1 mengimpor pustaka OpenCV yang digunakan untuk membaca citra
-            dan melakukan proses thresholding. Baris 2 mengimpor pustaka NumPy
-            yang digunakan untuk melakukan perhitungan statistik seperti
-            rata-rata intensitas piksel. Baris 3 mengimpor pustaka Matplotlib
-            yang digunakan untuk menampilkan citra, histogram, and hasil
-            segmentasi.
-          </p>
 
-          <p class="fw-bold mb-2">2. Membaca Citra Grayscale</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                4<br />5<br />6<br />7
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-img = cv2.imread('nama_file.ektensi_file', cv2.IMREAD_GRAYSCALE)
+<span class="text-secondary"># 1. Membaca citra ke Grayscale</span>
+img = cv2.imread(<span class="text-success">'nama_file.ekstensi'</span>, cv2.IMREAD_GRAYSCALE)
 if img is None:
-    print("Gambar tidak ditemukan!")
+    print(<span class="text-success">"Gambar tidak ditemukan!"</span>)
     exit()
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Baris 4 membaca citra dengan nama nama_file.ektensifile dalam format
-            grayscale. Parameter cv2.IMREAD_GRAYSCALE digunakan agar citra
-            dibaca sebagai citra keabuan dengan rentang intensitas 0–255. Baris
-            5–7 digunakan untuk memastikan file citra berhasil dibaca. Jika file
-            tidak ditemukan, program akan berhenti.
-          </p>
 
-          <p class="fw-bold mb-2">3. Menentukan Threshold Awal</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                8
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
+<span class="text-secondary"># 2. Menentukan Threshold Awal (Rata-rata Intensitas)</span>
 T = np.mean(img)
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Nilai threshold awal diperoleh dari rata-rata intensitas seluruh
-            piksel pada citra. Nilai ini digunakan sebagai threshold awal
-            sebelum proses iterasi dilakukan.
-          </p>
 
-          <p class="fw-bold mb-2">4. Melakukan Iterative Threshold Selection</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                9<br />10<br />11<br />12<br />13<br />14<br />15<br />16<br />17<br />18<br />19<br />20<br />21
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-iteration = 0
+<span class="text-secondary"># 3. Iterative Threshold Selection</span>
+iteration = <span class="text-info">0</span>
 while True:
     G1 = img[img > T]
-    G2 = img[img &lt;= T]
-    if len(G1) == 0 or len(G2) == 0:
+    G2 = img[img <= T]
+    if len(G1) == <span class="text-info">0</span> or len(G2) == <span class="text-info">0</span>:
         break
+        
     m1 = np.mean(G1)
     m2 = np.mean(G2)
-    T_new = (m1 + m2) / 2
-    iteration += 1
-    if abs(T - T_new) &lt; 0.5:
+    T_new = (m1 + m2) / <span class="text-info">2</span>
+    iteration += <span class="text-info">1</span>
+    
+    if abs(T - T_new) < <span class="text-info">0.5</span>:
         break
     T = T_new
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Baris 9 menginisialisasi jumlah iterasi. Baris 11-12 membagi piksel
-            menjadi dua kelompok: \( G_1 \) berisi piksel dengan intensitas
-            lebih besar dari threshold dan \( G_2 \) berisi piksel dengan
-            intensitas lebih kecil atau sama dengan threshold. Baris 13-14
-            memastikan kedua kelompok tidak kosong. Baris 15 menghitung
-            rata-rata intensitas kelompok \( G_1 \) (\( m_1 \)). Baris 16
-            menghitung rata-rata intensitas kelompok \( G_2 \) (\( m_2 \)).
-            Baris 17 menghitung threshold baru menggunakan persamaan: \( T =
-            \frac{m_1 + m_2}{2} \). Baris 19 memeriksa apakah threshold baru
-            sudah konvergen. Jika perubahan threshold kurang dari 0,5 maka
-            iterasi dihentikan.
-          </p>
 
-          <p class="fw-bold mb-2">5. Menyimpan Threshold Akhir</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                22
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
+<span class="text-secondary"># 4. Menyimpan dan Menerapkan Threshold Akhir</span>
 iterative_threshold = T_new
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Nilai threshold hasil iterasi terakhir disimpan pada variabel
-            iterative_threshold. Nilai ini akan digunakan untuk proses
-            segmentasi citra.
-          </p>
+_, segmented = cv2.threshold(img, iterative_threshold, <span class="text-info">255</span>, cv2.THRESH_BINARY)
 
-          <p class="fw-bold mb-2">6. Melakukan Segmentasi Citra</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                23<br />24<br />25<br />26
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-_, segmented = cv2.threshold(
-    img,
-    iterative_threshold,
-    255,
-    cv2.THRESH_BINARY
-)
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Fungsi cv2.threshold() digunakan untuk mengubah citra grayscale
-            menjadi citra biner. Piksel dengan intensitas lebih besar dari
-            threshold akan diberi nilai 255 (putih). Piksel dengan intensitas
-            lebih kecil atau sama dengan threshold akan diberi nilai 0 (hitam).
-          </p>
+<span class="text-secondary"># 5. Menghitung Histogram Citra</span>
+hist = cv2.calcHist([img], [<span class="text-info">0</span>], None, [<span class="text-info">256</span>], [<span class="text-info">0</span>, <span class="text-info">256</span>])
 
-          <p class="fw-bold mb-2">7. Menghitung Histogram Citra</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                27<br />28<br />29<br />30<br />31<br />32
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-hist = cv2.calcHist(
-    [img],
-    [0],
-    None,
-    [256],
-    [0, 256]
-)
-</pre>
+<span class="text-secondary"># 6. Menampilkan Citra, Histogram dan Hasil Segmentasi</span>
+plt.figure(figsize=(<span class="text-info">15</span>, <span class="text-info">5</span>))
+plt.subplot(<span class="text-info">1</span>, <span class="text-info">3</span>, <span class="text-info">1</span>); plt.imshow(img, cmap=<span class="text-success">'gray'</span>); plt.title(<span class="text-success">'Citra Grayscale'</span>)
+plt.subplot(<span class="text-info">1</span>, <span class="text-info">3</span>, <span class="text-info">2</span>); plt.plot(hist, color=<span class="text-success">'blue'</span>); plt.axvline(iterative_threshold, color=<span class="text-success">'red'</span>, linestyle=<span class="text-success">'--'</span>)
+plt.subplot(<span class="text-info">1</span>, <span class="text-info">3</span>, <span class="text-info">3</span>); plt.imshow(segmented, cmap=<span class="text-success">'gray'</span>); plt.title(<span class="text-success">'Hasil Segmentasi'</span>)
+plt.show()</pre>
               </div>
             </div>
           </div>
-          <p class="mb-4 text-dark">
-            Fungsi cv2.calcHist() digunakan untuk menghitung histogram citra
-            grayscale. Histogram menunjukkan distribusi frekuensi setiap nilai
-            intensitas piksel pada citra.
-          </p>
 
-          <p class="fw-bold mb-2">
-            8. Menampilkan Citra, Histogram dan Hasil Segmentasi
-          </p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                33<br />34<br />35<br />36<br />37<br />38<br />39<br />40<br />41<br />42<br />43<br />44
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-plt.figure(figsize=(15, 5))
-plt.subplot(1, 3, 1)
-plt.imshow(img, cmap='gray')
-plt.title('Citra Grayscale')
-plt.subplot(1, 3, 2)
-plt.plot(hist, color='blue')
-plt.axvline(iterative_threshold, color='red', linestyle='--')
-plt.subplot(1, 3, 3)
-plt.imshow(segmented, cmap='gray')
-plt.title('Hasil Segmentasi')
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Terakhir adalah mengeksekusi visualisasi data untuk menampilkan
-            perbandingan antara citra asli keabuan, sebaran grafik histogram,
-            serta hasil segmentasi akhir.
-          </p>
+          <h6 class="fw-bold mb-3 text-dark">Penjelasan Kode:</h6>
+          <ul class="mb-4 text-dark" style="padding-left: 1.2rem;">
+            <li class="mb-2"><strong>Mengimpor Library:</strong> Pustaka <code>cv2</code> digunakan untuk membaca citra
+              dan melakukan <em>thresholding</em>. <code>NumPy</code> digunakan untuk kalkulasi matriks statistik
+              (seperti menghitung rata-rata grup). <code>Matplotlib</code> digunakan untuk mem-<em>plot</em> gambar dan
+              grafik.</li>
+            <li class="mb-2"><strong>Membaca Citra Grayscale:</strong> <code>cv2.imread()</code> membaca gambar langsung
+              ke format hitam putih menggunakan parameter <code>cv2.IMREAD_GRAYSCALE</code> dengan rentang nilai 0–255.
+              Jika file gagal dimuat, program otomatis terhenti.</li>
+            <li class="mb-2"><strong>Menentukan Threshold Awal:</strong> Nilai ambang batas (<em>T</em>) permulaan
+              ditetapkan dari rata-rata seluruh intensitas piksel citra menggunakan <code>np.mean(img)</code>.</li>
+            <li class="mb-2"><strong>Iterative Selection:</strong> Algoritma akan terus memutar blok
+              <code>while True</code>. Citra dibagi menjadi dua kelompok: \(G_1\) untuk piksel \(> T\) dan \(G_2\) untuk
+              piksel \(\leq T\). Rata-rata dari masing-masing grup (\(m_1\) dan \(m_2\)) dihitung untuk merumuskan nilai
+              \(T\) baru (\(T = \frac{m_1 + m_2}{2}\)). Jika selisih \(T\) lama dan baru \(< 0.5\), iterasi berhenti
+                karena nilai sudah konvergen.</li>
+            <li class="mb-2"><strong>Segmentasi Biner:</strong> Fungsi <code>cv2.threshold()</code> mengubah piksel
+              citra berdasarkan nilai <code>iterative_threshold</code> yang didapat. Piksel \(> T\) menjadi putih (255),
+              sedangkan piksel \(\leq T\) menjadi hitam (0).</li>
+            <li class="mb-2"><strong>Histogram & Visualisasi:</strong> <code>cv2.calcHist()</code> menghitung kemunculan
+              tiap nilai piksel. <code>Matplotlib</code> kemudian menampilkan citra asli, grafik histogram berserta
+              garis merah (penanda batas threshold), dan citra biner akhir.</li>
+          </ul>
+          <h6 class="fw-bold mb-3 text-dark">Output yang dihasilkan:</h6>
 
           <img src="{{ url_for('static', filename='img/sub4/iterative_threshold.png') }}" class="img-fluid"
             style="max-width: 100%; height: auto" />
-          <p class="mt-3 mb-3 text-muted small text-center">
-            <em>Gambar 4.3 Output Edge-Based Segmentation</em>
+          <p class="mt-3 mb-4 text-muted small text-center">
+            <em>Gambar 4.3 Output Global Thresholding</em>
           </p>
 
           <p class="mb-3 text-dark">
-            Berdasarkan aturan thresholding yang didapatkan:
+            Berdasarkan perhitungan algoritma dari kode di atas, didapatkan aturan fungsi <em>thresholding</em> sebagai
+            berikut:
           </p>
+
           <div class="bg-light p-3 text-center rounded border mb-4 shadow-sm text-dark fw-bold mx-auto"
             style="max-width: 450px">
-            \( g(x,y) = \begin{cases} 1, & \text{jika } f(x,y) > 99.19 \\ 0, &
-            \text{jika } f(x,y) \le 99.19 \end{cases} \)
+            \( g(x,y) = \begin{cases} 1, & \text{jika } f(x,y) > 99.19 \\ 0, & \text{jika } f(x,y) \le 99.19 \end{cases}
+            \)
           </div>
 
-          <p class="mb-3 text-dark">
-            Piksel dengan intensitas lebih kecil dari threshold diklasifikasikan
-            sebagai objek (warna hitam), sedangkan piksel dengan intensitas
-            lebih besar dari threshold diklasifikasikan sebagai background
-            (warna putih).
-          </p>
-          <p class="mb-3 text-dark">
-            Hasil segmentasi menunjukkan bahwa objek tank berhasil dipisahkan
-            dari latar belakang.
-          </p>
-          <p class="mb-3 text-dark">
-            Namun, masih terdapat beberapa area kecil berwarna hitam yang
-            tersebar pada bagian atas citra.
-          </p>
-          <p class="mb-0 text-dark">
-            Area tersebut merupakan noise atau piksel-piksel lain yang memiliki
-            intensitas mirip dengan objek sehingga ikut tersegmentasi sebagai
-            objek.
-          </p>
+          <ul class="text-dark" style="padding-left: 1.2rem;">
+            <li class="mb-2">Piksel dengan intensitas <strong>lebih kecil atau sama dengan 99.19</strong>
+              diklasifikasikan sebagai objek dan diwarnai hitam (0).</li>
+            <li class="mb-2">Piksel dengan intensitas <strong>lebih besar dari 99.19</strong> diklasifikasikan sebagai
+              latar belakang (<em>background</em>) dan diwarnai putih (1 atau 255).</li>
+            <li class="mb-2">Hasil segmentasi memperlihatkan bahwa objek utama (misal: kendaraan tank) berhasil
+              dipisahkan dengan jelas dari latar belakang tanahnya.</li>
+            <li class="mb-0">Meski berhasil, masih terdapat bercak hitam kecil (<em>noise</em>) di sekitar citra. Hal
+              ini lumrah terjadi karena <em>Global Thresholding</em> murni mengandalkan intensitas, sehingga piksel
+              non-objek yang secara kebetulan bernilai \(\leq 99.19\) akan ikut tersapu menjadi bagian objek.</li>
+          </ul>
+
         </div>
       </div>
     </div>
@@ -677,106 +449,43 @@ plt.title('Hasil Segmentasi')
   <div class="page-section">
     <div class="card border shadow-sm rounded-4 mb-4">
       <div class="card-body p-4 p-md-5">
-        <div class="mt-2 mb-5 text-center">
-          <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
-            <div class="px-4 py-2 rounded-3 text-white shadow-sm" style="background-color: #1e293b">
-              <h5 class="fw-bold mb-0">
-                <i class="fa-solid fa-rocket me-2"></i> Ayo Coba Sendiri!
-              </h5>
-            </div>
-            <button type="button"
-              class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-medium shadow-sm d-flex align-items-center"
-              data-bs-toggle="modal" data-bs-target="#panduanThresholdModal" style="height: 100%">
-              <i class="fa-solid fa-circle-question me-2"></i> Cara Penggunaan
-            </button>
+        <div class="mb-4 p-4 rounded bg-warning-subtle border border-warning shadow-sm">
+          <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-list-check me-2 text-dark"></i>
+            <h5 class="fw-bold mb-0 text-dark">Petunjuk Praktik</h5>
           </div>
-          <p class="text-dark mt-3 mb-0 fw-medium" style="font-size: 1.05rem">
-            Unggah sampel gambar dan selesaikan potongan kode program pada
-            <em>Live Code Notebook</em> di bawah ini untuk menghitung segmentasi
-            berbasis nilai ambang global.
+          <p class="mb-4 text-dark">
+            Ikuti langkah-langkah berikut untuk menjalankan simulasi program segmentasi:
           </p>
+          <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
+            <li class="mb-2">
+              Download gambar uji coba bernama <code>citra_tank(8x8).png</code> melalui tautan berikut:
+              <a href="https://drive.google.com/file/d/1nAuPMLyYuI3jYKx1oxAHISM_UdU2k1Wh/view?usp=sharing"
+                class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
+                <i class="fa-solid fa-download me-1"></i>Download
+              </a>
+            </li>
+            <li class="mb-2">
+              Upload file <code>citra_tank(8x8).png</code> tersebut ke area <strong>File Workspace</strong>.
+            </li>
+            <li class="mb-2">
+              Pastikan <em>preview</em> gambar sudah muncul di sebelah kiri.
+            </li>
+            <li class="mb-2">
+              Klik tombol <strong>+ Add Cell</strong> berwarna biru untuk memunculkan area kode program.
+            </li>
+            <li class="mb-2">
+              Lengkapi argumen nama file di dalam fungsi pembacaan gambar <code>cv2.imread()</code>.
+            </li>
+            <li class="mb-2">
+              Klik tombol <span class="badge bg-success"><i class="fa-solid fa-play"></i> Run</span> di pojok kanan atas
+              editor.
+            </li>
+            <li>
+              Amati proses komputasi pencarian ambang batas dan periksa hasil ketiga visualisasinya.
+            </li>
+          </ol>
         </div>
-
-        <div class="modal fade" id="panduanThresholdModal" tabindex="-1" aria-labelledby="panduanThresholdModalLabel"
-          aria-hidden="true">
-          <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0 shadow-lg">
-              <div class="modal-header border-bottom-0 px-4 px-md-5 pt-4 pb-2">
-                <h5 class="modal-title fw-bold text-custom-blue" id="panduanThresholdModalLabel">
-                  <i class="fa-solid fa-circle-info me-2"></i> Panduan
-                  Penggunaan Live Code
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body px-4 px-md-5 pb-4">
-                <div class="row g-4 text-secondary mt-1" style="font-size: 0.95rem; line-height: 1.7">
-                  <div class="col-md-6">
-                    <div class="d-flex mb-3">
-                      <div class="me-3">
-                        <span class="badge bg-custom-blue rounded-circle p-2" style="
-                            width: 28px;
-                            height: 28px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                          ">1</span>
-                      </div>
-                      <div>
-                        <strong class="text-dark">Upload Gambar</strong><br />
-                        Klik area <em>"Upload Gambar Sampel"</em> di sebelah
-                        kiri atau <em>drag & drop</em> gambarmu. Pastikan nama
-                        filenya muncul di daftar berkas workspace.
-                      </div>
-                    </div>
-                    <div class="d-flex mb-3">
-                      <div class="me-3">
-                        <span class="badge bg-custom-blue rounded-circle p-2" style="
-                            width: 28px;
-                            height: 28px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                          ">2</span>
-                      </div>
-                      <div>
-                        <strong class="text-dark">Lengkapi Kode Program</strong><br />
-                        Isi bagian kode yang rumpang (ditandai dengan parameter
-                        <code>_____</code>). Sesuaikan argumen string di dalam
-                        fungsi <code>imread()</code> dengan file gambar Anda!
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="d-flex mb-3">
-                      <div class="me-3">
-                        <span class="badge bg-custom-blue rounded-circle p-2" style="
-                            width: 28px;
-                            height: 28px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                          ">3</span>
-                      </div>
-                      <div>
-                        <strong class="text-dark">Jalankan Kode (Run)</strong><br />
-                        Klik tombol <strong>Play</strong> di pojok kanan atas
-                        cell. Hasil olah matriks citra, grafik histogram, dan
-                        teks konsol akan dirender langsung di bawahnya.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer border-top-0 px-4 px-md-5 pb-4 pt-0 justify-content-end">
-                <button type="button" class="btn text-white rounded-pill px-4" style="background-color: #1e293b"
-                  data-bs-dismiss="modal">
-                  Saya Mengerti
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div class="notebook-wrapper border border-2 rounded-4 shadow-sm overflow-hidden mb-3">
           <aside class="sidebar bg-light p-3 border-end">
             <div class="sidebar-header mb-3 border-bottom pb-2">
@@ -839,7 +548,7 @@ plt.title('Hasil Segmentasi')
       </div>
     </div>
   </div>
-  <!-- B -->
+  <!-- 5 -->
   <div class="page-section">
     <div class="card border shadow-sm rounded-4 mb-4">
       <div class="card-body p-4 p-md-5">
@@ -857,10 +566,14 @@ plt.title('Hasil Segmentasi')
             histogram citra.
           </p>
 
-          <p class="mb-3 text-center fw-bold">
-            <em>[Gambar 4.8 Contoh citra yang diolah menggunakan otsu
-              thresholding]</em>
-          </p>
+          <div class="text-center p-3 mb-4 ">
+            <img src="{{ url_for('static', filename='img/sub4/citra_otsu.png') }}" class="img-fluid"
+              style="max-width: 100%; height: auto" alt="Output Otsu Thresholding menggunakan python" />
+            <p class="mt-2 mb-0 text-muted small text-center">
+              <em>Gambar 4.8 Contoh citra yang diolah menggunakan otsu thresholding</em>
+            </p>
+          </div>
+
 
           <p class="mb-4">
             Berdasarkan histogram tersebut, Otsu mencoba membagi piksel menjadi
@@ -1239,437 +952,182 @@ plt.title('Hasil Segmentasi')
     <div class="card border shadow-sm rounded-4 mb-4">
       <div class="card-body p-4 p-md-5">
         <h4 class="fw-bold mb-4 text-custom-blue">
-          <i class="fa-solid fa-laptop-code me-2"></i> 4.6 Praktek Otsu
-          Thresholding menggunakan Python
+          <i class="fa-solid fa-laptop-code me-2"></i> 4.6 Praktek Otsu Thresholding menggunakan Python
         </h4>
 
         <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify">
+
           <p class="mb-4">
-            Perhatikan langkah-langkah berikut untuk melakukan segmentasi citra
-            menggunakan Otsu Thresholding dengan bantuan library OpenCV.
+            Berbeda dengan <em>Global Thresholding</em> yang mencari nilai secara iteratif, <em>Otsu Thresholding</em>
+            secara otomatis menganalisis histogram citra untuk menemukan nilai ambang batas (<em>threshold</em>) terbaik
+            yang memisahkan kelas objek dan <em>background</em>. Perhatikan contoh kode utuh di bawah ini untuk
+            mempraktikkannya menggunakan pustaka OpenCV.
           </p>
 
-          <p class="fw-bold mb-2">1. Mengimport library</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
             <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
             </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                1<br />2
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                <pre class="m-0 text-secondary"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39</pre>
               </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-import cv2
+
+              <div class="text-light py-3 px-3 w-100"
+                style="overflow-x: auto; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;"
+                oncopy="return false;" oncut="return false;" oncontextmenu="return false;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">import cv2
 import matplotlib.pyplot as plt
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Baris 1 mengimpor pustaka OpenCV yang digunakan untuk membaca citra
-            dan melakukan proses thresholding. Baris 2 mengimpor Matplotlib yang
-            digunakan untuk menampilkan citra, histogram, dan hasil segmentasi.
-          </p>
 
-          <p class="fw-bold mb-2">2. Membaca citra grayscale</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                3
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-img = cv2.imread('rumah&Mobil.jpg', cv2.IMREAD_GRAYSCALE)
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Baris 4 membaca citra rumah&Mobil.jpg dalam format grayscale.
-            Parameter cv2.IMREAD_GRAYSCALE digunakan untuk mengubah citra
-            menjadi citra keabuan sehingga setiap piksel memiliki nilai
-            intensitas antara 0 sampai 255.
-          </p>
+<span class="text-secondary"># 1. Membaca citra grayscale</span>
+img = cv2.imread(<span class="text-success">'rumah&Mobil.jpg'</span>, cv2.IMREAD_GRAYSCALE)
 
-          <p class="fw-bold mb-2">3. Melakukan Otsu thresholding</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                4<br />5<br />6<br />7<br />8<br />9
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-T, otsu_img = cv2.threshold(
-    img,
-    0,
-    255,
-    cv2.THRESH_BINARY + cv2.THRESH_OTSU
-)
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Fungsi cv2.threshold() digunakan untuk melakukan proses
-            thresholding. Parameter cv2.THRESH_OTSU mengaktifkan metode Otsu
-            sehingga nilai threshold ditentukan secara otomatis berdasarkan
-            histogram citra. Nilai threshold hasil perhitungan disimpan pada
-            variabel T. Hasil segmentasi disimpan pada variabel otsu_img.
-          </p>
+<span class="text-secondary"># 2. Melakukan Otsu thresholding</span>
+T, otsu_img = cv2.threshold(img, <span class="text-info">0</span>, <span class="text-info">255</span>, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-          <p class="fw-bold mb-2">4. Menghitung histogram citra</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                10
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-hist = cv2.calcHist([img], [0], None, [256], [0, 256])
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Fungsi cv2.calcHist() digunakan untuk menghitung histogram citra
-            grayscale. Histogram menunjukkan distribusi frekuensi setiap tingkat
-            intensitas piksel pada citra.
-          </p>
+<span class="text-secondary"># 3. Menghitung histogram citra</span>
+hist = cv2.calcHist([img], [<span class="text-info">0</span>], None, [<span class="text-info">256</span>], [<span class="text-info">0</span>, <span class="text-info">256</span>])
 
-          <p class="fw-bold mb-2">5. Membuat area visualisasi</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                11
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-plt.figure(figsize=(15,5))
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Membuat jendela visualisasi dengan ukuran 15 × 5 inci untuk
-            menampilkan citra, histogram, dan hasil segmentasi.
-          </p>
+<span class="text-secondary"># 4. Membuat area visualisasi</span>
+plt.figure(figsize=(<span class="text-info">15</span>, <span class="text-info">5</span>))
 
-          <p class="fw-bold mb-2">6. Menampilkan citra grayscale</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                12<br />13<br />14<br />15
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-plt.subplot(1,3,1)
-plt.imshow(img, cmap='gray')
-plt.title('Citra Grayscale')
-plt.axis('off')
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Menampilkan citra grayscale sebagai citra masukan (input). Parameter
-            cmap='gray' digunakan untuk menampilkan citra dalam skala keabuan.
-          </p>
+<span class="text-secondary"># Menampilkan citra grayscale</span>
+plt.subplot(<span class="text-info">1</span>, <span class="text-info">3</span>, <span class="text-info">1</span>)
+plt.imshow(img, cmap=<span class="text-success">'gray'</span>)
+plt.title(<span class="text-success">'Citra Grayscale'</span>)
+plt.axis(<span class="text-success">'off'</span>)
 
-          <p class="fw-bold mb-2">
-            7. Menampilkan histogram dan Threshold Otsu
-          </p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                16<br />17<br />18<br />19<br />20<br />21<br />22<br />23<br />24
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-plt.subplot(1,3,2)
-plt.plot(hist, color='blue')
-plt.axvline(T, color='red', linestyle='--')
-label=f'Threshold Otsu = {T:.0f}'
-plt.title('Histogram Citra')
-plt.xlabel('Intensitas Piksel')
-plt.ylabel('Frekuensi')
-plt.xlim([0,256])
-plt.legend()
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Histogram citra ditampilkan menggunakan fungsi plt.plot(). Garis
-            merah putus-putus menunjukkan nilai threshold yang dipilih secara
-            otomatis oleh metode Otsu. Nilai threshold tersebut merupakan titik
-            yang dianggap mampu memisahkan objek dan background secara optimal.
-          </p>
+<span class="text-secondary"># Menampilkan histogram dan garis Threshold Otsu</span>
+plt.subplot(<span class="text-info">1</span>, <span class="text-info">3</span>, <span class="text-info">2</span>)
+plt.plot(hist, color=<span class="text-success">'blue'</span>)
+plt.axvline(T, color=<span class="text-success">'red'</span>, linestyle=<span class="text-success">'--'</span>)
+plt.title(<span class="text-success">'Histogram Citra'</span>)
+plt.xlabel(<span class="text-success">'Intensitas Piksel'</span>)
+plt.ylabel(<span class="text-success">'Frekuensi'</span>)
+plt.xlim([<span class="text-info">0</span>, <span class="text-info">256</span>])
 
-          <p class="fw-bold mb-2">8. Menampilkan Hasil otsu thresholding</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                38<br />39<br />40<br />41
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
-plt.subplot(1,3,3)
-plt.imshow(otsu_img, cmap='gray')
-plt.title(f'Hasil Otsu Thresholding\n(T = {T:.0f})')
-plt.axis('off')
-</pre>
-              </div>
-            </div>
-          </div>
-          <p class="mb-4 text-dark">
-            Menampilkan hasil segmentasi menggunakan threshold yang diperoleh
-            dari metode Otsu. Piksel objek dan background dipisahkan menjadi dua
-            kelas sehingga menghasilkan citra biner.
-          </p>
+<span class="text-secondary"># Menampilkan hasil biner Otsu thresholding</span>
+plt.subplot(<span class="text-info">1</span>, <span class="text-info">3</span>, <span class="text-info">3</span>)
+plt.imshow(otsu_img, cmap=<span class="text-success">'gray'</span>)
+plt.title(f<span class="text-success">'Hasil Otsu Thresholding\n(T = {T:.0f})'</span>)
+plt.axis(<span class="text-success">'off'</span>)
 
-          <p class="fw-bold mb-2">9. Menampilkan hasil visualisasi</p>
-          <div class="rounded-3 overflow-hidden mb-3 shadow-sm border border-secondary" style="font-size: 0.95rem">
-            <div class="d-flex align-items-center px-3 py-2"
-              style="background-color: #1e1e1e; border-bottom: 1px solid #333">
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56"></div>
-              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e"></div>
-              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f"></div>
-              <span class="text-secondary ms-3" style="font-size: 0.8rem">main.py</span>
-            </div>
-            <div class="d-flex font-monospace" style="background-color: #2d2d2d">
-              <div class="text-secondary text-end py-3 px-3" style="
-                  background-color: #1e1e1e;
-                  min-width: 55px;
-                  user-select: none;
-                  border-right: 1px solid #333;
-                  line-height: 1.6;
-                ">
-                43<br />44
-              </div>
-              <div class="text-light py-3 px-3 w-100" style="overflow-x: auto">
-                <pre class="m-0 text-light" style="
-                    white-space: pre;
-                    line-height: 1.6;
-                    background: transparent;
-                    border: none;
-                    font-family: inherit;
-                  ">
+<span class="text-secondary"># Menampilkan semua hasil ke layar</span>
 plt.tight_layout()
-plt.show()
-</pre>
+plt.show()</pre>
               </div>
             </div>
           </div>
-          <p class="mb-4 text-dark">
-            plt.tight_layout() digunakan untuk mengatur jarak antar gambar agar
-            tidak saling bertumpuk. plt.show() digunakan untuk menampilkan
-            seluruh hasil visualisasi.
-          </p>
 
-          <div class="text-center bg-light border rounded-3 p-3 mb-4 shadow-sm">
-            <img src="{{ url_for('static', filename='img/sub4/otsu.png') }}" class="img-fluid rounded"
+          <h6 class="fw-bold mb-3 text-dark">Penjelasan Kode:</h6>
+          <ul class="mb-4 text-dark" style="padding-left: 1.2rem;">
+            <li class="mb-2"><strong>Mengimpor Library:</strong> <code>cv2</code> (OpenCV) diimpor untuk memuat dan
+              mengeksekusi operasi komputer visi. <code>Matplotlib</code> digunakan untuk mem-<em>plot</em> antarmuka
+              grafis (gambar dan histogram).</li>
+            <li class="mb-2"><strong>Membaca Citra:</strong> <code>cv2.imread()</code> dikonfigurasi dengan flag
+              <code>cv2.IMREAD_GRAYSCALE</code> agar citra 'rumah&Mobil.jpg' langsung masuk ke dalam memori sebagai
+              matriks hitam-putih murni (rentang 0-255).
+            </li>
+            <li class="mb-2"><strong>Eksekusi Otsu Thresholding:</strong> <code>cv2.threshold()</code> dipanggil
+              menggunakan metode kombinasi <code>cv2.THRESH_BINARY + cv2.THRESH_OTSU</code>. OpenCV secara cerdas akan
+              mengabaikan parameter ambang batas yang kita berikan (angka 0) dan menghitung nilai \( T \) optimalnya
+              sendiri. Variabel <code>T</code> akan menyimpan angka threshold yang terpilih, dan <code>otsu_img</code>
+              menyimpan matriks gambar hasilnya.</li>
+            <li class="mb-2"><strong>Kalkulasi Histogram:</strong> <code>cv2.calcHist()</code> menghitung kemunculan
+              (frekuensi) setiap intensitas piksel yang tersebar di dalam citra.</li>
+            <li class="mb-2"><strong>Penyusunan Visualisasi:</strong> Jendela (<em>figure</em>) berukuran 15x5 inci
+              disiapkan untuk dipecah menjadi 3 kolom (<code>plt.subplot</code>). Kolom 1 merender gambar abu-abu asli.
+              Kolom 2 merender grafik distribusi piksel (biru) dan menyelipkan garis vertikal merah persis pada titik
+              nilai \( T \) temuan Otsu. Kolom 3 merender hasil gambar biner tersegmentasi.</li>
+            <li class="mb-2"><strong>Finalisasi Tampilan:</strong> <code>plt.tight_layout()</code> mengatur spasi agar
+              *layout* ketiga kolom tidak bertumpukan, lalu <code>plt.show()</code> menampilkannya ke pengguna.</li>
+          </ul>
+
+          <h6 class="fw-bold mb-3 text-dark">Output yang dihasilkan:</h6>
+
+          <div class="text-center  p-3 mb-4">
+            <img src="{{ url_for('static', filename='img/sub4/otsu.png') }}" class="img-fluid "
               style="max-width: 100%; height: auto" alt="Output Otsu Thresholding menggunakan python" />
-            <p class="mt-2 mb-0 text-muted small text-center">
-              <em>Gambar 4.9 Output Otsu Thresholding menggunakan python</em>
+            <p class="mt-3 mb-0 text-muted small text-center">
+              <em>Gambar 4.9 Output Otsu Thresholding menggunakan Python</em>
             </p>
           </div>
 
           <p class="mb-3 text-dark">
-            Gambar ditengah menampilkan histogram distribusi intensitas piksel
-            citra. Garis merah putus-putus menunjukkan nilai threshold yang
-            diperoleh secara otomatis oleh metode Otsu, yaitu:
-            <span class="fw-bold text-custom-blue">\( T = 99 \)</span>
-          </p>
-          <p class="mb-3 text-dark">
-            Metode Otsu menganalisis histogram citra dan menghitung nilai
-            threshold yang menghasilkan pemisahan terbaik antara dua kelompok
-            piksel, yaitu kelompok objek dan kelompok background.
-          </p>
-          <p class="mb-3 text-dark">
-            Pada histogram terlihat bahwa sebagian besar piksel berada pada
-            rentang intensitas sekitar 120–150 yang merepresentasikan area tanah
-            sebagai background.
-          </p>
-          <p class="mb-3 text-dark">
-            Sementara itu, piksel dengan intensitas lebih rendah berasal dari
-            objek tank, bayangan, dan beberapa area gelap lainnya.
+            Gambar di atas menampilkan visualisasi perbandingan antara citra asli, sebaran histogram, dan hasil akhir
+            biner. Berikut adalah analisis dari eksekusi metode tersebut:
           </p>
 
-          <p class="mb-3 text-dark">Pada hasil segmentasi terlihat bahwa:</p>
-          <ul class="mb-4 text-dark" style="line-height: 1.8">
-            <li>
-              Objek tank berhasil terdeteksi dan tampil sebagai area berwarna
-              hitam.
+          <ul class="mb-0 text-dark" style="line-height: 1.8; padding-left: 1.2rem;">
+            <li class="mb-2">
+              <strong>Penentuan Otomatis:</strong> Gambar di tengah menampilkan kurva distribusi intensitas. Garis merah
+              putus-putus menunjukkan titik pemotongan optimal yang ditemukan otomatis oleh perhitungan matematis Otsu,
+              yaitu di titik <span class="fw-bold text-custom-blue">\( T = 99 \)</span>.
             </li>
-            <li>
-              Sebagian besar area tanah berhasil diklasifikasikan sebagai
-              background berwarna putih.
+            <li class="mb-2">
+              <strong>Karakteristik Histogram:</strong> Mayoritas piksel menumpuk membentuk bukit di rentang nilai
+              abu-abu 120–150. Gunung piksel ini merepresentasikan area tanah (lapangan) sebagai <em>background</em>. Di
+              sisi lain, piksel berintensitas rendah (warna lebih gelap) mewakili objek tank, bayangan, dan area gelap
+              lainnya.
             </li>
-            <li>
-              Masih terdapat beberapa area kecil berwarna hitam yang tersebar di
-              sekitar citra.
+            <li class="mb-2">
+              <strong>Hasil Segmentasi:</strong> Objek utama (tank) telah terdeteksi secara otomatis dan digolongkan
+              menjadi area berwarna hitam (0). Mayoritas piksel tanah terang berhasil dikesampingkan menjadi
+              <em>background</em> berwarna putih (255).
+            </li>
+            <li class="mb-0">
+              <strong>Keterbatasan Noise:</strong> Sama seperti metode global lainnya, masih terdapat beberapa area
+              kecil berserakan (<em>noise</em>) yang ikut menghitam karena memiliki corak kecerahan yang kebetulan
+              setara atau berada di bawah angka \(\leq 99\). Namun secara keseluruhan, fitur dan rupa dari objek tank
+              bisa dikenali dengan baik.
             </li>
           </ul>
 
-          <p class="mb-3 text-dark">
-            Area tersebut merupakan objek kecil, bayangan, atau noise yang
-            memiliki intensitas serupa dengan objek utama sehingga ikut
-            tersegmentasi.
-          </p>
-          <p class="mb-0 text-dark">
-            Secara keseluruhan secara visual, bentuk tank masih dapat dikenali
-            dengan baik sehingga proses segmentasi dapat dikatakan berhasil.
-          </p>
         </div>
       </div>
     </div>
@@ -1678,108 +1136,46 @@ plt.show()
   <div class="page-section">
     <div class="card border shadow-sm rounded-4 mb-4">
       <div class="card-body p-4 p-md-5">
-        <div class="mt-2 mb-5 text-center">
-          <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
-            <div class="px-4 py-2 rounded-3 text-white shadow-sm" style="background-color: #1e293b">
-              <h5 class="fw-bold mb-0">
-                <i class="fa-solid fa-rocket me-2"></i> Ayo Coba Sendiri!
-              </h5>
-            </div>
-            <button type="button"
-              class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-medium shadow-sm d-flex align-items-center"
-              data-bs-toggle="modal" data-bs-target="#panduanOtsuModal" style="height: 100%">
-              <i class="fa-solid fa-circle-question me-2"></i> Cara Penggunaan
-            </button>
+        <div class="mb-4 p-4 rounded bg-warning-subtle border border-warning shadow-sm">
+          <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-list-check me-2 text-dark"></i>
+            <h5 class="fw-bold mb-0 text-dark">Petunjuk Praktik</h5>
           </div>
-          <p class="text-dark mt-3 mb-0 fw-medium" style="font-size: 1.05rem">
-            Unggah sampel gambar dan selesaikan potongan kode program pada
-            <em>Live Code Notebook</em> di bawah ini untuk menghitung nilai
-            ambang secara otomatis menggunakan metode Otsu.
+          <p class="mb-4 text-dark">
+            Ikuti langkah-langkah berikut untuk menjalankan simulasi program segmentasi Otsu:
           </p>
+          <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
+            <li class="mb-2">
+              Download gambar uji coba bernama <code>rumah&Mobil.jpg</code> melalui tautan berikut:
+              <a href="https://drive.google.com/file/d/1nAuPMLyYuI3jYKx1oxAHISM_UdU2k1Wh/view?usp=sharing"
+                class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
+                <i class="fa-solid fa-download me-1"></i>Download
+              </a>
+            </li>
+            <li class="mb-2">
+              Upload file <code>rumah&Mobil.jpg</code> tersebut ke area <strong>File Workspace</strong> (bisa
+              ditarik/<em>drag</em> atau diklik).
+            </li>
+            <li class="mb-2">
+              Pastikan <em>preview</em> gambar sudah muncul dengan benar pada daftar file di sebelah kiri.
+            </li>
+            <li class="mb-2">
+              Klik tombol <strong>+ Add Cell</strong> berwarna biru untuk menambahkan blok kode baru pada area <em>Live
+                Code Notebook</em>.
+            </li>
+            <li class="mb-2">
+              Lengkapi parameter yang rumpang (<code>_____</code>) dengan nama file yang baru saja Anda unggah.
+            </li>
+            <li class="mb-2">
+              Klik tombol <span class="badge bg-success"><i class="fa-solid fa-play"></i> Run</span> di pojok kanan atas
+              editor.
+            </li>
+            <li>
+              Amati hasil output <em>console</em> dan komparasi 3 gambar (Citra Asli, Grafik Histogram, dan Hasil Otsu
+              Thresholding) yang muncul di bawahnya.
+            </li>
+          </ol>
         </div>
-
-        <div class="modal fade" id="panduanOtsuModal" tabindex="-1" aria-labelledby="panduanOtsuModalLabel"
-          aria-hidden="true">
-          <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0 shadow-lg">
-              <div class="modal-header border-bottom-0 px-4 px-md-5 pt-4 pb-2">
-                <h5 class="modal-title fw-bold text-custom-blue" id="panduanOtsuModalLabel">
-                  <i class="fa-solid fa-circle-info me-2"></i> Panduan
-                  Penggunaan Live Code
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body px-4 px-md-5 pb-4">
-                <div class="row g-4 text-secondary mt-1" style="font-size: 0.95rem; line-height: 1.7">
-                  <div class="col-md-6">
-                    <div class="d-flex mb-3">
-                      <div class="me-3">
-                        <span class="badge bg-custom-blue rounded-circle p-2" style="
-                            width: 28px;
-                            height: 28px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                          ">1</span>
-                      </div>
-                      <div>
-                        <strong class="text-dark">Upload Gambar</strong><br />
-                        Klik area <em>"Upload Gambar Sampel"</em> di sebelah
-                        kiri atau <em>drag & drop</em> gambarmu. Pastikan nama
-                        filenya muncul di daftar berkas workspace.
-                      </div>
-                    </div>
-                    <div class="d-flex mb-3">
-                      <div class="me-3">
-                        <span class="badge bg-custom-blue rounded-circle p-2" style="
-                            width: 28px;
-                            height: 28px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                          ">2</span>
-                      </div>
-                      <div>
-                        <strong class="text-dark">Lengkapi Kode Program</strong><br />
-                        Isi bagian kode yang rumpang (ditandai dengan parameter
-                        <code>_____</code>). Sesuaikan argumen string di dalam
-                        fungsi <code>imread()</code> dengan gambar yang
-                        di-upload!
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="d-flex mb-3">
-                      <div class="me-3">
-                        <span class="badge bg-custom-blue rounded-circle p-2" style="
-                            width: 28px;
-                            height: 28px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                          ">3</span>
-                      </div>
-                      <div>
-                        <strong class="text-dark">Jalankan Kode (Run)</strong><br />
-                        Klik tombol <strong>Play</strong> di pojok kanan atas
-                        cell. Hasil olah citra grayscale, visualisasi grafik
-                        histogram Otsu, dan citra biner akhir akan dirender di
-                        bawahnya.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer border-top-0 px-4 px-md-5 pb-4 pt-0 justify-content-end">
-                <button type="button" class="btn text-white rounded-pill px-4" style="background-color: #1e293b"
-                  data-bs-dismiss="modal">
-                  Saya Mengerti
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div class="notebook-wrapper border border-2 rounded-4 shadow-sm overflow-hidden mb-3">
           <aside class="sidebar bg-light p-3 border-end">
             <div class="sidebar-header mb-3 border-bottom pb-2">

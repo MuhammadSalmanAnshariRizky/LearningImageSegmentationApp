@@ -1,8 +1,12 @@
 /* Efek dasar untuk sel matriks */
+.anim-matrix {
+  table-layout: fixed;
+}
 .anim-matrix td {
   width: 33.33%;
   height: 50px;
   vertical-align: middle;
+  text-align: center;
   font-size: 1.1rem;
   font-weight: 500;
   transition: all 0.4s ease-in-out;
@@ -42,4 +46,43 @@
 .done-res {
   background-color: #e2e8f0;
   color: #0f172a;
+}
+.log-entry {
+  animation: fadeIn 0.3s ease-in-out;
+  margin-bottom: 8px;
+}
+
+/* Warna khusus untuk log */
+.text-danger {
+  color: #ef4444 !important;
+} /* Merah untuk Red */
+.text-success {
+  color: #22c55e !important;
+} /* Hijau untuk Green */
+.text-primary {
+  color: #3b82f6 !important;
+} /* Biru untuk Blue */
+
+/* Warna khusus untuk hasil Min/Max */
+.text-amber {
+  color: #f59e0b !important;
+} /* Kuning emas untuk Min */
+.text-cyan {
+  color: #06b6d4 !important;
+} /* Cyan untuk Max */
+
+/* Menghilangkan border default dan memastikan log rapi */
+.log-entry {
+  animation: fadeIn 0.3s ease-in-out;
+  margin-bottom: 8px;
+  padding: 4px;
+}
+
+/* Biar scrollbar terlihat rapi di tema gelap */
+#process-log-container::-webkit-scrollbar {
+  width: 6px;
+}
+#process-log-container::-webkit-scrollbar-thumb {
+  background-color: #444;
+  border-radius: 10px;
 }

@@ -4836,73 +4836,57 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(RESULT_FOLDER, exist_ok=True)
 
 # =========================================
-# RUN PYTHON CODE
+# SERVE UPLOADED IMAGE (Mendukung Subfolder)
 # =========================================
-@user_bp.route("/run-code", methods=["POST"])
+@user_bp.route("/uploads/<user_id>/<filename>")
+def uploaded_file(user_id, filename):
+    # Mengarah ke folder khusus user tersebut
+    user_folder = os.path.join(UPLOAD_FOLDER, user_id)
+    return send_from_directory(user_folder, filename)
+
+# =========================================
+# SERVE RESULT IMAGE (Mendukung Subfolder)
+# =========================================
+@user_bp.route("/static/results/<request_id>/<filename>")
+def serve_results(request_id, filename):
+    # Mengarah ke folder hasil khusus request ini
+    result_folder = os.path.join(RESULT_FOLDER, request_id)
+    return send_from_directory(result_folder, filename)
+
+@user_bp.route("/run-code", methods=["POST"], strict_slashes=False)
 def run_code():
-
     data = request.get_json()
-
     code = data.get("code", "")
     image_path = data.get("image_path", "")
 
-    # =====================================
-    # DEFAULT IMAGE
-    # =====================================
-    if not image_path:
-        image_path = os.path.join(
-            UPLOAD_FOLDER,
-            "bunga.jpg"
-        )
+    # Ambil user_id dari session untuk akses folder upload yang benar
+    user_id = str(session.get('user_id', 'anon'))
+    user_upload_dir = os.path.join(UPLOAD_FOLDER, user_id)
 
-    output = ""
-    output_image = None
+    # Gunakan UUID unik untuk setiap request agar hasil tidak tertimpa
+    request_id = str(uuid.uuid4())
+    user_result_dir = os.path.join(RESULT_FOLDER, request_id)
+    os.makedirs(user_result_dir, exist_ok=True)
 
-    try:
+    # Injeksi kode
+    injected_code = f"""
+import os, cv2
+import numpy as np
 
-        before_files = set(
-            os.listdir(RESULT_FOLDER)
-        )
+os.chdir(r'''{user_upload_dir}''')
+output_dir = r'''{user_result_dir}'''
 
-        # =====================================
-        # INJECT VARIABLE KE USER CODE
-        # =====================================
-        injected_code = f"""
-# pindah working directory ke uploads
-import os
-os.chdir(r'''{UPLOAD_FOLDER}''')
-
-# variable bawaan
-image_path = r'''{image_path}'''
-output_dir = r'''{RESULT_FOLDER}'''
-
-# =====================================
-# USER CODE
-# =====================================
 {code}
 """
 
-        # =====================================
-        # TEMP PYTHON FILE
-        # =====================================
-        temp_name = f"{uuid.uuid4()}.py"
+    # Buat file sementara
+    temp_name = f"{uuid.uuid4()}.py"
+    temp_path = os.path.join(tempfile.gettempdir(), temp_name)
 
-        temp_path = os.path.join(
-            tempfile.gettempdir(),
-            temp_name
-        )
-
-        with open(
-            temp_path,
-            "w",
-            encoding="utf-8"
-        ) as f:
-
+    try:
+        with open(temp_path, "w", encoding="utf-8") as f:
             f.write(injected_code)
 
-        # =====================================
-        # RUN PROCESS
-        # =====================================
         result = subprocess.run(
             [sys.executable, temp_path],
             capture_output=True,
@@ -4911,146 +4895,70 @@ output_dir = r'''{RESULT_FOLDER}'''
             cwd=current_app.root_path
         )
 
-        output = result.stdout + result.stderr
-
-        # =====================================
-        # HAPUS TEMP FILE
-        # =====================================
         if os.path.exists(temp_path):
             os.remove(temp_path)
 
-        # =====================================
-        # DETEKSI FILE GAMBAR TERBARU
-        # =====================================
-        image_files = []
+        results_list = []
 
-        for file in os.listdir(RESULT_FOLDER):
-
-            if file.lower().endswith(
-                (
-                    ".jpg",
-                    ".jpeg",
-                    ".png",
-                    ".bmp"
-                )
-            ):
-
-                full_path = os.path.join(
-                    RESULT_FOLDER,
-                    file
-                )
-
-                image_files.append(
-                    (
-                        file,
-                        os.path.getmtime(full_path)
+        for file in os.listdir(user_result_dir):
+            if file.lower().endswith((".jpg", ".jpeg", ".png", ".bmp")):
+                results_list.append({
+                    "title": file.replace("hasil_", "")
+                                 .replace(".jpg", "")
+                                 .replace(".png", ""),
+                    "url": url_for(
+                        "user.serve_results",
+                        request_id=request_id,
+                        filename=file
                     )
-                )
+                })
 
-        # =====================================
-        # AMBIL FILE TERBARU
-        # =====================================
-        if image_files:
-
-            image_files.sort(
-                key=lambda x: x[1],
-                reverse=True
-            )
-
-            output_image = image_files[0][0]
-
-        # =====================================
-        # RESPONSE
-        # =====================================
         return jsonify({
-
-            "output": output,
-
-            "before_image":
-                url_for(
-                    "user.uploaded_file",
-                    filename=os.path.basename(image_path)
-                ),
-
-            "after_image":
-                url_for(
-                    "user.serve_results",
-                    filename=output_image
-                ) if output_image else None
+            "output": result.stdout + result.stderr,
+            "images": results_list
         })
 
     except Exception as e:
 
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+
         return jsonify({
-
-            "output": f"Server Error:\\n{str(e)}",
-
-            "before_image":
-                url_for(
-                    "user.uploaded_file",
-                    filename=os.path.basename(image_path)
-                ),
-
-            "after_image": None
+            "output": f"Server Error: {str(e)}",
+            "images": []
         })
-# =========================================
-# UPLOAD IMAGE
-# =========================================
+        
 @user_bp.route("/upload-image", methods=["POST"])
 def upload_image():
+    try:
+        print("FILES:", request.files)
 
-    if "image" not in request.files:
+        if 'user_id' not in session:
+            session['user_id'] = str(uuid.uuid4())
+
+        user_id = str(session.get('user_id', 'anon'))
+        user_folder = os.path.join(UPLOAD_FOLDER, user_id)
+        os.makedirs(user_folder, exist_ok=True)
+
+        file = request.files["image"]
+
+        fixed_filename = "citra_input.jpg"
+        filepath = os.path.join(user_folder, fixed_filename)
+
+        file.save(filepath)
 
         return jsonify({
-            "error": "No image uploaded"
-        }), 400
+            "filename": fixed_filename,
+            "path": filepath
+        })
 
-    file = request.files["image"]
-
-    if file.filename == "":
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
 
         return jsonify({
-            "error": "Empty filename"
-        }), 400
-
-    filename = file.filename
-
-    filepath = os.path.join(
-        UPLOAD_FOLDER,
-        filename
-    )
-
-    file.save(filepath)
-
-    return jsonify({
-
-        "filename": filename,
-
-        "path": filepath
-    })
+            "error": str(e)
+        }), 500
 
 
-# =========================================
-# SERVE UPLOADED IMAGE
-# =========================================
-@user_bp.route("/uploads/<filename>")
-def uploaded_file(filename):
-
-    return send_from_directory(
-        UPLOAD_FOLDER,
-        filename
-    )
-
-
-# =========================================
-# SERVE RESULT IMAGE
-# =========================================
-@user_bp.route("/static/results/<filename>")
-def serve_results(filename):
-
-    return send_from_directory(
-        RESULT_FOLDER,
-        filename
-    )
-    
     

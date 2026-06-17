@@ -65,23 +65,23 @@
             Segmentasi citra merepresentasikan seluruh wilayah spasial yang ditempati oleh suatu citra.
             <strong>Ruang spasial</strong> (<em>spatial domain</em>) adalah ruang dua dimensi yang terdiri dari
             seluruh koordinat posisi piksel yang membentuk suatu citra. Dalam pengolahan citra, ruang spasial
-            merepresentasikan lokasi geometris piksel.
+            merepresentasikan lokasi geometris piksel. Gambar 2.1 merupakan visualisasi dari ruang spasial
           </p>
         </div>
 
-        <div id="gambar2_1" class="text-center  rounded-4 p-4 my-4 shadow-sm">
-          <img src="{{ url_for('static', filename='img/sub2/Ruang Spasial.png') }}"
-            class="img-fluid rounded-3 shadow-sm" style="max-width: 450px; width: 100%; height: auto;">
+        <div id="gambar2_1" class="text-center  p-4 my-4 ">
+          <img src="{{ url_for('static', filename='img/sub2/Ruang_Spasial.png') }}" class="img-fluid"
+            style="max-width: 450px; width: 100%; height: auto;">
           <p class="mt-3 mb-0 text-muted small">
             <em>Gambar 2.1 Visualisasi ruang spasial</em>
           </p>
         </div>
 
         <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
-          <p class="mb-0">
-            Pemahaman mengenai ruang spasial ini sangat krusial dalam segmentasi, karena proses segmentasi
-            bertujuan untuk membagi citra tersebut ke dalam wilayah-wilayah tertentu berdasarkan koordinat
-            dan karakteristik piksel yang ada di dalam ruang spasial tersebut.
+          <p>
+            Segmentasi citra adalah proses membagi seluruh area gambar <span class="math-tex">\( R \)</span> menjadi
+            beberapa bagian kecil <span class="math-tex">\( (R_1, R_2, ..., R_n) \)</span>, di mana setiap bagian
+            mewakili suatu wilayah tertentu.
           </p>
         </div>
 
@@ -94,31 +94,59 @@
       <div class="card-body p-4 p-md-5">
 
         <h3 class="fw-bold mb-4 text-custom-blue">
-          <i class="fa-solid fa-border-all me-2"></i>2.2 Aturan Segmentasi Citra
+          <i class="fa-solid fa-border-all me-2"></i>Aturan Segmentasi Citra
         </h3>
 
         <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
 
           <h5 class="fw-bold text-custom-blue mt-4">Aturan Pertama: Kelengkapan Wilayah</h5>
-          <p>
-            Segmentasi citra adalah proses membagi seluruh area gambar <span class="math-tex">\( R \)</span> menjadi
-            beberapa bagian kecil <span class="math-tex">\( (R_1, R_2, ..., R_n) \)</span>, di mana setiap bagian
-            mewakili suatu wilayah tertentu. Aturan pertamanya adalah:
-          </p>
+
           <div class="bg-light p-3 text-center rounded border my-3">
             <span class="math-tex">\( \bigcup_{i=1}^{n} R_i = R \)</span>
           </div>
+
           <p>
-            Artinya, jika semua subwilayah digabungkan kembali, hasilnya adalah seluruh citra utuh. Tidak ada satu
-            piksel pun yang tertinggal di luar pembagian tersebut.
+            Aturan pertama dalam segmentasi citra menyatakan bahwa seluruh subwilayah hasil segmentasi harus
+            mencakup seluruh area citra asli. Jika semua subwilayah digabungkan kembali, maka hasilnya harus
+            sama dengan citra awal tanpa ada bagian yang hilang.
           </p>
 
-          <div class="text-center rounded-4 p-4 my-4 shadow-sm">
-            <img src="{{ url_for('static', filename='img/sub2/aturan 1.png') }}" class="img-fluid rounded-3"
+          <p>
+            Keterangan simbol:
+          </p>
+
+          <ul>
+            <li><strong>R</strong> : seluruh area citra yang akan disegmentasi.</li>
+            <li><strong>R<sub>i</sub></strong> : subwilayah ke-i hasil segmentasi.</li>
+            <li><strong>n</strong> : jumlah subwilayah yang terbentuk.</li>
+            <li><strong>∪ (union)</strong> : operasi penggabungan seluruh subwilayah.</li>
+          </ul>
+
+          <p>
+            Misalkan suatu citra dibagi menjadi 5 subwilayah (<strong>n = 5</strong>), maka persamaan tersebut
+            dapat dituliskan secara eksplisit sebagai berikut:
+          </p>
+
+          <div class="bg-light p-3 text-center rounded border my-3">
+            <span class="math-tex">\( R_1 \cup R_2 \cup R_3 \cup R_4 \cup R_5 = R \)</span>
+          </div>
+
+          <p>
+            Persamaan tersebut menunjukkan bahwa gabungan wilayah <strong>R₁, R₂, R₃, R₄,</strong> dan
+            <strong>R₅</strong> akan membentuk kembali seluruh area citra <strong>R</strong>. Dengan kata lain,
+            tidak ada piksel yang tertinggal di luar hasil segmentasi.
+          </p>
+
+          <p>
+            Secara visual, konsep ini dapat dilihat pada Gambar 2.2 berikut.
+          </p>
+
+          <div class="text-center  p-4 my-4">
+            <img src="{{ url_for('static', filename='img/sub2/aturan_1.png') }}" class="img-fluid "
               style="max-width: 600px;">
             <p class="mt-2 text-muted small"><em>Gambar 2.2 Visualisasi aturan pertama segmentasi</em></p>
           </div>
-
+          <!-- aturan kedua -->
           <h5 class="fw-bold text-custom-blue mt-5">Aturan Kedua: Keterhubungan (Connected Set)</h5>
           <p>
             Setiap wilayah hasil segmentasi <span class="math-tex">\( R_i \)</span> harus berupa himpunan yang terhubung
@@ -128,14 +156,14 @@
 
           <div class="row g-3 my-4">
             <div class="col-md-6 text-center">
-              <div class="rounded-4 p-3">
-                <img src="{{ url_for('static', filename='img/sub2/aturan 2 benar.png') }}" class="img-fluid rounded-3">
+              <div class="p-3">
+                <img src="{{ url_for('static', filename='img/sub2/aturan_2_benar.png') }}" class="img-fluid">
                 <p class="mt-2 text-muted small"><em>Gambar 2.3 Wilayah terhubung (Benar)</em></p>
               </div>
             </div>
             <div class="col-md-6 text-center">
-              <div class="rounded-4 p-3">
-                <img src="{{ url_for('static', filename='img/sub2/aturan 2 salah.png') }}" class="img-fluid rounded-3">
+              <div class="p-3">
+                <img src="{{ url_for('static', filename='img/sub2/aturan_2_salah.png') }}" class="img-fluid">
                 <p class="mt-2 text-muted small"><em>Gambar 2.4 Wilayah terpisah (Salah)</em></p>
               </div>
             </div>
@@ -149,8 +177,8 @@
               diagonal.</li>
           </ul>
 
-          <div class="text-center rounded-4 p-4 my-4 shadow-sm">
-            <img src="{{ url_for('static', filename='img/sub2/Konsep ketetanggan.png') }}" class="img-fluid rounded-3"
+          <div class="text-center p-4 my-4">
+            <img src="{{ url_for('static', filename='img/sub2/Konsep_ketetanggan.png') }}" class="img-fluid "
               style="max-width: 500px;">
             <p class="mt-2 text-muted small"><em>Gambar 2.5 Konsep ketetanggan (keterhubungan)</em></p>
           </div>
@@ -181,26 +209,43 @@
             boleh saling tumpang tindih. Jika satu piksel sudah masuk dalam wilayah <span class="math-tex">\( R_1
               \)</span>, ia tidak boleh masuk ke wilayah lainnya.
           </p>
-          <div class="text-center  rounded-4 p-4 my-4 shadow-sm">
-            <img src="{{ url_for('static', filename='img/sub2/aturan 3.png') }}" class="img-fluid rounded-3"
+          <div class="text-center  p-4 my-4 ">
+            <img src="{{ url_for('static', filename='img/sub2/aturan_3.png') }}" class="img-fluid"
               style="max-width: 600px;">
             <p class="mt-2 text-muted small"><em>Gambar 2.6 Visualisasi aturan ketiga: wilayah tidak tumpang tindih</em>
             </p>
           </div>
-
+          <!-- aturan keempat -->
           <h5 class="fw-bold text-custom-blue mt-5">Aturan Keempat: Homogenitas</h5>
           <p>
-            Setiap wilayah <span class="math-tex">\( R_i \)</span> harus memenuhi kriteria atau predikat logika <span
-              class="math-tex">\( Q \)</span> tertentu:
+            Setiap wilayah <span class="math-tex">\( R_i \)</span> harus memenuhi suatu kriteria atau syarat tertentu
+            yang disimbolkan dengan predikat logika <span class="math-tex">\( Q \)</span>:
           </p>
           <div class="bg-light p-3 text-center rounded border my-3">
             <span class="math-tex">\( Q(R_i) = \text{TRUE} \quad \text{untuk } i = 1, 2, \dots, n \)</span>
           </div>
-          <p>Kriteria <span class="math-tex">\( Q \)</span> dapat ditentukan berdasarkan intensitas, standar deviasi,
-            atau warna. Contoh, jika <span class="math-tex">\( Q(R_i) \)</span> adalah kesamaan intensitas, maka semua
-            piksel di dalam satu wilayah harus memiliki nilai yang sama.</p>
+          <p>
+            Kriteria <span class="math-tex">\( Q \)</span> adalah aturan yang kita tentukan sendiri, contohnya
+            <b>berdasarkan intensitas</b>, <b>standar deviasi</b>, atau <b>warna</b>. Contoh paling umum: <span
+              class="math-tex">\( Q(R_i) =
+              \text{TRUE} \)</span> jika semua piksel di dalam satu wilayah (<span class="math-tex">\( R_i \)</span>)
+            memiliki nilai intensitas yang sama.
+          </p>
+
+          <p>
+            Gambar 2.7 memperlihatkan proses pembentukan region pada citra, di mana piksel-piksel yang memiliki
+            karakteristik serupa dikelompokkan ke dalam wilayah yang sama.
+          </p>
+          <div class="text-center  p-4 my-4 ">
+            <img src="{{ url_for('static', filename='img/sub2/aturan_4.png') }}" class="img-fluid"
+              style="max-width: 600px;">
+            <p class="mt-2 text-muted small"><em>Gambar 2.7 Visualisasi nilai citra yang berada di tiap region</em>
+            </p>
+          </div>
 
           <div class="bg-white border rounded-4 p-4 my-4 shadow-sm">
+
+            <p>Berdasarkan gambar diatas maka dilakukan analisis homogenitas</p>
             <h6 class="fw-bold text-dark mb-3">Tabel Analisis Homogenitas</h6>
             <div class="table-responsive">
               <table class="table table-bordered text-center align-middle">
@@ -218,37 +263,123 @@
                     <td class="text-success fw-bold">TRUE</td>
                   </tr>
                   <tr>
+                    <td><span class="math-tex">\( R_2 \)</span></td>
+                    <td>{2, 2, 2, 2}</td>
+                    <td class="text-success fw-bold">TRUE</td>
+                  </tr>
+                  <tr>
                     <td><span class="math-tex">\( R_3 \)</span></td>
                     <td>{3, 6, 3, 6, 3, 7}</td>
                     <td class="text-danger fw-bold">FALSE</td>
                   </tr>
+                  <tr>
+                    <td><span class="math-tex">\( R_4 \)</span></td>
+                    <td>{4, 4, 4, 4, 4, 4}</td>
+                    <td class="text-success fw-bold">TRUE</td>
+                  </tr>
+                  <tr>
+                    <td><span class="math-tex">\( R_5 \)</span></td>
+                    <td>{5, 5, 5, 5}</td>
+                    <td class="text-success fw-bold">TRUE</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
-            <p class="mt-3">Jika terdapat satu wilayah saja yang bernilai <span class="math-tex">\( FALSE \)</span>,
-              maka segmentasi tersebut belum valid.</p>
+
+            <p class="mt-3">
+              Karena pada <span class="math-tex">\( R_3 \)</span> tidak memenuhi predikat homogenitas (karena tidak
+              semua nilai sama), maka <span class="math-tex">\( Q(R_3) = \text{FALSE} \)</span>. Oleh karena itu, syarat
+              <span class="math-tex">\( Q(R_i) = \text{TRUE} \)</span> untuk semua <span class="math-tex">\( i \)</span>
+              tidak terpenuhi. <strong>Artinya, segmentasi belum valid jika menggunakan kriteria homogenitas
+                intensitas.</strong>
+            </p>
           </div>
 
+          <div
+            class="alert alert-info border border-info border-opacity-50 mt-4 py-3 px-4 d-flex align-items-start rounded-3 shadow-sm">
+            <i class="fa-solid fa-circle-info fs-4 text-info mt-1 me-3"></i>
+            <div>
+              <h6 class="fw-bold text-dark mb-1">Ingat!</h6>
+              <span class="text-dark small">Setiap wilayah (region) harus memiliki karakteristik yang seragam. Jika satu
+                wilayah (region) memiliki piksel yang sangat berbeda dari yang lain, maka wilayah tersebut tidak
+                memenuhi kriteria segmentasi.</span>
+            </div>
+          </div>
+
+          <!-- aturan ke lima -->
           <h5 class="fw-bold text-custom-blue mt-5">Aturan Kelima: Perbedaan Wilayah Bertetangga</h5>
           <p>
-            Dua wilayah bertetangga <span class="math-tex">\( R_i \)</span> dan <span class="math-tex">\( R_j \)</span>
-            harus memiliki karakteristik yang berbeda. Jika digabung dan hasilnya tetap seragam (homogen), maka
-            sebenarnya mereka adalah satu wilayah yang sama.
+            Setiap pasangan wilayah bertetangga <span class="math-tex">\( R_i \)</span> dan <span class="math-tex">\(
+              R_j \)</span> harus berbeda karakteristiknya. Artinya, jika dua wilayah tersebut digabung dan hasilnya
+            masih seragam, berarti sebenarnya mereka adalah satu wilayah (region) yang sama.
           </p>
+
           <div class="bg-light p-3 text-center rounded border my-3">
             <span class="math-tex">\( Q(R_i \cup R_j) = \text{FALSE} \)</span>
+            <span class="mx-2">untuk setiap pasangan wilayah bertetangga</span>
+            <span class="math-tex">\( R_i \)</span>
+            <span> dan </span>
+            <span class="math-tex">\( R_j \)</span>
           </div>
 
-          <div class="text-center  rounded-4 p-4 my-4 shadow-sm">
+          <div class="bg-white border rounded-4 p-4 my-4 shadow-sm">
+            <h6 class="fw-bold text-dark mb-3">Contoh Analisis Aturan Kelima</h6>
+            <p>Misalnya terdapat dua region yang bertetangga:</p>
+            <ul>
+              <li>
+                <span class="math-tex">\( Q(R_1) = \text{TRUE} \)</span> jika
+                <span class="math-tex">\( f(x,y) = 1 \)</span> untuk semua
+                <span class="math-tex">\( (x,y) \in R_1 \)</span>.<br>
+
+                <strong>Cara membaca:</strong>
+                Predikat homogenitas pada Region 1 bernilai TRUE jika, seluruh piksel yang berada
+                di dalam Region 1 memiliki nilai intensitas 1.<br>
+
+                Pada Region 1 nilainya adalah:
+                <span class="math-tex">\( R_1 = \{1,1,1,1,1\} \)</span>.
+              </li>
+
+              <li class="mt-3">
+                <span class="math-tex">\( Q(R_2) = \text{TRUE} \)</span> jika
+                <span class="math-tex">\( f(x,y) = 2 \)</span> untuk semua
+                <span class="math-tex">\( (x,y) \in R_2 \)</span>.<br>
+
+                <strong>Cara membaca:</strong>
+                Predikat homogenitas pada Region 2 bernilai TRUE jika, seluruh piksel yang berada
+                di dalam Region 2 memiliki nilai intensitas 2.<br>
+
+                Pada Region 2 nilainya adalah:
+                <span class="math-tex">\( R_2 = \{2,2,2,2\} \)</span>.
+              </li>
+            </ul>
+
+            <p>Karena masing-masing region memiliki nilai yang homogen, maka <span class="math-tex">\( Q(R_1) =
+                \text{TRUE} \)</span> dan <span class="math-tex">\( Q(R_2) = \text{TRUE} \)</span>.</p>
+
+            <p>Namun, karena ada dua nilai yang berbeda antara region tersebut, maka saat digabungkan akan menjadi:</p>
+            <div class="bg-light p-3 text-center rounded border my-3">
+              <span class="math-tex">\( R_1 \cup R_2 = \{1, 1, 1, 1, 2, 2, 2, 2\} \)</span>
+            </div>
+
+            <p class="mb-0">Hasil gabungan tersebut tidak lagi seragam (homogen), sehingga <span class="math-tex">\(
+                Q(R_1 \cup R_2) = \text{FALSE} \)</span>. Ini membuktikan bahwa <span class="math-tex">\( R_1 \)</span>
+              dan <span class="math-tex">\( R_2 \)</span> adalah wilayah tetangga yang memang berbeda dan tidak bisa
+              disatukan.</p>
+          </div>
+
+          <p>Lihat pada gambar di bawah untuk melihat visualisasi penggabungan wilayah ini.</p>
+
+          <div class="text-center rounded-4 p-4 my-4 shadow-sm">
             <img src="{{ url_for('static', filename='img/sub2/aturan5.png') }}" class="img-fluid rounded-3"
               style="max-width: 400px;">
-            <p class="mt-2 text-muted small"><em>Gambar 2.8 Visualisasi aturan kelima: penggabungan wilayah</em></p>
+            <p class="mt-2 text-muted small"><em>Gambar 2.8 Visualisasi aturan kelima dari segmentasi</em></p>
           </div>
 
           <div class="alert alert-info border-0 rounded-4 mt-4 shadow-sm">
             <i class="fa-solid fa-circle-info me-2"></i>
             <strong>Kesimpulan:</strong> Segmentasi citra bertujuan membagi gambar menjadi wilayah-wilayah yang homogen
-            secara internal (memenuhi aturan ke-4) dan berbeda satu sama lain (memenuhi aturan ke-5).
+            secara internal (memenuhi aturan ke-4) dan berbeda satu sama lain jika dibandingkan dengan tetangganya
+            (memenuhi aturan ke-5).
           </div>
 
         </div>

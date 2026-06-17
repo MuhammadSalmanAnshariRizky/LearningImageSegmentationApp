@@ -74,7 +74,17 @@ function loadState() {
 // 4. Tombol Add Cell diklik
 function addCell() {
   cellCount++;
-  const defaultCode = `# 1. Inisiasi library OpenCV\nimport .....\n\n# 2. Membaca gambar dari file yang sudah di-upload\nimage = .....imread('.....')\n\n# 3. Menampilkan isi nilai piksel atau matriks citra\nprint(.....)`;
+
+  // Menggunakan komentar yang singkat, padat, dan on-point
+  const defaultCode = `# 1. Import library OpenCV (ketik: cv2)
+import .....
+
+# 2. Baca gambar sebagai grayscale (tuliskan fungsi membaca gambar yaitu: cv2.imread dan nama file: 'citra_grayscale.png')
+image = .....imread('.....', cv2.IMREAD_GRAYSCALE)
+
+# 3. Tampilkan matriks piksel citra (tuliskan variabel: image)
+print(.....)`;
+
   const defaultOutput = `<span class="text-success font-monospace">> Output akan muncul di sini...</span>`;
 
   createCellDOM(cellCount, defaultCode, defaultOutput);
@@ -137,7 +147,8 @@ function runCell(id) {
   const code = editors[id].getValue();
   const outputBox = document.getElementById(`output-${id}`);
 
-  outputBox.innerHTML = `<span class="text-warning font-monospace">⏳ Running...</span>`;
+  // Mengubah pesan loading menjadi lebih interaktif
+  outputBox.innerHTML = `<span class="text-warning font-monospace"><i class="fa-solid fa-spinner fa-spin me-2"></i>⏳ Sedang memproses kodemu...</span>`;
 
   fetch("/run-code", {
     method: "POST",
@@ -151,11 +162,44 @@ function runCell(id) {
   })
     .then((res) => res.json())
     .then((data) => {
-      outputBox.innerHTML = `<pre class="text-success font-monospace mb-0">${data.output}</pre>`;
+      // 1. Cek jika error dikirim secara eksplisit oleh backend
+      if (data.error) {
+        outputBox.innerHTML = `
+            <div class="text-danger font-monospace">
+                <strong>❌ Ups! Ada sedikit kesalahan di kodemu:</strong>
+                <pre class="mt-2 mb-0 text-danger">${data.error}</pre>
+            </div>`;
+      }
+      // 2. Cek jika output mengandung pesan error bawaan Python (Traceback, dll)
+      else if (
+        data.output &&
+        (data.output.includes("Traceback (most recent call last):") ||
+          data.output.includes("SyntaxError:") ||
+          data.output.includes("NameError:"))
+      ) {
+        outputBox.innerHTML = `
+            <div class="text-danger font-monospace">
+                <strong>❌ Ups! Sepertinya ada kode yang kurang tepat. Coba periksa lagi ya:</strong>
+                <pre class="mt-2 mb-0 text-danger">${data.output}</pre>
+            </div>`;
+      }
+      // 3. Jika benar-benar bersih dari error
+      else {
+        outputBox.innerHTML = `
+            <div class="text-success font-monospace">
+                <strong>✅ Hebat! Kode berhasil dijalankan. Berikut hasilnya:</strong>
+                <pre class="mt-2 mb-0 text-success">${data.output}</pre>
+            </div>`;
+      }
       saveState();
     })
     .catch((err) => {
-      outputBox.innerHTML = `<span class="text-danger font-monospace">Error: ${err}</span>`;
+      // Jika terjadi masalah pada sistem/jaringan
+      outputBox.innerHTML = `
+          <div class="text-danger font-monospace">
+              <strong>🚨 Waduh, sistem gagal terhubung ke server. Coba periksa koneksi atau klik Run lagi ya!</strong>
+              <br><span class="small">Detail sistem: ${err.message || err}</span>
+          </div>`;
       saveState();
     });
 }
@@ -167,31 +211,71 @@ function deleteCell(id) {
   saveState();
 }
 
-// 8. Logika Upload Image
+// 8. Logika Upload Image & Preview
 function triggerUpload() {
   document.getElementById("fileInput").click();
 }
-
 function handleUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+  const originalFile = event.target.files[0];
+  if (!originalFile) return;
 
-  const formData = new FormData();
-  formData.append("image", file);
+  // 1. Tentukan Ekstensi dan Nama Baru
+  const extension = originalFile.name.substring(
+    originalFile.name.lastIndexOf("."),
+  );
+  const newFileName = "citra_grayscale" + extension;
 
-  fetch("/upload-image", {
-    method: "POST",
-    body: formData,
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      currentImagePath = data.path;
-      document.getElementById("fileList").innerHTML = `
-            <li>
-                <i class="fa-solid fa-file-image me-2 text-primary"></i>
-                ${file.name}
-            </li>
+  // 2. Membaca file untuk dijadikan preview menggunakan FileReader
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    const imageSrc = e.target.result; // URL Base64 dari gambar
+
+    const formData = new FormData();
+
+    // ✨ TRIK AMPUH: Langsung paksa nama barunya di sini
+    // Parameter ke-3 secara otomatis akan menimpa nama file asli saat dikirim ke Flask
+    formData.append("image", originalFile, newFileName);
+
+    // Ubah tampilan UI menjadi status 'Uploading...'
+    document.getElementById("fileList").innerHTML = `
+            <div class="text-center text-muted mt-3 small">
+                <i class="fa-solid fa-spinner fa-spin me-2"></i>Mengunggah...
+            </div>
         `;
-      saveState();
-    });
+
+    fetch("/upload-image", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        currentImagePath = data.path;
+
+        // Render UI Preview Gambar
+        // ✨ PERUBAHAN: Sekarang UI akan menampilkan newFileName (citra_grayscale)
+        document.getElementById("fileList").innerHTML = `
+                <div class="image-preview-card mt-3">
+                    <div class="img-wrapper">
+                        <img src="${imageSrc}" class="preview-img" alt="Preview File">
+                    </div>
+                    <div class="file-name-text mt-2 small text-truncate" title="${newFileName}">
+                        <i class="fa-solid fa-file-image me-1 text-primary"></i>
+                        ${newFileName}
+                    </div>
+                </div>
+            `;
+        saveState(); // Simpan UI preview ke localStorage
+      })
+      .catch((err) => {
+        document.getElementById("fileList").innerHTML = `
+                <div class="text-danger mt-3 small text-center">
+                    Gagal mengunggah gambar.
+                </div>
+            `;
+      });
+  };
+
+  // Eksekusi pembacaan file
+  reader.readAsDataURL(originalFile);
 }

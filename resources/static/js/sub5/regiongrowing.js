@@ -1,5 +1,5 @@
 /**
- * Script untuk Live Code Notebook - Region Growing Segmentation
+ * Script untuk Live Code Notebook - Region Growing Segmentation (Tanpa Matplotlib)
  */
 
 let regionCellCount = 0;
@@ -63,18 +63,20 @@ function loadRegionState() {
 // 3. Pembuatan Cell DOM
 function addRegionCell() {
   regionCellCount++;
+
   const defaultCode = `import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 
 # 1. MEMBACA CITRA GRAYSCALE
+# Tuliskan nama file gambar yang diunggah
 img = cv2.imread('_____', cv2.IMREAD_GRAYSCALE)
 if img is None:
     print("Gambar tidak ditemukan!")
     exit()
 
 # 2. MENENTUKAN SEED POINT & THRESHOLD TOLERANSI
+# Pastikan nilai titik x dan y berada di dalam objek target
 seed = (270, 220)
 threshold = 31
 
@@ -101,28 +103,23 @@ while len(queue) > 0:
                 if 0 <= nx < rows and 0 <= ny < cols:
                     queue.append((nx, ny))
 
-# 4. MENYIMPAN FISIK MATRIKS CITRA HASIL UNTUK WEB PREVIEW
+# 4. MEMBUAT VISUALISASI TITIK SEED MANUAL MENGGUNAKAN OPENCV
+# Menyalin citra grayscale ke BGR agar bisa digambar titik berwarna merah
+citra_seed = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+# Menggambar lingkaran (circle) merah kecil pada koordinat seed
+cv2.circle(citra_seed, (seed[1], seed[0]), radius=5, color=(0, 0, 255), thickness=-1)
+
+# 5. MENYIMPAN FISIK MATRIKS CITRA HASIL UNTUK WEB PREVIEW
 cv2.imwrite(os.path.join(output_dir, "citra_asli_region.jpg"), img)
+cv2.imwrite(os.path.join(output_dir, "visualisasi_seed.jpg"), citra_seed)
 cv2.imwrite(os.path.join(output_dir, "hasil_region_growing.jpg"), segmented)
 
-# 5. MENYIMPAN VISUALISASI TITIK SEED POINT MENGGUNAKAN MATPLOTLIB
-plt.figure(figsize=(5, 4))
-plt.imshow(img, cmap='gray')
-plt.scatter(seed[1], seed[0], color='red', s=50, label='Seed Point')
-plt.title('Posisi Titik Seed')
-plt.axis('off')
-plt.tight_layout()
-plt.savefig(os.path.join(output_dir, "visualisasi_seed.jpg"))
-plt.close()
-
 print("Proses Segmentasi Region Growing Selesai Dijalankan!")
-print(f"Intensitas Nilai Piksel Seed: {seed_value}")`;
+print(f"Intensitas Nilai Piksel Seed Point: {seed_value}")`;
 
-  createRegionCellDOM(
-    regionCellCount,
-    defaultCode,
-    "Output Region Growing muncul di sini...",
-  );
+  const defaultOutput = `<span class="text-success font-monospace">> Output akan muncul di sini...</span>`;
+
+  createRegionCellDOM(regionCellCount, defaultCode, defaultOutput);
   saveRegionState();
 }
 
@@ -135,10 +132,14 @@ function createRegionCellDOM(id, codeText, outputHTML) {
   cell.id = "region-cell-" + id;
   cell.innerHTML = `
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="text-muted small fw-bold">Region In [${id}]:</span>
+            <span class="text-muted small fw-bold">In [${id}]:</span>
             <div class="cell-actions">
-                <button class="btn-icon run" onclick="runRegionCell(${id})" title="Run"><i class="fa-solid fa-play"></i></button>
-                <button class="btn-icon delete" onclick="deleteRegionCell(${id})" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                <button class="btn-icon run" onclick="runRegionCell(${id})" title="Run">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+                <button class="btn-icon delete" onclick="deleteRegionCell(${id})" title="Hapus">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
             </div>
         </div>
         <textarea id="region-editor-${id}"></textarea>
@@ -157,6 +158,11 @@ function createRegionCellDOM(id, codeText, outputHTML) {
   );
   editor.setValue(codeText);
   editor.setSize("100%", "auto");
+
+  setTimeout(() => {
+    editor.refresh();
+  }, 10);
+
   editor.on("change", () => {
     editor.setSize(null, "auto");
     saveRegionState();
@@ -166,39 +172,90 @@ function createRegionCellDOM(id, codeText, outputHTML) {
 
 // 4. Integrasi Backend Compilation
 function runRegionCell(id) {
+  if (!regionEditors[id]) return;
+
   const code = regionEditors[id].getValue();
   const outputBox = document.getElementById(`region-output-${id}`);
-  outputBox.innerHTML = "⏳ Processing Region Growing Compiling...";
+  outputBox.innerHTML = `<span class="text-warning font-monospace"><i class="fa-solid fa-spinner fa-spin me-2"></i>⏳ Mengeksekusi penelusuran Region Growing...</span>`;
 
   fetch("/run-code", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ code: code, image_path: regionImagePath }),
   })
-    .then((res) => res.json())
+    .then(async (res) => {
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        throw new Error(text);
+      }
+    })
     .then((data) => {
-      outputBox.innerHTML = `
-            <div class="result-wrapper">
-                <div class="console-output mb-3"><pre>${data.output}</pre></div>
-                <div class="image-results d-flex gap-3 flex-wrap">
-                    ${data.before_image ? renderRegionImgCard("Citra Asli", "/static/results/citra_asli_region.jpg") : ""}
-                    ${renderRegionImgCard("Letak Seed Point", "/static/results/visualisasi_seed.jpg")}
-                    ${renderRegionImgCard("Hasil Region Growing", "/static/results/hasil_region_growing.jpg")}
-                </div>
-            </div>`;
+      if (data.error || (data.output && data.output.includes("Traceback"))) {
+        outputBox.innerHTML = `<div class="text-danger font-monospace"><strong>❌ Ups! Ada kesalahan:</strong><pre class="mt-2 text-danger">${data.error || data.output}</pre></div>`;
+      } else {
+        let outputHTML = `
+            <div class="text-success font-monospace mb-3">
+                <strong>✅ Hebat! Komputasi Region Growing selesai:</strong>
+                <pre class="mt-2 mb-0 text-success">${data.output}</pre>
+            </div>
+            <div class="image-results d-flex gap-3 flex-wrap justify-content-start mt-3">
+        `;
+
+        if (data.images && Array.isArray(data.images)) {
+          data.images.forEach((img) => {
+            let cleanTitle = img.title
+              .replace("citra_", "Citra ")
+              .replace("visualisasi_", "Visualisasi ")
+              .replace("hasil_", "Hasil ")
+              .replace("_region", "")
+              .replace("_growing", " Growing")
+              .replace(".jpg", "")
+              .replace(".png", "");
+
+            cleanTitle = cleanTitle.replace(/\b\w/g, (c) => c.toUpperCase());
+            outputHTML += renderRegionImgCard(cleanTitle, img.url);
+          });
+        } else {
+          // Fallback Render Statis
+          outputHTML += renderRegionImgCard(
+            "Citra Asli",
+            "/static/results/citra_asli_region.jpg",
+          );
+          outputHTML += renderRegionImgCard(
+            "Letak Seed Point",
+            "/static/results/visualisasi_seed.jpg",
+          );
+          outputHTML += renderRegionImgCard(
+            "Hasil Region Growing",
+            "/static/results/hasil_region_growing.jpg",
+          );
+        }
+
+        outputHTML += `</div>`;
+        outputBox.innerHTML = outputHTML;
+      }
       saveRegionState();
+    })
+    .catch((err) => {
+      outputBox.innerHTML = `<div class="text-danger font-monospace"><strong>🚨 Gagal terhubung ke server!</strong><br>${err.message}</div>`;
     });
 }
 
-function renderRegionImgCard(title, src) {
+function renderRegionImgCard(title, srcUrl) {
   const t = Date.now();
+  const urlWithCacheBuster = srcUrl.includes("?")
+    ? `${srcUrl}&t=${t}`
+    : `${srcUrl}?t=${t}`;
+
   return `
-    <div class="image-card text-center border p-2 rounded-3 bg-white">
-        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.8rem;">${title}</h6>
-        <img src="${src}?t=${t}" class="result-image preview-image img-fluid rounded" 
-             style="max-height: 120px; cursor: pointer;"
+    <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm" style="width: fit-content;">
+        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
+        <img src="${urlWithCacheBuster}" class="result-image preview-image img-fluid rounded" 
+             style="max-height: 140px; cursor: pointer; object-fit: contain;"
              data-bs-toggle="modal" data-bs-target="#regionImageModal" 
-             onclick="openRegionModal('${src}?t=${t}')">
+             onclick="openRegionModal('${urlWithCacheBuster}')">
     </div>`;
 }
 
@@ -206,26 +263,65 @@ function renderRegionImgCard(title, src) {
 function openRegionModal(src) {
   document.getElementById("regionModalImage").src = src;
 }
+
 function deleteRegionCell(id) {
   document.getElementById("region-cell-" + id).remove();
   delete regionEditors[id];
   saveRegionState();
 }
+
 function triggerRegionUpload() {
   document.getElementById("regionFileInput").click();
 }
 
 function handleRegionUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const formData = new FormData();
-  formData.append("image", file);
-  fetch("/upload-image", { method: "POST", body: formData })
-    .then((res) => res.json())
-    .then((data) => {
-      regionImagePath = data.path;
-      document.getElementById("regionFileList").innerHTML =
-        `<li><i class="fa-solid fa-file-image me-2 text-danger"></i> ${file.name}</li>`;
-      saveRegionState();
-    });
+  const originalFile = event.target.files[0];
+  if (!originalFile) return;
+
+  const extension = originalFile.name.substring(
+    originalFile.name.lastIndexOf("."),
+  );
+  const newFileName = "citra_region" + extension;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const imageSrc = e.target.result;
+    const formData = new FormData();
+
+    formData.append("image", originalFile, newFileName);
+
+    document.getElementById("regionFileList").innerHTML = `
+        <div class="text-center text-muted mt-3 small">
+            <i class="fa-solid fa-spinner fa-spin me-2"></i>Mengunggah...
+        </div>
+    `;
+
+    fetch("/upload-image", { method: "POST", body: formData })
+      .then((res) => res.json())
+      .then((data) => {
+        regionImagePath = data.path;
+
+        document.getElementById("regionFileList").innerHTML = `
+        <div class="image-preview-card mt-3">
+            <div class="img-wrapper text-center">
+                <img src="${imageSrc}" class="preview-img img-fluid rounded border border-secondary" style="max-height: 120px; object-fit: cover;" alt="Preview File">
+            </div>
+            <div class="file-name-text mt-2 small text-truncate fw-bold text-dark text-center" title="${data.filename}">
+                <i class="fa-solid fa-file-image me-1 text-custom-blue"></i>
+                ${data.filename}
+            </div>
+        </div>
+        `;
+        saveRegionState();
+      })
+      .catch((err) => {
+        document.getElementById("regionFileList").innerHTML = `
+            <div class="text-danger mt-3 small text-center">
+                Gagal mengunggah gambar.
+            </div>
+        `;
+      });
+  };
+
+  reader.readAsDataURL(originalFile);
 }

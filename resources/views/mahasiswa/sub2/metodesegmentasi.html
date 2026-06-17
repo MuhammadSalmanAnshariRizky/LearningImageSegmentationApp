@@ -41,9 +41,9 @@
                     </p>
                 </div>
 
-                <div class="text-center  rounded-4 p-4 my-4 shadow-sm">
-                    <img src="{{ url_for('static', filename='img/sub2/contoh proses edgebased.png') }}"
-                        class="img-fluid rounded-3 shadow-sm" style="max-width: 700px; width: 100%; height: auto;">
+                <div class="text-center   p-4 my-4 ">
+                    <img src="{{ url_for('static', filename='img/sub2/contoh_proses_edgebased.png') }}"
+                        class="img-fluid " style="max-width: 700px; width: 100%; height: auto;">
                     <p class="mt-3 mb-0 text-muted small">
                         <em>Gambar 2.9 Contoh segmentasi citra dengan metode edge-based</em><br>
                         <small>Sumber: Sonka, M., Hlavac, V., & Boyle, R. (2014). Image Processing, Analysis, and
@@ -54,13 +54,27 @@
                 <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
                     <p class="mb-4"><strong>Penjelasan Gambar:</strong></p>
                     <ul class="mb-4">
-                        <li class="mb-2"><strong>(A)</strong> Objek dengan intensitas konstan berada di atas latar
-                            belakang yang lebih gelap.</li>
-                        <li class="mb-2"><strong>(B)</strong> Hasil deteksi batas wilayah berdasarkan diskontinuitas
-                            intensitas. Piksel di dalam dan luar batas bernilai nol (hitam) karena intensitas stabil.
+                        <li class="mb-2">
+                            <strong>Gambar 2.9(A)</strong> Citra terdiri atas dua wilayah, yaitu objek dengan
+                            intensitas konstan
+                            yang berada di atas latar belakang yang lebih gelap dan juga memiliki intensitas konstan.
+                            Kedua wilayah tersebut bersama-sama membentuk keseluruhan citra.
                         </li>
-                        <li><strong>(C)</strong> Hasil akhir segmentasi di mana piksel di dalam batas objek diberi nilai
-                            putih dan di luar objek diberi nilai hitam.</li>
+
+                        <li class="mb-2">
+                            <strong>Gambar 2.9(B)</strong> Hasil pendeteksian batas wilayah berdasarkan adanya
+                            perbedaan
+                            intensitas (diskontinuitas). Piksel di dalam dan di luar batas bernilai nol karena tidak
+                            terjadi perubahan intensitas, sedangkan bagian batas terlihat jelas karena terdapat
+                            perubahan intensitas.
+                        </li>
+
+                        <li>
+                            <strong>Gambar 2.9(C)</strong> Hasil segmentasi menggunakan pendekatan <em>edge-based
+                                segmentation</em>. Pada tahap ini, piksel yang berada di dalam atau pada batas objek
+                            diberi nilai tertentu (misalnya putih), sedangkan piksel di luar objek diberi nilai lain
+                            (misalnya hitam).
+                        </li>
                     </ul>
 
                     <div class="bg-white p-4 rounded-4 border border-custom-blue border-2 my-4 text-center">
@@ -102,9 +116,9 @@
                         karena citra dibagi menjadi wilayah-wilayah yang seragam sesuai kriteria tertentu.
                     </p>
 
-                    <div class="text-center  rounded-4 p-4 my-4 shadow-sm">
-                        <img src="{{ url_for('static', filename='img/sub2/contoh proses region based.png') }}"
-                            class="img-fluid rounded-3 shadow-sm" style="max-width: 700px; width: 100%; height: auto;">
+                    <div class="text-center   p-4 my-4 ">
+                        <img src="{{ url_for('static', filename='img/sub2/contoh_proses_region_based.png') }}"
+                            class="img-fluid " style="max-width: 700px; width: 100%; height: auto;">
                         <p class="mt-3 mb-0 text-muted small">
                             <em>Gambar 2.10 Contoh segmentasi citra dengan metode region-based segmentation</em><br>
                             <small>Sumber: Sonka, M., Hlavac, V., & Boyle, R. (2014). Image Processing, Analysis, and
@@ -114,22 +128,30 @@
 
                     <p class="mb-4"><strong>Penjelasan Gambar:</strong></p>
                     <ul class="mb-4">
-                        <li class="mb-2"><strong>(A)</strong> Citra memiliki pola bertekstur di dalam objek, bukan
-                            intensitas yang seragam.</li>
-                        <li class="mb-2"><strong>(B)</strong> Hasil perhitungan diskontinuitas intensitas yang kompleks,
-                            membuat pendekatan <em>edge-based</em> kurang cocok.</li>
-                        <li><strong>(C)</strong> Hasil segmentasi dengan membagi citra menjadi blok 8×8 piksel dan
-                            dianalisis menggunakan <strong>standar deviasi</strong>.</li>
+                        <li class="mb-2">
+                            <strong>Gambar 2.10(A)</strong> Citra yang ditampilkan mirip dengan contoh sebelumnya, namun
+                            bagian
+                            dalam objek memiliki pola bertekstur sehingga intensitas pikselnya tidak seragam.
+                        </li>
+
+                        <li class="mb-2">
+                            <strong>Gambar 2.10(B)</strong> Hasil perhitungan diskontinuitas intensitas pada citra.
+                            Banyaknya
+                            perubahan intensitas kecil yang saling terhubung menyebabkan batas objek sulit ditentukan
+                            secara jelas, sehingga pendekatan <em>edge-based segmentation</em> kurang cocok digunakan
+                            pada kasus ini.
+                        </li>
+
+                        <li>
+                            <strong>Gambar 2.10(C)</strong> Hasil segmentasi dengan membagi citra menjadi subwilayah
+                            berukuran 8×8
+                            piksel. Setiap subwilayah dianalisis menggunakan <strong>standar deviasi</strong>. Jika
+                            nilai standar deviasi lebih dari nol (terdapat variasi intensitas), maka subwilayah diberi
+                            label putih (<strong>TRUE</strong>). Sebaliknya, jika nilai standar deviasi sama dengan nol,
+                            maka subwilayah diberi label hitam.
+                        </li>
                     </ul>
 
-                    <p class="mb-4">
-                        Setiap subwilayah (blok 8×8) dianalisis dengan ketentuan:
-                    </p>
-                    <ul class="mb-4">
-                        <li>Jika standar deviasi > 0 (terdapat variasi intensitas/tekstur), label = <strong>putih
-                                (TRUE)</strong>.</li>
-                        <li>Jika standar deviasi = 0 (intensitas konstan), label = <strong>hitam</strong>.</li>
-                    </ul>
 
                     <p class="mb-4">
                         Hasil segmentasi terlihat agak “kotak-kotak” karena penggunaan blok 8×8. Jika ukuran subwilayah

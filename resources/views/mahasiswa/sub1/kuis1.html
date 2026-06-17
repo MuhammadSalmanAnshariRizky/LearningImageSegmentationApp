@@ -218,7 +218,8 @@
   </div>
 
   {% elif result %}
-  <div class="card border shadow-sm rounded-4 mb-5">
+  <!-- KARTU 1: HASIL KUIS TERAKHIR -->
+  <div class="card border shadow-sm rounded-4 mb-4">
     <div class="card-body p-4 p-md-4 text-center">
 
       <div class="mb-4 pb-3 border-bottom">
@@ -283,15 +284,106 @@
         </button>
         <a href="{{ url_for('user.mulai_kuis', slug=activity.title) }}"
           class=" btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold" style="font-size: 0.9rem;">
-
-          <i class="fa-solid fa-rotate-left me-1"></i>
-          Ulangi Kuis
-
+          <i class="fa-solid fa-rotate-left me-1"></i> Ulangi Kuis
         </a>
       </div>
     </div>
   </div>
 
+  <!-- KARTU 2: PETUNJUK PENGERJAAN (KODE YANG BARU DITAMBAHKAN) -->
+  <div class="card border shadow-sm rounded-4 mb-4">
+    <div class="card-body p-4 p-md-5">
+
+      <div
+        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 pb-3 border-bottom">
+        <h5 class="fw-bold text-dark mb-3 mb-md-0">
+          <i class="fa-solid fa-clipboard-list text-primary me-2"></i> Petunjuk Pengerjaan
+        </h5>
+        <div class="d-flex gap-2">
+          <span
+            class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold border border-primary border-opacity-25">
+            <i class="fa-regular fa-file-lines me-1"></i> {{ activity.jumlah_soal }} Soal
+          </span>
+          <span
+            class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold border border-primary border-opacity-25">
+            <i class="fa-regular fa-clock me-1"></i> {{ activity.durasi_pengerjaan }} Menit
+          </span>
+        </div>
+      </div>
+
+      <div class="d-flex flex-column gap-3 mb-4">
+
+        <div class="d-flex align-items-start gap-3">
+          <div
+            class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle fw-bold shadow-sm"
+            style="width: 32px; height: 32px; min-width: 32px;">1</div>
+          <div>
+            <div class="fw-semibold text-dark">Pastikan koneksi internet dalam keadaan stabil.</div>
+            <div class="text-muted small mt-1">Hindari memuat ulang (refresh) halaman atau menutup browser secara
+              tiba-tiba agar sesi kuis tidak terganggu.</div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3">
+          <div
+            class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle fw-bold shadow-sm"
+            style="width: 32px; height: 32px; min-width: 32px;">2</div>
+          <div>
+            <div class="fw-semibold text-dark">Gunakan navigasi untuk berpindah antar soal.</div>
+            <div class="text-muted small mt-1">Kamu bisa melompat ke soal mana saja menggunakan panel nomor soal yang
+              tersedia.</div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3">
+          <div
+            class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle fw-bold shadow-sm"
+            style="width: 32px; height: 32px; min-width: 32px;">3</div>
+          <div>
+            <div class="fw-semibold text-dark">Gunakan tombol <strong>Ragu-Ragu</strong> jika belum yakin.</div>
+            <div class="text-muted small mt-1">Soal akan ditandai dengan warna kuning sehingga kamu bisa dengan mudah
+              mengeceknya kembali nanti.</div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3">
+          <div
+            class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle fw-bold shadow-sm"
+            style="width: 32px; height: 32px; min-width: 32px;">4</div>
+          <div>
+            <div class="fw-semibold text-dark">Waktu kuis akan terus berjalan selama halaman terbuka.</div>
+            <div class="text-muted small mt-1">Perhatikan sisa waktu. Jika waktu habis, jawaban akan otomatis tersimpan
+              dan kuis berakhir.</div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3">
+          <div
+            class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle fw-bold shadow-sm"
+            style="width: 32px; height: 32px; min-width: 32px;">5</div>
+          <div>
+            <div class="fw-semibold text-dark">Pastikan klik tombol <strong>Selesai</strong> setelah dikerjakan.</div>
+            <div class="text-muted small mt-1">Cek kembali seluruh jawabanmu sebelum menekan tombol selesai untuk
+              mengumpulkan.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div
+        class="alert alert-warning border border-warning border-opacity-50 mt-4 mb-0 py-3 px-4 d-flex align-items-start rounded-3 shadow-sm bg-warning bg-opacity-10">
+        <i class="fa-solid fa-triangle-exclamation fs-4 text-warning mt-1 me-3"></i>
+        <div>
+          <h6 class="fw-bold text-dark mb-1">Peringatan!</h6>
+          <span class="text-dark small">Jawaban <strong>tidak akan tersimpan</strong> jika kamu keluar dari halaman
+            kuis sebelum menekan tombol Selesai.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- KARTU 3: RIWAYAT PENGERJAAN -->
   <div class="card border shadow-sm rounded-4">
     <div class="card-body p-4">
       <h6 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Riwayat

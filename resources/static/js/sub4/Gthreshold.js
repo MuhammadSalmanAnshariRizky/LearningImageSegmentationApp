@@ -1,5 +1,5 @@
 /**
- * Script untuk Live Code Notebook - Global Thresholding (Iterative Selection)
+ * Script untuk Live Code Notebook - Global Thresholding (Iterative Selection) - TANPA MATPLOTLIB
  */
 
 let thresholdCellCount = 0;
@@ -65,12 +65,14 @@ function loadThresholdState() {
 // 3. Tambah Lembar Kerja Cell
 function addThresholdCell() {
   thresholdCellCount++;
+
+  // KODE PYTHON TANPA MATPLOTLIB
   const defaultCode = `import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 
 # 1. MEMBACA CITRA GRAYSCALE
+# Lengkapi '_____' dengan nama file gambar yang kamu unggah
 img = cv2.imread('_____', cv2.IMREAD_GRAYSCALE)
 if img is None:
     print("Gambar tidak ditemukan!")
@@ -84,12 +86,15 @@ iteration = 0
 while True:
     G1 = img[img > T]
     G2 = img[img <= T]
+    
     if len(G1) == 0 or len(G2) == 0:
         break
+        
     m1 = np.mean(G1)
     m2 = np.mean(G2)
     T_new = (m1 + m2) / 2
     iteration += 1
+    
     if abs(T - T_new) < 0.5:
         break
     T = T_new
@@ -99,31 +104,17 @@ iterative_threshold = T_new
 # 4. MELAKUKAN SEGMENTASI CITRA
 _, segmented = cv2.threshold(img, iterative_threshold, 255, cv2.THRESH_BINARY)
 
-# 5. MENGHITUNG HISTOGRAM
-hist = cv2.calcHist([img], [0], None, [256], [0, 256])
-
-# 6. MENYIMPAN MATRIKS HASIL KE DIREKTORI STATIS BACKEND
+# 5. MENYIMPAN MATRIKS HASIL (TANPA HISTOGRAM)
 cv2.imwrite(os.path.join(output_dir, "citra_grayscale.jpg"), img)
 cv2.imwrite(os.path.join(output_dir, "hasil_segmentasi.jpg"), segmented)
 
-# 7. GENERATE GRAFIK HISTOGRAM DAN SAVE FISIK
-plt.figure(figsize=(6, 4))
-plt.plot(hist, color='blue')
-plt.axvline(iterative_threshold, color='red', linestyle='--')
-plt.title('Histogram Citra')
-plt.tight_layout()
-plt.savefig(os.path.join(output_dir, "grafik_histogram.jpg"))
-plt.close()
-
-print( "Proses Global Thresholding Selesai!" )
-print(f"Nilas Ambang Batas Otomatis (T): {iterative_threshold:.2f}")
+print("Proses Global Thresholding Selesai!")
+print(f"Nilai Ambang Batas Otomatis (T): {iterative_threshold:.2f}")
 print(f"Total Iterasi Komputasi: {iteration}")`;
 
-  createThresholdCellDOM(
-    thresholdCellCount,
-    defaultCode,
-    "Output Global Thresholding muncul di sini...",
-  );
+  const defaultOutput = `<span class="text-success font-monospace">> Output akan muncul di sini...</span>`;
+
+  createThresholdCellDOM(thresholdCellCount, defaultCode, defaultOutput);
   saveThresholdState();
 }
 
@@ -136,10 +127,14 @@ function createThresholdCellDOM(id, codeText, outputHTML) {
   cell.id = "threshold-cell-" + id;
   cell.innerHTML = `
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="text-muted small fw-bold">Threshold In [${id}]:</span>
+            <span class="text-muted small fw-bold">In [${id}]:</span>
             <div class="cell-actions">
-                <button class="btn-icon run" onclick="runThresholdCell(${id})" title="Run"><i class="fa-solid fa-play"></i></button>
-                <button class="btn-icon delete" onclick="deleteThresholdCell(${id})" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                <button class="btn-icon run" onclick="runThresholdCell(${id})" title="Run">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+                <button class="btn-icon delete" onclick="deleteThresholdCell(${id})" title="Hapus">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
             </div>
         </div>
         <textarea id="threshold-editor-${id}"></textarea>
@@ -158,6 +153,11 @@ function createThresholdCellDOM(id, codeText, outputHTML) {
   );
   editor.setValue(codeText);
   editor.setSize("100%", "auto");
+
+  setTimeout(() => {
+    editor.refresh();
+  }, 10);
+
   editor.on("change", () => {
     editor.setSize(null, "auto");
     saveThresholdState();
@@ -167,39 +167,90 @@ function createThresholdCellDOM(id, codeText, outputHTML) {
 
 // 4. Eksekusi Kompilasi Matriks
 function runThresholdCell(id) {
+  if (!thresholdEditors[id]) return;
+
   const code = thresholdEditors[id].getValue();
   const outputBox = document.getElementById(`threshold-output-${id}`);
-  outputBox.innerHTML = "⏳ Running Global Thresholding Selection...";
+  outputBox.innerHTML = `<span class="text-warning font-monospace"><i class="fa-solid fa-spinner fa-spin me-2"></i>⏳ Menghitung iterasi threshold...</span>`;
 
   fetch("/run-code", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ code: code, image_path: thresholdImagePath }),
   })
-    .then((res) => res.json())
+    .then(async (res) => {
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        throw new Error(text);
+      }
+    })
     .then((data) => {
-      outputBox.innerHTML = `
-            <div class="result-wrapper">
-                <div class="console-output mb-3"><pre>${data.output}</pre></div>
-                <div class="image-results d-flex gap-3 flex-wrap">
-                    ${data.before_image ? renderThresholdImgCard("Citra Grayscale", "/static/results/citra_grayscale.jpg") : ""}
-                    ${renderThresholdImgCard("Histogram Citra", "/static/results/grafik_histogram.jpg")}
-                    ${renderThresholdImgCard("Hasil Segmentasi", "/static/results/hasil_segmentasi.jpg")}
-                </div>
-            </div>`;
+      if (data.error || (data.output && data.output.includes("Traceback"))) {
+        outputBox.innerHTML = `<div class="text-danger font-monospace"><strong>❌ Ups! Ada kesalahan:</strong><pre class="mt-2 text-danger">${data.error || data.output}</pre></div>`;
+      } else {
+        let outputHTML = `
+            <div class="text-success font-monospace mb-3">
+                <strong>✅ Hebat! Komputasi berhasil diselesaikan:</strong>
+                <pre class="mt-2 mb-0 text-success">${data.output}</pre>
+            </div>
+            <div class="image-results d-flex gap-3 flex-wrap justify-content-start mt-3">
+        `;
+
+        if (data.images && Array.isArray(data.images)) {
+          data.images.forEach((img) => {
+            // Abaikan penarikan gambar histogram dari backend jika kebetulan masih tersisa
+            let titleLower = img.title.toLowerCase();
+            if (
+              !titleLower.includes("grafik") &&
+              !titleLower.includes("histogram")
+            ) {
+              let cleanTitle = img.title
+                .replace("citra_", "Citra ")
+                .replace("hasil_", "Hasil ")
+                .replace(".jpg", "")
+                .replace(".png", "");
+
+              cleanTitle = cleanTitle.replace(/\b\w/g, (c) => c.toUpperCase());
+              outputHTML += renderThresholdImgCard(cleanTitle, img.url);
+            }
+          });
+        } else {
+          // Fallback tanpa memanggil file histogram
+          outputHTML += renderThresholdImgCard(
+            "Citra Grayscale",
+            "/static/results/citra_grayscale.jpg",
+          );
+          outputHTML += renderThresholdImgCard(
+            "Hasil Segmentasi",
+            "/static/results/hasil_segmentasi.jpg",
+          );
+        }
+
+        outputHTML += `</div>`;
+        outputBox.innerHTML = outputHTML;
+      }
       saveThresholdState();
+    })
+    .catch((err) => {
+      outputBox.innerHTML = `<div class="text-danger font-monospace"><strong>🚨 Gagal terhubung ke server!</strong><br>${err.message}</div>`;
     });
 }
 
-function renderThresholdImgCard(title, src) {
+function renderThresholdImgCard(title, srcUrl) {
   const t = Date.now();
+  const urlWithCacheBuster = srcUrl.includes("?")
+    ? `${srcUrl}&t=${t}`
+    : `${srcUrl}?t=${t}`;
+
   return `
-    <div class="image-card text-center border p-2 rounded-3 bg-white">
-        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.8rem;">${title}</h6>
-        <img src="${src}?t=${t}" class="result-image preview-image img-fluid rounded" 
-             style="max-height: 120px; cursor: pointer;"
+    <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm" style="width: fit-content;">
+        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
+        <img src="${urlWithCacheBuster}" class="result-image preview-image img-fluid rounded" 
+             style="max-height: 140px; cursor: pointer; object-fit: contain;"
              data-bs-toggle="modal" data-bs-target="#thresholdImageModal" 
-             onclick="openThresholdModal('${src}?t=${t}')">
+             onclick="openThresholdModal('${urlWithCacheBuster}')">
     </div>`;
 }
 
@@ -207,26 +258,65 @@ function renderThresholdImgCard(title, src) {
 function openThresholdModal(src) {
   document.getElementById("thresholdModalImage").src = src;
 }
+
 function deleteThresholdCell(id) {
   document.getElementById("threshold-cell-" + id).remove();
   delete thresholdEditors[id];
   saveThresholdState();
 }
+
 function triggerThresholdUpload() {
   document.getElementById("thresholdFileInput").click();
 }
 
 function handleThresholdUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const formData = new FormData();
-  formData.append("image", file);
-  fetch("/upload-image", { method: "POST", body: formData })
-    .then((res) => res.json())
-    .then((data) => {
-      thresholdImagePath = data.path;
-      document.getElementById("thresholdFileList").innerHTML =
-        `<li><i class="fa-solid fa-file-image me-2 text-danger"></i> ${file.name}</li>`;
-      saveThresholdState();
-    });
+  const originalFile = event.target.files[0];
+  if (!originalFile) return;
+
+  const extension = originalFile.name.substring(
+    originalFile.name.lastIndexOf("."),
+  );
+  const newFileName = "citra_threshold" + extension;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const imageSrc = e.target.result;
+    const formData = new FormData();
+
+    formData.append("image", originalFile, newFileName);
+
+    document.getElementById("thresholdFileList").innerHTML = `
+        <div class="text-center text-muted mt-3 small">
+            <i class="fa-solid fa-spinner fa-spin me-2"></i>Mengunggah...
+        </div>
+    `;
+
+    fetch("/upload-image", { method: "POST", body: formData })
+      .then((res) => res.json())
+      .then((data) => {
+        thresholdImagePath = data.path;
+
+        document.getElementById("thresholdFileList").innerHTML = `
+        <div class="image-preview-card mt-3">
+            <div class="img-wrapper text-center">
+                <img src="${imageSrc}" class="preview-img img-fluid rounded border border-secondary" style="max-height: 120px; object-fit: cover;" alt="Preview File">
+            </div>
+            <div class="file-name-text mt-2 small text-truncate fw-bold text-dark text-center" title="${data.filename}">
+                <i class="fa-solid fa-file-image me-1 text-custom-blue"></i>
+                ${data.filename}
+            </div>
+        </div>
+        `;
+        saveThresholdState();
+      })
+      .catch((err) => {
+        document.getElementById("thresholdFileList").innerHTML = `
+            <div class="text-danger mt-3 small text-center">
+                Gagal mengunggah gambar.
+            </div>
+        `;
+      });
+  };
+
+  reader.readAsDataURL(originalFile);
 }
