@@ -79,7 +79,7 @@ function addCell() {
   const defaultCode = `# 1. Import library OpenCV (ketik: cv2)
 import .....
 
-# 2. Baca gambar sebagai grayscale (tuliskan fungsi membaca gambar yaitu: cv2.imread dan nama file: 'citra_grayscale.png')
+# 2. Baca gambar sebagai grayscale (tuliskan fungsi membaca gambar yaitu: cv2.imread dan nama file: 'citra_input.png')
 image = .....imread('.....', cv2.IMREAD_GRAYSCALE)
 
 # 3. Tampilkan matriks piksel citra (tuliskan variabel: image)
@@ -223,7 +223,7 @@ function handleUpload(event) {
   const extension = originalFile.name.substring(
     originalFile.name.lastIndexOf("."),
   );
-  const newFileName = "citra_grayscale" + extension;
+  const newFileName = "citra_input" + extension;
 
   // 2. Membaca file untuk dijadikan preview menggunakan FileReader
   const reader = new FileReader();

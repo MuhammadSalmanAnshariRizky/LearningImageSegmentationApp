@@ -1,5 +1,6 @@
 {% extends 'layouts/base.html' %} {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sub2/segmentasi.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sub5/simulasi_rg.css') }}" />
 <link rel="stylesheet" href="{{ url_for('static', filename='css/kodeeditor.css') }}" />
 {% endblock %} {% block content %}
 <div class="container mt-4">
@@ -45,7 +46,7 @@
             <em>predicate of similarity</em>, dan <em>connectivity</em> untuk membentuk suatu region.
           </p>
 
-          <div class="border border-custom-blue border-2 rounded-3 p-4 mb-5 bg-white shadow-sm">
+          <div class="border border-custom-blue border-2 rounded-3 p-4 mb-2 bg-white shadow-sm">
             <h5 class="fw-bold text-custom-blue mb-3">
               <i class="fa-solid fa-list-ol me-2"></i> Algoritma Region Growing
             </h5>
@@ -64,10 +65,10 @@
                 yang ditentukan, dan diberi nilai 0 apabila tidak memenuhi kriteria tersebut. Sebagai contoh, jika
                 kesamaan ditentukan berdasarkan intensitas, maka predicate dapat dituliskan sebagai:
                 <div class="my-3 text-center text-dark fw-bold">
-                  \[ Q = \begin{cases} \text{TRUE}, & |f(x,y) - f_s| \le T \\ \text{FALSE}, & \text{lainnya} \end{cases}
-                  \]
+                  \( Q = \begin{cases} \text{TRUE}, & |f(x,y) - f_s| \le T \\ \text{FALSE}, & \text{lainnya} \end{cases}
+                  \)
                 </div>
-                <div class=" ps-3">
+                <div class="ps-3">
                   Keterangan:<br>
                   \( f(x,y) \) = intensitas piksel yang diperiksa,<br>
                   \( f_s \) = intensitas seed point,<br>
@@ -92,228 +93,203 @@
               </li>
             </ol>
           </div>
+        </div>
+      </div>
+    </div>
 
-          <h4 class="fw-bold mb-3 text-custom-blue mt-5">Contoh Perhitungan Region Growing</h4>
-          <p class="mb-4">
-            Misalkan terdapat citra grayscale sederhana berukuran \( 4 \times 5 \) dengan nilai intensitas sebagai
-            berikut:
-          </p>
+    <div class="card border shadow-sm rounded-4 mb-4 overflow-hidden">
+      <h3 class="accordion-header m-0" id="headingCalculation">
+        <button class="accordion-button fw-bold text-custom-blue p-4 bg-white" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapseCalculation" aria-expanded="true" aria-controls="collapseCalculation"
+          style="font-size: 1.35rem;">
+          <i class="fa-solid fa-expand me-3"></i> Simulasi Region Growing (8-Connectivity)
+        </button>
+      </h3>
+      <div id="collapseCalculation" class="accordion-collapse collapse show" aria-labelledby="headingCalculation">
+        <div class="card-body p-4 p-md-5 border-top">
 
-          <div class="table-responsive my-4">
-            <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1 shadow-sm"
-              style="max-width: 300px;">
-              <tr>
-                <td>48</td>
-                <td>50</td>
-                <td>52</td>
-                <td>150</td>
-                <td>152</td>
-              </tr>
-              <tr>
-                <td>49</td>
-                <td>51</td>
-                <td>53</td>
-                <td>148</td>
-                <td>151</td>
-              </tr>
-              <tr>
-                <td>47</td>
-                <td>50</td>
-                <td>52</td>
-                <td>149</td>
-                <td>150</td>
-              </tr>
-              <tr>
-                <td>46</td>
-                <td>48</td>
-                <td>51</td>
-                <td>151</td>
-                <td>153</td>
-              </tr>
-            </table>
-            <p class="text-center  text-muted mt-2"><em>Matriks Citra Awal Grayscale</em></p>
+          <h4 class="fw-bold mb-3 text-custom-blue">
+            <i class="fa-solid fa-microscope me-2"></i> Proses Segmentasi Citra 5x5
+          </h4>
+
+          <div class="bg-primary-subtle border-start border-4 border-primary p-4 rounded-3 mb-5 shadow-sm">
+            <h6 class="fw-bold text-primary mb-3">
+              <i class="fa-solid fa-circle-info me-2"></i> Petunjuk & Parameter Simulasi
+            </h6>
+            <p class="text-dark mb-3" style="font-size: 1.05rem;">
+              Simulasi ini akan mendemonstrasikan bagaimana algoritma memisahkan objek dari latar belakangnya
+              menggunakan citra grayscale berukuran 5x5 piksel.
+            </p>
+            <ul class="text-dark mb-4" style="font-size: 1.05rem; line-height: 1.8;">
+              <li><strong>Matriks Input (Kiri Atas):</strong> Merupakan nilai intensitas awal piksel. Titik awal
+                (<em>Seed Point</em>, \( f_s \)) berada tepat di tengah (Baris 2, Kolom 2) dengan nilai
+                <strong>3</strong>.
+              </li>
+              <li><strong>Predikat Kriteria:</strong> Piksel tetangga akan bergabung menjadi region jika selisih
+                intensitasnya dengan <em>seed</em> tidak lebih dari batas toleransi: \( |f(x,y) - f_s| \le T \).</li>
+              <li><strong>Toleransi (\( T \)):</strong> Diatur sebesar <strong>2</strong>.</li>
+              <li><strong>Connectivity:</strong> Algoritma mengecek ke 8 arah (Atas, Bawah, Kiri, Kanan, dan 4
+                Diagonal).</li>
+              <li><strong>Hasil (Kiri Bawah):</strong> Piksel yang lolos kriteria diberi label <strong>1
+                  (Hitam)</strong>, sedangkan yang gagal diberi label <strong>0 (Putih)</strong>.</li>
+            </ul>
+            <p class="text-dark mb-0 fw-medium" style="font-size: 1.05rem;">
+              Klik tombol <span class="badge bg-primary rounded-pill px-3 py-2 mx-1"><i
+                  class="fa-solid fa-play me-1"></i> Mulai</span> pada panel hitam di sebelah kanan untuk menjalankan
+              animasi pergerakan region!
+            </p>
           </div>
 
-          <p class="mb-4">
-            Tujuan segmentasi adalah mengidentifikasi region yang memiliki karakteristik intensitas serupa dengan seed
-            point yang dipilih. Berikut adalah tahapan simulasinya secara mendetail:
-          </p>
+          <div class="row align-items-stretch">
+            <div class="col-lg-4 col-md-5">
+              <div class="d-flex flex-column gap-4 h-100">
 
-          <div class="ps-3 border-start border-3 border-custom-blue text-dark mb-5">
+                <div class="p-3 border rounded-4 text-center shadow-sm bg-light">
+                  <h6 class="fw-bold mb-3 text-secondary">1. Matriks Grayscale (Input)</h6>
+                  <table class="table mb-0 anim-matrix mx-auto" style="width: auto;">
+                    <thead>
+                      <tr>
+                        <th class="index-cell"></th>
+                        <th class="index-cell">0</th>
+                        <th class="index-cell">1</th>
+                        <th class="index-cell">2</th>
+                        <th class="index-cell">3</th>
+                        <th class="index-cell">4</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th class="index-cell">0</th>
+                        <td id="in-0-0">1</td>
+                        <td id="in-0-1">2</td>
+                        <td id="in-0-2">6</td>
+                        <td id="in-0-3">7</td>
+                        <td id="in-0-4">8</td>
+                      </tr>
+                      <tr>
+                        <th class="index-cell">1</th>
+                        <td id="in-1-0">2</td>
+                        <td id="in-1-1">3</td>
+                        <td id="in-1-2">5</td>
+                        <td id="in-1-3">8</td>
+                        <td id="in-1-4">9</td>
+                      </tr>
+                      <tr>
+                        <th class="index-cell">2</th>
+                        <td id="in-2-0">6</td>
+                        <td id="in-2-1">4</td>
+                        <td id="in-2-2" class="bg-accepted border-dark">3</td>
+                        <td id="in-2-3">2</td>
+                        <td id="in-2-4">1</td>
+                      </tr>
+                      <tr>
+                        <th class="index-cell">3</th>
+                        <td id="in-3-0">7</td>
+                        <td id="in-3-1">8</td>
+                        <td id="in-3-2">2</td>
+                        <td id="in-3-3">1</td>
+                        <td id="in-3-4">0</td>
+                      </tr>
+                      <tr>
+                        <th class="index-cell">4</th>
+                        <td id="in-4-0">9</td>
+                        <td id="in-4-1">9</td>
+                        <td id="in-4-2">3</td>
+                        <td id="in-4-3">0</td>
+                        <td id="in-4-4">1</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
 
-            <p class="mb-4">
-              <span class="badge bg-custom-blue px-3 py-2 rounded-2 mb-2">Tahap 1</span><br>
-              <strong>Menentukan Seed Array \( S(x,y) \)</strong><br>
-              Seed Array digunakan untuk menunjukkan lokasi seed point. Misalkan dipilih seed point pada piksel bernilai
-              51 yang berada pada baris ke-2 kolom ke-2. Maka:
-            <div class="table-responsive my-3">
-              <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1"
-                style="max-width: 250px; font-size: 0.9rem;">
-                <tr>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                </tr>
-                <tr>
-                  <td>0</td>
-                  <td class="bg-warning text-dark">1</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                </tr>
-                <tr>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                </tr>
-                <tr>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
-                </tr>
-              </table>
-            </div>
-            <div class=" >
-              Keterangan:<br>
-              Nilai 1 menunjukkan lokasi seed point.<br>
-              Nilai 0 menunjukkan bukan seed point.<br>
-              Jadi seed point berfungsi sebagai titik awal pertumbuhan region.
-            </div>
-            </p>
+                <div class="p-3 border rounded-4 text-center shadow-sm bg-light mt-auto">
+                  <h6 class="fw-bold mb-3 text-dark">2. Hasil Biner (Labeling 0 & 1)</h6>
+                  <table class="table mb-0 anim-matrix mx-auto" style="width: auto;">
+                    <thead>
+                      <tr>
+                        <th class="index-cell"></th>
+                        <th class="index-cell">0</th>
+                        <th class="index-cell">1</th>
+                        <th class="index-cell">2</th>
+                        <th class="index-cell">3</th>
+                        <th class="index-cell">4</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th class="index-cell">0</th>
+                        <td id="out-0-0">?</td>
+                        <td id="out-0-1">?</td>
+                        <td id="out-0-2">?</td>
+                        <td id="out-0-3">?</td>
+                        <td id="out-0-4">?</td>
+                      </tr>
+                      <tr>
+                        <th class="index-cell">1</th>
+                        <td id="out-1-0">?</td>
+                        <td id="out-1-1">?</td>
+                        <td id="out-1-2">?</td>
+                        <td id="out-1-3">?</td>
+                        <td id="out-1-4">?</td>
+                      </tr>
+                      <tr>
+                        <th class="index-cell">2</th>
+                        <td id="out-2-0">?</td>
+                        <td id="out-2-1">?</td>
+                        <td id="out-2-2" class="bg-accepted border-dark">1</td>
+                        <td id="out-2-3">?</td>
+                        <td id="out-2-4">?</td>
+                      </tr>
+                      <tr>
+                        <th class="index-cell">3</th>
+                        <td id="out-3-0">?</td>
+                        <td id="out-3-1">?</td>
+                        <td id="out-3-2">?</td>
+                        <td id="out-3-3">?</td>
+                        <td id="out-3-4">?</td>
+                      </tr>
+                      <tr>
+                        <th class="index-cell">4</th>
+                        <td id="out-4-0">?</td>
+                        <td id="out-4-1">?</td>
+                        <td id="out-4-2">?</td>
+                        <td id="out-4-3">?</td>
+                        <td id="out-4-4">?</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
 
-            <p class=" mb-4">
-              <span class="badge bg-custom-blue px-3 py-2 rounded-2 mb-2">Tahap 2</span><br>
-              <strong>Menentukan Predicate \( Q \)</strong><br>
-              Predicate merupakan aturan yang digunakan untuk menentukan apakah suatu piksel cukup mirip
-              (<em>Similarity</em>) untuk bergabung ke dalam region. Sebagai contoh:
-              <div class="my-3 text-center">
-                \[ Q = \begin{cases} \text{TRUE}, & |f(x,y) - f_s| \le 5 \\ \text{FALSE}, & \text{lainnya} \end{cases}
-                \]
               </div>
-              <div class=" mb-3">
-                dengan: \( f(x,y) \) = intensitas piksel yang diperiksa, \( f_s \) = intensitas seed point (yaitu 51),
-                dan
-                5 = nilai toleransi.
-              </div>
-              Artinya: Jika selisih intensitas piksel dengan seed point kurang dari atau sama dengan 5, maka piksel
-              dianggap mirip. Jika selisihnya lebih dari 5, maka piksel dianggap tidak mirip.
-              </p>
-
-              <p class="mb-4">
-                <span class="badge bg-custom-blue px-3 py-2 rounded-2 mb-2">Tahap 3</span><br>
-                <strong>Periksa Seluruh Piksel Menggunakan Predicate \( Q \)</strong><br>
-                Periksa seluruh piksel pada citra menggunakan predicate \( Q \).<br>
-                Misalnya pada koordinat tertentu: \( |48 - 51| = 3 \). Karena \( 3 \le 5 \), maka hasil \( Q =
-                \text{TRUE}
-                \) (bernilai 1).<br><br>
-                Setelah semua piksel diperiksa, diperoleh matriks kandidat \( f_Q \) sebagai berikut:
-              <div class="table-responsive my-3">
-                <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1"
-                  style="max-width: 250px; font-size: 0.9rem;">
-                  <tr>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                </table>
-              </div>
-              <span class=" >Nilai 1 menunjukkan piksel yang memenuhi predicate.</span>
-            </p>
-
-            <p class=" mb-4">
-                <span class="badge bg-custom-blue px-3 py-2 rounded-2 mb-2">Tahap 4</span><br>
-                <strong>Melakukan Pertumbuhan Region (Region Growing)</strong><br>
-                Mulai dari seed point, kemudian tambahkan semua piksel bernilai 1 yang terhubung dengan seed point
-                menggunakan <em>8-connectivity</em>.
-                </p>
-
-                <img src="{{ url_for('static', filename='img/sub5/8-connectivity.png') }}"
-                  class="img-fluid text-center mb-0"
-                  style="max-width: 40%; height: auto; display: block; margin-left: auto; margin-right: auto;">
-                <p class="mt-0 mb-3 text-muted  text-center small"><em>Gambar 5.2 Pengecekan connectivity menggunakan
-                    8-connectivity
-                    sederhana</em>
-                </p>
-
-
-                <p class="mb-0">
-                  Semua tetangga di sekitar piksel diperiksa. Jika memiliki kondisi memenuhi predicate dan terhubung
-                  dengan
-                  seed point, maka piksel dimasukkan ke dalam region. Pada contoh ini seluruh piksel di sisi kiri akan
-                  bergabung menjadi satu <em>region</em> karena saling terhubung.
-                </p>
             </div>
 
-            <p class="fw-bold mb-2 text-custom-blue">Hasil Akhir Pelabelan Region</p>
-            <p class="mb-3">Setelah tidak ada lagi piksel yang dapat ditambahkan, region diberi label khusus:</p>
+            <div class="col-lg-8 col-md-7 mt-4 mt-md-0">
+              <div class="bg-dark text-white p-4 rounded-4 shadow position-relative d-flex flex-column h-100"
+                style="min-height: 480px;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h6 class="fw-bold mb-0 text-warning">
+                    <i class="fa-solid fa-terminal me-2"></i> Log Proses Keputusan
+                  </h6>
+                  <div class="d-flex gap-2">
+                    <button id="btn-reset" class="btn btn-outline-light btn-sm rounded-pill px-3"
+                      onclick="resetAnimation()" disabled>Reset</button>
+                    <button id="btn-pause" class="btn btn-warning btn-sm rounded-pill px-3 fw-bold text-dark"
+                      onclick="pauseAnimation()" style="display: none;"><i class="fa-solid fa-pause me-1"></i>
+                      Jeda</button>
+                    <button id="btn-play" class="btn btn-primary btn-sm rounded-pill px-4 fw-bold"
+                      onclick="startAnimation()"><i class="fa-solid fa-play me-1"></i> Mulai</button>
+                  </div>
+                </div>
 
-            <div class="table-responsive my-4">
-              <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1 shadow-sm"
-                style="max-width: 250px; font-size: 0.9rem;">
-                <tr>
-                  <td class="table-success">1</td>
-                  <td class="table-success">1</td>
-                  <td class="table-success">1</td>
-                  <td>0</td>
-                  <td>0</td>
-                </tr>
-                <tr>
-                  <td class="table-success">1</td>
-                  <td class="table-success text-danger">1</td>
-                  <td class="table-success">1</td>
-                  <td>0</td>
-                  <td>0</td>
-                </tr>
-                <tr>
-                  <td class="table-success">1</td>
-                  <td class="table-success">1</td>
-                  <td class="table-success">1</td>
-                  <td>0</td>
-                  <td>0</td>
-                </tr>
-                <tr>
-                  <td class="table-success">1</td>
-                  <td class="table-success">1</td>
-                  <td class="table-success">1</td>
-                  <td>0</td>
-                  <td>0</td>
-                </tr>
-              </table>
-              <p class="text-center  text-muted mt-2"><em>Label 1 menunjukkan region hasil segmentasi objek</em>
-              </p>
+                <div id="process-log-container" class="p-3 rounded-3 font-monospace"
+                  style="background-color: #1e1e1e; flex-grow: 1; overflow-y: auto; max-height: 560px; font-size: 0.95rem; line-height: 1.6;">
+                  <div class="text-secondary text-center mt-5" id="log-placeholder">Menunggu inisiasi proses... Klik
+                    'Mulai'.</div>
+                </div>
+              </div>
             </div>
 
           </div>
-
         </div>
       </div>
     </div>
@@ -716,4 +692,5 @@ plt.show()</pre>
 <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 <script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
 <script src="{{ url_for('static', filename='js/sub5/regiongrowing.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sub5/simulasi_rg.js') }}"></script>
 {% endblock %} {% endblock %}

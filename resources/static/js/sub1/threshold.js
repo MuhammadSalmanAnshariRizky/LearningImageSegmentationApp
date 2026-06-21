@@ -12,6 +12,7 @@ let thresholdImagePath = "";
 document.addEventListener("DOMContentLoaded", function () {
   loadThresholdState();
 
+  // Mencegah CodeMirror hancur saat pindah tab/section
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -24,9 +25,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  const notebook = document.getElementById("thresholdNotebook");
+  // Gunakan selector yang sama dengan layout
+  const notebook = document.querySelector(".notebook-wrapper");
   if (notebook) {
-    observer.observe(notebook.closest(".notebook-wrapper"));
+    observer.observe(notebook);
   }
 });
 
@@ -64,9 +66,11 @@ function loadThresholdState() {
     thresholdImagePath = savedPath;
     document.getElementById("thresholdFileList").innerHTML = savedImageUI;
   }
+
   if (savedCellCount) {
     thresholdCellCount = parseInt(savedCellCount);
   }
+
   if (savedCells && savedCells.length > 0) {
     savedCells.forEach((cellData) => {
       createThresholdCellDOM(cellData.id, cellData.code, cellData.output);
@@ -80,6 +84,7 @@ function loadThresholdState() {
 function addThresholdCell() {
   thresholdCellCount++;
 
+  // Template Kode Rumpang untuk Thresholding
   const defaultCode = `import cv2
 import numpy as np
 import os
@@ -117,6 +122,7 @@ cv2.imwrite(
 print("Thresholding berhasil dilakukan!")`;
 
   const defaultOutput = `<span class="text-success font-monospace">> Output akan muncul di sini...</span>`;
+
   createThresholdCellDOM(thresholdCellCount, defaultCode, defaultOutput);
   saveThresholdState();
 }
@@ -160,7 +166,9 @@ function createThresholdCellDOM(id, codeText, outputHTML) {
   editor.setValue(codeText);
   editor.setSize("100%", "auto");
 
-  setTimeout(() => editor.refresh(), 10);
+  setTimeout(() => {
+    editor.refresh();
+  }, 10);
 
   editor.on("change", function (cm) {
     cm.setSize(null, "auto");
@@ -198,6 +206,7 @@ function runThresholdCell(id) {
       if (data.error || (data.output && data.output.includes("Traceback"))) {
         outputBox.innerHTML = `<div class="text-danger font-monospace"><strong>❌ Ups! Ada kesalahan:</strong><pre class="mt-2 text-danger">${data.error || data.output}</pre></div>`;
       } else {
+        // Tampilkan Output Konsol
         let outputHTML = `
             <div class="text-success font-monospace mb-3">
                 <strong>✅ Hebat! Hasil konversi:</strong>
@@ -206,21 +215,28 @@ function runThresholdCell(id) {
             <div class="image-results d-flex gap-3 flex-wrap justify-content-start mt-3">
         `;
 
+        // LOGIKA PENAMPILAN GAMBAR HASIL
         if (data.before_image)
           outputHTML += createThresholdImageCard(
-            "Gambar Asli",
+            "Citra Grayscale (Input)",
             data.before_image,
           );
         if (data.after_image)
           outputHTML += createThresholdImageCard(
-            "Hasil Biner",
+            "Citra Biner (Output)",
             data.after_image,
           );
 
         // Fallback jika backend mengirim array images
         if (data.images && Array.isArray(data.images)) {
           data.images.forEach((img) => {
-            outputHTML += createThresholdImageCard(img.title, img.url);
+            let cleanTitle = img.title
+              .replace("hasil_", "")
+              .replace(".jpg", "")
+              .replace(".png", "");
+            cleanTitle =
+              cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
+            outputHTML += createThresholdImageCard(cleanTitle, img.url);
           });
         }
 
@@ -231,27 +247,36 @@ function runThresholdCell(id) {
     })
     .catch((err) => {
       outputBox.innerHTML = `<div class="text-danger font-monospace"><strong>🚨 Gagal terhubung ke server!</strong><br>${err.message}</div>`;
-      saveThresholdState();
     });
 }
 
+// Komponen Helper untuk merender elemen kartu gambar
 function createThresholdImageCard(title, srcUrl) {
   return `
-      <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm" style="width: fit-content;">
+      <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm d-flex flex-column align-items-center" style="width: fit-content;">
           <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
-          <img src="${srcUrl}" class="result-image preview-image img-fluid rounded" 
-               style="max-height: 140px; cursor: pointer; object-fit: contain;"
-               data-bs-toggle="modal" data-bs-target="#imageModal" 
+          
+          <div class="bg-light rounded border d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; overflow: hidden;">
+              <img src="${srcUrl}" class="result-image preview-image img-fluid" 
+                   style="width: 100%; height: 100%; cursor: zoom-in; object-fit: contain; image-rendering: pixelated;"
+                   title="Klik untuk melihat ukuran penuh"
+                   data-bs-toggle="modal" data-bs-target="#thresholdImageModal" 
+                   onclick="openThresholdModal('${srcUrl}')">
+          </div>
+          
+          <div class="text-muted mt-2" style="font-size: 0.7rem; cursor: pointer;" 
+               data-bs-toggle="modal" data-bs-target="#thresholdImageModal" 
                onclick="openThresholdModal('${srcUrl}')">
+              Klik gambar untuk memperbesar
+          </div>
       </div>
     `;
 }
-
 // ==========================================
 // 5. MANAJEMEN MODAL, UPLOAD & HAPUS CELL
 // ==========================================
 function openThresholdModal(src) {
-  const modalImg = document.getElementById("modalImage");
+  const modalImg = document.getElementById("thresholdModalImage");
   if (modalImg) modalImg.src = src;
 }
 
@@ -274,7 +299,8 @@ function handleThresholdUpload(event) {
   const extension = originalFile.name.substring(
     originalFile.name.lastIndexOf("."),
   );
-  const newFileName = "citra_grayscale" + extension;
+  // Nama default upload untuk mode threshold
+  const newFileName = "citra_input" + extension;
 
   const reader = new FileReader();
   reader.onload = function (e) {
@@ -299,15 +325,16 @@ function handleThresholdUpload(event) {
 
         document.getElementById("thresholdFileList").innerHTML = `
         <div class="image-preview-card mt-3">
-            <div class="img-wrapper">
-                <img src="${imageSrc}" class="preview-img" alt="Preview File" style="max-width:100%; border-radius:8px;">
+            <div class="img-wrapper" style="width: 120px; height: 120px; margin: 0 auto; overflow: hidden; background: #f8f9fa; border-radius: 8px;">
+                <img src="${imageSrc}" class="preview-img" alt="Preview File" style="width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated;">
             </div>
-            <div class="file-name-text mt-2 small text-truncate" title="${data.filename}">
+            <div class="file-name-text mt-2 small text-truncate text-center" title="${data.filename}">
                 <i class="fa-solid fa-file-image me-1 text-primary"></i>
                 ${data.filename}
             </div>
         </div>
     `;
+
         saveThresholdState();
       })
       .catch((err) => {
@@ -318,5 +345,6 @@ function handleThresholdUpload(event) {
         `;
       });
   };
+
   reader.readAsDataURL(originalFile);
 }

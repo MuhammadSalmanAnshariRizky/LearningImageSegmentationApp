@@ -55,18 +55,30 @@ function pauseAnimation() {
   document.getElementById("btn-play").innerHTML =
     '<i class="fa-solid fa-play me-1"></i> Lanjut';
 }
-
 function processNextPixel() {
   clearHighlights();
 
+  // --- PERBAIKAN DI BAGIAN INI ---
   if (currentRow >= 3) {
     clearInterval(animInterval);
+    isAnimating = false; // Kembalikan status animasi
+
     addLogToTerminal(
       '<span class="text-success fw-bold">✓ Selesai! Matriks berhasil dikonversi.</span>',
       "",
     );
+
+    // Ubah tampilan tombol saat selesai
+    document.getElementById("btn-pause").style.display = "none";
+
+    let btnPlay = document.getElementById("btn-play");
+    btnPlay.style.display = "inline-block";
+    btnPlay.disabled = true; // Nonaktifkan tombol karena proses sudah selesai
+    btnPlay.innerHTML = '<i class="fa-solid fa-check me-1"></i> Selesai';
+
     return;
   }
+  // -------------------------------
 
   let rVal = matrixR[currentRow][currentCol];
   let gVal = matrixG[currentRow][currentCol];
@@ -142,7 +154,6 @@ function clearHighlights() {
     );
   });
 }
-
 function resetAnimation() {
   clearInterval(animInterval);
   isAnimating = false;
@@ -161,10 +172,20 @@ function resetAnimation() {
     }
   }
 
-  // Reset UI dan Tombol
-  document.getElementById("process-box").innerHTML =
-    `<span class="text-success">Klik tombol mulai untuk melihat perhitungan...</span>`;
+  // Perbaikan: Reset Log Terminal ke kondisi awal beserta placeholdernya
+  const logContainer = document.getElementById("process-log-container");
+  if (logContainer) {
+    logContainer.innerHTML =
+      '<div id="log-placeholder" class="text-success mt-2">Klik tombol mulai untuk melihat perhitungan...</div>';
+  }
 
+  // (Opsional) Jika elemen process-box masih ada di HTML dan ingin dikosongkan juga
+  const processBox = document.getElementById("process-box");
+  if (processBox) {
+    processBox.innerHTML = "";
+  }
+
+  // Reset UI dan Tombol
   let btnPlay = document.getElementById("btn-play");
   btnPlay.style.display = "inline-block";
   btnPlay.disabled = false;

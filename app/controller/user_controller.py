@@ -4942,7 +4942,7 @@ def upload_image():
 
         file = request.files["image"]
 
-        fixed_filename = "citra_input.jpg"
+        fixed_filename = "citra_input.png"
         filepath = os.path.join(user_folder, fixed_filename)
 
         file.save(filepath)

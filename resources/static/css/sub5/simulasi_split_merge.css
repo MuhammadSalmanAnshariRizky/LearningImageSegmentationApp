@@ -1,0 +1,93 @@
+/* Wrapper untuk menumpuk Matriks */
+#matrix-wrapper {
+  position: relative;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Gaya untuk Grid Matrix Utama */
+#matrix-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+}
+
+/* Sel Matriks Individual */
+.matrix-cell {
+  background-color: #fff;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #333;
+  transition: all 0.3s ease;
+  border: 1px solid #ced4da; /* DIPERBAIKI: Sebelumnya transparent, sekarang abu-abu terang */
+  position: relative;
+  z-index: 1;
+}
+
+/* Status Warna Background Utama */
+.bg-checking {
+  background-color: #ffeeba !important;
+  color: #856404 !important;
+}
+.bg-homogen {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+}
+.bg-heterogen {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+}
+.bg-merged {
+  background-color: #cce5ff !important;
+  color: #004085 !important;
+}
+
+/* Highlight Min dan Max */
+.bg-min {
+  background-color: #0dcaf0 !important;
+  color: #000 !important;
+  border: 3px dashed #055160 !important;
+  transform: scale(1.1);
+  z-index: 5;
+  box-shadow: 0 0 10px rgba(13, 202, 240, 0.8);
+}
+.bg-max {
+  background-color: #fd7e14 !important;
+  color: #fff !important;
+  border: 3px dashed #7c2d12 !important;
+  transform: scale(1.1);
+  z-index: 5;
+  box-shadow: 0 0 10px rgba(253, 126, 20, 0.8);
+}
+
+/* Garis Batas Region (Splitting) */
+.border-top-thick {
+  border-top: 4px solid #dc3545 !important;
+}
+.border-bottom-thick {
+  border-bottom: 4px solid #dc3545 !important;
+}
+.border-left-thick {
+  border-left: 4px solid #dc3545 !important;
+}
+.border-right-thick {
+  border-right: 4px solid #dc3545 !important;
+}
+
+/* Layer untuk Label Teks (A, B, C, D) yang disatukan di grid matriks */
+.region-label {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.3);
+  font-size: 2rem;
+  z-index: 10;
+}

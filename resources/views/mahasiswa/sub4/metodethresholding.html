@@ -615,66 +615,113 @@ plt.show()</pre>
           <p class="mb-4">
             Berikut adalah langkah dari algoritma otsu threshold detection:
           </p>
-
+          <!-- pembuka algoritma -->
           <div class="ps-3 border-start border-3 border-custom-blue text-dark mb-5">
-            <p class="mb-3">
-              <strong>Langkah 1: Hitung Histogram</strong><br />
-              Untuk sebuah citra \( I \) dengan \( G \) tingkat keabuan, hitung
-              histogram tingkat keabuan:<br />
-              <span class="font-monospace fw-bold">\( H(0), H(1), \dots, H(G-1) \)</span>
-            </p>
 
-            <p class="mb-3">
+            <div class="mb-4">
+              <p class="mb-2">
+                <strong>Langkah 1: Hitung Histogram</strong><br />
+                Untuk sebuah citra \( I \) dengan \( G \) tingkat keabuan, hitung
+                histogram tingkat keabuan:<br />
+                <span class="font-monospace fw-bold">\( H(0), H(1), \dots, H(G-1) \)</span>
+              </p>
+              <div class="small text-muted border-start border-2 ps-2 ms-2 mb-0">
+                <div class="fw-bold mb-1">Keterangan:</div>
+                <ul class="list-unstyled mb-0">
+                  <li><strong>\( I \)</strong> = Citra digital asli yang sedang diproses.</li>
+                  <li><strong>\( G \)</strong> = Jumlah total tingkat keabuan (misal: 256 untuk citra 8-bit).</li>
+                  <li><strong>\( H \)</strong> = Nilai pada histogram tingkat keabuan.</li>
+                </ul>
+              </div>
+            </div>
+
+            <p class="mb-4">
               <strong>Langkah 2: Normalisasi Histogram</strong><br />
               Normalisasikan histogram tersebut dengan membaginya dengan jumlah
               total piksel pada citra \( I \), sehingga setiap nilai \( H(i) \)
-              sekarang menyatakan probabilitas kemunculan tingkat keabuan ke-\(
-              i \).
+              sekarang menyatakan probabilitas kemunculan tingkat keabuan ke-\( i \).
             </p>
 
-            <p class="mb-3">
-              <strong>Langkah 3: Uji Kemungkinan Nilai Threshold</strong><br />
-              Untuk setiap kemungkinan nilai threshold \( t = 0, \dots, G-2 \),
-              bagi histogram menjadi dua bagian:
-            </p>
-            <ul class="mb-3 text-dark">
-              <li>
-                <strong>Background (B)</strong> \(\rightarrow\) piksel dengan
-                nilai keabuan \(\le t\)
-              </li>
-              <li>
-                <strong>Foreground (F)</strong> \(\rightarrow\) piksel dengan
-                nilai keabuan \(> t\)
-              </li>
-            </ul>
+            <div class="mb-4">
+              <p class="mb-2">
+                <strong>Langkah 3: Uji Kemungkinan Nilai Threshold</strong><br />
+                Untuk setiap kemungkinan nilai threshold \( t = 0, \dots, G-2 \),
+                bagi histogram menjadi dua bagian:
+              </p>
+              <ul class="mb-2 text-dark">
+                <li>
+                  <strong>Background (B)</strong> \(\rightarrow\) piksel dengan nilai keabuan \(\le t\)
+                </li>
+                <li>
+                  <strong>Foreground (F)</strong> \(\rightarrow\) piksel dengan nilai keabuan \(> t\)
+                </li>
+              </ul>
+              <div class="small text-muted border-start border-2 ps-2 ms-2 mb-0">
+                <div class="fw-bold mb-1">Keterangan:</div>
+                <ul class="list-unstyled mb-0">
+                  <li><strong>\( t \)</strong> = Nilai ambang batas (threshold) sementara yang sedang diuji.</li>
+                </ul>
+              </div>
+            </div>
 
-            <p class="mb-3">
-              <strong>Langkah 4: Hitung Probabilitas dan Variansi Kelas</strong><br />
-              Hitung juga probabilitas piksel menjadi background: \[ \omega_B(t)
-              = \sum_{j=0}^{t} H(j) \] Sementara itu, probabilitas suatu piksel
-              termasuk ke dalam kelas foreground dapat dihitung dengan
-              persamaan: \[ \omega_F(t) = \sum_{j=t+1}^{G-1} H(j) \] Selain itu,
-              karena jumlah seluruh probabilitas sama dengan 1, maka
-              probabilitas foreground juga dapat dinyatakan sebagai: \[
-              \omega_F(t) = 1 - \omega_B(t) \] Hitung variansi untuk
-              masing-masing bagian, di mana \(\sigma_B(t)\) menyatakan variansi
-              background dan \(\sigma_F(t)\) menyatakan variansi foreground.
-            </p>
+            <div class="mb-4">
+              <p class="mb-2">
+                <strong>Langkah 4: Hitung Probabilitas dan Variansi Kelas</strong><br />
+                Hitung juga probabilitas piksel menjadi background:
+                \[ \omega_B(t) = \sum_{j=0}^{t} H(j) \]
+                Sementara itu, probabilitas suatu piksel termasuk ke dalam kelas foreground dapat dihitung dengan
+                persamaan:
+                \[ \omega_F(t) = \sum_{j=t+1}^{G-1} H(j) \]
+                Selain itu, karena jumlah seluruh probabilitas sama dengan 1, maka probabilitas foreground juga dapat
+                dinyatakan sebagai:
+                \[ \omega_F(t) = 1 - \omega_B(t) \]
+                Hitung variansi untuk masing-masing bagian, di mana \(\sigma_B(t)\) menyatakan variansi background dan
+                \(\sigma_F(t)\) menyatakan variansi foreground.
+              </p>
+              <div class="small text-muted border-start border-2 ps-2 ms-2 mb-0">
+                <div class="fw-bold mb-1">Keterangan:</div>
+                <ul class="list-unstyled mb-0">
+                  <li><strong>\( \omega_B(t) \)</strong> = Probabilitas (bobot) kemunculan piksel kelas background.</li>
+                  <li><strong>\( \omega_F(t) \)</strong> = Probabilitas (bobot) kemunculan piksel kelas foreground.</li>
+                  <li><strong>\( \sigma_B(t) \)</strong> = Variansi (sebaran nilai) dari kelas background.</li>
+                  <li><strong>\( \sigma_F(t) \)</strong> = Variansi (sebaran nilai) dari kelas foreground.</li>
+                </ul>
+              </div>
+            </div>
 
-            <p class="mb-3">
-              <strong>Langkah 5: Hitung Variansi Total Berbobot (Within-Class
-                Variance)</strong><br />
-              \[ \sigma^2_w(t) = \omega_B(t)\sigma_B^2(t) +
-              \omega_F(t)\sigma_F^2(t) \]
-            </p>
+            <div class="mb-4">
+              <p class="mb-2">
+                <strong>Langkah 5: Hitung Variansi Total Berbobot (Within-Class Variance)</strong><br />
+                \[ \sigma^2_w(t) = \omega_B(t)\sigma_B^2(t) + \omega_F(t)\sigma_F^2(t) \]
+              </p>
+              <div class="small text-muted border-start border-2 ps-2 ms-2 mb-0">
+                <div class="fw-bold mb-1">Keterangan:</div>
+                <ul class="list-unstyled mb-0">
+                  <li><strong>\( \sigma^2_w(t) \)</strong> = Variansi total berbobot yang menggabungkan variansi dari
+                    kelas objek dan latar belakang.</li>
+                </ul>
+              </div>
+            </div>
 
-            <p class="mb-0">
-              <strong>Langkah 6: Pilih Nilai Threshold Terbaik</strong><br />
-              Pilih nilai threshold yang menghasilkan variansi total berbobot
-              terkecil: \[ t = \min(\sigma^2_w(t)) \]
-            </p>
+            <div class="mb-0">
+              <p class="mb-2">
+                <strong>Langkah 6: Pilih Nilai Threshold Terbaik</strong><br />
+                Pilih nilai threshold yang menghasilkan variansi total berbobot terkecil:
+                \[ t = \min(\sigma^2_w(t)) \]
+              </p>
+              <div class="small text-muted border-start border-2 ps-2 ms-2 mb-0">
+                <div class="fw-bold mb-1">Keterangan:</div>
+                <ul class="list-unstyled mb-0">
+                  <li>Inti dari algoritma Otsu: mencari nilai <strong>\( t \)</strong> yang membuat <strong>\(
+                      \sigma^2_w(t) \)</strong> paling minimum agar objek dan latar belakang terpisah sejelas mungkin.
+                  </li>
+                </ul>
+              </div>
+            </div>
+
           </div>
-
+          <!-- penutup algoritma otsu -->
+          <!-- pembukaan contoh otsu -->
           <h4 class="fw-bold mb-3 text-custom-blue mt-5">
             Contoh Penerapan Otsu Thresholding
           </h4>
@@ -687,37 +734,26 @@ plt.show()</pre>
           </p>
 
           <div class="table-responsive my-3">
-            <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1"
-              style="max-width: 320px">
-              <thead class="table-secondary text-dark">
-                <tr>
-                  <th>Nilai Keabuan (\( i \))</th>
-                  <th>Jumlah Piksel (\( n_i \))</th>
-                </tr>
-              </thead>
+            <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1">
               <tbody>
                 <tr>
+                  <th class="table-secondary text-dark align-middle text-nowrap text-start px-3">Nilai Keabuan (\( i \))
+                  </th>
                   <td>0</td>
-                  <td>5</td>
-                </tr>
-                <tr>
                   <td>1</td>
-                  <td>10</td>
-                </tr>
-                <tr>
                   <td>2</td>
-                  <td>20</td>
-                </tr>
-                <tr>
                   <td>3</td>
-                  <td>20</td>
-                </tr>
-                <tr>
                   <td>4</td>
-                  <td>10</td>
+                  <td>5</td>
                 </tr>
                 <tr>
+                  <th class="table-secondary text-dark align-middle text-nowrap text-start px-3">Jumlah Piksel (\( n_i
+                    \))</th>
                   <td>5</td>
+                  <td>10</td>
+                  <td>20</td>
+                  <td>20</td>
+                  <td>10</td>
                   <td>5</td>
                 </tr>
               </tbody>
@@ -740,37 +776,24 @@ plt.show()</pre>
           </p>
 
           <div class="table-responsive my-3">
-            <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1"
-              style="max-width: 250px">
-              <thead class="table-secondary text-dark">
-                <tr>
-                  <th>\( i \)</th>
-                  <th>\( H(i) \)</th>
-                </tr>
-              </thead>
+            <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1">
               <tbody>
                 <tr>
+                  <th class="table-secondary text-dark align-middle text-nowrap text-start px-3">\( i \)</th>
                   <td>0</td>
-                  <td>0.071</td>
-                </tr>
-                <tr>
                   <td>1</td>
-                  <td>0.143</td>
-                </tr>
-                <tr>
                   <td>2</td>
-                  <td>0.286</td>
-                </tr>
-                <tr>
                   <td>3</td>
-                  <td>0.286</td>
-                </tr>
-                <tr>
                   <td>4</td>
-                  <td>0.143</td>
+                  <td>5</td>
                 </tr>
                 <tr>
-                  <td>5</td>
+                  <th class="table-secondary text-dark align-middle text-nowrap text-start px-3">\( H(i) \)</th>
+                  <td>0.071</td>
+                  <td>0.143</td>
+                  <td>0.286</td>
+                  <td>0.286</td>
+                  <td>0.143</td>
                   <td>0.071</td>
                 </tr>
               </tbody>
@@ -874,45 +897,38 @@ plt.show()</pre>
           </p>
 
           <div class="table-responsive my-3">
-            <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1"
-              style="max-width: 450px">
-              <thead class="table-secondary text-dark">
-                <tr>
-                  <th>\( t \)</th>
-                  <th>\( \omega_B \)</th>
-                  <th>\( \omega_F \)</th>
-                  <th>\( \sigma^2(t) \)</th>
-                </tr>
-              </thead>
+            <table class="table table-bordered text-center mx-auto bg-light text-dark fw-bold mb-1">
               <tbody>
                 <tr>
+                  <th class="table-secondary text-dark align-middle text-nowrap text-start px-3">\( t \)</th>
                   <td>0</td>
-                  <td>0.071</td>
-                  <td>0.929</td>
-                  <td>0.82</td>
-                </tr>
-                <tr>
                   <td>1</td>
-                  <td>0.214</td>
-                  <td>0.786</td>
-                  <td>0.69</td>
-                </tr>
-                <tr class="table-success text-dark">
-                  <td>2</td>
-                  <td>0.5</td>
-                  <td>0.5</td>
-                  <td>0.524</td>
-                </tr>
-                <tr>
+                  <td class="table-success">2</td>
                   <td>3</td>
-                  <td>0.786</td>
-                  <td>0.214</td>
-                  <td>0.69</td>
+                  <td>4</td>
                 </tr>
                 <tr>
-                  <td>4</td>
-                  <td>0.929</td>
+                  <th class="table-secondary text-dark align-middle text-nowrap text-start px-3">\( \omega_B \)</th>
                   <td>0.071</td>
+                  <td>0.214</td>
+                  <td class="table-success">0.5</td>
+                  <td>0.786</td>
+                  <td>0.929</td>
+                </tr>
+                <tr>
+                  <th class="table-secondary text-dark align-middle text-nowrap text-start px-3">\( \omega_F \)</th>
+                  <td>0.929</td>
+                  <td>0.786</td>
+                  <td class="table-success">0.5</td>
+                  <td>0.214</td>
+                  <td>0.071</td>
+                </tr>
+                <tr>
+                  <th class="table-secondary text-dark align-middle text-nowrap text-start px-3">\( \sigma^2(t) \)</th>
+                  <td>0.82</td>
+                  <td>0.69</td>
+                  <td class="table-success">0.524</td>
+                  <td>0.69</td>
                   <td>0.82</td>
                 </tr>
               </tbody>
@@ -943,6 +959,7 @@ plt.show()</pre>
             \[ g(i,j) = \begin{cases} 1, & \text{jika } f(i,j) > 2 \\ 0, &
             \text{jika } f(i,j) \le 2 \end{cases} \]
           </div>
+          <!-- penutup langkah penerapan otsu -->
         </div>
       </div>
     </div>

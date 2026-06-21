@@ -98,8 +98,10 @@
             Berdasarkan Gambar 3.2, proses dimulai dari gambar asli sebuah kendaraan militer dalam format grayscale pada
             gambar 3.2 (a), yang kemudian diproses menggunakan algoritma deteksi tepi untuk mengekstrak garis-garis
             kontur objek dan latar belakangnya menjadi warna hitam pada gambar 3.2 (b). Selanjutnya, gambar 3.2 (c)
-            memperlihatkan representasi nilai piksel dari hasil edge detection pada citra tersebut, di mana nilai 0
-            (hitam) mewakili latar belakang dan nilai 255 (putih) menandakan piksel yang terdeteksi sebagai tepi. </p>
+            memperlihatkan potongan gambar berukuran 8x8 piksel dari hasil deteksi tepi tersebut beserta representasi
+            nilai pikselnya, di mana nilai 0 (hitam) mewakili latar belakang dan nilai 255 (putih) menandakan piksel
+            yang terdeteksi sebagai tepi.
+          </p>
           <div class="mb-4">
             <div class="bg-light border-start border-4 border-primary rounded-end p-3 mb-4">
               <strong>
@@ -107,153 +109,207 @@
                 Beberapa metode deteksi tepi yang umum digunakan adalah sebagai berikut:
               </strong>
             </div>
-            <p class="mb-2"><strong>a) Roberts Edge Detector</strong><br>
+            <p class="mb-3"><strong>a) Roberts Edge Detector</strong><br>
               Operator Roberts merupakan salah satu metode deteksi tepi paling sederhana yang menggunakan operator
               gradien berukuran 2×2. Metode ini menghitung perubahan intensitas secara diagonal sehingga mampu
-              mendeteksi tepi dengan cepat. Berikut adalah kernel dari Roberts Edge Detector:</p>
+              mendeteksi tepi dengan cepat. Berikut adalah bentuk matriks kernel beserta contoh hasil penerapannya pada
+              citra:
+            </p>
 
-            <div class="row text-center my-3 justify-content-center">
-              <div class="col-auto">
-                <div class="fw-semibold mb-2"><span class="math-tex">\( G_x \)</span></div>
-                <table class="table table-bordered table-sm text-center bg-light" style="width: 80px;">
-                  <tr>
-                    <td style="width: 40px;">1</td>
-                    <td style="width: 40px;">0</td>
-                  </tr>
-                  <tr>
-                    <td>0</td>
-                    <td>-1</td>
-                  </tr>
-                </table>
+            <div class="row align-items-center text-center my-4 justify-content-center">
+              <div class="col-md-5 mb-4 mb-md-0">
+                <h6 class="fw-bold mb-3 text-secondary">Matriks Kernel Roberts</h6>
+
+                <div class="d-flex justify-content-center">
+                  <div class="col-auto">
+                    <div class="fw-semibold mb-2"><span class="math-tex">\( G_x \)</span></div>
+                    <table class="table table-bordered table-sm text-center bg-light shadow-sm" style="width: 80px;">
+                      <tr>
+                        <td style="width: 40px;">1</td>
+                        <td style="width: 40px;">0</td>
+                      </tr>
+                      <tr>
+                        <td>0</td>
+                        <td>-1</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="col-auto ms-4">
+                    <div class="fw-semibold mb-2"><span class="math-tex">\( G_y \)</span></div>
+                    <table class="table table-bordered table-sm text-center bg-light shadow-sm" style="width: 80px;">
+                      <tr>
+                        <td style="width: 40px;">0</td>
+                        <td style="width: 40px;">1</td>
+                      </tr>
+                      <tr>
+                        <td>-1</td>
+                        <td>0</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
               </div>
-              <div class="col-auto ms-4">
-                <div class="fw-semibold mb-2"><span class="math-tex">\( G_y \)</span></div>
-                <table class="table table-bordered table-sm text-center bg-light" style="width: 80px;">
-                  <tr>
-                    <td style="width: 40px;">0</td>
-                    <td style="width: 40px;">1</td>
-                  </tr>
-                  <tr>
-                    <td>-1</td>
-                    <td>0</td>
-                  </tr>
-                </table>
+
+              <div class="col-md-7">
+                <h6 class="fw-bold mb-3 text-secondary">Hasil Deteksi Tepi Roberts</h6>
+
+                <img src="{{ url_for('static', filename='img/sub3/edge_detection/kernel_robert.png') }}"
+                  alt="Hasil Penerapan Edge Detection Roberts" class="img-fluid rounded"
+                  style="max-width: 100%; height: auto;">
               </div>
             </div>
 
-            <p class="mb-2 mt-4"><strong>b) Prewitt Edge Detector</strong><br>
+            <p class="mb-3 mt-4"><strong>b) Prewitt Edge Detector</strong><br>
               Operator Prewitt menggunakan kernel 3×3 untuk menghitung gradien pada arah horizontal dan vertikal. Metode
               ini lebih stabil dibanding Roberts karena mempertimbangkan lebih banyak piksel di sekitar titik yang
-              danalisis. Berikut adalah kernel dari Prewitt:</p>
+              dianalisis. Berikut adalah bentuk matriks kernel beserta contoh hasil penerapannya pada citra:
+            </p>
 
-            <div class="row text-center my-3 justify-content-center">
-              <div class="col-auto">
-                <div class="fw-semibold mb-2"><span class="math-tex">\( G_x \)</span></div>
-                <table class="table table-bordered table-sm text-center bg-light" style="width: 120px;">
-                  <tr>
-                    <td style="width: 40px;">-1</td>
-                    <td style="width: 40px;">0</td>
-                    <td style="width: 40px;">1</td>
-                  </tr>
-                  <tr>
-                    <td>-1</td>
-                    <td>0</td>
-                    <td>1</td>
-                  </tr>
-                  <tr>
-                    <td>-1</td>
-                    <td>0</td>
-                    <td>1</td>
-                  </tr>
-                </table>
+            <div class="row align-items-center text-center my-4 justify-content-center">
+              <div class="col-md-5 mb-4 mb-md-0">
+                <h6 class="fw-bold mb-3 text-secondary">Matriks Kernel Prewitt</h6>
+
+                <div class="d-flex justify-content-center">
+                  <div class="col-auto">
+                    <div class="fw-semibold mb-2"><span class="math-tex">\( G_x \)</span></div>
+                    <table class="table table-bordered table-sm text-center bg-light shadow-sm" style="width: 120px;">
+                      <tr>
+                        <td style="width: 40px;">-1</td>
+                        <td>0</td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td>-1</td>
+                        <td>0</td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td>-1</td>
+                        <td>0</td>
+                        <td>1</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="col-auto ms-4">
+                    <div class="fw-semibold mb-2"><span class="math-tex">\( G_y \)</span></div>
+                    <table class="table table-bordered table-sm text-center bg-light shadow-sm" style="width: 120px;">
+                      <tr>
+                        <td style="width: 40px;">1</td>
+                        <td>1</td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                      </tr>
+                      <tr>
+                        <td>-1</td>
+                        <td>-1</td>
+                        <td>-1</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
               </div>
-              <div class="col-auto ms-4">
-                <div class="fw-semibold mb-2"><span class="math-tex">\( G_y \)</span></div>
-                <table class="table table-bordered table-sm text-center bg-light" style="width: 120px;">
-                  <tr>
-                    <td style="width: 40px;">1</td>
-                    <td style="width: 40px;">1</td>
-                    <td style="width: 40px;">1</td>
-                  </tr>
-                  <tr>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>-1</td>
-                    <td>-1</td>
-                    <td>-1</td>
-                  </tr>
-                </table>
+
+              <div class="col-md-7">
+                <h6 class="fw-bold mb-3 text-secondary">Hasil Deteksi Tepi Prewitt</h6>
+
+                <img src="{{ url_for('static', filename='img/sub3/edge_detection/kernel_prewitt.png') }}"
+                  alt="Hasil Penerapan Edge Detection Prewitt" class="img-fluid rounded"
+                  style="max-width: 100%; height: auto;">
               </div>
             </div>
 
-            <p class="mb-2 mt-4"><strong>c) Sobel Edge Detector</strong><br>
+            <p class="mb-3 mt-4"><strong>c) Sobel Edge Detector</strong><br>
               Operator Sobel merupakan pengembangan dari Prewitt dengan memberikan bobot lebih besar pada piksel tengah
-              sehingga hasil deteksi tepi menjadi lebih baik. Berikut adalah kernel dari Sobel:</p>
+              sehingga hasil deteksi tepi menjadi lebih baik. Berikut adalah bentuk matriks kernel beserta contoh hasil
+              penerapannya pada citra:
+            </p>
 
-            <div class="row text-center my-3 justify-content-center">
-              <div class="col-auto">
-                <div class="fw-semibold mb-2"><span class="math-tex">\( G_x \)</span></div>
-                <table class="table table-bordered table-sm text-center bg-light" style="width: 120px;">
-                  <tr>
-                    <td style="width: 40px;">-1</td>
-                    <td style="width: 40px;">0</td>
-                    <td style="width: 40px;">1</td>
-                  </tr>
-                  <tr>
-                    <td>-2</td>
-                    <td>0</td>
-                    <td>2</td>
-                  </tr>
-                  <tr>
-                    <td>-1</td>
-                    <td>0</td>
-                    <td>1</td>
-                  </tr>
-                </table>
+            <div class="row align-items-center text-center my-4 justify-content-center">
+              <div class="col-md-5 mb-4 mb-md-0">
+                <h6 class="fw-bold mb-3 text-secondary">Matriks Kernel Sobel</h6>
+
+                <div class="d-flex justify-content-center">
+                  <div class="col-auto">
+                    <div class="fw-semibold mb-2"><span class="math-tex">\( G_x \)</span></div>
+                    <table class="table table-bordered table-sm text-center bg-light shadow-sm" style="width: 120px;">
+                      <tr>
+                        <td style="width: 40px;">-1</td>
+                        <td>0</td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td>-2</td>
+                        <td>0</td>
+                        <td>2</td>
+                      </tr>
+                      <tr>
+                        <td>-1</td>
+                        <td>0</td>
+                        <td>1</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="col-auto ms-4">
+                    <div class="fw-semibold mb-2"><span class="math-tex">\( G_y \)</span></div>
+                    <table class="table table-bordered table-sm text-center bg-light shadow-sm" style="width: 120px;">
+                      <tr>
+                        <td style="width: 40px;">1</td>
+                        <td>2</td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                      </tr>
+                      <tr>
+                        <td>-1</td>
+                        <td>-2</td>
+                        <td>-1</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <p class="small text-muted">Besarnya gradien dihitung menggunakan:</p>
+                  <div class="bg-light p-2 d-inline-block rounded border">
+                    <span class="math-tex">\( G = \sqrt{G_x^2 + G_y^2} \)</span>
+                  </div>
+                </div>
               </div>
-              <div class="col-auto ms-4">
-                <div class="fw-semibold mb-2"><span class="math-tex">\( G_y \)</span></div>
-                <table class="table table-bordered table-sm text-center bg-light" style="width: 120px;">
-                  <tr>
-                    <td style="width: 40px;">1</td>
-                    <td style="width: 40px;">2</td>
-                    <td style="width: 40px;">1</td>
-                  </tr>
-                  <tr>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>-1</td>
-                    <td>-2</td>
-                    <td>-1</td>
-                  </tr>
-                </table>
+
+              <div class="col-md-7">
+                <h6 class="fw-bold mb-3 text-secondary">Hasil Deteksi Tepi Sobel</h6>
+
+                <img src="{{ url_for('static', filename='img/sub3/edge_detection/kernel_sobel.png') }}"
+                  alt="Hasil Penerapan Edge Detection Sobel" class="img-fluid rounded"
+                  style="max-width: 100%; height: auto;">
               </div>
             </div>
-            <p class="mb-3">Besarnya gradien dihitung menggunakan:</p>
-            <div class="bg-light p-2 text-center rounded border mb-4">
-              <span class="math-tex">\( G = \sqrt{G_x^2 + G_y^2} \)</span>
-            </div>
 
-            <p class="mb-2 mt-4"><strong>d) Laplacian Edge Detector</strong><br>
-              Metode Laplacian menggunakan turunan orde kedua untuk mendeteksi perubahan intensitas. Pada laplacian
-              terdapat dua versi yang umum digunakan yaitu:</p>
+            <p class="mb-3 mt-4"><strong>d) Laplacian Edge Detector</strong><br>
+              Metode Laplacian menggunakan turunan orde kedua untuk mendeteksi perubahan intensitas. Pada Laplacian
+              terdapat dua versi kernel yang umum digunakan, yaitu versi 4-connectivity dan 8-connectivity.
+              Berikut adalah bentuk matriks kernel beserta contoh hasil penerapannya pada citra:
+            </p>
 
-            <div class="row my-3">
-              <div class="col-md-6 text-center">
-                <div class="p-3 bg-light border rounded-3 h-100">
-                  <div class="fw-bold  mb-2">Versi 4-Connectivity</div>
-                  <table class="table table-bordered table-sm text-center mx-auto bg-white"
-                    style="width: 120px; margin-bottom: 0;">
+            <div class="text-center my-4">
+              <h6 class="fw-bold mb-3 text-secondary">Matriks Kernel Laplacian</h6>
+
+              <div class="d-flex justify-content-center">
+                <div class="col-auto">
+                  <div class="fw-semibold mb-2" style="font-size: 0.85rem;">4-Connectivity</div>
+                  <table class="table table-bordered table-sm text-center bg-white shadow-sm mb-0"
+                    style="width: 100px;">
                     <tr>
-                      <td style="width: 40px;">0</td>
-                      <td style="width: 40px;">1</td>
-                      <td style="width: 40px;">0</td>
+                      <td>0</td>
+                      <td>1</td>
+                      <td>0</td>
                     </tr>
                     <tr>
                       <td>1</td>
@@ -267,16 +323,15 @@
                     </tr>
                   </table>
                 </div>
-              </div>
-              <div class="col-md-6 text-center mt-3 mt-md-0">
-                <div class="p-3 bg-light border rounded-3 h-100">
-                  <div class="fw-bold  mb-2">Versi 8-Connectivity</div>
-                  <table class="table table-bordered table-sm text-center mx-auto bg-white"
-                    style="width: 120px; margin-bottom: 0;">
+
+                <div class="col-auto ms-4">
+                  <div class="fw-semibold mb-2" style="font-size: 0.85rem;">8-Connectivity</div>
+                  <table class="table table-bordered table-sm text-center bg-white shadow-sm mb-0"
+                    style="width: 100px;">
                     <tr>
-                      <td style="width: 40px;">1</td>
-                      <td style="width: 40px;">1</td>
-                      <td style="width: 40px;">1</td>
+                      <td>1</td>
+                      <td>1</td>
+                      <td>1</td>
                     </tr>
                     <tr>
                       <td>1</td>
@@ -293,17 +348,52 @@
               </div>
             </div>
 
-            <p class="mb-2 mt-4"><strong>e) Canny Edge Detector</strong><br>
+            <div class="row text-center my-4">
+              <div class="col-md-6 mb-4 mb-md-0">
+                <h6 class="fw-bold mb-3 text-secondary">Hasil deteksi tepi (4-Connectivity)</h6>
+                <img src="{{ url_for('static', filename='img/sub3/edge_detection/kernel_laplacian_4.png') }}"
+                  alt="Hasil Laplacian 4" class="img-fluid rounded border shadow-sm" style="max-width: 100%;">
+              </div>
+
+              <div class="col-md-6">
+                <h6 class="fw-bold mb-3 text-secondary">Hasil deteksi tepi (8-Connectivity)</h6>
+                <img src="{{ url_for('static', filename='img/sub3/edge_detection/kernel_laplacian_8.png') }}"
+                  alt="Hasil Laplacian 8" class="img-fluid rounded border shadow-sm" style="max-width: 100%;">
+              </div>
+            </div>
+
+            <p class="mb-3 mt-4"><strong>e) Canny Edge Detector</strong><br>
               Metode Canny dikembangkan oleh John Canny dan dianggap sebagai salah satu metode deteksi tepi terbaik
               karena menghasilkan tepi yang tipis, jelas, dan relatif tahan terhadap noise. Tahapan yang
-              dilakukan oleh Canny ialah sebagai berikut:</p>
-            <ol class=" ps-4 mb-4">
-              <li class="mb-1">Gaussian Smoothing</li>
-              <li class="mb-1">Gradient Calculation</li>
-              <li class="mb-1">Non-Maximum Suppression</li>
-              <li class="mb-1">Hysteresis Thresholding</li>
-              <li>Edge Tracking berdasarkan Hysteresis Thresholding</li>
-            </ol>
+              dilakukan oleh Canny ialah sebagai berikut:
+            </p>
+
+            <div class="row align-items-center text-center my-4 justify-content-center">
+              <div class="col-md-5 mb-4 mb-md-0">
+                <h6 class="fw-bold mb-3 text-secondary">Tahapan Algoritma Canny</h6>
+
+                <div class="d-flex justify-content-center">
+                  <div class="bg-light p-3 rounded shadow-sm text-start" style="width: 100%; max-width: 300px;">
+                    <ol class="ps-3 mb-0" style="font-size: 0.95rem;">
+                      <li class="mb-2">Gaussian Smoothing</li>
+                      <li class="mb-2">Gradient Calculation</li>
+                      <li class="mb-2">Non-Maximum Suppression</li>
+                      <li class="mb-2">Hysteresis Thresholding</li>
+                      <li class="mb-0">Edge Tracking berdasarkan Hysteresis Thresholding</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-7">
+                <h6 class="fw-bold mb-3 text-secondary">Hasil Deteksi Tepi Canny</h6>
+                <img src="{{ url_for('static', filename='img/sub3/edge_detection/kernel_canny.png') }}"
+                  alt="Hasil Penerapan Edge Detection Canny" class="img-fluid rounded"
+                  style="max-width: 100%; height: auto;">
+              </div>
+            </div>
+
+
           </div>
 
           <p class="mb-2 mt-4"><strong>f) Contoh Perhitungan Kernel Prewitt</strong></p>
@@ -634,9 +724,10 @@
           </p>
 
           <p class="mb-2 text-dark"><strong>Kesamaan Magnitudo Gradien</strong></p>
+
           <p class="mb-3">
-            Dua piksel tepi dapat dihubungkan apabila memiliki magnitudo gradien yang relatif serupa. Kondisi ini
-            dnyatakan oleh Persamaan (3.1).
+            Dua piksel tepi dapat dihubungkan apabila memiliki magnitudo gradien yang relatif serupa.
+            Kondisi ini dinyatakan oleh Persamaan (3.1).
           </p>
 
           <div
@@ -648,16 +739,17 @@
           </div>
 
           <p class="mb-4">
-            Persamaan (3.1) menunjukkan bahwa perbedaan magnitudo gradien antara dua piksel tepi tidak boleh melebihi
-            nilai ambang (threshold) <span class="math-tex">\( E \)</span>. Jika perbedaan tersebut kecil,
-            maka kedua piksel dianggap memiliki kekuatan tepi yang serupa dan kemungkinan berasal dari batas objek yang
-            sama.
+            Persamaan (3.1) menunjukkan bahwa perbedaan magnitudo gradien antara dua piksel tepi tidak
+            boleh melebihi nilai ambang (threshold) <span class="math-tex">\( E \)</span>. Jika
+            perbedaan tersebut kecil, maka kedua piksel dianggap memiliki kekuatan tepi yang serupa dan
+            kemungkinan berasal dari batas objek yang sama.
           </p>
 
           <p class="mb-2 text-dark"><strong>Kesamaan Arah Gradien</strong></p>
+
           <p class="mb-3">
-            Selain memiliki magnitudo gradien yang serupa, dua piksel tepi juga harus memiliki arah gradien yang relatif
-            sama. Kondisi ini dinyatakan oleh Persamaan (3.2).
+            Selain memiliki magnitudo gradien yang serupa, dua piksel tepi juga harus memiliki arah
+            gradien yang relatif sama. Kondisi ini dinyatakan oleh Persamaan (3.2).
           </p>
 
           <div
@@ -669,13 +761,57 @@
           </div>
 
           <p class="mb-4">
-            Persamaan (3.2) menunjukkan bahwa perbedaan arah gradien antara dua piksel tepi tidak boleh melebihi nilai
-            ambang <span class="math-tex">\( A \)</span>. Jika arah gradien kedua piksel hampir sama, maka
-            keduanya dianggap mengikuti arah batas objek yang sama sehingga dapat dihubungkan menjadi suatu kontur yang
-            kontinu. Berdasarkan kedua kriteria tersebut, piksel-piksel tepi yang memiliki magnitudo gradien
-            dan arah gradien yang serupa akan dikelompokkan menjadi rantai tepi (edge chain) yang selanjutnya membentuk
-            batas objek (object boundary).
+            Persamaan (3.2) menunjukkan bahwa perbedaan arah gradien antara dua piksel tepi tidak boleh
+            melebihi nilai ambang <span class="math-tex">\( A \)</span>. Jika arah gradien kedua piksel
+            hampir sama, maka keduanya dianggap mengikuti arah batas objek yang sama sehingga dapat
+            dihubungkan menjadi suatu kontur yang kontinu. Berdasarkan kedua kriteria tersebut,
+            piksel-piksel tepi yang memiliki magnitudo gradien dan arah gradien yang serupa akan
+            dikelompokkan menjadi rantai tepi (<em>edge chain</em>) yang selanjutnya membentuk batas
+            objek (<em>object boundary</em>).
           </p>
+
+          <div class="bg-light border rounded p-4 mb-4">
+            <h6 class="fw-bold text-custom-blue mb-3">
+              <i class="fa-solid fa-circle-info me-2"></i>Keterangan
+            </h6>
+
+            <ul class="mb-0">
+              <li>
+                <span class="math-tex">\( M(s,t) \)</span> : magnitudo gradien pada piksel tepi pertama
+                yang berada pada koordinat <span class="math-tex">\( (s,t) \)</span>.
+              </li>
+
+              <li>
+                <span class="math-tex">\( M(x,y) \)</span> : magnitudo gradien pada piksel tepi kedua
+                yang berada pada koordinat <span class="math-tex">\( (x,y) \)</span>.
+              </li>
+
+              <li>
+                <span class="math-tex">\( \alpha(s,t) \)</span> : arah gradien pada piksel tepi pertama
+                yang berada pada koordinat <span class="math-tex">\( (s,t) \)</span>.
+              </li>
+
+              <li>
+                <span class="math-tex">\( \alpha(x,y) \)</span> : arah gradien pada piksel tepi kedua
+                yang berada pada koordinat <span class="math-tex">\( (x,y) \)</span>.
+              </li>
+
+              <li>
+                <span class="math-tex">\( E \)</span> : nilai ambang (threshold) yang digunakan untuk
+                menentukan batas maksimum perbedaan magnitudo gradien.
+              </li>
+
+              <li>
+                <span class="math-tex">\( A \)</span> : nilai ambang (threshold) yang digunakan untuk
+                menentukan batas maksimum perbedaan arah gradien.
+              </li>
+
+              <li>
+                <span class="math-tex">\( (s,t) \)</span> dan
+                <span class="math-tex">\( (x,y) \)</span> : koordinat dua piksel tepi yang dibandingkan.
+              </li>
+            </ul>
+          </div>
 
           <h5 class="fw-bold text-custom-blue mb-3">Algoritma Sederhana Local Processing</h5>
           <p class="mb-4 text-dark">Berikut adalah langkah-langkah algoritma sederhana untuk Local Processing:</p>

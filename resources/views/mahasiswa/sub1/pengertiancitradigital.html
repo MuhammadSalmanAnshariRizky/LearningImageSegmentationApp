@@ -185,22 +185,32 @@
                         Koordinat \( x \) menunjukkan posisi pixel pada arah vertikal (baris), sedangkan \( y \)
                         menunjukkan posisi pixel pada arah horizontal (kolom).
                     </p>
-
-                    <p class="mb-0">
-                        Pada matriks citra digital terdapat dua ukuran utama, yaitu \( M \) dan \( N \). Nilai \( M \)
-                        menunjukkan jumlah baris pada citra,
-                        sedangkan \( N \) menunjukkan jumlah kolom pada citra. Oleh karena itu, ukuran citra sering
-                        dituliskan sebagai \( M \times N \),
-                        yang berarti citra memiliki \( M \) baris dan \( N \) kolom pixel. Indeks koordinat pixel
-                        biasanya dimulai dari 0,
-                        sehingga pixel pertama berada pada posisi \( f(0,0) \) yang terletak di pojok kiri atas citra.
-                        Pixel pada baris pertama akan memiliki koordinat \( f(0,0) \), \( f(0,1) \), \( f(0,2) \),
-                        hingga \( f(0,N-1) \).
-                        Sementara itu, pixel pada baris terakhir memiliki koordinat \( f(M-1,0) \), \( f(M-1,1) \),
-                        hingga \( f(M-1,N-1) \).
-                        Dengan demikian, setiap posisi dalam matriks menyimpan nilai intensitas pixel yang membentuk
-                        keseluruhan citra digital.
+                    <p class="p-2 bg-primary-subtle text-primary-emphasis rounded fw-semibold mb-3">
+                        Untuk memahami bagaimana struktur matriks ini terbentuk, berikut adalah penjelasan detail
+                        mengenai dimensi dan sistem koordinat pada citra digital:
                     </p>
+                    <ul class="mb-0" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+                        <li class="mb-2">
+                            <strong>Dimensi Citra (\( M \times N \)):</strong> Matriks citra digital memiliki dua ukuran
+                            utama, yaitu \( M \) sebagai jumlah baris dan \( N \) sebagai jumlah kolom.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Awal Indeks Koordinat:</strong> Indeks koordinat piksel dimulai dari angka 0,
+                            sehingga piksel pertama terletak di pojok kiri atas dengan koordinat \( f(0,0) \).
+                        </li>
+                        <li class="mb-2">
+                            <strong>Koordinat Baris Pertama:</strong> Dimulai dari posisi \( f(0,0) \), \( f(0,1) \), \(
+                            f(0,2) \), hingga batas kolom terakhir di \( f(0,N-1) \).
+                        </li>
+                        <li class="mb-2">
+                            <strong>Koordinat Baris Terakhir:</strong> Dimulai dari posisi \( f(M-1,0) \), \( f(M-1,1)
+                            \), hingga batas kolom terakhir di \( f(M-1,N-1) \).
+                        </li>
+                        <li>
+                            <strong>Representasi Data:</strong> Setiap posisi koordinat di dalam matriks bertugas
+                            menyimpan nilai intensitas piksel yang membentuk keseluruhan citra digital.
+                        </li>
+                    </ul>
 
                 </div>
 
@@ -213,7 +223,7 @@
             <div class="card-body p-4 p-md-5">
 
                 <h3 class="fw-bold mb-4 text-custom-blue">
-                    <i class="fa-solid fa-laptop-code me-2"></i> Praktek membaca gambar dengan Python
+                    <i class="fa-solid fa-laptop-code me-2"></i>Membaca citra <i>grayscale</i> dengan Python
                 </h3>
 
                 <div style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
@@ -228,7 +238,8 @@
 
                     <p class="mb-3 p-3 rounded bg-warning-subtle border border-warning shadow-sm">
                         <i class="bi bi-code-slash me-2 text-warning"></i>
-                        <strong>Contoh Program:</strong> Berikut contoh program sederhana untuk membaca citra grayscale
+                        <strong>Contoh Program:</strong> Berikut contoh program sederhana untuk <b>membaca citra
+                            <i>grayscale</i> ukuran 8x8</b>
                         dan menampilkan nilai pikselnya.
                     </p>
 
@@ -264,12 +275,12 @@
 
                                 <div>
                                     <span class="text-success">
-                                        # Membaca file gambar 'tank(8x8).png' dalam mode grayscale (keabuan)
+                                        # Membaca file gambar 'nama_file.ektensi' dalam mode grayscale (keabuan)
                                     </span>
                                 </div>
 
                                 <div>
-                                    image = cv2.imread(<span class="text-info">'tank(8x8).png'</span>,
+                                    image = cv2.imread(<span class="text-info">'nama_file.ektensi'</span>,
                                     cv2.IMREAD_GRAYSCALE)
                                 </div>
 
@@ -309,32 +320,181 @@
                             Semakin besar nilai piksel, maka semakin terang intensitas warna
                             pada citra tersebut.
                         </li>
+                        <li> Setelah program dijalankan, perintah <code>print(image)</code> akan menampilkan nilai
+                            piksel
+                            citra dalam bentuk matrik</li>
                     </ol>
 
-                    <p class="mb-2">
-                        Setelah program dijalankan, perintah <code>print(image)</code> akan menampilkan nilai piksel
-                        citra dalam bentuk matriks seperti berikut:
+
+                    <p class="mb-3 p-3 rounded bg-warning-subtle border border-warning shadow-sm">
+                        <i class="bi bi-code-slash me-2 text-warning"></i>
+                        Rangkaian di bawah ini menampilkan representasi visual, data nilai piksel dalam bentuk
+                        matriks,
+                        serta koordinat nilai piksel untuk memudahkan analisis posisi setiap piksel
+
                     </p>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div
+                                class="bg-light border-start border-4 border-primary p-3 rounded-end h-100 text-center text-dark">
+                                <div class="text-muted small mb-3 text-start">Representasi Citra Input (8x8):</div>
 
-                    <div
-                        class="bg-light border-start border-4 border-secondary p-3 rounded-end mb-3 font-monospace text-dark">
-                        <div class="text-muted small mb-2">Output:</div> [[108 122 124 121 116 126 131 123]<br> [119
-                        122 124 126 124 125 126 118]<br> [122 125 126 127 129 129 133 131]<br> [125 129
-                        114&nbsp;&nbsp;99 108 134 135 136]<br> [131 131&nbsp;&nbsp;74&nbsp;&nbsp;57&nbsp;&nbsp;61 117
-                        133 133]<br> [135 134 139 138 140 135 136 137]<br> [142 143 143 142 140 144 145 142]<br>
-                        [145 143 145 146 146 146 144 146]]
+                                <img src="{{ url_for('static', filename='img/sub1/citra8x8.png')}}"
+                                    class="img-fluid rounded border shadow-sm" alt="Input Citra 8x8"
+                                    style="width: 240px; height: 240px; image-rendering: pixelated; image-rendering: crisp-edges;">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <div
+                                class="bg-light border-start border-4 border-secondary p-3 rounded-end h-100 font-monospace text-dark">
+                                <div class="text-muted small mb-2">Output dari membaca gambar menggunakan openCV:</div>
+                                [[108 122 124 121 116 126 131 123]<br>
+                                [119 122 124 126 124 125 126 118]<br>
+                                [122 125 126 127 129 129 133 131]<br>
+                                [125 129 114&nbsp;&nbsp;99 108 134 135 136]<br>
+                                [131 131&nbsp;&nbsp;74&nbsp;&nbsp;57&nbsp;&nbsp;61 117 133 133]<br>
+                                [135 134 139 138 140 135 136 137]<br>
+                                [142 143 143 142 140 144 145 142]<br>
+                                [145 143 145 146 146 146 144 146]]
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <div
+                                class="bg-light border-start border-4 border-success p-3 rounded-end h-100 font-monospace text-dark overflow-auto">
+                                <div class="text-muted small mb-2">Koordinat dari nilai piksel:</div>
+
+                                <table class="table table-bordered table-sm text-center mb-0"
+                                    style="font-size: 0.85rem;">
+                                    <thead class="table-success">
+                                        <tr>
+                                            <th class="border-0 bg-transparent"></th>
+                                            <th>0</th>
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>4</th>
+                                            <th>5</th>
+                                            <th>6</th>
+                                            <th>7</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th class="table-success">0</th>
+                                            <td>108</td>
+                                            <td>122</td>
+                                            <td>124</td>
+                                            <td>121</td>
+                                            <td>116</td>
+                                            <td>126</td>
+                                            <td>131</td>
+                                            <td>123</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-success">1</th>
+                                            <td>119</td>
+                                            <td>122</td>
+                                            <td>124</td>
+                                            <td>126</td>
+                                            <td>124</td>
+                                            <td>125</td>
+                                            <td>126</td>
+                                            <td>118</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-success">2</th>
+                                            <td>122</td>
+                                            <td>125</td>
+                                            <td>126</td>
+                                            <td>127</td>
+                                            <td>129</td>
+                                            <td>129</td>
+                                            <td>133</td>
+                                            <td>131</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-success">3</th>
+                                            <td>125</td>
+                                            <td>129</td>
+                                            <td>114</td>
+                                            <td>99</td>
+                                            <td>108</td>
+                                            <td>134</td>
+                                            <td>135</td>
+                                            <td>136</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-success">4</th>
+                                            <td>131</td>
+                                            <td>131</td>
+                                            <td>74</td>
+                                            <td>57</td>
+                                            <td>61</td>
+                                            <td>117</td>
+                                            <td>133</td>
+                                            <td>133</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-success">5</th>
+                                            <td>135</td>
+                                            <td>134</td>
+                                            <td>139</td>
+                                            <td>138</td>
+                                            <td>140</td>
+                                            <td>135</td>
+                                            <td>136</td>
+                                            <td>137</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-success">6</th>
+                                            <td>142</td>
+                                            <td>143</td>
+                                            <td>143</td>
+                                            <td>142</td>
+                                            <td>140</td>
+                                            <td>144</td>
+                                            <td>145</td>
+                                            <td>142</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="table-success">7</th>
+                                            <td>145</td>
+                                            <td>143</td>
+                                            <td>145</td>
+                                            <td>146</td>
+                                            <td>146</td>
+                                            <td>146</td>
+                                            <td>144</td>
+                                            <td>146</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-
                     <p class="mb-4">
                         Nilai-nilai piksel di atas merupakan representasi intensitas warna pada citra grayscale.
                         Data piksel inilah yang nantinya akan digunakan dalam berbagai implementasi algoritma
-                        pengolahan citra (<i>image processing</i>), seperti <i>image segmentation</i>, dan berbagai
+                        pengolahan citra (<i>image processing</i>), seperti <i><b>image segmentation</b></i>, dan
+                        berbagai
                         algoritma pengolahan citra lainnya.
                         Algoritma tersebut bekerja dengan menganalisis serta memproses nilai intensitas pada setiap
                         piksel citra.
                     </p>
                 </div>
                 <!-- Kode editor -->
+                <div class="card border-0 border-start border-4 border-primary shadow-sm bg-light p-3 mb-4 rounded-end">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fa-regular fa-image fs-5 text-primary me-2"></i>
+                        <h6 class="fw-bold text-primary mb-0">Praktek membaca gambar menggunakan python</h6>
+                    </div>
+                    <p class="mb-0 text-muted" style="line-height: 1.6;">
+                        Dalam sesi ini, akan mempelajari cara membaca file citra <i>grayscale</i>, dan mengekstraksi
+                        nilai intensitas piksel ke dalam bentuk matriks 8-bit untuk dianalisis lebih lanjut.
+                    </p>
+                </div>
                 <div class="mb-4 p-4 rounded bg-warning-subtle border border-warning shadow-sm">
                     <div class="d-flex align-items-center mb-3">
                         <i class="fa-solid fa-list-check me-2 text-dark"></i>
@@ -350,22 +510,19 @@
                     <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
 
                         <li class="mb-2">
-                            Download gambar uji coba bernama <code>citra_tank(8x8).png</code> melalui tautan berikut:
+                            <div>
+                                Unduh gambar untuk eksperimen melalui tombol berikut:
+                            </div>
                             <a href="https://drive.google.com/file/d/1nAuPMLyYuI3jYKx1oxAHISM_UdU2k1Wh/view?usp=sharing"
-                                class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
-                                <i class="fa-solid fa-download me-1"></i>Download
+                                class="btn btn-primary btn-sm" target="_blank">
+                                <i class="fa-solid fa-download me-1"></i> Unduh citra_tank(8x8).png
                             </a>
                         </li>
-
                         <li class="mb-2">
-                            Buka folder <strong>Downloads</strong> di komputer Anda, lalu upload file
-                            <code>citra_tank(8x8).png</code> tersebut pada area <strong>File Anda</strong> (bisa
-                            ditarik/<em>drag</em> atau diklik).
-                        </li>
-
-                        <li class="mb-2">
-                            Pastikan <em>preview</em> dan nama file gambar sudah muncul dengan benar pada daftar file
-                            upload.
+                            Temukan file <code>citra_tank(8x8).png</code> yang
+                            telah Anda unduh pada perangkat Anda.
+                            Catat atau pastikan Anda mengingat <em>path</em> (lokasi direktori) tempat file tersebut
+                            tersimpan.
                         </li>
 
                         <li class="mb-2">

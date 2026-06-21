@@ -235,27 +235,33 @@ function runRGBCell(id) {
 
 function createRGBImageCard(title, srcUrl) {
   return `
-    <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm" style="width: fit-content;">
-        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
-        <img src="${srcUrl}" class="result-image preview-image img-fluid rounded" 
-             style="max-height: 140px; cursor: pointer; object-fit: contain;"
-             onclick="openRGBModal('${srcUrl}')">
-    </div>`;
+      <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm d-flex flex-column align-items-center" style="width: fit-content;">
+          <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
+          
+          <div class="bg-light rounded border d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; overflow: hidden;">
+              <img src="${srcUrl}" class="result-image preview-image img-fluid" 
+                   style="width: 100%; height: 100%; cursor: zoom-in; object-fit: contain; image-rendering: pixelated;"
+                   title="Klik untuk melihat ukuran penuh"
+                   data-bs-toggle="modal" data-bs-target="#rgbImageModal" 
+                   onclick="openRGBModal(this.src)">
+          </div>
+          
+          <div class="text-muted mt-2" style="font-size: 0.7rem; cursor: pointer;" 
+               data-bs-toggle="modal" data-bs-target="#rgbImageModal" 
+               onclick="openRGBModal('${srcUrl}')">
+              Klik gambar untuk memperbesar
+          </div>
+      </div>
+    `;
 }
 
 // ==========================================
 // 5. MANAJEMEN MODAL & UPLOAD
 // ==========================================
 function openRGBModal(src) {
-  const modalImg = document.getElementById("rgbModalImg");
-  const modalElement = document.getElementById("rgbImageModal");
-
-  if (modalImg && modalElement) {
+  const modalImg = document.getElementById("rgbModalImage"); // Sesuai ID di HTML baru
+  if (modalImg) {
     modalImg.src = src;
-    const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
-    modalInstance.show();
-  } else {
-    console.error("Elemen Modal RGB tidak ditemukan di HTML!");
   }
 }
 

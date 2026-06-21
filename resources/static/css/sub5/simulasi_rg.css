@@ -1,0 +1,41 @@
+.anim-matrix {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.anim-matrix td {
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+}
+/* Style khusus untuk angka indeks 0-4 */
+.index-cell {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  border: none !important;
+  background-color: transparent !important;
+  width: 25px;
+  height: 25px;
+  padding: 2px !important;
+}
+
+/* Warna Pengecekan */
+.bg-checking {
+  background-color: #fef08a !important;
+  color: #854d0e !important;
+}
+/* Warna Biner: Hitam untuk 1 (Region), Putih untuk 0 (Background) */
+.bg-accepted {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+.bg-rejected {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}

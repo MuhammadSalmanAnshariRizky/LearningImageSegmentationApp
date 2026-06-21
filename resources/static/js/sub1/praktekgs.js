@@ -266,16 +266,25 @@ function runCell(id) {
 // Komponen Helper untuk merender elemen kartu gambar
 function createImageCard(title, srcUrl) {
   return `
-      <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm" style="width: fit-content;">
+      <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm d-flex flex-column align-items-center" style="width: fit-content;">
           <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
-          <img src="${srcUrl}" class="result-image preview-image img-fluid rounded" 
-               style="max-height: 140px; cursor: pointer; object-fit: contain;"
+          
+          <div class="bg-light rounded border d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; overflow: hidden;">
+              <img src="${srcUrl}" class="result-image preview-image img-fluid" 
+                   style="width: 100%; height: 100%; cursor: zoom-in; object-fit: contain; image-rendering: pixelated;"
+                   title="Klik untuk melihat ukuran penuh"
+                   data-bs-toggle="modal" data-bs-target="#imageModal" 
+                   onclick="openImageModal('${srcUrl}')">
+          </div>
+          
+          <div class="text-muted mt-2" style="font-size: 0.7rem; cursor: pointer;" 
                data-bs-toggle="modal" data-bs-target="#imageModal" 
                onclick="openImageModal('${srcUrl}')">
+              Klik gambar untuk memperbesar
+          </div>
       </div>
     `;
 }
-
 // ==========================================
 // 5. MANAJEMEN MODAL, UPLOAD & HAPUS CELL
 // ==========================================

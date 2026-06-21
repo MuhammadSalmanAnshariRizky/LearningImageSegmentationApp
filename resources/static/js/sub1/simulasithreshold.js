@@ -15,30 +15,68 @@ let currentIdxThresh = 0;
 let intervalThresh = null;
 let isPlayingThresh = false;
 
-// 1. Inisialisasi Grid Input (Statis) dan Output (Pending)
+// 1. Inisialisasi Grid Input dan Output dengan Koordinat (0, 1, 2, 3)
 function initGridsThresh() {
-  if (!inputContainerThresh || !resultContainerThresh) return; // Mencegah error jika div tidak ditemukan
+  if (!inputContainerThresh || !resultContainerThresh) return;
 
   inputContainerThresh.innerHTML = "";
   resultContainerThresh.innerHTML = "";
   inputsThresh = [];
   resultsThresh = [];
 
-  for (let i = 0; i < 16; i++) {
-    const cellIn = document.createElement("div");
-    cellIn.className = "pixel-input shadow-sm";
-    cellIn.innerText = initialValuesThresh[i];
-    inputContainerThresh.appendChild(cellIn);
-    inputsThresh.push(cellIn);
+  // Fungsi pembantu untuk membuat grid beserta label koordinatnya
+  function buildGrid(container, isInput) {
+    // Mengubah layout container menjadi 5 kolom (1 untuk label kiri, 4 untuk data)
+    container.style.display = "grid";
+    container.style.gridTemplateColumns = "auto repeat(4, 1fr)";
+    // Jarak antar sel diperkecil dari 8px menjadi 3px
+    container.style.gap = "3px";
+    container.style.alignItems = "center";
+    container.style.justifyItems = "center";
 
-    const cellOut = document.createElement("div");
-    cellOut.className = "result-cell pixel-pending shadow-sm";
-    cellOut.innerText = "?";
-    resultContainerThresh.appendChild(cellOut);
-    resultsThresh.push(cellOut);
+    // Bagian sudut kiri atas dibiarkan kosong
+    container.appendChild(document.createElement("div"));
+
+    // Render Koordinat Kolom (Atas: 0, 1, 2, 3)
+    for (let c = 0; c < 4; c++) {
+      const colLabel = document.createElement("div");
+      // Dihapus fs-5, margin diperkecil (mb-1) agar lebih menempel dengan kotak
+      colLabel.className = "fw-bold text-muted small mb-1";
+      colLabel.innerText = c;
+      container.appendChild(colLabel);
+    }
+
+    // Render Baris beserta Koordinat Baris
+    for (let r = 0; r < 4; r++) {
+      // Koordinat Baris (Kiri: 0, 1, 2, 3)
+      const rowLabel = document.createElement("div");
+      // Dihapus fs-5, margin diperkecil (me-1) agar lebih menempel dengan kotak
+      rowLabel.className = "fw-bold text-muted small me-1";
+      rowLabel.innerText = r;
+      container.appendChild(rowLabel);
+
+      // Data Sel (4x4)
+      for (let c = 0; c < 4; c++) {
+        const idx = r * 4 + c;
+        const cell = document.createElement("div");
+
+        if (isInput) {
+          cell.className = "pixel-input shadow-sm";
+          cell.innerText = initialValuesThresh[idx];
+          inputsThresh.push(cell);
+        } else {
+          cell.className = "result-cell pixel-pending shadow-sm text-danger";
+          cell.innerText = "?";
+          resultsThresh.push(cell);
+        }
+        container.appendChild(cell);
+      }
+    }
   }
-}
 
+  buildGrid(inputContainerThresh, true);
+  buildGrid(resultContainerThresh, false);
+}
 // 2. Logika Satu Langkah Simulasi
 function stepSimThresh() {
   if (currentIdxThresh >= 16) {
@@ -57,8 +95,8 @@ function stepSimThresh() {
   }
 
   const val = initialValuesThresh[currentIdxThresh];
-  const baris = Math.floor(currentIdxThresh / 4) + 1;
-  const kolom = (currentIdxThresh % 4) + 1;
+  const baris = Math.floor(currentIdxThresh / 4);
+  const kolom = currentIdxThresh % 4;
 
   inputsThresh[currentIdxThresh].classList.add("highlight-active");
   resultsThresh[currentIdxThresh].classList.add("highlight-active");
@@ -133,7 +171,7 @@ function resetSimThresh() {
 
   inputsThresh.forEach((cell) => cell.classList.remove("highlight-active"));
   resultsThresh.forEach((cell) => {
-    cell.className = "result-cell pixel-pending shadow-sm";
+    cell.className = "result-cell pixel-pending shadow-sm text-danger";
     cell.innerText = "?";
   });
 
