@@ -76,11 +76,15 @@ if img is None:
     exit()
 
 # 2. MENENTUKAN SEED POINT & THRESHOLD TOLERANSI
-# Pastikan nilai titik x dan y berada di dalam objek target
-seed = (270, 220)
-threshold = 31
+seed = (50, 114)   # (baris, kolom);(y,x)
+threshold = 140
 
-# 3. ALGORITMA CORE PROCESS REGION GROWING
+# 3. MEMBUAT VISUALISASI TITIK SEED MANUAL MENGGUNAKAN OPENCV
+# Disiapkan lebih dulu agar titik awal (seed) divisualisasikan
+citra_seed = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+cv2.circle(citra_seed, (seed[1], seed[0]), radius=5, color=(0, 0, 255), thickness=-1)
+
+# 4. ALGORITMA CORE PROCESS REGION GROWING (MEMBUAT MASK)
 rows, cols = img.shape
 segmented = np.zeros((rows, cols), np.uint8)
 visited = np.zeros((rows, cols), np.bool_)
@@ -89,30 +93,39 @@ queue = [seed]
 
 while len(queue) > 0:
     x, y = queue.pop(0)
+
     if visited[x, y]:
         continue
+
     visited[x, y] = True
-    
+
+    # Similarity Criterion
     if abs(int(img[x, y]) - seed_value) <= threshold:
         segmented[x, y] = 255
+
+        # 8-connectivity
         for dx in [-1, 0, 1]:
             for dy in [-1, 0, 1]:
                 nx = x + dx
                 ny = y + dy
-                # Proteksi batas dimensi matriks citra
-                if 0 <= nx < rows and 0 <= ny < cols:
+
+                if (0 <= nx < rows and 
+                    0 <= ny < cols and 
+                    not visited[nx, ny]):
                     queue.append((nx, ny))
 
-# 4. MEMBUAT VISUALISASI TITIK SEED MANUAL MENGGUNAKAN OPENCV
-# Menyalin citra grayscale ke BGR agar bisa digambar titik berwarna merah
-citra_seed = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-# Menggambar lingkaran (circle) merah kecil pada koordinat seed
-cv2.circle(citra_seed, (seed[1], seed[0]), radius=5, color=(0, 0, 255), thickness=-1)
+# 5. EKSTRAKSI GAMBAR DARI MASK (POST-PROCESSING)
+# Menggunakan bitwise_and untuk mengambil piksel asli berdasarkan area putih pada mask
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
+segmented_clean = cv2.morphologyEx(segmented, cv2.MORPH_CLOSE, kernel)
+extracted_img = cv2.bitwise_and(img, img, mask=segmented_clean)
 
-# 5. MENYIMPAN FISIK MATRIKS CITRA HASIL UNTUK WEB PREVIEW
+# 6. MENYIMPAN FISIK MATRIKS CITRA HASIL UNTUK WEB PREVIEW
+# Disimpan secara berurutan: Asli -> Seed -> Mask -> Ekstraksi
 cv2.imwrite(os.path.join(output_dir, "citra_asli_region.jpg"), img)
 cv2.imwrite(os.path.join(output_dir, "visualisasi_seed.jpg"), citra_seed)
 cv2.imwrite(os.path.join(output_dir, "hasil_region_growing.jpg"), segmented)
+cv2.imwrite(os.path.join(output_dir, "hasil_ekstraksi.jpg"), extracted_img)
 
 print("Proses Segmentasi Region Growing Selesai Dijalankan!")
 print(f"Intensitas Nilai Piksel Seed Point: {seed_value}")`;

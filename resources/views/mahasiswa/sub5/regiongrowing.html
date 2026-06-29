@@ -584,20 +584,24 @@ plt.show()</pre>
           </main>
         </div>
 
-        <div class="modal fade" id="regionImageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="regionImageModal" tabindex="-1" aria-labelledby="regionImageModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content rounded-4 border-0 shadow-lg" style="background-color: #1e293b;">
-              <div class="modal-header border-bottom-0 px-4 pt-4 pb-0">
-                <h5 class="modal-title fw-bold text-white">
-                  <i class="fa-solid fa-image text-info me-2"></i> Preview Hasil Segmentasi
+            <div class="modal-content border-0 shadow-lg">
+
+              <div class="modal-header bg-light border-bottom-0">
+                <h5 class="modal-title fw-bold text-secondary" id="regionImageModalLabel">
+                  <i class="fa-solid fa-image me-2 text-primary"></i>Preview Hasil Segmentasi
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                  aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
+
               <div class="modal-body text-center p-4">
-                <img id="regionModalImage" src="" class="img-fluid rounded-3 shadow-lg border border-secondary"
-                  style="max-height: 70vh; width: auto;">
+                <img id="regionModalImage" src="" alt="Preview Hasil Region Growing"
+                  class="img-fluid rounded shadow-sm border"
+                  style="width: 100%; max-width: 500px; image-rendering: pixelated; image-rendering: -moz-crisp-edges;">
               </div>
+
             </div>
           </div>
         </div>

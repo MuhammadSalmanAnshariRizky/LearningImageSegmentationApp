@@ -70,39 +70,33 @@ function addSplitMergeCell() {
 import numpy as np
 import os
 
-# 1. PARAMETER STRATEGIS SEGMENTASI
-STD_THRESHOLD = 12.0
-MIN_SIZE = 8
-MIN_MEAN = 0
-MAX_MEAN = 110
-MERGE_THRESHOLD = 15.0
+# =====================================
+# PARAMETER 
+# =====================================
+STD_THRESHOLD = 10   # Standar deviasi untuk deteksi homogenitas
+MERGE_THRESHOLD = 20   # Toleransi kemiripan saat merge
+MIN_SIZE = 4           # Ukuran minimum region
 
-# 2. FUNGSI PENGECEKAN HOMOGENITAS REGION
+# =====================================
+# PREDICATE HOMOGENITAS
+# =====================================
 def is_homogeneous(region):
     sigma = np.std(region)
-    mean = np.mean(region)
-    return (
-        sigma < STD_THRESHOLD
-        and MIN_MEAN < mean < MAX_MEAN
-    )
+    return sigma < STD_THRESHOLD
 
-# 3. ALGORITMA REGION SPLITTING (QUADTREE)
+# =====================================
+# QUADTREE SPLITTING
+# =====================================
 label_counter = 1
 def split_region(img, labels, x, y, w, h):
     global label_counter
     region = img[y:y+h, x:x+w]
     
-    # kondisi berhenti
-    if (
-        w <= MIN_SIZE
-        or h <= MIN_SIZE
-        or is_homogeneous(region)
-    ):
+    if (w <= MIN_SIZE or h <= MIN_SIZE or is_homogeneous(region)):
         labels[y:y+h, x:x+w] = label_counter
         label_counter += 1
         return
 
-    # split menjadi 4 bagian
     hw = w // 2
     hh = h // 2
     split_region(img, labels, x, y, hw, hh)
@@ -110,7 +104,9 @@ def split_region(img, labels, x, y, w, h):
     split_region(img, labels, x, y + hh, hw, h - hh)
     split_region(img, labels, x + hw, y + hh, w - hw, h - hh)
 
-# 4. ALGORITMA REGION MERGING
+# =====================================
+# MERGING
+# =====================================
 def merge_regions(img, labels):
     changed = True
     while changed:
@@ -120,53 +116,73 @@ def merge_regions(img, labels):
             mask1 = labels == label1
             if np.sum(mask1) == 0:
                 continue
+            
             mean1 = np.mean(img[mask1])
-            dilated = cv2.dilate(
-                mask1.astype(np.uint8),
-                np.ones((3,3), np.uint8)
-            )
+            dilated = cv2.dilate(mask1.astype(np.uint8), np.ones((3,3), np.uint8))
             neighbors = np.unique(labels[dilated > 0])
+            
             for label2 in neighbors:
                 if label1 == label2:
                     continue
                 mask2 = labels == label2
                 if np.sum(mask2) == 0:
                     continue
+                
                 mean2 = np.mean(img[mask2])
                 if abs(mean1 - mean2) < MERGE_THRESHOLD:
                     labels[mask2] = label1
                     changed = True
     return labels
 
-# 5. MENENTUKAN CITRA BINER HASIL SEGMENTASI
+# =====================================
+# MEMBUAT HASIL SEGMENTASI BINER
+# =====================================
 def create_binary_segmentation(img, labels):
     output = np.zeros_like(img)
     unique_labels = np.unique(labels)
     for label in unique_labels:
         mask = labels == label
         mean_intensity = np.mean(img[mask])
-        # kriteria filter objek gelap
-        if mean_intensity < 120:
+        
+        if mean_intensity < 150: 
             output[mask] = 255
     return output
 
-# 6. PROGRAM UTAMA (EXECUTION)
+# =====================================
+# MAIN PROGRAM
+# =====================================
 # Ganti parameter string di bawah dengan gambar kerja dari berkas workspace!
 img = cv2.imread('_____', cv2.IMREAD_GRAYSCALE)
 
 if img is None:
-    print("Gambar tidak ditemukan!")
+    print("Gambar tidak ditemukan! Cek kembali path/lokasi gambarnya.")
     exit()
 
-# Inisialisasi label matriks nol
-labels = np.zeros(img.shape, dtype=np.int32)
-
 # Eksekusi Splitting & Merging
+label_counter = 1 
+labels = np.zeros(img.shape, dtype=np.int32)
 split_region(img, labels, 0, 0, img.shape[1], img.shape[0])
 labels = merge_regions(img, labels)
 segmented = create_binary_segmentation(img, labels)
 
-# 7. MENYIMPAN FISIK MATRIKS CITRA HASIL UNTUK WEB PREVIEW
+# =====================================
+# POST-PROCESSING
+# =====================================
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
+segmented_clean = cv2.morphologyEx(segmented, cv2.MORPH_CLOSE, kernel)
+
+blurred_mask = cv2.GaussianBlur(segmented_clean, (15, 15), 0)
+_, smooth_mask = cv2.threshold(blurred_mask, 127, 255, cv2.THRESH_BINARY)
+
+# =====================================
+# EKSTRAKSI GAMBAR DARI MASK
+# =====================================
+# Menumpuk citra asli dengan dirinya sendiri menggunakan mask yang sudah halus
+extracted_img = cv2.bitwise_and(img, img, mask=smooth_mask)
+
+# =====================================
+# MENYIMPAN FISIK MATRIKS CITRA HASIL UNTUK WEB PREVIEW
+# =====================================
 # Normalisasi rentang label agar bisa diwarnai oleh ColorMap OpenCV
 if np.max(labels) > 0:
     labels_norm = np.uint8(255 * (labels / np.max(labels)))
@@ -178,7 +194,8 @@ visualisasi_label = cv2.applyColorMap(labels_norm, cv2.COLORMAP_JET)
 
 cv2.imwrite(os.path.join(output_dir, "citra_asli_splitmerge.jpg"), img)
 cv2.imwrite(os.path.join(output_dir, "visualisasi_label_splitmerge.jpg"), visualisasi_label)
-cv2.imwrite(os.path.join(output_dir, "hasil_biner_splitmerge.jpg"), segmented)
+cv2.imwrite(os.path.join(output_dir, "hasil_mask_splitmerge.jpg"), smooth_mask)
+cv2.imwrite(os.path.join(output_dir, "hasil_ekstraksi_splitmerge.jpg"), extracted_img)
 
 print("Proses Segmentasi Split and Merge Selesai Dijalankan!")
 print(f"Total Kluster Region Unik Terbentuk: {len(np.unique(labels))}")`;

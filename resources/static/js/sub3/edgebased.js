@@ -84,38 +84,65 @@ function addEdgeCell() {
 import numpy as np
 import os
 
+# ==========================================
 # 1. MEMBACA CITRA & KONVERSI WARNA
-# tuliskan nama file dari gambar yang akan diproses
-image = cv2.imread('.....') 
+# ==========================================
+# Tuliskan path file dari gambar yang akan diproses
+image_path = '...'
+image = cv2.imread(image_path) 
 image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 # 2. GRAYSCALE
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
+# ==========================================
 # 3. EDGE DETECTION (OPERATOR CANNY)
-# Lengkapi nilai threshold bawah (misal: 100) dan atas (misal: 200)
-edges = cv2.Canny(gray, ....., .....)
+# ==========================================
+# Menggunakan nilai threshold dari referensi
+edges = cv2.Canny(gray, 65, 100)
 
+# ==========================================
 # 4. EDGE LINKING (MORPHOLOGICAL CLOSING)
-# Lengkapi ukuran kernel, misalnya (3, 3)
-kernel = np.ones((....., .....), np.uint8)
-closed = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel)
+# ==========================================
+# Menggunakan kernel elips ukuran (5, 5) untuk hasil yang lebih halus
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+closed = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel, iterations=1)
 
+# ==========================================
 # 5. MENCARI KONTUR
+# ==========================================
 contours, hierarchy = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-# 6. REGION EXTRACTION
-mask = np.zeros(gray.shape, dtype=np.uint8)
-cv2.drawContours(mask, contours, -1, 255, thickness=cv2.FILLED)
+# ==========================================
+# 6. REGION EXTRACTION (MASK KONTUR TERBESAR)
+# ==========================================
+mask = np.zeros_like(gray)
 
+if len(contours) > 0:
+    # Mengambil kontur dengan area terbesar (objek utama)
+    largest_contour = max(contours, key=cv2.contourArea)
+    cv2.drawContours(mask, [largest_contour], -1, 255, thickness=cv2.FILLED)
+    
+    # Membuat hasil segmentasi akhir
+    segmented = cv2.bitwise_and(image, image, mask=mask)
+    area = cv2.contourArea(largest_contour)
+    print(f"Luas objek terbesar: {area:.2f} piksel")
+else:
+    print("Tidak ada kontur yang ditemukan.")
+    segmented = image.copy()
+
+# ==========================================
 # 7. MENYIMPAN HASIL
-cv2.imwrite(os.path.join(output_dir, "citra_asli.jpg"), image)
-cv2.imwrite(os.path.join(output_dir, "edge_detection.jpg"), edges)
-cv2.imwrite(os.path.join(output_dir, "edge_linking.jpg"), closed)
-cv2.imwrite(os.path.join(output_dir, "region_extraction.jpg"), mask)
+# ==========================================
+# Pastikan variabel output_dir sudah didefinisikan sebelumnya di environment kamu
+cv2.imwrite(os.path.join(output_dir, "1_citra_asli.jpg"), image)
+cv2.imwrite(os.path.join(output_dir, "2_edge_detection.jpg"), edges)
+cv2.imwrite(os.path.join(output_dir, "3_edge_linking.jpg"), closed)
+cv2.imwrite(os.path.join(output_dir, "4_region_extraction.jpg"), mask)
+cv2.imwrite(os.path.join(output_dir, "5_segmented_result.jpg"), segmented)
 
 print("Proses segmentasi berbasis tepi selesai dijalankan!")
-print(f"Jumlah kontur objek yang terdeteksi: {len(contours)}")`;
+print(f"Jumlah kontur ditemukan secara keseluruhan: {len(contours)}")`;
 
   const defaultOutput = `<span class="text-success font-monospace">> Output akan muncul di sini...</span>`;
 

@@ -311,7 +311,27 @@ plt.show()</pre>
           </main>
 
         </div>
+        <!-- modal -->
+        <div class="modal fade" id="edgeImageModal" tabindex="-1" aria-labelledby="edgeImageModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg">
 
+              <div class="modal-header bg-light border-bottom-0">
+                <h5 class="modal-title fw-bold text-secondary" id="edgeImageModalLabel">
+                  <i class="fa-solid fa-magnifying-glass me-2 text-primary"></i>Preview Hasil Segmentasi Tepi
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+
+              <div class="modal-body text-center p-4">
+                <img id="edgeModalImage" src="" alt="Preview Membesar" class="img-fluid rounded shadow-sm border"
+                  style="width: 100%; max-width: 500px; image-rendering: pixelated; image-rendering: -moz-crisp-edges;">
+              </div>
+
+            </div>
+          </div>
+        </div>
         <div class="mt-4">
           <p class="mb-2 text-dark">
             Jika kode program ditulis dengan benar, sistem akan menghasilkan keluaran <em>console</em> dan sekumpulan
@@ -331,6 +351,7 @@ Jumlah kontur objek yang terdeteksi: 1</pre>
       </div>
     </div>
   </div>
+
   <div class="page-section">
     <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
 

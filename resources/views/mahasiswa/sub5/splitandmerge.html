@@ -241,43 +241,44 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="page-section">
-      <div class="card border shadow-sm rounded-4 mb-4">
-        <div class="card-body p-4 p-md-5">
-          <h4 class="fw-bold mb-4 text-custom-blue">
-            <i class="fa-solid fa-laptop-code me-2"></i> Region Splitting and Merging dengan Python
-          </h4>
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
+        <h4 class="fw-bold mb-4 text-custom-blue">
+          <i class="fa-solid fa-laptop-code me-2"></i> Region Splitting and Merging dengan Python
+        </h4>
 
-          <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+        <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
 
-            <p class="mb-3">
-              <strong>Region Splitting and Merging</strong> adalah teknik segmentasi citra yang bekerja dengan membagi
-              citra menjadi region-region kecil yang tidak homogen menggunakan pendekatan <em>quadtree</em>, lalu
-              menggabungkan kembali (<em>merging</em>) region bertetangga yang memiliki karakteristik serupa. Metode ini
-              bekerja berdasarkan homogenitas intensitas dan hubungan antarregion, bukan berdasarkan bentuk objek secara
-              langsung.
-            </p>
-            <p class="mb-4">
-              Oleh karena itu, kualitas segmentasi sangat dipengaruhi oleh penentuan parameter seperti batas homogenitas
-              (<code>STD_THRESHOLD</code>), batas penggabungan region (<code>MERGE_THRESHOLD</code>), serta ukuran
-              minimum
-              region (<code>MIN_SIZE</code>). Berikut adalah implementasi lengkap programnya menggunakan Python.
-            </p>
+          <p class="mb-3">
+            <strong>Region Splitting and Merging</strong> adalah teknik segmentasi citra yang bekerja dengan membagi
+            citra menjadi region-region kecil yang tidak homogen menggunakan pendekatan <em>quadtree</em>, lalu
+            menggabungkan kembali (<em>merging</em>) region bertetangga yang memiliki karakteristik serupa. Metode ini
+            bekerja berdasarkan homogenitas intensitas dan hubungan antarregion, bukan berdasarkan bentuk objek secara
+            langsung.
+          </p>
+          <p class="mb-4">
+            Oleh karena itu, kualitas segmentasi sangat dipengaruhi oleh penentuan parameter seperti batas homogenitas
+            (<code>STD_THRESHOLD</code>), batas penggabungan region (<code>MERGE_THRESHOLD</code>), serta ukuran
+            minimum
+            region (<code>MIN_SIZE</code>). Berikut adalah implementasi lengkap programnya menggunakan Python.
+          </p>
 
-            <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
-              <div class="d-flex align-items-center px-3 py-2"
-                style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
-                <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
-                <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
-                <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
-                <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
-              </div>
-              <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
-                <div class="text-secondary text-end py-3 px-3"
-                  style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
-                  <pre class="m-0 text-secondary"
-                    style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">1
+          <div class="rounded-3 overflow-hidden mb-4 shadow-sm border border-secondary" style="font-size: 0.95rem;">
+            <div class="d-flex align-items-center px-3 py-2"
+              style="background-color: #1e1e1e; border-bottom: 1px solid #333;">
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ff5f56;"></div>
+              <div class="rounded-circle me-1" style="width: 10px; height: 10px; background-color: #ffbd2e;"></div>
+              <div class="rounded-circle" style="width: 10px; height: 10px; background-color: #27c93f;"></div>
+              <span class="text-secondary ms-3" style="font-size: 0.8rem;">main.py</span>
+            </div>
+            <div class="d-flex font-monospace" style="background-color: #2d2d2d;">
+              <div class="text-secondary text-end py-3 px-3"
+                style="background-color: #1e1e1e; min-width: 55px; user-select: none; border-right: 1px solid #333; line-height: 1.6;">
+                <pre class="m-0 text-secondary"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">1
 2
 3
 4
@@ -369,13 +370,13 @@
 90
 91
 92</pre>
-                </div>
+              </div>
 
-                <div class="text-light py-3 px-3 w-100"
-                  style="overflow-x: auto; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;"
-                  oncopy="return false;" oncut="return false;" oncontextmenu="return false;">
-                  <pre class="m-0 text-light"
-                    style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">import cv2
+              <div class="text-light py-3 px-3 w-100"
+                style="overflow-x: auto; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;"
+                oncopy="return false;" oncut="return false;" oncontextmenu="return false;">
+                <pre class="m-0 text-light"
+                  style="white-space: pre; line-height: 1.6; background: transparent; border: none; font-family: inherit;">import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -467,308 +468,310 @@ plt.title('Hasil Split and Merge')
 plt.axis('off')
 plt.tight_layout()
 plt.show()</pre>
-                </div>
               </div>
             </div>
+          </div>
 
-            <h6 class="fw-bold mb-3 text-dark">Penjelasan Kode:</h6>
-            <ul class="mb-4 text-dark" style="padding-left: 1.2rem;">
-              <li class="mb-2">
-                <strong>Mengimport Library:</strong> <code>cv2</code> digunakan untuk membaca dan mengolah citra
-                digital.
-                <code>numpy</code> digunakan untuk operasi matriks dan array yang diperlukan dalam proses segmentasi.
-                <code>matplotlib.pyplot</code> digunakan untuk menampilkan citra dan hasil segmentasi.
-              </li>
-              <li class="mb-2">
-                <strong>Menentukan Parameter Segmentasi:</strong> Parameter meliputi batas homogenitas region, ukuran
-                minimum region, dan batas penggabungan region. Nilai parameter tersebut akan memengaruhi proses
-                splitting
-                dan merging yang dilakukan pada citra. Pemilihan parameter yang tepat dapat meningkatkan kualitas hasil
-                segmentasi.
-              </li>
-              <li class="mb-2">
-                <strong>Pengecekan Homogenitas Region:</strong> Fungsi <code>is_homogeneous()</code> digunakan untuk
-                menentukan apakah suatu region bersifat homogen dengan membandingkan standar deviasinya
-                <code>np.std()</code> terhadap batas yang ditentukan. Hasil pengecekan ini menentukan apakah region
-                perlu
-                di-split atau tidak.
-              </li>
-              <li class="mb-2">
-                <strong>Melakukan Region Splitting:</strong> Region yang tidak homogen dibagi menjadi empat subregion
-                menggunakan pendekatan <em>quadtree</em>. Proses ini dihentikan dan diberi label jika region sudah
-                terlalu
-                kecil atau homogen. Splitting dilakukan secara rekursif.
-              </li>
-              <li class="mb-2">
-                <strong>Melakukan Region Merging:</strong> Menggabungkan region-region bertetangga (ditemukan
-                menggunakan
-                fungsi <code>cv2.dilate()</code>) yang memiliki karakteristik serupa. Dua region akan digabung apabila
-                selisih rata-rata intensitasnya lebih kecil dari batas ambang penggabungan. Diulang terus hingga tidak
-                ada
-                lagi region yang di-merge.
-              </li>
-              <li class="mb-2">
-                <strong>Membuat Hasil Segmentasi:</strong> Membentuk citra hasil segmentasi akhir dengan memeriksa
-                setiap
-                region berdasarkan rata-rata intensitasnya. Region yang memenuhi kriteria objek diberi nilai 255
-                (putih),
-                sementara lainnya bernilai 0 (hitam).
-              </li>
-              <li class="mb-2">
-                <strong>Program Utama:</strong> Membaca citra masukan dalam format grayscale, menginisialisasi matriks
-                label, memanggil proses pemisahan region (<em>split</em>) diikuti penggabungan (<em>merge</em>), lalu
-                akhirnya menciptakan gambar luaran biner dari hasil yang terkelompok.
-              </li>
-              <li class="mb-2">
-                <strong>Menampilkan Hasil:</strong> Menampilkan hasil segmentasi menggunakan <code>matplotlib</code> ke
-                dalam tiga jendela <em>subplot</em> yang memudahkan analisis: citra asli (kiri), pelabelan region
-                (tengah), dan citra biner akhir (kanan).
-              </li>
-            </ul>
+          <h6 class="fw-bold mb-3 text-dark">Penjelasan Kode:</h6>
+          <ul class="mb-4 text-dark" style="padding-left: 1.2rem;">
+            <li class="mb-2">
+              <strong>Mengimport Library:</strong> <code>cv2</code> digunakan untuk membaca dan mengolah citra
+              digital.
+              <code>numpy</code> digunakan untuk operasi matriks dan array yang diperlukan dalam proses segmentasi.
+              <code>matplotlib.pyplot</code> digunakan untuk menampilkan citra dan hasil segmentasi.
+            </li>
+            <li class="mb-2">
+              <strong>Menentukan Parameter Segmentasi:</strong> Parameter meliputi batas homogenitas region, ukuran
+              minimum region, dan batas penggabungan region. Nilai parameter tersebut akan memengaruhi proses
+              splitting
+              dan merging yang dilakukan pada citra. Pemilihan parameter yang tepat dapat meningkatkan kualitas hasil
+              segmentasi.
+            </li>
+            <li class="mb-2">
+              <strong>Pengecekan Homogenitas Region:</strong> Fungsi <code>is_homogeneous()</code> digunakan untuk
+              menentukan apakah suatu region bersifat homogen dengan membandingkan standar deviasinya
+              <code>np.std()</code> terhadap batas yang ditentukan. Hasil pengecekan ini menentukan apakah region
+              perlu
+              di-split atau tidak.
+            </li>
+            <li class="mb-2">
+              <strong>Melakukan Region Splitting:</strong> Region yang tidak homogen dibagi menjadi empat subregion
+              menggunakan pendekatan <em>quadtree</em>. Proses ini dihentikan dan diberi label jika region sudah
+              terlalu
+              kecil atau homogen. Splitting dilakukan secara rekursif.
+            </li>
+            <li class="mb-2">
+              <strong>Melakukan Region Merging:</strong> Menggabungkan region-region bertetangga (ditemukan
+              menggunakan
+              fungsi <code>cv2.dilate()</code>) yang memiliki karakteristik serupa. Dua region akan digabung apabila
+              selisih rata-rata intensitasnya lebih kecil dari batas ambang penggabungan. Diulang terus hingga tidak
+              ada
+              lagi region yang di-merge.
+            </li>
+            <li class="mb-2">
+              <strong>Membuat Hasil Segmentasi:</strong> Membentuk citra hasil segmentasi akhir dengan memeriksa
+              setiap
+              region berdasarkan rata-rata intensitasnya. Region yang memenuhi kriteria objek diberi nilai 255
+              (putih),
+              sementara lainnya bernilai 0 (hitam).
+            </li>
+            <li class="mb-2">
+              <strong>Program Utama:</strong> Membaca citra masukan dalam format grayscale, menginisialisasi matriks
+              label, memanggil proses pemisahan region (<em>split</em>) diikuti penggabungan (<em>merge</em>), lalu
+              akhirnya menciptakan gambar luaran biner dari hasil yang terkelompok.
+            </li>
+            <li class="mb-2">
+              <strong>Menampilkan Hasil:</strong> Menampilkan hasil segmentasi menggunakan <code>matplotlib</code> ke
+              dalam tiga jendela <em>subplot</em> yang memudahkan analisis: citra asli (kiri), pelabelan region
+              (tengah), dan citra biner akhir (kanan).
+            </li>
+          </ul>
 
-            <h6 class="fw-bold mb-3 text-dark">Output yang dihasilkan:</h6>
-            <div class="text-center p-3 mb-4">
-              <img src="{{ url_for('static', filename='img/sub5/outputSplit&Merge.png') }}" class="img-fluid"
-                style="max-width: 100%; height: auto;"
-                alt="Output penerapan Region Splitting and Merging pada Python" />
-              <p class="mt-3 mb-0 text-muted small text-center">
-                <em>Gambar 5.18 Output penerapan Split and Merge pada Python</em>
-              </p>
-            </div>
-
-            <p class="mb-3 text-dark">
-              Gambar di atas menampilkan visualisasi perbandingan antara citra asli, proses pemisahan region, dan luaran
-              segmentasi akhirnya. Berikut adalah analisis akhir dari proses segmentasi tersebut:
+          <h6 class="fw-bold mb-3 text-dark">Output yang dihasilkan:</h6>
+          <div class="text-center p-3 mb-4">
+            <img src="{{ url_for('static', filename='img/sub5/outputSplit&Merge.png') }}" class="img-fluid"
+              style="max-width: 100%; height: auto;" alt="Output penerapan Region Splitting and Merging pada Python" />
+            <p class="mt-3 mb-0 text-muted small text-center">
+              <em>Gambar 5.18 Output penerapan Split and Merge pada Python</em>
             </p>
-
-            <ul class="mb-0 text-dark" style="line-height: 1.8; padding-left: 1.2rem;">
-              <li class="mb-2">
-                <strong>Pemisahan Objek:</strong> Hasil segmentasi menunjukkan bahwa objek tank berhasil dipisahkan dari
-                background dan tampil sebagai area putih yang cukup utuh. Bentuk kendaraan masih dapat dikenali dengan
-                baik meskipun terlihat lebih sederhana dibandingkan citra asli akibat proses pembagian region
-                menggunakan
-                pendekatan <em>quadtree</em>.
-              </li>
-              <li class="mb-2">
-                <strong>Objek Tambahan (Noise):</strong> Terdapat beberapa objek kecil lain, seperti semak pada bagian
-                atas citra, yang ikut tersegmentasi karena memiliki karakteristik intensitas yang secara kebetulan
-                memenuhi kriteria segmentasi yang digunakan.
-              </li>
-              <li class="mb-2">
-                <strong>Detail yang Hilang:</strong> Pada bagian tengah objek tank masih terlihat sebuah area kecil
-                berwarna hitam. Kondisi ini menunjukkan adanya region yang memiliki karakteristik intensitas berbeda
-                sehingga tidak digabungkan dengan region utama selama proses <em>merging</em>.
-              </li>
-              <li class="mb-0">
-                <strong>Kesimpulan:</strong> Secara keseluruhan, hasil memperlihatkan bahwa metode <em>Region Splitting
-                  and Merging</em> mampu mengidentifikasi objek utama dengan baik lewat pendekatan pembagian dan
-                penggabungan berbasis sifat homogenitas citra, meskipun sangat bergantung pada penentuan parameter
-                toleransi awal.
-              </li>
-            </ul>
-
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- kode program -->
-    <div class="page-section">
-      <div class="card border shadow-sm rounded-4 mb-4">
-        <div class="card-body p-4 p-md-5">
-
-          <div class="mb-4 p-4 rounded bg-warning-subtle border border-warning shadow-sm">
-            <div class="d-flex align-items-center mb-3">
-              <i class="fa-solid fa-list-check me-2 text-dark"></i>
-              <h5 class="fw-bold mb-0 text-dark">Petunjuk Praktik</h5>
-            </div>
-            <p class="mb-4 text-dark">
-              Ikuti langkah-langkah berikut untuk menjalankan simulasi program <em>Region Splitting and Merging</em>:
-            </p>
-            <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
-              <li class="mb-2">
-                Download gambar uji coba bernama <code>mobil_tank.jpg</code> melalui tautan berikut:
-                <a href="https://drive.google.com/file/d/1nAuPMLyYuI3jYKx1oxAHISM_UdU2k1Wh/view?usp=sharing"
-                  class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
-                  <i class="fa-solid fa-download me-1"></i>Download
-                </a>
-              </li>
-              <li class="mb-2">
-                Upload file <code>mobil_tank.jpg</code> tersebut ke area <strong>File Anda</strong> (bisa
-                ditarik/<em>drag</em> atau diklik).
-              </li>
-              <li class="mb-2">
-                Pastikan nama file gambar sudah muncul di daftar sebelah kiri.
-              </li>
-              <li class="mb-2">
-                Klik tombol <strong>+ Add Cell</strong> berwarna biru untuk menambahkan blok kode baru pada area
-                <em>Live
-                  Code Notebook</em>.
-              </li>
-              <li class="mb-2">
-                Ketik dan lengkapi bagian kode program yang masih rumpang (seperti nama file pada baris
-                <code>cv2.imread</code>, serta penyesuaian nilai parameter <code>STD_THRESHOLD</code>,
-                <code>MERGE_THRESHOLD</code>, dan <code>MIN_SIZE</code>).
-              </li>
-              <li class="mb-2">
-                Klik tombol <span class="badge bg-success"><i class="fa-solid fa-play"></i> Run</span> di pojok kanan
-                atas
-                editor.
-              </li>
-              <li>
-                Amati hasil eksekusi algoritma dan periksa output gambarnya (Citra Asli, Peta Label Region, dan Hasil
-                Akhir Segmentasi).
-              </li>
-            </ol>
           </div>
 
-          <div class="notebook-wrapper border border-2 rounded-4 shadow-sm overflow-hidden mb-3">
-            <aside class="sidebar">
-              <div class="sidebar-header">
-                <h6><i class="fa-solid fa-folder-open me-2"></i>File Anda</h6>
-              </div>
-
-              <div class="upload-area" onclick="triggerSplitMergeUpload()">
-                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
-                <p class="mb-1">Upload Image</p>
-                <span>klik disini!</span>
-              </div>
-
-              <ul id="splitMergeFileList" class="file-list">
-                <li class="empty">
-                  <i class="fa-regular fa-file me-2"></i>Belum ada file
-                </li>
-              </ul>
-
-              <input type="file" id="splitMergeFileInput" hidden onchange="handleSplitMergeUpload(event)">
-            </aside>
-
-            <main class="workspace">
-              <div class="workspace-header">
-                <div class="title">
-                  <i class="fa-solid fa-code me-2"></i>Live Code Notebook
-                </div>
-                <div class="actions">
-                  <button class="btn-add" onclick="addSplitMergeCell()">
-                    <i class="fa-solid fa-plus"></i> Add Cell
-                  </button>
-                </div>
-              </div>
-
-              <div id="splitMergeNotebook" class="cells"></div>
-            </main>
-          </div>
-
-          <div class="modal fade" id="splitMergeImageModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-              <div class="modal-content rounded-4 border-0 shadow-lg" style="background-color: #1e293b;">
-                <div class="modal-header border-bottom-0 px-4 pt-4 pb-0">
-                  <h5 class="modal-title fw-bold text-white">
-                    <i class="fa-solid fa-image text-info me-2"></i> Preview Hasil Segmentasi
-                  </h5>
-                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center p-4">
-                  <img id="splitMergeModalImage" src="" class="img-fluid rounded-3 shadow-lg border border-secondary"
-                    style="max-height: 70vh; width: auto;">
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-    <div class="page-section">
-      <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
-
-        <div class="bg-custom-blue text-white p-4">
-          <h3 class="fw-bold mb-0">
-            <i class="fa-solid fa-pen-to-square me-2"></i> {{title}}
-          </h3>
-        </div>
-
-        <div class="card-body p-4 p-md-5">
-
-          <p class="mb-4" style="font-size: 1.05rem;">
-            Untuk menguji pemahaman kamu pada materi di atas, silakan kerjakan aktivitas berikut ini!
+          <p class="mb-3 text-dark">
+            Gambar di atas menampilkan visualisasi perbandingan antara citra asli, proses pemisahan region, dan luaran
+            segmentasi akhirnya. Berikut adalah analisis akhir dari proses segmentasi tersebut:
           </p>
 
-          <div class="border border-custom-blue border-2 rounded-3 p-4 mb-5 bg-white">
-            <h5 class="fw-bold text-custom-blue mb-3">
-              <i class="fa-solid fa-clipboard-list me-2"></i> Petunjuk Pengerjaan
-            </h5>
-            <ul class="mb-0 " style="line-height: 1.8;">
-              <li>Baca setiap pertanyaan dengan teliti sebelum menjawab.</li>
-              <li>Pilih salah satu opsi jawaban yang menurutmu paling tepat.</li>
-              <li>Tombol <strong>LANJUT</strong> baru akan aktif setelah kamu memilih jawaban.</li>
-              <li>Perhatikan <em>feedback</em> (umpan balik) yang muncul di bawah soal untuk mengetahui apakah
-                jawabanmu
-                benar atau salah.</li>
-              <li>Setelah selesai, kamu bisa menekan tombol <strong>KEMBALI</strong> jika ingin mengulang aktivitas.
-              </li>
-            </ul>
-          </div>
-
-          <div class="quiz-area border-top pt-4">
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <h5 class="fw-bold text-dark mb-0">Soal Aktivitas</h5>
-              <span class="badge bg-custom-blue rounded-pill px-3 py-2 fs-6 shadow-sm" id="quizProgress"></span>
-            </div>
-
-            <div id="quizContainer" data-activity="{{ id_activity }}"></div>
-
-            <div id="feedback" class="mt-3 fw-bold"></div>
-
-            <div class="quiz-nav mt-5 d-flex justify-content-end gap-3">
-              <button id="ulangBtn"
-                class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold shadow-sm d-none">
-                <i class="fa-solid fa-rotate-left me-2"></i> KEMBALI
-              </button>
-              <button id="nextBtn" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm" disabled>
-                LANJUT <i class="fa-solid fa-arrow-right ms-2"></i>
-              </button>
-            </div>
-
-          </div>
+          <ul class="mb-0 text-dark" style="line-height: 1.8; padding-left: 1.2rem;">
+            <li class="mb-2">
+              <strong>Pemisahan Objek:</strong> Hasil segmentasi menunjukkan bahwa objek tank berhasil dipisahkan dari
+              background dan tampil sebagai area putih yang cukup utuh. Bentuk kendaraan masih dapat dikenali dengan
+              baik meskipun terlihat lebih sederhana dibandingkan citra asli akibat proses pembagian region
+              menggunakan
+              pendekatan <em>quadtree</em>.
+            </li>
+            <li class="mb-2">
+              <strong>Objek Tambahan (Noise):</strong> Terdapat beberapa objek kecil lain, seperti semak pada bagian
+              atas citra, yang ikut tersegmentasi karena memiliki karakteristik intensitas yang secara kebetulan
+              memenuhi kriteria segmentasi yang digunakan.
+            </li>
+            <li class="mb-2">
+              <strong>Detail yang Hilang:</strong> Pada bagian tengah objek tank masih terlihat sebuah area kecil
+              berwarna hitam. Kondisi ini menunjukkan adanya region yang memiliki karakteristik intensitas berbeda
+              sehingga tidak digabungkan dengan region utama selama proses <em>merging</em>.
+            </li>
+            <li class="mb-0">
+              <strong>Kesimpulan:</strong> Secara keseluruhan, hasil memperlihatkan bahwa metode <em>Region Splitting
+                and Merging</em> mampu mengidentifikasi objek utama dengan baik lewat pendekatan pembagian dan
+              penggabungan berbasis sifat homogenitas citra, meskipun sangat bergantung pada penentuan parameter
+              toleransi awal.
+            </li>
+          </ul>
 
         </div>
       </div>
     </div>
-    <!-- PAGINATION -->
-    <nav class="mt-4 d-flex justify-content-center">
-      <ul class="pagination pagination-sm custom-pagination">
-        <li class="page-item" id="prevPageItem">
-          <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
-        </li>
-
-        <li class="page-item active">
-          <a class="page-link" onclick="goPage(0)">1</a>
-        </li>
-        <li class="page-item active">
-          <a class="page-link" onclick="goPage(1)">2</a>
-        </li>
-        <li class="page-item active">
-          <a class="page-link" onclick="goPage(2)">3</a>
-        </li>
-        <li class="page-item active">
-          <a class="page-link" onclick="goPage(3)">4</a>
-        </li>
-        <li class="page-item active">
-          <a class="page-link" onclick="goPage(4)">5</a>
-        </li>
-
-        <li class="page-item" id="nextPageItem">
-          <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
-        </li>
-      </ul>
-    </nav>
   </div>
+  <!-- kode program -->
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4 p-md-5">
 
-  {% block scripts %}
-  <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/sub5/split_merge.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/sub5/simulasi_split_merge.js') }}"></script>
-  {% endblock %} {% endblock %}
+        <div class="mb-4 p-4 rounded bg-warning-subtle border border-warning shadow-sm">
+          <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-list-check me-2 text-dark"></i>
+            <h5 class="fw-bold mb-0 text-dark">Petunjuk Praktik</h5>
+          </div>
+          <p class="mb-4 text-dark">
+            Ikuti langkah-langkah berikut untuk menjalankan simulasi program <em>Region Splitting and Merging</em>:
+          </p>
+          <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
+            <li class="mb-2">
+              Download gambar uji coba bernama <code>mobil_tank.jpg</code> melalui tautan berikut:
+              <a href="https://drive.google.com/file/d/1nAuPMLyYuI3jYKx1oxAHISM_UdU2k1Wh/view?usp=sharing"
+                class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
+                <i class="fa-solid fa-download me-1"></i>Download
+              </a>
+            </li>
+            <li class="mb-2">
+              Upload file <code>mobil_tank.jpg</code> tersebut ke area <strong>File Anda</strong> (bisa
+              ditarik/<em>drag</em> atau diklik).
+            </li>
+            <li class="mb-2">
+              Pastikan nama file gambar sudah muncul di daftar sebelah kiri.
+            </li>
+            <li class="mb-2">
+              Klik tombol <strong>+ Add Cell</strong> berwarna biru untuk menambahkan blok kode baru pada area
+              <em>Live
+                Code Notebook</em>.
+            </li>
+            <li class="mb-2">
+              Ketik dan lengkapi bagian kode program yang masih rumpang (seperti nama file pada baris
+              <code>cv2.imread</code>, serta penyesuaian nilai parameter <code>STD_THRESHOLD</code>,
+              <code>MERGE_THRESHOLD</code>, dan <code>MIN_SIZE</code>).
+            </li>
+            <li class="mb-2">
+              Klik tombol <span class="badge bg-success"><i class="fa-solid fa-play"></i> Run</span> di pojok kanan
+              atas
+              editor.
+            </li>
+            <li>
+              Amati hasil eksekusi algoritma dan periksa output gambarnya (Citra Asli, Peta Label Region, dan Hasil
+              Akhir Segmentasi).
+            </li>
+          </ol>
+        </div>
+
+        <div class="notebook-wrapper border border-2 rounded-4 shadow-sm overflow-hidden mb-3">
+          <aside class="sidebar">
+            <div class="sidebar-header">
+              <h6><i class="fa-solid fa-folder-open me-2"></i>File Anda</h6>
+            </div>
+
+            <div class="upload-area" onclick="triggerSplitMergeUpload()">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+              <p class="mb-1">Upload Image</p>
+              <span>klik disini!</span>
+            </div>
+
+            <ul id="splitMergeFileList" class="file-list">
+              <li class="empty">
+                <i class="fa-regular fa-file me-2"></i>Belum ada file
+              </li>
+            </ul>
+
+            <input type="file" id="splitMergeFileInput" hidden onchange="handleSplitMergeUpload(event)">
+          </aside>
+
+          <main class="workspace">
+            <div class="workspace-header">
+              <div class="title">
+                <i class="fa-solid fa-code me-2"></i>Live Code Notebook
+              </div>
+              <div class="actions">
+                <button class="btn-add" onclick="addSplitMergeCell()">
+                  <i class="fa-solid fa-plus"></i> Add Cell
+                </button>
+              </div>
+            </div>
+
+            <div id="splitMergeNotebook" class="cells"></div>
+          </main>
+        </div>
+
+        <div class="modal fade" id="splitMergeImageModal" tabindex="-1" aria-labelledby="splitMergeImageModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+
+              <div class="modal-header bg-light border-bottom-0">
+                <h5 class="modal-title fw-bold text-secondary" id="splitMergeImageModalLabel">
+                  <i class="fa-solid fa-image me-2 text-primary"></i>Preview Hasil Segmentasi
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+
+              <div class="modal-body text-center p-4">
+                <img id="splitMergeModalImage" src="" alt="Preview Hasil Split Merge"
+                  class="img-fluid rounded shadow-sm border"
+                  style="width: 100%; max-width: 500px; image-rendering: pixelated; image-rendering: -moz-crisp-edges;">
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="page-section">
+    <div class="card border shadow-sm rounded-4 overflow-hidden mb-4">
+
+      <div class="bg-custom-blue text-white p-4">
+        <h3 class="fw-bold mb-0">
+          <i class="fa-solid fa-pen-to-square me-2"></i> {{title}}
+        </h3>
+      </div>
+
+      <div class="card-body p-4 p-md-5">
+
+        <p class="mb-4" style="font-size: 1.05rem;">
+          Untuk menguji pemahaman kamu pada materi di atas, silakan kerjakan aktivitas berikut ini!
+        </p>
+
+        <div class="border border-custom-blue border-2 rounded-3 p-4 mb-5 bg-white">
+          <h5 class="fw-bold text-custom-blue mb-3">
+            <i class="fa-solid fa-clipboard-list me-2"></i> Petunjuk Pengerjaan
+          </h5>
+          <ul class="mb-0 " style="line-height: 1.8;">
+            <li>Baca setiap pertanyaan dengan teliti sebelum menjawab.</li>
+            <li>Pilih salah satu opsi jawaban yang menurutmu paling tepat.</li>
+            <li>Tombol <strong>LANJUT</strong> baru akan aktif setelah kamu memilih jawaban.</li>
+            <li>Perhatikan <em>feedback</em> (umpan balik) yang muncul di bawah soal untuk mengetahui apakah
+              jawabanmu
+              benar atau salah.</li>
+            <li>Setelah selesai, kamu bisa menekan tombol <strong>KEMBALI</strong> jika ingin mengulang aktivitas.
+            </li>
+          </ul>
+        </div>
+
+        <div class="quiz-area border-top pt-4">
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold text-dark mb-0">Soal Aktivitas</h5>
+            <span class="badge bg-custom-blue rounded-pill px-3 py-2 fs-6 shadow-sm" id="quizProgress"></span>
+          </div>
+
+          <div id="quizContainer" data-activity="{{ id_activity }}"></div>
+
+          <div id="feedback" class="mt-3 fw-bold"></div>
+
+          <div class="quiz-nav mt-5 d-flex justify-content-end gap-3">
+            <button id="ulangBtn" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold shadow-sm d-none">
+              <i class="fa-solid fa-rotate-left me-2"></i> KEMBALI
+            </button>
+            <button id="nextBtn" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold shadow-sm" disabled>
+              LANJUT <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- PAGINATION -->
+  <nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination pagination-sm custom-pagination">
+      <li class="page-item" id="prevPageItem">
+        <a class="page-link" href="#" onclick="prevPage()">Sebelumnya</a>
+      </li>
+
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(0)">1</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(1)">2</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(2)">3</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(3)">4</a>
+      </li>
+      <li class="page-item active">
+        <a class="page-link" onclick="goPage(4)">5</a>
+      </li>
+
+      <li class="page-item" id="nextPageItem">
+        <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+<script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sub5/split_merge.js') }}"></script>
+<script src="{{ url_for('static', filename='js/sub5/simulasi_split_merge.js') }}"></script>
+{% endblock %} {% endblock %}

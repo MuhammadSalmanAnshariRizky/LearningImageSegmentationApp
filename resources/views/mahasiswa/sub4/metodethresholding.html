@@ -527,24 +527,27 @@ plt.show()</pre>
           </main>
         </div>
 
-        <div class="modal fade" id="thresholdImageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="thresholdImageModal" tabindex="-1" aria-labelledby="thresholdImageModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content rounded-4 border-0 shadow-lg" style="background-color: #1e293b">
-              <div class="modal-header border-bottom-0 px-4 pt-4 pb-0">
-                <h5 class="modal-title fw-bold text-white">
-                  <i class="fa-solid fa-image text-info me-2"></i> Preview
-                  Komparasi Gambar
+            <div class="modal-content border-0 shadow-lg">
+
+              <div class="modal-header bg-light border-bottom-0">
+                <h5 class="modal-title fw-bold text-secondary" id="thresholdImageModalLabel">
+                  <i class="fa-solid fa-image me-2 text-primary"></i>Preview Komparasi Gambar
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                  aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
+
               <div class="modal-body text-center p-4">
-                <img id="thresholdModalImage" src="" class="img-fluid rounded-3 shadow-lg border border-secondary"
-                  style="max-height: 70vh; width: auto" />
+                <img id="thresholdModalImage" src="" alt="Preview Komparasi" class="img-fluid rounded shadow-sm border"
+                  style="width: 100%; max-width: 500px; image-rendering: pixelated; image-rendering: -moz-crisp-edges;">
               </div>
+
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -1234,21 +1237,23 @@ plt.show()</pre>
           </main>
         </div>
 
-        <div class="modal fade" id="otsuImageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="otsuImageModal" tabindex="-1" aria-labelledby="otsuImageModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content rounded-4 border-0 shadow-lg" style="background-color: #1e293b">
-              <div class="modal-header border-bottom-0 px-4 pt-4 pb-0">
-                <h5 class="modal-title fw-bold text-white">
-                  <i class="fa-solid fa-image text-info me-2"></i> Preview Hasil
-                  Segmentasi
+            <div class="modal-content border-0 shadow-lg">
+
+              <div class="modal-header bg-light border-bottom-0">
+                <h5 class="modal-title fw-bold text-secondary" id="otsuImageModalLabel">
+                  <i class="fa-solid fa-image me-2 text-primary"></i>Preview Hasil Segmentasi
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                  aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
+
               <div class="modal-body text-center p-4">
-                <img id="otsuModalImage" src="" class="img-fluid rounded-3 shadow-lg border border-secondary"
-                  style="max-height: 70vh; width: auto" />
+                <img id="otsuModalImage" src="" alt="Preview Hasil Otsu" class="img-fluid rounded shadow-sm border"
+                  style="width: 100%; max-width: 500px; image-rendering: pixelated; image-rendering: -moz-crisp-edges;">
               </div>
+
             </div>
           </div>
         </div>

@@ -66,25 +66,51 @@ function addOtsuCell() {
 
   // Script Python Otomatis (Tanpa Plotting Matplotlib)
   const defaultCode = `import cv2
+import numpy as np
 import os
 
+# ============================================
 # 1. MEMBACA CITRA GRAYSCALE
+# ============================================
 # Tuliskan nama file gambar pada bagian argumen di bawah ini
-img = cv2.imread('_____', cv2.IMREAD_GRAYSCALE)
+img = cv2.imread('....', cv2.IMREAD_GRAYSCALE)
+
 if img is None:
     print("Gambar tidak ditemukan!")
     exit()
 
-# 2. MELAKUKAN OTSU THRESHOLDING
-T, otsu_img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+# ============================================
+# 2. OTSU THRESHOLDING
+# ============================================
+# Menggunakan cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
+threshold_value, binary_image = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
-# 3. MENYIMPAN MATRIKS HASIL FISIK UNTUK ANTARMUKA WEB
-cv2.imwrite(os.path.join(output_dir, "citra_grayscale_otsu.jpg"), img)
-cv2.imwrite(os.path.join(output_dir, "hasil_otsu_thresholding.jpg"), otsu_img)
+# ============================================
+# 3. MEMBERSIHKAN MASK (CLOSING)
+# ============================================
+# Menggunakan kernel elips ukuran 5x5 untuk hasil mask yang lebih halus
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+binary_clean = cv2.morphologyEx(binary_image, cv2.MORPH_CLOSE, kernel)
 
+# ============================================
+# 4. EKSTRAKSI OBJEK
+# ============================================
+# Memotong objek utama dari latar belakang
+extracted_image = cv2.bitwise_and(img, img, mask=binary_clean)
+
+# ============================================
+# 5. MENYIMPAN HASIL
+# ============================================
+cv2.imwrite(os.path.join(output_dir, "1_citra_grayscale.jpg"), img)
+cv2.imwrite(os.path.join(output_dir, "2_mask_segmentasi.jpg"), binary_clean)
+cv2.imwrite(os.path.join(output_dir, "3_ekstraksi_objek.jpg"), extracted_image)
+
+# ============================================
+# OUTPUT CONSOLE
+# ============================================
+print("=== OTSU THRESHOLDING ===")
 print("Proses Otsu Thresholding Selesai!")
-print(f"Nilai Ambang Otomatis Optimal Terkalkulasi (T): {T:.0f}")`;
-
+print(f"Nilai Ambang Otomatis Optimal Terkalkulasi (T): {threshold_value:.0f}")`;
   const defaultOutput = `<span class="text-success font-monospace">> Output akan muncul di sini...</span>`;
 
   createOtsuCellDOM(otsuCellCount, defaultCode, defaultOutput);

@@ -71,46 +71,82 @@ function addThresholdCell() {
 import numpy as np
 import os
 
+# =====================================
 # 1. MEMBACA CITRA GRAYSCALE
-# Lengkapi '_____' dengan nama file gambar yang kamu unggah
-img = cv2.imread('_____', cv2.IMREAD_GRAYSCALE)
+# =====================================
+# Lengkapi '....' dengan path/nama file gambar yang kamu unggah
+img = cv2.imread('....', cv2.IMREAD_GRAYSCALE)
+
 if img is None:
     print("Gambar tidak ditemukan!")
     exit()
 
-# 2. MENENTUKAN THRESHOLD AWAL
+# =====================================
+# 2. ITERATIVE THRESHOLD SELECTION
+# =====================================
+# Threshold awal = rata-rata intensitas citra
 T = np.mean(img)
-
-# 3. MELAKUKAN ITERATIVE THRESHOLD SELECTION
 iteration = 0
+
 while True:
+    # Kelompok piksel
     G1 = img[img > T]
     G2 = img[img <= T]
     
+    # Menghindari pembagian kosong
     if len(G1) == 0 or len(G2) == 0:
         break
         
+    # Rata-rata masing-masing kelompok
     m1 = np.mean(G1)
     m2 = np.mean(G2)
+    
+    # Threshold baru
     T_new = (m1 + m2) / 2
     iteration += 1
     
+    # Kondisi berhenti
     if abs(T - T_new) < 0.5:
         break
+    
     T = T_new
 
 iterative_threshold = T_new
 
-# 4. MELAKUKAN SEGMENTASI CITRA
-_, segmented = cv2.threshold(img, iterative_threshold, 255, cv2.THRESH_BINARY)
+# =====================================
+# 3. HASIL SEGMENTASI (THRESHOLDING)
+# =====================================
+# Menggunakan THRESH_BINARY_INV agar objek utama menjadi area putih (255)
+_, segmented = cv2.threshold(img, iterative_threshold, 255, cv2.THRESH_BINARY_INV)
 
-# 5. MENYIMPAN MATRIKS HASIL (TANPA HISTOGRAM)
-cv2.imwrite(os.path.join(output_dir, "citra_grayscale.jpg"), img)
-cv2.imwrite(os.path.join(output_dir, "hasil_segmentasi.jpg"), segmented)
+# =====================================
+# 4. MEMBERSIHKAN MASK (CLOSING)
+# =====================================
+# Menggunakan kernel elips ukuran 5x5 untuk menutup lubang kecil pada objek
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+segmented_clean = cv2.morphologyEx(segmented, cv2.MORPH_CLOSE, kernel)
 
+# =====================================
+# 5. EKSTRAKSI OBJEK
+# =====================================
+# Memotong citra asli menggunakan mask yang sudah dibersihkan
+extracted_img = cv2.bitwise_and(img, img, mask=segmented_clean)
+
+
+# =====================================
+# 6. MENYIMPAN HASIL
+# =====================================
+cv2.imwrite(os.path.join(output_dir, "1_citra_grayscale.jpg"), img)
+cv2.imwrite(os.path.join(output_dir, "2_mask_segmentasi.jpg"), segmented_clean)
+cv2.imwrite(os.path.join(output_dir, "3_ekstraksi_objek.jpg"), extracted_img)
+
+# =====================================
+# OUTPUT CONSOLE
+# =====================================
+print("=== ITERATIVE THRESHOLD SELECTION ===")
 print("Proses Global Thresholding Selesai!")
-print(f"Nilai Ambang Batas Otomatis (T): {iterative_threshold:.2f}")
-print(f"Total Iterasi Komputasi: {iteration}")`;
+print(f"Jumlah Iterasi Komputasi : {iteration}")
+print(f"Nilai Ambang Batas Otomatis (T) : {iterative_threshold:.2f}")`;
 
   const defaultOutput = `<span class="text-success font-monospace">> Output akan muncul di sini...</span>`;
 
