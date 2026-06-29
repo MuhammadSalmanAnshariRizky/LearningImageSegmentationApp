@@ -96,7 +96,6 @@ SUBTOPIC_ROUTE = {
     24: "/evaluasi"
 }
 
-
 @user_bp.route('/dashboard')
 @student_required
 def dashboard():
@@ -118,7 +117,9 @@ def dashboard():
             'dashboard.html',
             kelas=None,
             total_materi=0,
+            topik_selesai=0,      # Ditambahkan untuk handle error jika tidak ada kelas
             selesai=0,
+            total_subtopic=0,     # Ditambahkan untuk handle error jika tidak ada kelas
             progress_percent=0,
             materi_list=[],
             hasil_belajar=[]
@@ -176,6 +177,9 @@ def dashboard():
     materi_list = []
 
     next_unlock = True
+    
+    # Inisialisasi variabel untuk menghitung topik yang sudah 100% selesai
+    topik_selesai_count = 0 
 
     for topic in topics:
 
@@ -263,6 +267,9 @@ def dashboard():
             card_class = "success"
 
             next_unlock = True
+            
+            # Increment +1 untuk setiap topik yang persentasenya 100%
+            topik_selesai_count += 1
 
         # =========================
         # TOPIC YANG AKTIF
@@ -364,7 +371,9 @@ def dashboard():
         'dashboard.html',
         kelas=kelas,
         total_materi=len(topics),
+        topik_selesai=topik_selesai_count, # Variabel dipassing ke template
         selesai=selesai,
+        total_subtopic=total_subtopic,     # Variabel dipassing ke template
         progress_percent=progress_percent,
         materi_list=materi_list,
         hasil_belajar=hasil_belajar

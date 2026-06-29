@@ -6,12 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Segmind — Media Pembelajaran Interaktif</title>
 
-    <!-- GOOGLE FONT -->
     <link
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <!-- BOOTSTRAP ICON -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
@@ -64,9 +62,9 @@
         }
 
         .container {
-            max-width: 1180px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 32px;
         }
 
         /* =========================
@@ -78,20 +76,14 @@
             top: 0;
             left: 0;
             right: 0;
-
-            height: 72px;
-
             z-index: 999;
-
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(14px);
-
             border-bottom: 1px solid var(--card-border);
         }
 
         .navbar .container {
-            height: 100%;
-
+            height: 78px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -106,26 +98,21 @@
         .navbar-brand {
             display: flex;
             align-items: center;
-            gap: 12px;
-
+            gap: 14px;
             font-family: var(--font-heading);
             font-weight: 700;
-            font-size: 1.25rem;
+            font-size: 1.3rem;
         }
 
         .navbar-logo {
-            width: 42px;
-            height: 42px;
-
-            border-radius: 12px;
-
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
             background: var(--primary);
             color: white;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             font-size: 1.1rem;
         }
 
@@ -139,17 +126,12 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-
             background: var(--primary);
             color: var(--primary-fg);
-
-            padding: 12px 22px;
-
-            border-radius: 10px;
-
+            padding: 12px 24px;
+            border-radius: 12px;
             font-weight: 600;
             font-family: var(--font-heading);
-
             transition: 0.25s ease;
         }
 
@@ -162,16 +144,12 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-
             border: 1px solid #cbd5e1;
             color: #0f172a;
-
-            padding: 12px 22px;
-            border-radius: 10px;
-
+            padding: 12px 24px;
+            border-radius: 12px;
             font-weight: 600;
             font-family: var(--font-heading);
-
             transition: 0.25s ease;
         }
 
@@ -184,10 +162,8 @@
         ========================= */
 
         .hero {
-            height: calc(100vh - 72px);
-
-            margin-top: 72px;
-
+            height: calc(100vh - 78px);
+            margin-top: 78px;
             display: flex;
             align-items: center;
         }
@@ -203,18 +179,12 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-
             padding: 8px 18px;
-
             border-radius: 999px;
-
             background: rgba(30, 41, 59, 0.08);
-
             color: var(--primary);
-
             font-size: 0.85rem;
             font-weight: 600;
-
             margin-bottom: 20px;
         }
 
@@ -222,7 +192,6 @@
             font-size: 3.5rem;
             line-height: 1.1;
             font-weight: 700;
-
             margin-bottom: 20px;
         }
 
@@ -233,9 +202,7 @@
         .hero p {
             font-size: 1.05rem;
             color: var(--muted);
-
             max-width: 560px;
-
             margin-bottom: 28px;
         }
 
@@ -245,72 +212,201 @@
             flex-wrap: wrap;
         }
 
+        /* =========================
+           VISUALISASI SEGMENTASI
+        ========================= */
+
         .hero-visual {
             background: var(--navy);
-
             border-radius: 24px;
-
             padding: 40px;
-
-            min-height: 360px;
-
+            min-height: 380px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
         }
 
-        .hero-grid {
+        .seg-wrapper {
+            position: relative;
             width: 100%;
-
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-
-            gap: 10px;
+            max-width: 380px;
+            height: 240px;
+            background: #0f172a;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid #1e293b;
+            margin-bottom: 24px;
         }
 
-        .hero-cell {
-            aspect-ratio: 1;
-            border-radius: 12px;
-
-            animation: pulse 3s infinite ease-in-out;
+        .seg-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
         }
 
-        .hero-cell:nth-child(odd) {
+        /* Bentuk-bentuk Objek */
+        .s-sun {
+            position: absolute;
+            top: 25px;
+            right: 40px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .s-mountain-1 {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 140px;
+            height: 140px;
+            transform: rotate(45deg);
+            border-radius: 20px;
+        }
+
+        .s-mountain-2 {
+            position: absolute;
+            bottom: -15px;
+            right: 80px;
+            width: 100px;
+            height: 100px;
+            transform: rotate(45deg);
+            border-radius: 14px;
+        }
+
+        .s-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+        }
+
+        /* Layer 1: Citra Asli (Grayscale) */
+        .original .s-sun {
+            background: #475569;
+        }
+
+        .original .s-mountain-1 {
             background: #334155;
         }
 
-        .hero-cell:nth-child(even) {
-            background: #64748b;
+        .original .s-mountain-2 {
+            background: #1e293b;
+            z-index: 2;
         }
 
-        .hero-cell:nth-child(3n) {
-            background: #94a3b8;
+        .original .s-ground {
+            background: #0f172a;
+            border-top: 2px solid #1e293b;
+            z-index: 3;
         }
 
-        @keyframes pulse {
+        /* Layer 2: Masking Segmentasi (Berwarna) */
+        .segmented {
+            animation: scan-mask 4s infinite alternate ease-in-out;
+            z-index: 10;
+        }
+
+        .segmented div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.65rem;
+            font-weight: 700;
+            font-family: var(--font-body);
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .segmented .s-sun {
+            background: rgba(250, 204, 21, 0.25);
+            border: 2px solid #facc15;
+        }
+
+        .segmented .s-mountain-1 {
+            background: rgba(56, 189, 248, 0.25);
+            border: 2px solid #38bdf8;
+        }
+
+        .segmented .s-mountain-2 {
+            background: rgba(167, 139, 250, 0.25);
+            border: 2px solid #a78bfa;
+            z-index: 2;
+        }
+
+        .segmented .s-ground {
+            background: rgba(52, 211, 153, 0.25);
+            border: 2px solid #34d399;
+            border-bottom: none;
+            z-index: 3;
+        }
+
+        /* Perbaikan rotasi teks pada gunung */
+        .segmented .s-mountain-1 span,
+        .segmented .s-mountain-2 span {
+            transform: rotate(-45deg);
+        }
+
+        /* Garis Scanner */
+        .scanner {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #ffffff;
+            box-shadow: 0 0 12px #fff, 0 0 24px #38bdf8;
+            z-index: 20;
+            animation: scan-line 4s infinite alternate ease-in-out;
+        }
+
+        /* Animasi */
+        @keyframes scan-mask {
 
             0%,
-            100% {
-                opacity: .5;
-                transform: scale(1);
+            10% {
+                clip-path: inset(0 100% 0 0);
             }
 
-            50% {
+            90%,
+            100% {
+                clip-path: inset(0 0 0 0);
+            }
+        }
+
+        @keyframes scan-line {
+
+            0%,
+            10% {
+                left: 0%;
+                opacity: 0;
+            }
+
+            15% {
                 opacity: 1;
-                transform: scale(1.05);
+            }
+
+            85% {
+                opacity: 1;
+            }
+
+            90%,
+            100% {
+                left: 100%;
+                opacity: 0;
             }
         }
 
         .hero-label {
-            margin-top: 24px;
-
             color: #cbd5e1;
-
             letter-spacing: 3px;
             text-transform: uppercase;
-
             font-size: 0.8rem;
+            font-weight: 500;
         }
 
         /* =========================
@@ -322,11 +418,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-
             border-top: 1px solid var(--card-border);
-
             padding: 18px 0;
-
             background: white;
         }
 
@@ -385,14 +478,12 @@
         }
 
         @media (max-width: 600px) {
-
             .navbar {
                 height: auto;
             }
 
             .navbar .container {
                 padding: 18px 24px;
-
                 flex-direction: column;
                 gap: 18px;
             }
@@ -419,132 +510,92 @@
 
 <body>
 
-    <!-- NAVBAR -->
     <nav class="navbar">
-
         <div class="container">
-
             <div class="navbar-left">
-
                 <a href="#" class="navbar-brand">
-
                     <div class="navbar-logo">
                         <i class="bi bi-grid"></i>
                     </div>
-
                     Segmind
-
                 </a>
-
             </div>
-
             <div class="navbar-menu">
-
                 <a href="/panduan" class="btn-outline">
-                    <i class="bi bi-journal-text"></i>
-                    Panduan
+                    <i class="bi bi-journal-text"></i> Panduan
                 </a>
-
                 <a href="/perihal" class="btn-outline">
-                    <i class="bi bi-info-circle"></i>
-                    Perihal
+                    <i class="bi bi-info-circle"></i> Perihal
                 </a>
-
                 <a href="/login" class="btn-primary">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Login
+                    <i class="bi bi-box-arrow-in-right"></i> Login
                 </a>
-
             </div>
-
         </div>
-
     </nav>
 
-    <!-- HERO -->
     <section class="hero">
-
         <div class="container">
 
             <div>
-
                 <div class="hero-badge">
                     <i class="bi bi-stars"></i>
                     Media Pembelajaran Interaktif
                 </div>
-
                 <h1>
-                    Pelajari
+                    Belajar
                     <span>Image Segmentation</span>
                     dengan Mudah
                 </h1>
-
                 <p>
                     Media pembelajaran interaktif untuk memahami konsep
                     segmentasi citra digital secara visual, modern,
                     dan mudah dipahami.
                 </p>
-
                 <div class="hero-buttons">
-
                     <a href="/login" class="btn-primary">
                         Mulai Belajar
                         <i class="bi bi-arrow-right"></i>
                     </a>
-
-
-
                 </div>
-
             </div>
 
             <div class="hero-visual">
 
-                <div class="hero-grid">
+                <div class="seg-wrapper">
+                    <div class="seg-layer original">
+                        <div class="s-sun"></div>
+                        <div class="s-mountain-1"></div>
+                        <div class="s-mountain-2"></div>
+                        <div class="s-ground"></div>
+                    </div>
 
-                    <div class="hero-cell"></div>
-                    <div class="hero-cell"></div>
-                    <div class="hero-cell"></div>
-                    <div class="hero-cell"></div>
+                    <div class="seg-layer segmented">
+                        <div class="s-sun">OBJ_3</div>
+                        <div class="s-mountain-1"><span>OBJ_1</span></div>
+                        <div class="s-mountain-2"><span>OBJ_2</span></div>
+                        <div class="s-ground"><span></span></div>
+                    </div>
 
-                    <div class="hero-cell"></div>
-                    <div class="hero-cell"></div>
-                    <div class="hero-cell"></div>
-                    <div class="hero-cell"></div>
-
-                    <div class="hero-cell"></div>
-                    <div class="hero-cell"></div>
-                    <div class="hero-cell"></div>
-                    <div class="hero-cell"></div>
-
+                    <div class="scanner"></div>
                 </div>
 
-                <div class="hero-label">
-                    Segmentation Visualization
-                </div>
 
             </div>
 
         </div>
-
     </section>
 
-    <!-- FOOTER -->
     <footer class="footer">
-
         <div class="container">
-
             <p>
                 © 2026 Segmind — Media Pembelajaran Image Segmentation
             </p>
-
             <div class="footer-links">
                 <a href="#">Privasi</a>
                 <a href="#">Kontak</a>
             </div>
-
         </div>
-
     </footer>
 
 </body>
