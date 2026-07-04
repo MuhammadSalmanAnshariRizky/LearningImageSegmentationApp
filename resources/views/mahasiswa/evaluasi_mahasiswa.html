@@ -367,9 +367,16 @@
                             {% for d in group.details %}
                             <div class="card border border-light shadow-sm rounded-3 mb-3">
                                 <div class="card-body p-3">
-                                    <div class="fw-medium text-dark mb-3" style="line-height: 1.5; font-size: 0.95rem;">
-                                        <span class="text-primary me-1 fw-bold">{{ loop.index }}.</span> {{ d.soal|safe
-                                        }}
+                                    <div class="fw-medium text-dark mb-3" style="line-height:1.5;font-size:.95rem;">
+                                        <span class="text-primary me-1 fw-bold">{{ loop.index }}.</span>
+                                        {{ d.soal|safe }}
+
+                                        {% if d.gambar %}
+                                        <div class="mt-3 text-center">
+                                            <img src="{{ d.gambar }}" class="img-fluid rounded border shadow-sm"
+                                                style="max-width:350px;">
+                                        </div>
+                                        {% endif %}
                                     </div>
 
                                     <div

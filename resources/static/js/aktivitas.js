@@ -193,17 +193,50 @@ function selesaiQuiz() {
   })
     .then((res) => res.json())
     .then((data) => {
-      Swal.fire({
-        icon: "success",
-        title: "Aktivitas Selesai!",
-        text: "Progress belajar berhasil diperbarui.",
-        confirmButtonColor: "#0d6efd",
-        confirmButtonText: "Lanjut",
-      });
+      if (data.success) {
+        // ==========================================
+        // 1. UPDATE TAMPILAN PROGRESS TANPA REFRESH
+        // ==========================================
+        if (data.new_progress !== undefined) {
+          // Update Progress Bar (Tanpa teks di dalam batang)
+          const progressBar = document.querySelector(".progress-bar");
+          if (progressBar) {
+            progressBar.style.width = data.new_progress + "%";
+            progressBar.setAttribute("aria-valuenow", data.new_progress);
+            // Baris innerText dihapus agar batang bersih
+          }
+
+          // Update Teks Progress di pojok kanan
+          const progressText = document.getElementById("progressText");
+          if (progressText) {
+            // Ditambahkan .0% agar formatnya sama dengan yang di halaman rangkuman
+            progressText.innerText = data.new_progress + ".0%";
+          }
+        }
+
+        // ==========================================
+        // 2. BUKA KUNCI TOMBOL NEXT MATERI (Jika ada tombol Next di halaman Kuis)
+        // ==========================================
+        const btnNext = document.getElementById("btnNextMateri");
+        if (btnNext) {
+          btnNext.classList.remove("disabled-link");
+          btnNext.style.backgroundColor = "#1e293b";
+        }
+
+        // ==========================================
+        // 3. TAMPILKAN SWEETALERT
+        // ==========================================
+        Swal.fire({
+          icon: "success",
+          title: "Aktivitas Selesai!",
+          text: "Progress belajar berhasil diperbarui.",
+          confirmButtonColor: "#0d6efd",
+          confirmButtonText: "Lanjut",
+        });
+      }
     })
     .catch((err) => {
       console.error("Gagal update progress:", err);
-
       Swal.fire({
         icon: "error",
         title: "Oops...",

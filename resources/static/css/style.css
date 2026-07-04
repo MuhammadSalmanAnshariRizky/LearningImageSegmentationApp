@@ -347,3 +347,16 @@ body {
   color: #dc2626;
   transition: 0.2s;
 }
+
+/* pagination */
+.custom-pagination .page-item.locked {
+  pointer-events: none; /* Mencegah elemen diklik */
+  opacity: 0.5; /* Membuatnya terlihat buram/tidak aktif */
+  cursor: not-allowed;
+}
+
+.navigasi-disabled-link {
+    pointer-events: none; /* Mencegah klik */
+    opacity: 0.6; /* Membuat tombol terlihat pudar */
+    cursor: not-allowed;
+}

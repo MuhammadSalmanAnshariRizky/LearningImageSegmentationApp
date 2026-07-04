@@ -305,7 +305,7 @@ document.getElementById("quizForm").addEventListener("submit", function (e) {
     return; // Hentikan fungsi di sini
   }
 
-  // Jika aman (semua dijawab & tidak ada ragu-ragu), tampilkan konfirmasi
+  // Jika aman, tampilkan konfirmasi
   Swal.fire({
     title: "Selesai Ujian?",
     text: "Jawaban yang sudah dikirim tidak bisa diubah lagi!",
@@ -317,11 +317,16 @@ document.getElementById("quizForm").addEventListener("submit", function (e) {
     cancelButtonText: "Batal",
   }).then((result) => {
     if (result.isConfirmed) {
-      // 🔥 ANSWERS
+      // 🔥 ANSWERS (Ubah ke Array of Objects agar urutan acak dipertahankan)
+      let orderedAnswers = questionOrder.map((qId) => ({
+        id_question: qId,
+        answer: userAnswers[qId] || "",
+      }));
+
       let input = document.createElement("input");
       input.type = "hidden";
       input.name = "answers";
-      input.value = JSON.stringify(userAnswers);
+      input.value = JSON.stringify(orderedAnswers);
       formElement.appendChild(input);
 
       // 🔥 CORRECT MAP

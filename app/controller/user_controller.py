@@ -638,12 +638,19 @@ def pengantarcitradigital():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
+    
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
 
+    is_completed = True if cek_history else False
     return render_template(
         'mahasiswa/sub1/pengertiancitradigital.html',
         id_activity=id_activity,
         progress=progress_percent,
-        title = title
+        title = title,
+        is_completed=is_completed
     )
     
 @user_bp.route('/materi1/jeniscitra')
@@ -785,15 +792,13 @@ def kuis1():
     # ===============================
     # AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
     # ===============================
-    # Kita menggunakan list agar mudah di-looping di Jinja2
     grouped_details = []
 
     if results:
-        # Kita urutkan ascending (1, 2, 3...) khusus untuk tampilan Tab Modal
+        # Urutkan ascending (1, 2, 3...) untuk tampilan Tab Modal
         results_asc = sorted(results, key=lambda x: x.percobaan_ke)
         
         for r in results_asc:
-            # Ambil jawaban khusus untuk ActivityResult ini saja
             answers = ActivityAnswer.query.filter_by(
                 id_activity_result=r.id
             ).order_by(ActivityAnswer.id.asc()).all()
@@ -804,15 +809,66 @@ def kuis1():
                 if not q:
                     continue
 
+                # Inisialisasi default
+                text = q.question
+                gambar = None
+                jawaban_key = ans.user_answer
+                jawaban_text = jawaban_key
+
                 try:
                     soal_json = json.loads(q.question)
-                    text = soal_json.get("text", "")
-                except:
-                    text = q.question
+
+                    # Ambil teks soal
+                    text = soal_json.get("text", text)
+
+                    # Ambil URL gambar
+                    gambar = soal_json.get("URL")
+
+                    # Ambil pilihan jawaban
+                    options = json.loads(q.MC_option)
+
+                    jawaban_key_clean = str(jawaban_key).strip().lower()
+
+                    if isinstance(options, list):
+                        for opt in options:
+                            for k, v in opt.items():
+
+                                if k.lower() == jawaban_key_clean:
+
+                                    if isinstance(v, dict):
+                                        jawaban_text = (
+                                            v.get("teks")
+                                            or v.get("text")
+                                            or ""
+                                        )
+                                    else:
+                                        jawaban_text = str(v)
+
+                                    break
+
+                            if jawaban_text != jawaban_key:
+                                break
+
+                except Exception as e:
+                    print(f"Error parsing JSON soal ID {q.id}: {e}")
+
+                # Gabungkan agar tampil "a. Gambar yang hanya dapat dilihat..."
+                if jawaban_key and jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
+
+                # Gabungkan agar tampil "b. Representasi visual..."
+                # Cek agar kalau gagal ambil teks, tidak jadi "b. b"
+                if jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
 
                 attempt_details.append({
                     "soal": text,
-                    "jawaban_user": ans.user_answer,
+                    "gambar": gambar,
+                    "jawaban_user": jawaban_lengkap,
                     "status": ans.status
                 })
 
@@ -820,7 +876,6 @@ def kuis1():
                 "percobaan_ke": r.percobaan_ke,
                 "details": attempt_details
             })
-
     # ===============================
     # PROGRESS
     # ===============================
@@ -1033,17 +1088,16 @@ def kuis2():
 
     result = results[0] if results else None
 
-    # ===============================
+   # ===============================
     # AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
     # ===============================
     grouped_details = []
 
     if results:
-        # Urutkan ascending khusus untuk tampilan Tab Modal (1, 2, 3...)
+        # Urutkan ascending (1, 2, 3...) untuk tampilan Tab Modal
         results_asc = sorted(results, key=lambda x: x.percobaan_ke)
         
         for r in results_asc:
-            # Ambil jawaban khusus untuk ActivityResult ini saja
             answers = ActivityAnswer.query.filter_by(
                 id_activity_result=r.id
             ).order_by(ActivityAnswer.id.asc()).all()
@@ -1051,19 +1105,69 @@ def kuis2():
             attempt_details = []
             for ans in answers:
                 q = Question.query.get(ans.id_question)
-
                 if not q:
                     continue
 
+                # Inisialisasi default
+                text = q.question
+                gambar = None
+                jawaban_key = ans.user_answer
+                jawaban_text = jawaban_key
+
                 try:
                     soal_json = json.loads(q.question)
-                    text = soal_json.get("text", "")
-                except:
-                    text = q.question
+
+                    # Ambil teks soal
+                    text = soal_json.get("text", text)
+
+                    # Ambil URL gambar
+                    gambar = soal_json.get("URL")
+
+                    # Ambil pilihan jawaban
+                    options = json.loads(q.MC_option)
+
+                    jawaban_key_clean = str(jawaban_key).strip().lower()
+
+                    if isinstance(options, list):
+                        for opt in options:
+                            for k, v in opt.items():
+
+                                if k.lower() == jawaban_key_clean:
+
+                                    if isinstance(v, dict):
+                                        jawaban_text = (
+                                            v.get("teks")
+                                            or v.get("text")
+                                            or ""
+                                        )
+                                    else:
+                                        jawaban_text = str(v)
+
+                                    break
+
+                            if jawaban_text != jawaban_key:
+                                break
+
+                except Exception as e:
+                    print(f"Error parsing JSON soal ID {q.id}: {e}")
+
+                # Gabungkan agar tampil "a. Gambar yang hanya dapat dilihat..."
+                if jawaban_key and jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
+
+                # Gabungkan agar tampil "b. Representasi visual..."
+                # Cek agar kalau gagal ambil teks, tidak jadi "b. b"
+                if jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
 
                 attempt_details.append({
                     "soal": text,
-                    "jawaban_user": ans.user_answer,
+                    "gambar": gambar,
+                    "jawaban_user": jawaban_lengkap,
                     "status": ans.status
                 })
 
@@ -1343,17 +1447,16 @@ def kuis3():
 
     result = results[0] if results else None
 
-    # ===============================
+   # ===============================
     # AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
     # ===============================
     grouped_details = []
 
     if results:
-        # Urutkan ascending khusus untuk tampilan Tab Modal (1, 2, 3...)
+        # Urutkan ascending (1, 2, 3...) untuk tampilan Tab Modal
         results_asc = sorted(results, key=lambda x: x.percobaan_ke)
         
         for r in results_asc:
-            # Ambil jawaban khusus untuk ActivityResult ini saja
             answers = ActivityAnswer.query.filter_by(
                 id_activity_result=r.id
             ).order_by(ActivityAnswer.id.asc()).all()
@@ -1361,19 +1464,69 @@ def kuis3():
             attempt_details = []
             for ans in answers:
                 q = Question.query.get(ans.id_question)
-
                 if not q:
                     continue
 
+                # Inisialisasi default
+                text = q.question
+                gambar = None
+                jawaban_key = ans.user_answer
+                jawaban_text = jawaban_key
+
                 try:
                     soal_json = json.loads(q.question)
-                    text = soal_json.get("text", "")
-                except:
-                    text = q.question
+
+                    # Ambil teks soal
+                    text = soal_json.get("text", text)
+
+                    # Ambil URL gambar
+                    gambar = soal_json.get("URL")
+
+                    # Ambil pilihan jawaban
+                    options = json.loads(q.MC_option)
+
+                    jawaban_key_clean = str(jawaban_key).strip().lower()
+
+                    if isinstance(options, list):
+                        for opt in options:
+                            for k, v in opt.items():
+
+                                if k.lower() == jawaban_key_clean:
+
+                                    if isinstance(v, dict):
+                                        jawaban_text = (
+                                            v.get("teks")
+                                            or v.get("text")
+                                            or ""
+                                        )
+                                    else:
+                                        jawaban_text = str(v)
+
+                                    break
+
+                            if jawaban_text != jawaban_key:
+                                break
+
+                except Exception as e:
+                    print(f"Error parsing JSON soal ID {q.id}: {e}")
+
+                # Gabungkan agar tampil "a. Gambar yang hanya dapat dilihat..."
+                if jawaban_key and jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
+
+                # Gabungkan agar tampil "b. Representasi visual..."
+                # Cek agar kalau gagal ambil teks, tidak jadi "b. b"
+                if jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
 
                 attempt_details.append({
                     "soal": text,
-                    "jawaban_user": ans.user_answer,
+                    "gambar": gambar,
+                    "jawaban_user": jawaban_lengkap,
                     "status": ans.status
                 })
 
@@ -1381,7 +1534,6 @@ def kuis3():
                 "percobaan_ke": r.percobaan_ke,
                 "details": attempt_details
             })
-
     # ===============================
     # PROGRESS (FIX)
     # ===============================
@@ -1640,11 +1792,10 @@ def kuis4():
     grouped_details = []
 
     if results:
-        # Urutkan ascending khusus untuk tampilan Tab Modal (1, 2, 3...)
+        # Urutkan ascending (1, 2, 3...) untuk tampilan Tab Modal
         results_asc = sorted(results, key=lambda x: x.percobaan_ke)
         
         for r in results_asc:
-            # Ambil jawaban khusus untuk ActivityResult ini saja
             answers = ActivityAnswer.query.filter_by(
                 id_activity_result=r.id
             ).order_by(ActivityAnswer.id.asc()).all()
@@ -1652,19 +1803,69 @@ def kuis4():
             attempt_details = []
             for ans in answers:
                 q = Question.query.get(ans.id_question)
-
                 if not q:
                     continue
 
+                # Inisialisasi default
+                text = q.question
+                gambar = None
+                jawaban_key = ans.user_answer
+                jawaban_text = jawaban_key
+
                 try:
                     soal_json = json.loads(q.question)
-                    text = soal_json.get("text", "")
-                except:
-                    text = q.question
+
+                    # Ambil teks soal
+                    text = soal_json.get("text", text)
+
+                    # Ambil URL gambar
+                    gambar = soal_json.get("URL")
+
+                    # Ambil pilihan jawaban
+                    options = json.loads(q.MC_option)
+
+                    jawaban_key_clean = str(jawaban_key).strip().lower()
+
+                    if isinstance(options, list):
+                        for opt in options:
+                            for k, v in opt.items():
+
+                                if k.lower() == jawaban_key_clean:
+
+                                    if isinstance(v, dict):
+                                        jawaban_text = (
+                                            v.get("teks")
+                                            or v.get("text")
+                                            or ""
+                                        )
+                                    else:
+                                        jawaban_text = str(v)
+
+                                    break
+
+                            if jawaban_text != jawaban_key:
+                                break
+
+                except Exception as e:
+                    print(f"Error parsing JSON soal ID {q.id}: {e}")
+
+                # Gabungkan agar tampil "a. Gambar yang hanya dapat dilihat..."
+                if jawaban_key and jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
+
+                # Gabungkan agar tampil "b. Representasi visual..."
+                # Cek agar kalau gagal ambil teks, tidak jadi "b. b"
+                if jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
 
                 attempt_details.append({
                     "soal": text,
-                    "jawaban_user": ans.user_answer,
+                    "gambar": gambar,
+                    "jawaban_user": jawaban_lengkap,
                     "status": ans.status
                 })
 
@@ -1672,7 +1873,6 @@ def kuis4():
                 "percobaan_ke": r.percobaan_ke,
                 "details": attempt_details
             })
-
     # ===============================
     # PROGRESS (FIX)
     # ===============================
@@ -1922,17 +2122,16 @@ def kuis5():
 
     result = results[0] if results else None
 
-    # ===============================
+# ===============================
     # AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
     # ===============================
     grouped_details = []
 
     if results:
-        # Urutkan ascending khusus untuk tampilan Tab Modal (1, 2, 3...)
+        # Urutkan ascending (1, 2, 3...) untuk tampilan Tab Modal
         results_asc = sorted(results, key=lambda x: x.percobaan_ke)
         
         for r in results_asc:
-            # Ambil jawaban khusus untuk ActivityResult ini saja
             answers = ActivityAnswer.query.filter_by(
                 id_activity_result=r.id
             ).order_by(ActivityAnswer.id.asc()).all()
@@ -1940,19 +2139,69 @@ def kuis5():
             attempt_details = []
             for ans in answers:
                 q = Question.query.get(ans.id_question)
-
                 if not q:
                     continue
 
+                # Inisialisasi default
+                text = q.question
+                gambar = None
+                jawaban_key = ans.user_answer
+                jawaban_text = jawaban_key
+
                 try:
                     soal_json = json.loads(q.question)
-                    text = soal_json.get("text", "")
-                except:
-                    text = q.question
+
+                    # Ambil teks soal
+                    text = soal_json.get("text", text)
+
+                    # Ambil URL gambar
+                    gambar = soal_json.get("URL")
+
+                    # Ambil pilihan jawaban
+                    options = json.loads(q.MC_option)
+
+                    jawaban_key_clean = str(jawaban_key).strip().lower()
+
+                    if isinstance(options, list):
+                        for opt in options:
+                            for k, v in opt.items():
+
+                                if k.lower() == jawaban_key_clean:
+
+                                    if isinstance(v, dict):
+                                        jawaban_text = (
+                                            v.get("teks")
+                                            or v.get("text")
+                                            or ""
+                                        )
+                                    else:
+                                        jawaban_text = str(v)
+
+                                    break
+
+                            if jawaban_text != jawaban_key:
+                                break
+
+                except Exception as e:
+                    print(f"Error parsing JSON soal ID {q.id}: {e}")
+
+                # Gabungkan agar tampil "a. Gambar yang hanya dapat dilihat..."
+                if jawaban_key and jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
+
+                # Gabungkan agar tampil "b. Representasi visual..."
+                # Cek agar kalau gagal ambil teks, tidak jadi "b. b"
+                if jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
 
                 attempt_details.append({
                     "soal": text,
-                    "jawaban_user": ans.user_answer,
+                    "gambar": gambar,
+                    "jawaban_user": jawaban_lengkap,
                     "status": ans.status
                 })
 
@@ -2183,46 +2432,86 @@ def evaluasi():
     ).all()
 
     result = results[0] if results else None
-
-    # ===============================
-    # DETAIL JAWABAN
+# ===============================
+    # AMBIL DETAIL JAWABAN (GROUP BY PERCOBAAN)
     # ===============================
     grouped_details = []
 
     if results:
-
-        results_asc = sorted(
-            results,
-            key=lambda x: x.percobaan_ke
-        )
-
+        # Urutkan ascending (1, 2, 3...) untuk tampilan Tab Modal
+        results_asc = sorted(results, key=lambda x: x.percobaan_ke)
+        
         for r in results_asc:
-
             answers = ActivityAnswer.query.filter_by(
                 id_activity_result=r.id
-            ).order_by(
-                ActivityAnswer.id.asc()
-            ).all()
+            ).order_by(ActivityAnswer.id.asc()).all()
 
             attempt_details = []
-
             for ans in answers:
-
                 q = Question.query.get(ans.id_question)
-
                 if not q:
                     continue
 
-                try:
-                    soal = json.loads(q.question)
-                    text_soal = soal.get("text", "")
+                # Inisialisasi default
+                text = q.question
+                gambar = None
+                jawaban_key = ans.user_answer
+                jawaban_text = jawaban_key
 
-                except:
-                    text_soal = q.question
+                try:
+                    soal_json = json.loads(q.question)
+
+                    # Ambil teks soal
+                    text = soal_json.get("text", text)
+
+                    # Ambil URL gambar
+                    gambar = soal_json.get("URL")
+
+                    # Ambil pilihan jawaban
+                    options = json.loads(q.MC_option)
+
+                    jawaban_key_clean = str(jawaban_key).strip().lower()
+
+                    if isinstance(options, list):
+                        for opt in options:
+                            for k, v in opt.items():
+
+                                if k.lower() == jawaban_key_clean:
+
+                                    if isinstance(v, dict):
+                                        jawaban_text = (
+                                            v.get("teks")
+                                            or v.get("text")
+                                            or ""
+                                        )
+                                    else:
+                                        jawaban_text = str(v)
+
+                                    break
+
+                            if jawaban_text != jawaban_key:
+                                break
+
+                except Exception as e:
+                    print(f"Error parsing JSON soal ID {q.id}: {e}")
+
+                # Gabungkan agar tampil "a. Gambar yang hanya dapat dilihat..."
+                if jawaban_key and jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
+
+                # Gabungkan agar tampil "b. Representasi visual..."
+                # Cek agar kalau gagal ambil teks, tidak jadi "b. b"
+                if jawaban_key != jawaban_text:
+                    jawaban_lengkap = f"{jawaban_key}. {jawaban_text}"
+                else:
+                    jawaban_lengkap = jawaban_key
 
                 attempt_details.append({
-                    "soal": text_soal,
-                    "jawaban_user": ans.user_answer,
+                    "soal": text,
+                    "gambar": gambar,
+                    "jawaban_user": jawaban_lengkap,
                     "status": ans.status
                 })
 
@@ -2261,10 +2550,11 @@ def submit_kuis_evaluasi():
     user_id = session.get('user_id')
     activity_id = request.form.get('activity_id')
 
-    # =========================
+# =========================
     # AMBIL DATA
     # =========================
-    answers = json.loads(request.form.get('answers', '{}'))
+    # Ubah default string kosong dari '{}' menjadi '[]' karena formatnya sekarang Array/List
+    answers = json.loads(request.form.get('answers', '[]')) 
     correct_map = json.loads(request.form.get('correct_map', '{}'))
 
     start_time = datetime.now()
@@ -2324,8 +2614,8 @@ def submit_kuis_evaluasi():
     # =========================
     # CEK JAWABAN (SIMPAN SEMENTARA DULU)
     # =========================
-    activity_questions = ActivityQuestion.query.filter_by(id_activity=activity_id).all()
-    total_soal = len(activity_questions)
+    # Total soal sekarang dihitung dari panjang array yang dikirim
+    total_soal = len(answers)
     
     total_benar = 0
     total_salah = 0
@@ -2333,11 +2623,17 @@ def submit_kuis_evaluasi():
     # List untuk menyimpan jawaban sementara sebelum disimpan ke DB
     temp_answers = [] 
 
-    for aq in activity_questions:
-        q_id = str(aq.id_question)
-        user_ans = answers.get(q_id, "")
-        question = Question.query.get(aq.id_question)
+    # 🔥 KUNCI PERUBAHAN DI SINI: Looping langsung ke list jawaban (answers) 
+    # agar urutan acak saat siswa mengerjakan tetap dipertahankan
+    for item in answers:
+        q_id = str(item.get('id_question'))
+        user_ans = item.get('answer', '')
+        
+        question = Question.query.get(int(q_id))
         is_correct = False
+
+        if not question:
+            continue # Skip jika ID soal tidak ditemukan di DB
 
         if user_ans:
             if question.type == 'mc':
@@ -2358,7 +2654,7 @@ def submit_kuis_evaluasi():
 
         # Masukkan ke list sementara
         temp_answers.append({
-            'id_question': aq.id_question,
+            'id_question': int(q_id),
             'user_answer': user_ans,
             'status': status
         })
@@ -2473,20 +2769,15 @@ def submit_kuis_evaluasi():
 @user_bp.route('/update-progress', methods=['POST'])
 @student_required
 def update_progress():
-
     user_id = session.get('user_id')
-
     data = request.get_json()
-
     activity_id = data.get('activity_id')
 
     # =========================
     # JIKA DARI EVALUASI / QUIZ / ACTIVITY
     # =========================
     if activity_id:
-
         activity = Activity.query.get(activity_id)
-
         if not activity:
             return jsonify({
                 'success': False,
@@ -2500,7 +2791,6 @@ def update_progress():
     # JIKA DARI RANGKUMAN
     # =========================
     else:
-
         id_topic = data.get('id_topic')
         id_subtopic = data.get('id_subtopic')
 
@@ -2522,67 +2812,65 @@ def update_progress():
         id_subtopic=id_subtopic
     ).first()
 
+    # Siapkan variabel untuk menampung nilai progress yang akan dikirim ke frontend
+    final_progress = 0 
+
     # =========================
-    # JIKA BELUM ADA
+    # JIKA BELUM ADA (Tugas Baru Selesai)
     # =========================
     if not existing:
-
         history = HistoryProgress(
             id_user=user_id,
             id_topic=id_topic,
             id_subtopic=id_subtopic,
             updated_at=datetime.now()
         )
-
         db.session.add(history)
-
         db.session.commit()
 
         # =========================
-        # TOTAL SUBTOPIC
+        # TOTAL SUBTOPIC & COMPLETED
         # =========================
         total_subtopic = SubTopic.query.count()
+        completed = HistoryProgress.query.filter_by(id_user=user_id).count()
 
         # =========================
-        # TOTAL COMPLETED
+        # HITUNG PROGRESS (Pencegahan division by zero)
         # =========================
-        completed = HistoryProgress.query.filter_by(
-            id_user=user_id
-        ).count()
+        progress_value = round((completed / total_subtopic) * 100) if total_subtopic > 0 else 0
+        final_progress = progress_value # Simpan ke variabel akhir
 
         # =========================
-        # HITUNG PROGRESS
+        # CEK & UPDATE PROGRESS TABLE
         # =========================
-        progress_value = round(
-            (completed / total_subtopic) * 100
-        )
-
-        # =========================
-        # CEK PROGRESS
-        # =========================
-        progress = Progress.query.filter_by(
-            id_user=user_id
-        ).first()
+        progress = Progress.query.filter_by(id_user=user_id).first()
 
         if progress:
-
             progress.progres_value = progress_value
             progress.last_updated = datetime.now()
-
         else:
-
             progress = Progress(
                 id_user=user_id,
                 progres_value=progress_value,
                 last_updated=datetime.now()
             )
-
             db.session.add(progress)
 
         db.session.commit()
 
+    # =========================
+    # JIKA SUDAH ADA (User mengulang tugas yang sudah selesai)
+    # =========================
+    else:
+        progress = Progress.query.filter_by(id_user=user_id).first()
+        final_progress = progress.progres_value if progress else 0
+
+    # =========================
+    # RETURN JSON DENGAN NILAI PROGRESS BARU
+    # =========================
     return jsonify({
-        'success': True
+        'success': True,
+        'new_progress': final_progress
     })
 
 # guru / pengajar
