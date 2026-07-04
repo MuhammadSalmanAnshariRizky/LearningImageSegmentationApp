@@ -511,38 +511,39 @@ plt.show()</pre>
             <h5 class="fw-bold mb-0 text-dark">Petunjuk Praktik</h5>
           </div>
           <p class="mb-4 text-dark">
-            Ikuti langkah-langkah berikut untuk menjalankan simulasi program <em>Region Growing</em>:
+            Ikuti langkah-langkah berikut untuk menjalankan simulasi program segmentasi <em>Region Growing</em>:
           </p>
           <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
             <li class="mb-2">
-              Download gambar uji coba bernama <code>mobil_tank.jpg</code> melalui tautan berikut:
-              <a href="https://drive.google.com/file/d/1nAuPMLyYuI3jYKx1oxAHISM_UdU2k1Wh/view?usp=sharing"
+              Download gambar uji coba bernama <code>haruan_10.png</code> melalui tautan berikut:
+              <a href="https://drive.google.com/file/d/1XnRwoF7n_jbXtVI5-rYlbo4HM3UNbgtS/view?usp=sharing"
                 class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
                 <i class="fa-solid fa-download me-1"></i>Download
               </a>
             </li>
             <li class="mb-2">
-              Upload file <code>mobil_tank.jpg</code> tersebut ke area <strong>File Anda</strong> (bisa
+              Upload file <code>haruan_10.png</code> tersebut ke area <strong>File Workspace</strong> (dengan cara
               ditarik/<em>drag</em> atau diklik).
             </li>
             <li class="mb-2">
-              Pastikan <em>preview</em> gambar sudah muncul di sebelah kiri.
+              Pastikan <em>preview</em> gambar sudah muncul dengan benar pada daftar file di sebelah kiri layar.
             </li>
             <li class="mb-2">
               Klik tombol <strong>+ Add Cell</strong> berwarna biru untuk menambahkan blok kode baru pada area <em>Live
                 Code Notebook</em>.
             </li>
             <li class="mb-2">
-              Ketik dan lengkapi kode program yang rumpang (seperti nama file, koordinat <em>seed point</em>, dan nilai
+              Lengkapi bagian kode program yang rumpang (seperti nama file, koordinat <em>seed point</em>, dan nilai
               <em>threshold</em> batas toleransi).
             </li>
             <li class="mb-2">
-              Klik tombol <span class="badge bg-success"><i class="fa-solid fa-play"></i> Run</span> di pojok kanan atas
-              editor.
+              Klik tombol <button type="button" class="btn-icon run d-inline-block align-middle mx-1" title="Run"
+                style="pointer-events: none; vertical-align: middle; margin: 0 4px;"><i
+                  class="fa-solid fa-play"></i></button> di pojok kanan atas editor.
             </li>
             <li>
-              Amati hasil eksekusi algoritma dan periksa output gambar (Citra Asli dengan titik benih merah dan Hasil
-              Segmentasi Region Growing).
+              Amati hasil eksekusi algoritma dan periksa 2 buah output gambar (Citra Asli dengan titik benih merah dan
+              Hasil Segmentasi Region Growing) yang muncul di bagian bawah.
             </li>
           </ol>
         </div>
@@ -690,6 +691,53 @@ plt.show()</pre>
       </li>
     </ul>
   </nav>
+  <div class="d-flex justify-content-between mt-5 mb-5 flex-wrap gap-3">
+
+    <!-- Tombol Materi Sebelumnya -->
+    <a href="{{ url_for('user.pengantarregionbased') }}"
+      class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-prev-materi"
+      style="background-color: #94A3B8; width: 400px; max-width: 100%;">
+
+      <!-- Ikon Panah Kiri -->
+      <div class="bg-white rounded-circle d-flex justify-content-center align-items-center shadow-sm flex-shrink-0"
+        style="width: 40px; height: 40px; color: #94A3B8;">
+        <i class="fa-solid fa-arrow-left fs-5"></i>
+      </div>
+
+      <!-- Teks -->
+      <div class="text-start ms-3 flex-grow-1">
+        <small class="d-block text-white" style="font-size: 0.75rem; letter-spacing: 0.5px; opacity: 0.8;">
+          Materi Sebelumnya
+        </small>
+        <span class="fw-bold text-white" style="font-size: 1.05rem;">
+          Pengantar <i>Region-based</i>
+        </span>
+      </div>
+    </a>
+
+    <!-- Tombol Materi Selanjutnya -->
+    <a href="{{ url_for('user.splitandmerge') }}"
+      class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi"
+      style="background-color: #1e293b; width: 400px; max-width: 100%;">
+
+      <!-- Teks -->
+      <div class="text-end me-3 flex-grow-1">
+        <small class="d-block text-white" style="font-size: 0.75rem; letter-spacing: 0.5px; opacity: 0.8;">
+          Selanjutnya
+        </small>
+        <span class="fw-bold text-white" style="font-size: 1.05rem;">
+          <i>Split and Merge</i>
+        </span>
+      </div>
+
+      <!-- Ikon Panah Kanan -->
+      <div class="bg-white rounded-circle d-flex justify-content-center align-items-center shadow-sm flex-shrink-0"
+        style="width: 40px; height: 40px; color: #1e293b;">
+        <i class="fa-solid fa-arrow-right fs-5"></i>
+      </div>
+    </a>
+
+  </div>
 </div>
 
 {% block scripts %}

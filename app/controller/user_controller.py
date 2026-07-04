@@ -2363,22 +2363,16 @@ def submit_kuis_evaluasi():
             'status': status
         })
 
-    # =========================
     # HITUNG NILAI AKHIR
-    # =========================
     nilai_asli = ((total_benar / total_soal) * 100) if total_soal > 0 else 0
     nilai_final = nilai_asli
 
-    # JIKA SUDAH PERNAH MENGERJAKAN DAN NILAI MELEBIHI KKM MAKA NILAI DIJADIKAN KKM
     if is_retry and nilai_asli >= kkm:
         nilai_final = kkm
 
     end_time = datetime.now()
     result_status = 'lulus' if nilai_final >= kkm else 'tidak lulus'
-
-    # =========================
     # 1. SIMPAN RESULT DULU
-    # =========================
     result = ActivityResult(
         id_user=user_id,
         id_activity=activity_id,
@@ -2395,9 +2389,7 @@ def submit_kuis_evaluasi():
     db.session.add(result)
     db.session.flush() # Penting! Flush agar `result` mendapat ID
 
-    # =========================
     # 2. SIMPAN JAWABAN
-    # =========================
     for ans_data in temp_answers:
         answer = ActivityAnswer(
             id_activity_result=result.id, 
@@ -4867,16 +4859,13 @@ def run_code():
     data = request.get_json()
     code = data.get("code", "")
     image_path = data.get("image_path", "")
-
     # Ambil user_id dari session untuk akses folder upload yang benar
     user_id = str(session.get('user_id', 'anon'))
     user_upload_dir = os.path.join(UPLOAD_FOLDER, user_id)
-
     # Gunakan UUID unik untuk setiap request agar hasil tidak tertimpa
     request_id = str(uuid.uuid4())
     user_result_dir = os.path.join(RESULT_FOLDER, request_id)
     os.makedirs(user_result_dir, exist_ok=True)
-
     # Injeksi kode
     injected_code = f"""
 import os, cv2
@@ -4887,15 +4876,12 @@ output_dir = r'''{user_result_dir}'''
 
 {code}
 """
-
     # Buat file sementara
     temp_name = f"{uuid.uuid4()}.py"
     temp_path = os.path.join(tempfile.gettempdir(), temp_name)
-
     try:
         with open(temp_path, "w", encoding="utf-8") as f:
             f.write(injected_code)
-
         result = subprocess.run(
             [sys.executable, temp_path],
             capture_output=True,
@@ -4903,12 +4889,9 @@ output_dir = r'''{user_result_dir}'''
             timeout=120,
             cwd=current_app.root_path
         )
-
         if os.path.exists(temp_path):
             os.remove(temp_path)
-
         results_list = []
-
         for file in os.listdir(user_result_dir):
             if file.lower().endswith((".jpg", ".jpeg", ".png", ".bmp")):
                 results_list.append({
@@ -4921,17 +4904,13 @@ output_dir = r'''{user_result_dir}'''
                         filename=file
                     )
                 })
-
         return jsonify({
             "output": result.stdout + result.stderr,
             "images": results_list
         })
-
     except Exception as e:
-
         if os.path.exists(temp_path):
             os.remove(temp_path)
-
         return jsonify({
             "output": f"Server Error: {str(e)}",
             "images": []

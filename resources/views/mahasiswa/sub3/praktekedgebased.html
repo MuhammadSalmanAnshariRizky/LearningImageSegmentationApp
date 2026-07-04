@@ -238,37 +238,40 @@ plt.show()</pre>
             <h5 class="fw-bold mb-0 text-dark">Petunjuk Praktik</h5>
           </div>
           <p class="mb-4 text-dark">
-            Ikuti langkah-langkah berikut untuk menjalankan simulasi program segmentasi:
+            Ikuti langkah-langkah berikut untuk menjalankan simulasi program segmentasi gambar:
           </p>
           <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
             <li class="mb-2">
-              Download gambar uji coba bernama <code>citra_kendaraan.jpg</code> melalui tautan berikut:
-              <a href="https://drive.google.com/file/d/1nAuPMLyYuI3jYKx1oxAHISM_UdU2k1Wh/view?usp=sharing"
+              Download gambar uji coba ikan gabus/haruan bernama <code>haruan_11.png</code> melalui tautan berikut:
+              <a href="https://drive.google.com/file/d/170NfJh6ZPKmuxKtGWskSIzk4H9_AVscG/view?usp=sharing"
                 class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
                 <i class="fa-solid fa-download me-1"></i>Download
               </a>
             </li>
             <li class="mb-2">
-              Upload file <code>citra_kendaraan.jpg</code> tersebut ke area <strong>File Workspace</strong> (bisa
+              Upload file <code>haruan_11.png</code> tersebut ke area <strong>File Workspace</strong> (dengan cara
               ditarik/<em>drag</em> atau diklik).
             </li>
             <li class="mb-2">
-              Pastikan <em>preview</em> gambar sudah muncul di sebelah kiri.
+              Pastikan <em>preview</em> gambar sudah muncul di sebelah kiri layar.
             </li>
             <li class="mb-2">
-              Klik tombol <strong>+ Add Cell</strong> berwarna biru untuk memunculkan area kode program.
+              Klik tombol <strong>+ Add Cell</strong> berwarna biru untuk memunculkan area editor kode program.
             </li>
             <li class="mb-2">
-              Ketik dan lengkapi kode program yang rumpang (seperti nama file, nilai ambang <em>Canny</em>, dan ukuran
+              Lengkapi bagian kode program yang rumpang (seperti nama file, nilai ambang <em>Canny</em>, dan ukuran
               kernel matriks).
             </li>
             <li class="mb-2">
-              Klik tombol <span class="badge bg-success"><i class="fa-solid fa-play"></i> Run</span> di pojok kanan atas
-              editor.
+              Klik tombol <button type="button"
+                class="btn-icon run d-inline-flex align-items-center justify-content-center align-middle mx-1"
+                title="Run" style="pointer-events: none; vertical-align: middle;">
+                <i class="fa-solid fa-play"></i>
+              </button> di pojok kanan atas editor.
             </li>
             <li>
-              Amati hasil terminal <em>console</em> dan keluaran 4 buah gambar (Citra Asli, Edge Detection, Edge
-              Linking, dan Region Extraction) di bagian bawah.
+              Amati hasil pada terminal <em>console</em> dan perhatikan keluaran 5 buah gambar (Citra Asli, Edge
+              Detection, Edge Linking, Region Extraction dan hasil citra di segmentasi) di bagian bawah.
             </li>
           </ol>
         </div>
@@ -421,6 +424,53 @@ Jumlah kontur objek yang terdeteksi: 1</pre>
       </li>
     </ul>
   </nav>
+  <div class="d-flex justify-content-between mt-5 mb-5 flex-wrap gap-3">
+
+    <!-- Tombol Materi Sebelumnya -->
+    <a href="{{ url_for('user.tahapanedgebased') }}"
+      class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-prev-materi"
+      style="background-color: #94A3B8; width: 450px; max-width: 100%;">
+
+      <!-- Ikon Panah Kiri -->
+      <div class="bg-white rounded-circle d-flex justify-content-center align-items-center shadow-sm flex-shrink-0"
+        style="width: 40px; height: 40px; color: #94A3B8;">
+        <i class="fa-solid fa-arrow-left fs-5"></i>
+      </div>
+
+      <!-- Teks -->
+      <div class="text-start ms-3 flex-grow-1">
+        <small class="d-block text-white" style="font-size: 0.75rem; letter-spacing: 0.5px; opacity: 0.8;">
+          Materi Sebelumnya
+        </small>
+        <span class="fw-bold text-white" style="font-size: 1.05rem;">
+          Tahapan <i>Edge-Based Segmentation</i>
+        </span>
+      </div>
+    </a>
+
+    <!-- Tombol Materi Selanjutnya -->
+    <a href="{{ url_for('user.rangkuman3') }}"
+      class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi"
+      style="background-color: #1e293b; width: 450px; max-width: 100%;">
+
+      <!-- Teks -->
+      <div class="text-end me-3 flex-grow-1">
+        <small class="d-block text-white" style="font-size: 0.75rem; letter-spacing: 0.5px; opacity: 0.8;">
+          Selanjutnya
+        </small>
+        <span class="fw-bold text-white" style="font-size: 1.05rem;">
+          Rangkuman Bab 3
+        </span>
+      </div>
+
+      <!-- Ikon Panah Kanan -->
+      <div class="bg-white rounded-circle d-flex justify-content-center align-items-center shadow-sm flex-shrink-0"
+        style="width: 40px; height: 40px; color: #1e293b;">
+        <i class="fa-solid fa-arrow-right fs-5"></i>
+      </div>
+    </a>
+
+  </div>
 </div>
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>

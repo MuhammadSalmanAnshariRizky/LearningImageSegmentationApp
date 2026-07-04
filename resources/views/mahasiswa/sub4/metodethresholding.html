@@ -459,14 +459,14 @@ plt.show()</pre>
           </p>
           <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
             <li class="mb-2">
-              Download gambar uji coba bernama <code>citra_tank(8x8).png</code> melalui tautan berikut:
-              <a href="https://drive.google.com/file/d/1nAuPMLyYuI3jYKx1oxAHISM_UdU2k1Wh/view?usp=sharing"
+              Download gambar uji coba bernama <code>haruan_23.png</code> melalui tautan berikut:
+              <a href="https://drive.google.com/file/d/14xlxR2aY_nvBQFoB370w4Gl7KRI4G26R/view?usp=sharing"
                 class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
                 <i class="fa-solid fa-download me-1"></i>Download
               </a>
             </li>
             <li class="mb-2">
-              Upload file <code>citra_tank(8x8).png</code> tersebut ke area <strong>File Workspace</strong>.
+              Upload file <code>haruan_23.png</code> tersebut ke area <strong>File Workspace</strong>.
             </li>
             <li class="mb-2">
               Pastikan <em>preview</em> gambar sudah muncul di sebelah kiri.
@@ -478,8 +478,9 @@ plt.show()</pre>
               Lengkapi argumen nama file di dalam fungsi pembacaan gambar <code>cv2.imread()</code>.
             </li>
             <li class="mb-2">
-              Klik tombol <span class="badge bg-success"><i class="fa-solid fa-play"></i> Run</span> di pojok kanan atas
-              editor.
+              Klik tombol <button type="button" class="btn-icon run d-inline-block align-middle mx-1" title="Run"
+                style="pointer-events: none; vertical-align: middle; margin: 0 4px;"><i
+                  class="fa-solid fa-play"></i></button> di pojok kanan atas editor.
             </li>
             <li>
               Amati proses komputasi pencarian ambang batas dan periksa hasil ketiga visualisasinya.
@@ -1166,18 +1167,18 @@ plt.show()</pre>
           </p>
           <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
             <li class="mb-2">
-              Download gambar uji coba bernama <code>rumah&Mobil.jpg</code> melalui tautan berikut:
-              <a href="https://drive.google.com/file/d/1nAuPMLyYuI3jYKx1oxAHISM_UdU2k1Wh/view?usp=sharing"
+              Download gambar uji coba bernama <code>haruan_23.png</code> melalui tautan berikut:
+              <a href="https://drive.google.com/file/d/14xlxR2aY_nvBQFoB370w4Gl7KRI4G26R/view?usp=sharing"
                 class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
                 <i class="fa-solid fa-download me-1"></i>Download
               </a>
             </li>
             <li class="mb-2">
-              Upload file <code>rumah&Mobil.jpg</code> tersebut ke area <strong>File Workspace</strong> (bisa
+              Upload file <code>haruan_23.png</code> tersebut ke area <strong>File Workspace</strong> (dengan cara
               ditarik/<em>drag</em> atau diklik).
             </li>
             <li class="mb-2">
-              Pastikan <em>preview</em> gambar sudah muncul dengan benar pada daftar file di sebelah kiri.
+              Pastikan <em>preview</em> gambar sudah muncul dengan benar pada daftar file di sebelah kiri layar.
             </li>
             <li class="mb-2">
               Klik tombol <strong>+ Add Cell</strong> berwarna biru untuk menambahkan blok kode baru pada area <em>Live
@@ -1187,12 +1188,13 @@ plt.show()</pre>
               Lengkapi parameter yang rumpang (<code>_____</code>) dengan nama file yang baru saja Anda unggah.
             </li>
             <li class="mb-2">
-              Klik tombol <span class="badge bg-success"><i class="fa-solid fa-play"></i> Run</span> di pojok kanan atas
-              editor.
+              Klik tombol <button type="button" class="btn-icon run d-inline-block align-middle mx-1" title="Run"
+                style="pointer-events: none; vertical-align: middle; margin: 0 4px;"><i
+                  class="fa-solid fa-play"></i></button> di pojok kanan atas editor.
             </li>
             <li>
-              Amati hasil output <em>console</em> dan komparasi 3 gambar (Citra Asli, Grafik Histogram, dan Hasil Otsu
-              Thresholding) yang muncul di bawahnya.
+              Amati hasil output <em>console</em> dan komparasi 3 buah gambar (Citra Asli, Grafik Histogram, dan Hasil
+              Otsu Thresholding) yang muncul di bawahnya.
             </li>
           </ol>
         </div>
@@ -1340,6 +1342,53 @@ plt.show()</pre>
       </li>
     </ul>
   </nav>
+  <div class="d-flex justify-content-between mt-5 mb-5 flex-wrap gap-3">
+
+    <!-- Tombol Materi Sebelumnya -->
+    <a href="{{ url_for('user.pengantarthresholdbased') }}"
+      class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-prev-materi"
+      style="background-color: #94A3B8; width: 400px; max-width: 100%;">
+
+      <!-- Ikon Panah Kiri -->
+      <div class="bg-white rounded-circle d-flex justify-content-center align-items-center shadow-sm flex-shrink-0"
+        style="width: 40px; height: 40px; color: #94A3B8;">
+        <i class="fa-solid fa-arrow-left fs-5"></i>
+      </div>
+
+      <!-- Teks -->
+      <div class="text-start ms-3 flex-grow-1">
+        <small class="d-block text-white" style="font-size: 0.75rem; letter-spacing: 0.5px; opacity: 0.8;">
+          Materi Sebelumnya
+        </small>
+        <span class="fw-bold text-white" style="font-size: 1.05rem;">
+          Pengantar <i>Threshold-Based</i>
+        </span>
+      </div>
+    </a>
+
+    <!-- Tombol Materi Selanjutnya -->
+    <a href="{{ url_for('user.rangkuman4') }}"
+      class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi"
+      style="background-color: #1e293b; width: 400px; max-width: 100%;">
+
+      <!-- Teks -->
+      <div class="text-end me-3 flex-grow-1">
+        <small class="d-block text-white" style="font-size: 0.75rem; letter-spacing: 0.5px; opacity: 0.8;">
+          Materi Selanjutnya
+        </small>
+        <span class="fw-bold text-white" style="font-size: 1.05rem;">
+          Rangkuman Bab 4
+        </span>
+      </div>
+
+      <!-- Ikon Panah Kanan -->
+      <div class="bg-white rounded-circle d-flex justify-content-center align-items-center shadow-sm flex-shrink-0"
+        style="width: 40px; height: 40px; color: #1e293b;">
+        <i class="fa-solid fa-arrow-right fs-5"></i>
+      </div>
+    </a>
+
+  </div>
 </div>
 
 {% block scripts %}
@@ -1347,334 +1396,5 @@ plt.show()</pre>
 <script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>
 <script src="{{ url_for('static', filename='js/sub4/Gthreshold.js') }}"></script>
 <script src="{{ url_for('static', filename='js/sub4/Otsu.js') }}"></script>
-<script>
-  let otsuCellCount = 0;
 
-  let otsuEditors = {};
-
-  let otsuImagePath = "";
-
-  // =====================================
-  // ADD CELL
-  // =====================================
-  function addOtsuCell() {
-    otsuCellCount++;
-
-    const container = document.getElementById("otsuNotebook");
-
-    const cell = document.createElement("div");
-
-    cell.className = "cell";
-
-    cell.innerHTML = `
-
-<div class="d-flex justify-content-between align-items-center mb-2">
-
-    <span class="text-muted small fw-bold">
-        Otsu In [${otsuCellCount}]:
-    </span>
-
-    <div class="cell-actions">
-
-        <button
-            class="btn-icon run"
-            onclick="runOtsuCell(${otsuCellCount})"
-        >
-
-            <i class="fa-solid fa-play"></i>
-
-        </button>
-
-    </div>
-
-</div>
-
-<textarea id="otsu-editor-${otsuCellCount}">
-  import cv2
-import numpy as np
-import os
-
-# =====================================
-# BACA GAMBAR
-# =====================================
-img = cv2.imread(
-    'uploads/grayscale.jpg',
-    cv2.IMREAD_GRAYSCALE
-)
-
-# =====================================
-# VALIDASI
-# =====================================
-if img is None:
-
-    print("Gambar tidak ditemukan!")
-
-    exit()
-
-# =====================================
-# HISTOGRAM
-# =====================================
-hist = cv2.calcHist([img],[0],None,[256],[0,256])
-
-hist = hist.flatten()
-
-# =====================================
-# NORMALISASI HISTOGRAM
-# =====================================
-total_pixels = img.shape[0] * img.shape[1]
-
-H = hist / total_pixels
-
-# =====================================
-# VARIANSI MINIMUM
-# =====================================
-best_threshold = 0
-
-min_variance = float('inf')
-
-# =====================================
-# LOOP THRESHOLD
-# =====================================
-for t in range(255):
-
-    # =====================================
-    # BACKGROUND
-    # =====================================
-    background = np.arange(0,t + 1)
-
-    # =====================================
-    # FOREGROUND
-    # =====================================
-    foreground = np.arange(t + 1,256)
-
-    # =====================================
-    # PROBABILITAS
-    # =====================================
-    wB = np.sum(H[0:t+1])
-
-    wF = np.sum(H[t+1:256])
-
-    # hindari pembagian nol
-    if wB == 0 or wF == 0:
-
-        continue
-
-    # =====================================
-    # MEAN
-    # =====================================
-    muB = np.sum(background * H[0:t+1]) / wB
-
-    muF = np.sum(foreground * H[t+1:256]) / wF
-
-    # =====================================
-    # VARIANSI BACKGROUND
-    # =====================================
-    sigmaB = np.sum(((background - muB) ** 2)*H[0:t+1]) / wB
-
-    # =====================================
-    # VARIANSI FOREGROUND
-    # =====================================
-    sigmaF = np.sum(((foreground - muF) ** 2)*H[t+1:256]) / wF
-
-    # =====================================
-    # VARIANSI TOTAL
-    # =====================================
-    sigma = (wB * sigmaB+ wF * sigmaF)
-
-    # =====================================
-    # CARI VARIANSI MINIMUM
-    # =====================================
-    if sigma < min_variance:
-
-        min_variance = sigma
-
-        best_threshold = t
-
-# =====================================
-# SEGMENTASI
-# =====================================
-binary = np.zeros_like(img)
-
-binary[img > best_threshold] = 1
-
-binary[img <= best_threshold = 0
-
-# =====================================
-# SIMPAN HASIL
-# =====================================
-save_path = os.path.join(output_dir,"hasil_otsu_threshold.jpg")
-
-cv2.imwrite(save_path,binary)
-
-# =====================================
-# OUTPUT
-# =====================================
-print("Otsu Thresholding berhasil")
-
-print("Threshold terbaik:")
-print(best_threshold)
-
-print("Variansi minimum:")
-print(min_variance)
-
-print("Disimpan di:")
-print(save_path)
-
-</textarea>
-
-<div
-    id="otsu-output-${otsuCellCount}"
-    class="output-box"
->
-    Output muncul di sini...
-</div>
-`;
-
-    container.appendChild(cell);
-
-    const editor = CodeMirror.fromTextArea(
-      document.getElementById(`otsu-editor-${otsuCellCount}`),
-      {
-        mode: "python",
-        theme: "dracula",
-        lineNumbers: true,
-        lineWrapping: true,
-      },
-    );
-
-    editor.setSize("100%", "auto");
-
-    otsuEditors[otsuCellCount] = editor;
-  }
-
-  // =====================================
-  // RUN CELL
-  // =====================================
-  function runOtsuCell(id) {
-    const code = otsuEditors[id].getValue();
-
-    const outputBox = document.getElementById(`otsu-output-${id}`);
-
-    outputBox.innerHTML = "⏳ Running Otsu Threshold...";
-
-    fetch("/run-code", {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify({
-        code: code,
-
-        image_path: otsuImagePath,
-      }),
-    })
-      .then((res) => res.json())
-
-      .then((data) => {
-        outputBox.innerHTML = `
-
-<div class="result-wrapper">
-
-    <div class="console-output mb-3">
-
-        <pre>${data.output}</pre>
-
-    </div>
-
-    <div class="image-results">
-
-        ${data.before_image
-            ? `
-            <div class="image-card">
-
-                <h6>Gambar Asli</h6>
-
-                <img
-                    src="${data.before_image}"
-                    class="result-image preview-image"
-
-                    data-bs-toggle="modal"
-                    data-bs-target="#otsuModal"
-
-                    onclick="openOtsuModal('${data.before_image}')"
-                >
-
-            </div>
-            `
-            : ""
-          }
-
-        <div class="image-card">
-
-            <h6>Hasil Otsu Threshold</h6>
-
-            <img
-                src="/static/results/hasil_otsu_threshold.jpg?t=${Date.now()}"
-                class="result-image preview-image"
-
-                data-bs-toggle="modal"
-                data-bs-target="#otsuModal"
-
-                onclick="openOtsuModal('/static/results/hasil_otsu_threshold.jpg?t=${Date.now()}')"
-            >
-
-        </div>
-
-    </div>
-
-</div>
-`;
-      });
-  }
-
-  // =====================================
-  // TRIGGER UPLOAD
-  // =====================================
-  function triggerOtsuUpload() {
-    document.getElementById("otsuFileInput").click();
-  }
-
-  // =====================================
-  // HANDLE UPLOAD
-  // =====================================
-  function handleOtsuUpload(event) {
-    const file = event.target.files[0];
-
-    if (!file) return;
-
-    const formData = new FormData();
-
-    formData.append("image", file);
-
-    fetch("/upload-image", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => res.json())
-
-      .then((data) => {
-        otsuImagePath = data.path;
-
-        document.getElementById("otsuFileList").innerHTML = `
-        
-<li>
-
-    <i class="fa-solid fa-file-image me-2 text-warning"></i>
-
-    ${file.name}
-
-</li>
-`;
-      });
-  }
-
-  // =====================================
-  // OPEN MODAL
-  // =====================================
-  function openOtsuModal(src) {
-    document.getElementById("otsuModalImage").src = src;
-  }
-</script>
 {% endblock %} {% endblock %}

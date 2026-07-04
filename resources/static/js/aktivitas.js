@@ -118,24 +118,19 @@ function tampilSoal() {
 ========================= */
 function pilihJawaban(el) {
   if (sudahBenar) return;
-
   const pilihan = el.dataset.key;
   const data = soalData[indexSoal];
-
   const feedback = document.getElementById("feedback");
   const nextBtn = document.getElementById("nextBtn");
-
   /* RESET SALAH SEBELUMNYA */
   document.querySelectorAll(".option-box").forEach((o) => {
     o.classList.remove("wrong");
   });
-
   /* JAWABAN BENAR */
   if (pilihan === data.jawaban) {
     sudahBenar = true;
     el.classList.add("correct");
     nextBtn.disabled = false;
-
     // Feedback Modern untuk Jawaban Benar
     feedback.innerHTML = `
       <div class="feedback-alert correct-alert">
@@ -146,14 +141,12 @@ function pilihJawaban(el) {
         </div>
       </div>
     `;
-
     document.querySelectorAll(".option-box").forEach((o) => {
       o.classList.add("disabled");
     });
   } else {
     /* JAWABAN SALAH */
     el.classList.add("wrong");
-
     // Feedback Modern untuk Jawaban Salah
     feedback.innerHTML = `
       <div class="feedback-alert wrong-alert">
