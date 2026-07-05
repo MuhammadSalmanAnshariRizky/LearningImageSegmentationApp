@@ -117,9 +117,9 @@ def dashboard():
             'dashboard.html',
             kelas=None,
             total_materi=0,
-            topik_selesai=0,      # Ditambahkan untuk handle error jika tidak ada kelas
+            topik_selesai=0,      
             selesai=0,
-            total_subtopic=0,     # Ditambahkan untuk handle error jika tidak ada kelas
+            total_subtopic=0,     
             progress_percent=0,
             materi_list=[],
             hasil_belajar=[]
@@ -135,6 +135,7 @@ def dashboard():
         .order_by(Topic.id.asc())
         .all()
     )
+    total_materi = len(topics) # Menghitung total materi
 
     # =========================
     # TOTAL SUBTOPIC
@@ -183,9 +184,6 @@ def dashboard():
 
     for topic in topics:
 
-        # =========================
-        # SUBTOPIC PER TOPIC
-        # =========================
         subtopics = (
             SubTopic.query
             .filter_by(id_topic=topic.id)
@@ -194,36 +192,21 @@ def dashboard():
         )
 
         total_sub = len(subtopics)
+        subtopic_ids = [s.id for s in subtopics]
 
-        subtopic_ids = [
-            s.id for s in subtopics
-        ]
-
-        # =========================
-        # HITUNG YANG SELESAI
-        # =========================
         selesai_sub = sum(
             1 for sid in subtopic_ids
             if sid in completed_subtopic_ids
         )
 
-        # =========================
-        # PERSEN TOPIC
-        # =========================
         persen = 0
 
         if total_sub > 0:
-            persen = round(
-                (selesai_sub / total_sub) * 100
-            )
+            persen = round((selesai_sub / total_sub) * 100)
 
-        # =========================
-        # SUBTOPIC BERIKUTNYA
-        # =========================
         next_subtopic_id = None
 
         for sid in subtopic_ids:
-
             if sid not in completed_subtopic_ids:
                 next_subtopic_id = sid
                 break
@@ -232,81 +215,44 @@ def dashboard():
         if next_subtopic_id is None and subtopic_ids:
             next_subtopic_id = subtopic_ids[0]
 
-        # =========================
-        # HREF
-        # =========================
-        href = SUBTOPIC_ROUTE.get(
-            next_subtopic_id,
-            "#"
-        )
+        href = SUBTOPIC_ROUTE.get(next_subtopic_id, "#")
 
-        # =========================
-        # DEFAULT STATUS
-        # =========================
         status = "locked"
-
         button_text = "Terkunci"
         button_class = "btn-secondary"
-
         badge_class = "bg-secondary bg-opacity-10 text-secondary"
-
         card_class = "locked locked-card"
 
-        # =========================
-        # TOPIC SELESAI
-        # =========================
         if persen == 100:
-
             status = "done"
-
             button_text = "Pelajari Lagi"
             button_class = "btn-outline-success"
-
             badge_class = "bg-success bg-opacity-10 text-success"
-
             card_class = "success"
-
             next_unlock = True
             
             # Increment +1 untuk setiap topik yang persentasenya 100%
             topik_selesai_count += 1
 
-        # =========================
-        # TOPIC YANG AKTIF
-        # =========================
         elif next_unlock:
-
             status = "current"
-
             button_text = "Lanjutkan"
             button_class = "btn-primary"
-
             badge_class = "bg-primary bg-opacity-10 text-primary"
-
             card_class = "primary"
-
             next_unlock = False
 
-        # =========================
-        # SIMPAN KE LIST
-        # =========================
         materi_list.append({
-
             "id": topic.id,
             "title": topic.topic_name,
-
             "status": status,
             "progress": persen,
-
             "selesai_sub": selesai_sub,
             "total_sub": total_sub,
-
             "button_text": button_text,
             "button_class": button_class,
-
             "badge_class": badge_class,
             "card_class": card_class,
-
             "href": href
         })
 
@@ -315,65 +261,38 @@ def dashboard():
     # =========================
     hasil_belajar = []
 
-    # AMBIL SEMUA ACTIVITY
     activities = (
-
         Activity.query
-
-        .filter(
-            Activity.type.in_(["kuis", "evaluasi"])
-        )
-
+        .filter(Activity.type.in_(["kuis", "evaluasi"]))
         .order_by(Activity.id.asc())
-
         .all()
     )
 
-    # LOOP ACTIVITY
     for activity in activities:
-
-        # =========================
-        # AMBIL RESULT TERBARU
-        # =========================
         latest_result = (
-
             ActivityResult.query
-
-            .filter_by(
-                id_user=user_id,
-                id_activity=activity.id
-            )
-
-            .order_by(
-                ActivityResult.id.desc()
-            )
-
+            .filter_by(id_user=user_id, id_activity=activity.id)
+            .order_by(ActivityResult.id.desc())
             .first()
         )
 
-        # JIKA ADA RESULT
         if latest_result:
-
             hasil_belajar.append({
-
                 "title": activity.title,
-
                 "nilai": latest_result.nilai_akhir,
-
                 "status": latest_result.result_status,
-
                 "benar": latest_result.total_benar,
-
                 "salah": latest_result.total_salah
             })
 
+    # TAMBAHKAN RENDER TEMPLATE INI DI AKHIR FUNGSI
     return render_template(
         'dashboard.html',
         kelas=kelas,
-        total_materi=len(topics),
-        topik_selesai=topik_selesai_count, # Variabel dipassing ke template
+        total_materi=total_materi,
+        topik_selesai=topik_selesai_count,
         selesai=selesai,
-        total_subtopic=total_subtopic,     # Variabel dipassing ke template
+        total_subtopic=total_subtopic,
         progress_percent=progress_percent,
         materi_list=materi_list,
         hasil_belajar=hasil_belajar
@@ -699,12 +618,18 @@ def jeniscitra():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
 
+    is_completed = True if cek_history else False
     return render_template(
         'mahasiswa/sub1/jeniscitra.html',
         id_activity=id_activity,
         progress=progress_percent,
-        title = title)
+        title = title,
+        is_completed=is_completed)
 
 @user_bp.route('/materi1/rangkuman')
 @student_required
@@ -727,12 +652,20 @@ def rangkuman1():
     progress_data = Progress.query.filter_by(
         id_user=user_id
     ).first()
-
+    
+    id_subtopic = 3
+    
     progress_percent = progress_data.progres_value if progress_data else 0
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
 
+    is_completed = True if cek_history else False
     return render_template(
         'mahasiswa/sub1/rangkuman1.html',
-        progress=progress_percent
+        progress=progress_percent,
+        is_completed=is_completed
     )
 
 @user_bp.route('/materi1/kuis')
@@ -941,12 +874,19 @@ def pengantarsegmentasi():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
     return render_template(
         'mahasiswa/sub2/pengantarsegmentasi.html', 
         id_activity=id_activity,
         progress=progress_percent,
-        title = title)
-    
+        title = title,
+        is_completed=is_completed
+    )
 
 @user_bp.route('/materi2/metodesegmentasi')
 @student_required
@@ -993,11 +933,20 @@ def metodesegmentasi():
         id_user=user_id
     ).first()
     progress_percent = progress_data.progres_value if progress_data else 0
+    
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
     return render_template(
         'mahasiswa/sub2/metodesegmentasi.html', 
         id_activity=id_activity,
         progress=progress_percent,
-        title = title)
+        title = title,
+        is_completed=is_completed
+    )
 
 @user_bp.route('/materi2/rangkuman')
 @student_required
@@ -1021,7 +970,14 @@ def rangkuman2():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub2/rangkuman2.html',progress=progress_percent)
+    id_subtopic = 7
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
+    return render_template('mahasiswa/sub2/rangkuman2.html',progress=progress_percent, is_completed=is_completed)
 
 @user_bp.route('/materi2/kuis')
 @student_required
@@ -1245,11 +1201,18 @@ def pengantaredgebased():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
     return render_template(
         'mahasiswa/sub3/pengantaredgebased.html',
         id_activity=id_activity,
         progress=progress_percent,
-        title = title
+        title = title,
+        is_completed=is_completed
     )
 
 @user_bp.route('/materi3/tahapanedgebased')
@@ -1298,11 +1261,18 @@ def tahapanedgebased():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
     return render_template(
         'mahasiswa/sub3/tahapanedgebased.html',
         id_activity=id_activity,
         progress=progress_percent,
-        title = title
+        title = title,
+        is_completed=is_completed
     )
 
 @user_bp.route('/materi3/praktekedgebased')
@@ -1351,11 +1321,18 @@ def praktekedgebased():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
     return render_template(
         'mahasiswa/sub3/praktekedgebased.html',
         id_activity=id_activity,
         progress=progress_percent,
-        title = title
+        title = title,
+        is_completed=is_completed
     )
 
 @user_bp.route('/materi3/rangkuman')
@@ -1380,7 +1357,14 @@ def rangkuman3():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub3/rangkuman3.html',progress=progress_percent)
+    id_subtopic = 12
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
+    return render_template('mahasiswa/sub3/rangkuman3.html',progress=progress_percent, is_completed=is_completed)
 
 @user_bp.route('/materi3/kuis')
 @student_required
@@ -1599,7 +1583,13 @@ def pengantarthresholdbased():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub4/pengantarthresholdbased.html',id_activity=id_activity, progress=progress_percent,title=title)
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
+    return render_template('mahasiswa/sub4/pengantarthresholdbased.html',id_activity=id_activity, progress=progress_percent,title=title, is_completed=is_completed)
 
 @user_bp.route("/materi4/histogram")
 @student_required
@@ -1647,7 +1637,13 @@ def histogram():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub4/histogram.html',id_activity=id_activity, progress=progress_percent,title=title)
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
+    return render_template('mahasiswa/sub4/histogram.html',id_activity=id_activity, progress=progress_percent,title=title, is_completed=is_completed)
 
 @user_bp.route("/materi4/metodethresholding")
 @student_required
@@ -1695,7 +1691,13 @@ def metodethresholding():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub4/metodethresholding.html', id_activity=id_activity, progress=progress_percent,title=title)
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
+    return render_template('mahasiswa/sub4/metodethresholding.html', id_activity=id_activity, progress=progress_percent,title=title, is_completed=is_completed)
 
 @user_bp.route("/materi4/rangkuman")
 @student_required
@@ -1719,7 +1721,14 @@ def rangkuman4():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub4/rangkuman4.html', progress=progress_percent)
+    id_subtopic = 17
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
+    return render_template('mahasiswa/sub4/rangkuman4.html', progress=progress_percent,is_completed=is_completed)
 
 @user_bp.route('/materi4/kuis')
 @student_required
@@ -1936,7 +1945,13 @@ def pengantarregionbased():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub5/pengantarregionbased.html',id_activity=id_activity, progress=progress_percent,title=title)
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
+    return render_template('mahasiswa/sub5/pengantarregionbased.html',id_activity=id_activity, progress=progress_percent,title=title, is_completed=is_completed)
 
 @user_bp.route('/materi5/regiongrowing')
 @student_required
@@ -1984,7 +1999,13 @@ def regiongrowing():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub5/regiongrowing.html',id_activity=id_activity, progress=progress_percent,title=title)
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
+    return render_template('mahasiswa/sub5/regiongrowing.html',id_activity=id_activity, progress=progress_percent,title=title,is_completed=is_completed)
 
 @user_bp.route('/materi5/splitandmerge')
 @student_required
@@ -2032,7 +2053,13 @@ def splitandmerge():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub5/splitandmerge.html',id_activity=id_activity, progress=progress_percent,title=title)
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
+    return render_template('mahasiswa/sub5/splitandmerge.html',id_activity=id_activity, progress=progress_percent,title=title,is_completed=is_completed)
 
 @user_bp.route("/materi5/rangkuman")
 @student_required
@@ -2056,7 +2083,14 @@ def rangkuman5():
     ).first()
 
     progress_percent = progress_data.progres_value if progress_data else 0
-    return render_template('mahasiswa/sub5/rangkuman5.html', progress=progress_percent)
+    id_subtopic = 22
+    cek_history = HistoryProgress.query.filter_by(
+        id_user=user_id,
+        id_subtopic=id_subtopic
+    ).first()
+
+    is_completed = True if cek_history else False
+    return render_template('mahasiswa/sub5/rangkuman5.html', progress=progress_percent, is_completed=is_completed)
 @user_bp.route('/materi5/kuis')
 @student_required
 def kuis5():
@@ -2550,7 +2584,7 @@ def submit_kuis_evaluasi():
     user_id = session.get('user_id')
     activity_id = request.form.get('activity_id')
 
-# =========================
+    # =========================
     # AMBIL DATA
     # =========================
     # Ubah default string kosong dari '{}' menjadi '[]' karena formatnya sekarang Array/List
@@ -2658,13 +2692,27 @@ def submit_kuis_evaluasi():
             'user_answer': user_ans,
             'status': status
         })
+    
+    pernah_lulus = ActivityResult.query.filter_by(
+        id_user=user_id,
+        id_activity=activity_id,
+        result_status='lulus'
+    ).first()
 
     # HITUNG NILAI AKHIR
     nilai_asli = ((total_benar / total_soal) * 100) if total_soal > 0 else 0
-    nilai_final = nilai_asli
 
-    if is_retry and nilai_asli >= kkm:
+    if pernah_lulus:
+        # Sudah pernah lulus sebelumnya
+        nilai_final = pernah_lulus.nilai_akhir
+
+    elif is_retry and nilai_asli >= kkm:
+        # Baru lulus setelah retry
         nilai_final = kkm
+
+    else:
+        # Percobaan pertama atau retry yang belum lulus
+        nilai_final = nilai_asli
 
     end_time = datetime.now()
     result_status = 'lulus' if nilai_final >= kkm else 'tidak lulus'
@@ -2743,28 +2791,37 @@ def submit_kuis_evaluasi():
             db.session.commit()
 
     # =========================
-    # REDIRECT
+    # REDIRECT / TAMPILKAN HASIL
     # =========================
     topic = Topic.query.get(activity.id_topic)
-    
-    # Mencegah bug spasi nyasar pada database
     nama_topik = topic.topic_name.strip()
 
+    next_url = '/'
     if activity.type == 'evaluasi':
-        return redirect('/evaluasi')
-
-    if nama_topik == 'Pengantar Citra Digital':
-        return redirect('/materi1/kuis')
+        next_url = '/evaluasi'
+    elif nama_topik == 'Pengantar Citra Digital':
+        next_url = '/materi1/kuis'
     elif nama_topik == 'Pengantar Segmentasi Citra':
-        return redirect('/materi2/kuis')
+        next_url = '/materi2/kuis'
     elif nama_topik == 'Edge-Based Segmentation':
-        return redirect('/materi3/kuis')
+        next_url = '/materi3/kuis'
     elif nama_topik == 'Threshold-Based Segmentation':
-        return redirect('/materi4/kuis')
+        next_url = '/materi4/kuis'
     elif nama_topik == 'Region-Based Segmentation':
-        return redirect('/materi5/kuis')
+        next_url = '/materi5/kuis'
 
-    return redirect('/')
+    # Format Tanggal untuk Ditampilkan
+    tanggal_format = end_time.strftime("%d %b %Y, %H:%M")
+
+    # Render kembali halaman kuis yang sama (ganti 'kuis.html' dengan nama file template Anda)
+    # tetapi berikan argumen show_result=True agar card nilainya muncul
+    return render_template('layouts/kuis.html', 
+                           show_result=True, 
+                           nilai=int(nilai_final), 
+                           status=result_status, 
+                           tanggal=tanggal_format,
+                           next_url=next_url,
+                           activity=activity)
 
 @user_bp.route('/update-progress', methods=['POST'])
 @student_required

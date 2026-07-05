@@ -715,6 +715,7 @@
         </a>
     </div>
 </div>
+<div id="materi-data" data-is-completed="{{ 'true' if is_completed else 'false' }}" style="display: none;"></div>
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 <script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>

@@ -145,8 +145,8 @@
     <div class="card border shadow-sm mb-4 rounded-4">
         <div class="card-body px-4 py-3">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="fw-bold text-dark fs-6">Progress Belajar</span>
-                <span class="text-success fw-bold fs-6">{{ progress }}%</span>
+                <span class="fw-bold text-dark">Progress Belajar</span>
+                <span class="text-success fw-bold" id="progressText">{{ progress }}%</span>
             </div>
             <div class="progress rounded-pill bg-light" style="height: 10px;">
                 <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill"
@@ -299,10 +299,15 @@
 
     <div class="card border shadow-sm rounded-4">
         <div class="card-body p-4">
-            <h6 class="fw-bold mb-3 text-dark"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Riwayat
-                Pengerjaan</h6>
-            <div class="table-responsive">
-                <table class="table table-custom align-middle text-center mb-0">
+            <h6 class="fw-bold mb-3 text-dark">
+                <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Riwayat Pengerjaan
+            </h6>
+
+            <!-- UBAH DI SINI: Gunakan table-responsive-md atau table-responsive-lg -->
+            <div class="table-responsive-md">
+
+                <!-- TAMBAHKAN DI SINI: class w-100 untuk memastikan tabel pas 100% -->
+                <table class="table table-custom align-middle text-center mb-0 w-100">
                     <thead>
                         <tr>
                             <th class="text-start ps-3">Percobaan</th>
@@ -331,6 +336,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+
             </div>
         </div>
     </div>

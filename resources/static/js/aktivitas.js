@@ -219,7 +219,7 @@ function selesaiQuiz() {
         // ==========================================
         const btnNext = document.getElementById("btnNextMateri");
         if (btnNext) {
-          btnNext.classList.remove("disabled-link");
+          btnNext.classList.remove("navigasi-disabled-link");
           btnNext.style.backgroundColor = "#1e293b";
         }
 

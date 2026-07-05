@@ -92,16 +92,22 @@
   </div>
 </div>
 <div class="text-center mt-4 mb-5">
-
-  <button id="btnSelesaiRangkuman" class="btn btn-success rounded-pill px-5 py-3 fw-bold shadow-sm" data-topic="1"
+  {% if is_completed %}
+  <button id="btnSelesaiRangkuman" class="btn btn-success rounded-pill px-5 py-3 fw-bold shadow-sm" disabled>
+    <i class="fa-solid fa-check me-2"></i>
+    Selesai
+  </button>
+  {% else %}
+  <button id="btnSelesaiRangkuman" class="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-sm" data-topic="1"
     data-subtopic="3">
     <i class="fa-solid fa-circle-check me-2"></i>
     Selesai Membaca Rangkuman
   </button>
+  {% endif %}
 </div>
 <div class="d-flex justify-content-between mt-5 mb-5 flex-wrap gap-3">
 
-  <!-- Tombol Materi Sebelumnya -->
+  <!-- Tombol Materi Sebelumnya (Tetap) -->
   <a href="{{ url_for('user.jeniscitra') }}"
     class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-prev-materi"
     style="background-color: #94A3B8; width: 350px; max-width: 100%;">
@@ -123,10 +129,10 @@
     </div>
   </a>
 
-  <!-- Tombol Materi Selanjutnya -->
-  <a href="{{ url_for('user.kuis1') }}"
-    class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi"
-    style="background-color: #1e293b; width: 350px; max-width: 100%;">
+  <!-- Tombol Materi Selanjutnya (Diperbaiki) -->
+  <a href="{{ url_for('user.kuis1') }}" id="btnNextMateri"
+    class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi {% if not is_completed %}navigasi-disabled-link{% endif %}"
+    style="background-color: {% if is_completed %}#1e293b{% else %}#94a3b8{% endif %}; width: 350px; max-width: 100%;">
 
     <!-- Teks -->
     <div class="text-end me-3 flex-grow-1">

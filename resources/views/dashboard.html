@@ -63,7 +63,6 @@
         width: 50px;
         height: 50px;
         border-radius: 12px;
-        /* Diubah jadi rounded rectangle agar lebih modern */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -101,7 +100,6 @@
 
     .table> :not(caption)>*>* {
         padding: 1rem 0.75rem;
-        /* Memberi ruang napas pada baris tabel */
     }
 </style>
 {% endblock %}
@@ -109,10 +107,10 @@
 {% block content %}
 <div class="container mt-4 mb-5">
 
-    <div class="d-flex justify-content-between align-items-end mb-4 pb-2 border-bottom">
+    <div class="d-flex justify-content-between align-items-end mb-4 pb-2">
         <div>
             <h3 class="fw-bold mb-1 text-dark">
-                <i class="bi bi-grid-1x2-fill me-2 text-primary"></i> Dashboard Siswa
+                <i class="bi bi-grid-1x2-fill me-2 text-primary"></i> Dashboard
             </h3>
             <p class="text-muted mb-0">Selamat datang kembali! Lanjutkan pembelajaranmu hari ini.</p>
         </div>
@@ -124,197 +122,367 @@
         </div>
         {% endif %}
     </div>
+    <!-- NOTIFIKASI KELULUSAN & RANGKUMAN (Hanya muncul jika progress 100%) -->
+    {% if progress_percent == 100 %}
+    <div id="completion-notification" class="card text-white mb-4 border-0 shadow-lg"
+        style="border-radius: 15px; background: linear-gradient(135deg, #198754 0%, #20c997 100%); overflow: hidden;">
 
-    <div class="row g-4 mb-5 align-items-stretch">
-
-        <div class="col-lg-5 d-flex flex-column gap-4">
-
-            <div class="row g-4">
-                <div class="col-sm-6">
-                    <div
-                        class="dashboard-card d-flex flex-column align-items-start justify-content-center h-100 position-relative">
-                        <div
-                            class="icon-circle bg-primary bg-opacity-10 text-primary position-absolute end-0 top-0 mt-3 me-3">
-                            <i class="bi bi-journal-bookmark-fill fs-5"></i>
-                        </div>
-
-                        <h2 class="fw-bolder mb-0 text-dark">
-                            {{ topik_selesai }} <span class="fs-5 text-muted fw-normal">dari {{ total_materi }}</span>
-                        </h2>
-
-                        <span class="text-muted small mt-1 fw-medium">Topik Diselesaikan</span>
-                    </div>
-                </div>
-
-                <div class="col-sm-6">
-                    <div
-                        class="dashboard-card d-flex flex-column align-items-start justify-content-center h-100 position-relative">
-                        <div
-                            class="icon-circle bg-success bg-opacity-10 text-success position-absolute end-0 top-0 mt-3 me-3">
-                            <i class="bi bi-check2-circle fs-5"></i>
-                        </div>
-
-                        <h2 class="fw-bolder mb-0 text-dark">
-                            {{ selesai }} <span class="fs-5 text-muted fw-normal">dari {{ total_subtopic }}</span>
-                        </h2>
-
-                        <span class="text-muted small mt-1 fw-medium">Sub Topik Diselesaikan</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="dashboard-card flex-fill d-flex flex-column justify-content-center">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <h6 class="fw-bold mb-1">Progress Pembelajaran</h6>
-                        <small class="text-muted">Selesai {{ selesai }} dari 24 sub materi.</small>
-                    </div>
-                    <span class="badge bg-success rounded-pill px-3 py-2 fs-6">{{ progress_percent }}%</span>
-                </div>
-                <div class="progress" style="height: 14px;">
-                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
-                        style="width: {{ progress_percent }}%"></div>
-                </div>
-            </div>
+        <!-- Ornamen Background Opsional -->
+        <div style="position: absolute; top: -30px; right: -30px; opacity: 0.1; font-size: 10rem;">
+            <i class="bi bi-award-fill"></i>
         </div>
 
-        <div class="col-lg-7">
-            <div class="dashboard-card h-100 d-flex flex-column">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="d-flex align-items-center">
-                        <div class="icon-circle bg-warning bg-opacity-10 text-warning me-3">
-                            <i class="bi bi-bar-chart-fill fs-5"></i>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold mb-0">Hasil Belajar</h6>
-                            <small class="text-muted">Rekapitulasi kuis dan evaluasi terbaru</small>
-                        </div>
-                    </div>
+        <div class="card-body p-3 p-md-4 position-relative">
+            <div class="d-flex flex-column flex-md-row align-items-start">
+
+                <!-- Icon Trophy Utama (Diperkecil) -->
+                <div class="bg-white text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 mb-3 mb-md-0 me-md-3 shadow"
+                    style="width: 60px; height: 60px;">
+                    <i class="bi bi-trophy-fill" style="font-size: 1.8rem;"></i>
                 </div>
 
-                <div class="table-responsive flex-grow-1"
-                    style="min-height: 200px; max-height: 250px; overflow-y: auto;">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light sticky-top shadow-sm" style="z-index: 1;">
-                            <tr>
-                                <th class="border-0">Kegiatan</th>
-                                <th class="border-0">Nilai</th>
-                                <th class="border-0 text-end pe-4">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="border-top-0">
-                            {% for item in hasil_belajar %}
-                            <tr>
-                                <td class="fw-semibold text-dark">{{ item.title }}</td>
-                                <td>
-                                    <span
-                                        class="badge bg-primary bg-opacity-10 text-primary border border-primary px-2 py-1 fs-6">
-                                        {{ item.nilai }}
-                                    </span>
-                                </td>
-                                <td class="text-end pe-4">
-                                    {% if item.status == 'lulus' %}
-                                    <span class="badge bg-success px-3 py-2 rounded-pill"><i
-                                            class="bi bi-check me-1"></i> Lulus</span>
-                                    {% else %}
-                                    <span class="badge bg-danger px-3 py-2 rounded-pill"><i class="bi bi-x me-1"></i>
-                                        Tidak Lulus</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% else %}
-                            <tr>
-                                <td colspan="3" class="text-center text-muted py-4">
-                                    Belum ada data hasil belajar.
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="d-flex align-items-center justify-content-between mb-4 mt-2">
-        <h5 class="section-title mb-0"><i class="bi bi-book-half me-2 text-primary"></i> Modul Pembelajaran</h5>
-    </div>
-
-    <div class="row g-4">
-        {% for item in materi_list %}
-        <div class="col-md-6 col-lg-4">
-            <div
-                class="card course-card {{ item.card_class }} {{ 'locked-card' if item.status == 'locked' else '' }} h-100">
-                <div class="card-body p-4">
-
-                    <div class="d-flex justify-content-start mb-3">
-                        {% if item.status == 'done' %}
-                        <span class="badge badge-status bg-success bg-opacity-10 text-success border border-success">
-                            <i class="bi bi-check2-circle me-1"></i> Selesai
-                        </span>
-                        {% elif item.status == 'current' %}
-                        <span class="badge badge-status bg-primary bg-opacity-10 text-primary border border-primary">
-                            <i class="bi bi-play-fill me-1"></i> Sedang Dipelajari
-                        </span>
-                        {% else %}
-                        <span
-                            class="badge badge-status bg-secondary bg-opacity-10 text-secondary border border-secondary">
-                            <i class="bi bi-lock-fill me-1"></i> Terkunci
-                        </span>
-                        {% endif %}
-                    </div>
-
-                    <h5 class="fw-bold mb-2 text-truncate" title="{{ item.title }}">{{ item.title }}</h5>
-
-                    {% if item.title|lower == 'evaluasi' %}
-                    <div class="mt-3 mb-4">
-                        <div
-                            class="p-3 bg-success bg-opacity-10 text-success rounded border border-success border-opacity-25 d-flex align-items-center">
-                            <i class="bi bi-patch-check-fill fs-4 me-2"></i>
-                            <span class="fw-medium small">Evaluasi Akhir Pembelajaran</span>
-                        </div>
-                    </div>
-                    {% else %}
-                    <p class="topic-info mb-3 d-flex align-items-center">
-                        <i class="bi bi-list-task me-2 text-muted"></i>
-                        <span><b>{{ item.selesai_sub }}</b> dari {{ item.total_sub }} sub materi selesai</span>
+                <div class="w-100">
+                    <h3 class="fw-bold mb-1" style="letter-spacing: -0.5px;">
+                        Selamat! Pembelajaran Selesai <i class="bi bi-stars text-warning ms-1"></i>
+                    </h3>
+                    <p class="mb-3 text-white" style="opacity: 0.9; font-size: 0.95rem;">
+                        Kamu telah menyelesaikan seluruh topik materi <strong>Image Segmentation</strong>. Berikut
+                        rangkuman metode yang telah kamu kuasai:
                     </p>
 
-                    <div class="mt-auto">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <small class="topic-progress-text">Progress</small>
-                            <small class="fw-bold text-dark">{{ item.progress }}%</small>
+                    <!-- Rangkuman Materi (Padding & Jarak Diperkecil) -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <div
+                                class="bg-white bg-opacity-10 p-3 rounded-3 h-100 border border-white border-opacity-25 shadow-sm">
+                                <h6 class="fw-bold mb-2" style="font-size: 0.95rem;"><i
+                                        class="bi bi-bezier2 me-2 text-warning"></i> Edge-Based</h6>
+                                <p class="mb-0" style="font-size: 0.8rem; opacity: 0.85;">Deteksi objek berdasarkan
+                                    batas perubahan tajam pada intensitas piksel.</p>
+                            </div>
                         </div>
-                        <div class="progress">
-                            <div class="progress-bar {% if item.status == 'done' %}bg-success{% elif item.status == 'current' %}bg-primary{% else %}bg-secondary opacity-50{% endif %}"
-                                style="width: {{ item.progress }}%">
+                        <div class="col-md-4">
+                            <div
+                                class="bg-white bg-opacity-10 p-3 rounded-3 h-100 border border-white border-opacity-25 shadow-sm">
+                                <h6 class="fw-bold mb-2" style="font-size: 0.95rem;"><i
+                                        class="bi bi-sliders me-2 text-warning"></i> Threshold-Based</h6>
+                                <p class="mb-0" style="font-size: 0.8rem; opacity: 0.85;">Pemisahan objek dari latar
+                                    belakang berdasarkan nilai ambang batas.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div
+                                class="bg-white bg-opacity-10 p-3 rounded-3 h-100 border border-white border-opacity-25 shadow-sm">
+                                <h6 class="fw-bold mb-2" style="font-size: 0.95rem;"><i
+                                        class="bi bi-bounding-box-circles me-2 text-warning"></i> Region-Based</h6>
+                                <ul class="mb-0 ps-3" style="font-size: 0.8rem; opacity: 0.85;">
+                                    <li class="mb-1"><strong>Region Growing:</strong> Gabung piksel tetangga dari seed.
+                                    </li>
+                                    <li><strong>Split & Merge:</strong> Pecah citra lalu gabungkan region seragam.</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                    {% endif %}
-                </div>
 
-                <div class="card-footer bg-transparent border-top-0 pt-0 pb-4 px-4 mt-auto">
-                    {% if item.status == 'locked' %}
-                    <button class="btn btn-light text-muted fw-medium w-100" disabled>
-                        <i class="bi bi-lock-fill me-2"></i> Terkunci
-                    </button>
-                    {% else %}
-                    <a href="{{ item.href }}"
-                        class="btn {{ 'btn-outline-success' if item.status == 'done' else 'btn-primary' }} fw-medium w-100">
-                        {% if item.status == 'done' %}
-                        <i class="bi bi-arrow-repeat me-1"></i> Pelajari Ulang
-                        {% else %}
-                        Lanjutkan <i class="bi bi-arrow-right ms-1"></i>
-                        {% endif %}
-                    </a>
-                    {% endif %}
+                    <!-- MATERI LANJUTAN (Lebih Padat) -->
+                    <div class="mt-4 pt-4 border-top border-white border-opacity-25">
+                        <h5 class="fw-bold mb-3 text-white">
+                            <i class="bi bi-rocket-takeoff-fill me-2 text-warning"></i>Rekomendasi Pembelajaran
+                            Selanjutnya
+                        </h5>
+
+                        <div class="row g-3">
+                            <!-- Card 1: Clustering (Putih) -->
+                            <div class="col-lg-6">
+                                <div class="d-flex align-items-center p-3 rounded-4 shadow-sm h-100 bg-white text-dark"
+                                    style="border: 1px solid rgba(0,0,0,0.1);">
+
+                                    <!-- Bagian Teks (Kiri) -->
+                                    <div class="flex-grow-1 pe-3">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div
+                                                class="bg-primary bg-opacity-10 text-primary rounded px-2 py-1 me-2 fs-6">
+                                                <i class="bi bi-diagram-3-fill"></i>
+                                            </div>
+                                            <h6 class="fw-bold mb-0 fs-5">Clustering</h6>
+                                        </div>
+                                        <p class="mb-0 text-muted" style="font-size: 0.85rem;">
+                                            K-Means, Fuzzy C-Means, dll.
+                                        </p>
+                                    </div>
+
+                                    <!-- Bagian Gambar (Kanan) -->
+                                    <div class="flex-shrink-0">
+                                        <!-- Gambar diperbesar menjadi 180x110px -->
+                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb7nZ3b24AMwd2MnnvBivLQRPl0EJ-JC_UfbNFjeKxgNiE1blDjEbGJaU&s=10"
+                                            alt="Clustering" class="rounded-3 shadow-sm border"
+                                            style="width: 180px; height: 110px; object-fit: cover;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Object Detection (Putih) -->
+                            <div class="col-lg-6">
+                                <div class="d-flex align-items-center p-3 rounded-4 shadow-sm h-100 bg-white text-dark"
+                                    style="border: 1px solid rgba(0,0,0,0.1);">
+
+                                    <!-- Bagian Teks (Kiri) -->
+                                    <div class="flex-grow-1 pe-3">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div
+                                                class="bg-danger bg-opacity-10 text-danger rounded px-2 py-1 me-2 fs-6">
+                                                <i class="bi bi-bounding-box-circles"></i>
+                                            </div>
+                                            <h6 class="fw-bold mb-0 fs-5">Object Detection</h6>
+                                        </div>
+                                        <p class="mb-0 text-muted" style="font-size: 0.85rem;">
+                                            Mendeteksi dan melabeli posisi objek.
+                                        </p>
+                                    </div>
+
+                                    <!-- Bagian Gambar (Kanan) -->
+                                    <div class="flex-shrink-0">
+                                        <!-- Gambar diperbesar menjadi 180x110px -->
+                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOLlHnPg5pldLedX0FwwF1Y80oHnfeU0IegtdxXssj4OojfePRJHaSpVo&s=10"
+                                            alt="Object Detection" class="rounded-3 shadow-sm border"
+                                            style="width: 180px; height: 110px; object-fit: cover;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- TOMBOL KEMBALI BELAJAR -->
+                    <div class="mt-3 text-end">
+                        <button type="button"
+                            class="btn btn-light text-success fw-bold px-4 py-2 rounded-pill shadow-sm"
+                            onclick="showDashboardContent()" style="transition: all 0.3s ease; font-size: 0.9rem;">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Kembali Belajar
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
+    {% endif %}
 
+    <!-- SEMUA ISI DASHBOARD DIBUNGKUS DI SINI AGAR BISA DISEMBUNYIKAN JIKA PROGRESS 100% -->
+    <div id="main-dashboard-content" {% if progress_percent==100 %}style="display: none;" {% endif %}>
+
+        <div class="row g-4 mb-5 align-items-stretch">
+            <div class="col-lg-5 d-flex flex-column gap-4">
+                <div class="row g-4">
+                    <div class="col-sm-6">
+                        <div
+                            class="dashboard-card d-flex flex-column align-items-start justify-content-center h-100 position-relative">
+                            <div
+                                class="icon-circle bg-primary bg-opacity-10 text-primary position-absolute end-0 top-0 mt-3 me-3">
+                                <i class="bi bi-journal-bookmark-fill fs-5"></i>
+                            </div>
+                            <h2 class="fw-bolder mb-0 text-dark">
+                                {{ topik_selesai }} <span class="fs-5 text-muted fw-normal">dari {{ total_materi
+                                    }}</span>
+                            </h2>
+                            <span class="text-muted small mt-1 fw-medium">Topik Diselesaikan</span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div
+                            class="dashboard-card d-flex flex-column align-items-start justify-content-center h-100 position-relative">
+                            <div
+                                class="icon-circle bg-success bg-opacity-10 text-success position-absolute end-0 top-0 mt-3 me-3">
+                                <i class="bi bi-check2-circle fs-5"></i>
+                            </div>
+                            <h2 class="fw-bolder mb-0 text-dark">
+                                {{ selesai }} <span class="fs-5 text-muted fw-normal">dari {{ total_subtopic }}</span>
+                            </h2>
+                            <span class="text-muted small mt-1 fw-medium">Sub Topik Diselesaikan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card flex-fill d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="fw-bold mb-1">Progress Pembelajaran</h6>
+                            <small class="text-muted">Selesai {{ selesai }} dari 24 sub materi.</small>
+                        </div>
+                        <span class="badge bg-success rounded-pill px-3 py-2 fs-6">{{ progress_percent }}%</span>
+                    </div>
+                    <div class="progress" style="height: 14px;">
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                            style="width: {{ progress_percent }}%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="dashboard-card h-100 d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-circle bg-warning bg-opacity-10 text-warning me-3">
+                                <i class="bi bi-bar-chart-fill fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Hasil Belajar</h6>
+                                <small class="text-muted">Rekapitulasi kuis dan evaluasi terbaru</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive flex-grow-1"
+                        style="min-height: 200px; max-height: 250px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light sticky-top shadow-sm" style="z-index: 1;">
+                                <tr>
+                                    <th class="border-0">Kegiatan</th>
+                                    <th class="border-0">Nilai</th>
+                                    <th class="border-0 text-end pe-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="border-top-0">
+                                {% for item in hasil_belajar %}
+                                <tr>
+                                    <td class="fw-semibold text-dark">{{ item.title }}</td>
+                                    <td>
+                                        <span
+                                            class="badge bg-primary bg-opacity-10 text-primary border border-primary px-2 py-1 fs-6">
+                                            {{ item.nilai }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        {% if item.status == 'lulus' %}
+                                        <span class="badge bg-success px-3 py-2 rounded-pill"><i
+                                                class="bi bi-check me-1"></i> Lulus</span>
+                                        {% else %}
+                                        <span class="badge bg-danger px-3 py-2 rounded-pill"><i
+                                                class="bi bi-x me-1"></i>
+                                            Tidak Lulus</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">
+                                        Belum ada data hasil belajar.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between mb-4 mt-2">
+            <h5 class="section-title mb-0"><i class="bi bi-book-half me-2 text-primary"></i> Topik Pembelajaran</h5>
+        </div>
+
+        <div class="row g-4">
+            {% for item in materi_list %}
+            <div class="col-md-6 col-lg-4">
+                <div
+                    class="card course-card {{ item.card_class }} {{ 'locked-card' if item.status == 'locked' else '' }} h-100">
+                    <div class="card-body p-4">
+
+                        <div class="d-flex justify-content-start mb-3">
+                            {% if item.status == 'done' %}
+                            <span
+                                class="badge badge-status bg-success bg-opacity-10 text-success border border-success">
+                                <i class="bi bi-check2-circle me-1"></i> Selesai
+                            </span>
+                            {% elif item.status == 'current' %}
+                            <span
+                                class="badge badge-status bg-primary bg-opacity-10 text-primary border border-primary">
+                                <i class="bi bi-play-fill me-1"></i> Sedang Dipelajari
+                            </span>
+                            {% else %}
+                            <span
+                                class="badge badge-status bg-secondary bg-opacity-10 text-secondary border border-secondary">
+                                <i class="bi bi-lock-fill me-1"></i> Terkunci
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <h5 class="fw-bold mb-2 text-truncate" title="{{ item.title }}">{{ item.title }}</h5>
+
+                        {% if item.title|lower == 'evaluasi' %}
+                        <div class="mt-3 mb-4">
+                            <div
+                                class="p-3 bg-success bg-opacity-10 text-success rounded border border-success border-opacity-25 d-flex align-items-center">
+                                <i class="bi bi-patch-check-fill fs-4 me-2"></i>
+                                <span class="fw-medium small">Evaluasi Akhir Pembelajaran</span>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="topic-info mb-3 d-flex align-items-center">
+                            <i class="bi bi-list-task me-2 text-muted"></i>
+                            <span><b>{{ item.selesai_sub }}</b> dari {{ item.total_sub }} sub materi selesai</span>
+                        </p>
+
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <small class="topic-progress-text">Progress</small>
+                                <small class="fw-bold text-dark">{{ item.progress }}%</small>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar {% if item.status == 'done' %}bg-success{% elif item.status == 'current' %}bg-primary{% else %}bg-secondary opacity-50{% endif %}"
+                                    style="width: {{ item.progress }}%">
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-footer bg-transparent border-top-0 pt-0 pb-4 px-4 mt-auto">
+                        {% if item.status == 'locked' %}
+                        <button class="btn btn-light text-muted fw-medium w-100" disabled>
+                            <i class="bi bi-lock-fill me-2"></i> Terkunci
+                        </button>
+                        {% else %}
+                        <a href="{{ item.href }}"
+                            class="btn {{ 'btn-outline-success' if item.status == 'done' else 'btn-primary' }} fw-medium w-100">
+                            {% if item.status == 'done' %}
+                            <i class="bi bi-arrow-repeat me-1"></i> Pelajari Ulang
+                            {% else %}
+                            Lanjutkan <i class="bi bi-arrow-right ms-1"></i>
+                            {% endif %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div> <!-- AKHIR DARI main-dashboard-content -->
+    <script>
+        function showDashboardContent() {
+            // Menyembunyikan kotak notifikasi kelulusan
+            const notification = document.getElementById('completion-notification');
+            if (notification) {
+                notification.style.display = 'none';
+            }
+
+            // Memunculkan kembali semua elemen dashboard (Statistik nilai & Topik)
+            const mainContent = document.getElementById('main-dashboard-content');
+            if (mainContent) {
+                mainContent.style.display = 'block';
+
+                // Efek Animasi halus (fade in) saat muncul
+                mainContent.style.opacity = 0;
+                let opacity = 0;
+                let timer = setInterval(function () {
+                    if (opacity >= 1) {
+                        clearInterval(timer);
+                    }
+                    mainContent.style.opacity = opacity;
+                    opacity += 0.05;
+                }, 20);
+            }
+        }
+    </script>
 </div>
 {% endblock %}

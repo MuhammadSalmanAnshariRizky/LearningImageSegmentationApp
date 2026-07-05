@@ -8,7 +8,7 @@
     <div class="card-body px-4 py-3">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="fw-bold text-dark">Progress Belajar</span>
-        <span class="text-success fw-bold">{{ progress }}%</span>
+        <span class="text-success fw-bold" id="progressText">{{ progress }}%</span>
       </div>
       <div class="progress rounded-pill bg-light" style="height: 10px;">
         <div class="progress-bar bg-success progress-bar-striped progress-bar-animated rounded-pill" role="progressbar"
@@ -1657,8 +1657,8 @@
 
     <!-- Tombol Materi Selanjutnya -->
     <a href="{{ url_for('user.praktekedgebased') }}"
-      class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi"
-      style="background-color: #1e293b; width: 450px; max-width: 100%;">
+      class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi {% if not is_completed %}navigasi-disabled-link{% endif %}"
+      style="background-color: {% if is_completed %}#1e293b{% else %}#94a3b8{% endif %}; width: 450px; max-width: 100%;">
 
       <!-- Teks -->
       <div class="text-end me-3 flex-grow-1">
@@ -1679,6 +1679,7 @@
 
   </div>
 </div>
+<div id="materi-data" data-is-completed="{{ 'true' if is_completed else 'false' }}" style="display: none;"></div>
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 <script src="{{ url_for('static', filename='js/aktivitas.js') }}"></script>

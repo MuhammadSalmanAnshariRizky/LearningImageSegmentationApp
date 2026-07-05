@@ -48,9 +48,21 @@ if (btnRangkuman) {
           // ==========================================
           const btnNext = document.getElementById("btnNextMateri");
           if (btnNext) {
-            btnNext.classList.remove("disabled-link");
+            // PERBAIKAN: Sesuaikan nama class agar sama dengan HTML
+            btnNext.classList.remove("navigasi-disabled-link");
             btnNext.style.backgroundColor = "#1e293b";
           }
+
+          // ==========================================
+          // 3. TAMPILKAN SWEETALERT & UBAH TOMBOL
+          // ==========================================
+          Swal.fire({
+            icon: "success",
+            title: "Rangkuman Selesai!",
+            text: "Progress belajar berhasil diperbarui.",
+            confirmButtonColor: "#198754",
+            confirmButtonText: "OK",
+          });
 
           // ==========================================
           // 3. TAMPILKAN SWEETALERT & UBAH TOMBOL

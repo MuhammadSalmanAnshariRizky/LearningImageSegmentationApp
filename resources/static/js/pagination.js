@@ -1,15 +1,15 @@
 // pagination konten
 let currentPage = 0;
-let maxUnlockedPage = 0; // Tambahan: Melacak halaman terjauh yang terbuka
+let maxUnlockedPage = 0; // Melacak halaman terjauh yang terbuka
 
 // key unik tiap halaman
 const pageKey = "lastPage_" + window.location.pathname.replace(/\//g, "_");
-const maxPageKey = "maxPage_" + window.location.pathname.replace(/\//g, "_"); // Key untuk menyimpan progress unlock
+const maxPageKey = "maxPage_" + window.location.pathname.replace(/\//g, "_");
 
 function showPage(index) {
   const pages = document.querySelectorAll(".page-section");
 
-  if (!pages[index]) return; // biar aman
+  if (!pages[index]) return;
 
   // Cegah akses jika halaman belum di-unlock
   if (index > maxUnlockedPage) {
@@ -56,7 +56,6 @@ function prevPage() {
 }
 
 function goPage(index) {
-  // Hanya panggil showPage, karena validasi kunci sudah ada di dalam showPage
   showPage(index);
 }
 
@@ -66,7 +65,7 @@ function updatePagination() {
 
   items.forEach((item) => {
     item.classList.remove("active");
-    item.classList.remove("locked"); // Hapus class locked sebelumnya
+    item.classList.remove("locked");
   });
 
   const activeIndex = currentPage + 1;
@@ -77,7 +76,6 @@ function updatePagination() {
   }
 
   // Disable visual untuk nomor halaman yang belum di-unlock
-  // Asumsi: items[0] itu Prev, items[length-1] itu Next. Sisanya adalah angka halaman.
   for (let i = 1; i <= pages.length; i++) {
     let pageIndex = i - 1;
     if (pageIndex > maxUnlockedPage && items[i]) {
@@ -97,18 +95,34 @@ function updatePagination() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const pages = document.querySelectorAll(".page-section");
+  const totalPages = pages.length;
+
   const savedPage = localStorage.getItem(pageKey);
   const savedMaxPage = localStorage.getItem(maxPageKey);
 
-  // Ambil history halaman terjauh
-  if (savedMaxPage !== null && !isNaN(savedMaxPage)) {
-    maxUnlockedPage = parseInt(savedMaxPage);
+  // 1. TANGKAP STATUS DARI HTML DATA ATTRIBUTE
+  const dataContainer = document.getElementById("materi-data");
+  let isCompletedFromBackend = false;
+
+  if (dataContainer) {
+    // dataset.isCompleted otomatis mengambil nilai dari atribut data-is-completed
+    isCompletedFromBackend = dataContainer.dataset.isCompleted === "true";
   }
 
-  // Ambil halaman terakhir yang dibaca
+  // 2. LOGIKA UNLOCK
+  if (isCompletedFromBackend) {
+    maxUnlockedPage = totalPages - 1; // Unlock maksimal
+    localStorage.setItem(maxPageKey, maxUnlockedPage);
+  } else {
+    if (savedMaxPage !== null && !isNaN(savedMaxPage)) {
+      maxUnlockedPage = parseInt(savedMaxPage);
+    }
+  }
+
+  // 3. LOGIKA HALAMAN SAAT INI
   if (savedPage !== null && !isNaN(savedPage)) {
     let parsedPage = parseInt(savedPage);
-    // Pastikan halaman yang tersimpan tidak melebihi batas unlock (mencegah bug manipulasi localStorage)
     currentPage = parsedPage > maxUnlockedPage ? maxUnlockedPage : parsedPage;
   }
 
