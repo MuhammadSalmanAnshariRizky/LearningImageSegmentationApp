@@ -71,25 +71,18 @@ function addThresholdCell() {
 import numpy as np
 import os
 
-# =====================================
 # 1. MEMBACA CITRA GRAYSCALE
-# =====================================
-# Lengkapi '....' dengan path/nama file gambar yang kamu unggah
-img = cv2.imread('....', cv2.IMREAD_GRAYSCALE)
+# Tuliskan nama file gambar yang kamu unggah (misal: 'gambar.jpg') 
+# lalu tuliskan 'cv2.imread' dan ' cv2.IMREAD_GRAYSCALE' untuk membaca sebagai hitam putih
+img = cv2....('....', cv2....)
 
-if img is None:
-    print("Gambar tidak ditemukan!")
-    exit()
-
-# =====================================
 # 2. ITERATIVE THRESHOLD SELECTION
-# =====================================
-# Threshold awal = rata-rata intensitas citra
-T = np.mean(img)
+# Tuliskan 'np.mean' pada numpy (np) untuk mencari rata-rata intensitas awal citra
+T = np....(img)
 iteration = 0
 
 while True:
-    # Kelompok piksel
+    # Membagi piksel menjadi dua kelompok berdasarkan Threshold (T)
     G1 = img[img > T]
     G2 = img[img <= T]
     
@@ -97,15 +90,15 @@ while True:
     if len(G1) == 0 or len(G2) == 0:
         break
         
-    # Rata-rata masing-masing kelompok
-    m1 = np.mean(G1)
-    m2 = np.mean(G2)
+    # Tuliskan 'np.mean' untuk menghitung rata-rata dari masing-masing kelompok
+    m1 = np....(G1)
+    m2 = np....(G2)
     
-    # Threshold baru
+    # Menghitung Threshold baru
     T_new = (m1 + m2) / 2
     iteration += 1
     
-    # Kondisi berhenti
+    # Kondisi berhenti jika nilai T sudah stabil
     if abs(T - T_new) < 0.5:
         break
     
@@ -113,36 +106,28 @@ while True:
 
 iterative_threshold = T_new
 
-# =====================================
 # 3. HASIL SEGMENTASI (THRESHOLDING)
-# =====================================
-# Menggunakan THRESH_BINARY_INV agar objek utama menjadi area putih (255)
-_, segmented = cv2.threshold(img, iterative_threshold, 255, cv2.THRESH_BINARY_INV)
+# Tuliskan 'cv2.threshold' dan 'cv2.THRESH_BINARY_INV' agar objek utama menjadi area putih (255)
+_, segmented = cv2....(img, iterative_threshold, 255, cv2....)
 
-# =====================================
 # 4. MEMBERSIHKAN MASK (CLOSING)
-# =====================================
-# Menggunakan kernel elips ukuran 5x5 untuk menutup lubang kecil pada objek
-kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-segmented_clean = cv2.morphologyEx(segmented, cv2.MORPH_CLOSE, kernel)
+# Tuliskan 'cv2.getStructuringElement' dan 'cv2.MORPH_ELLIPSE' untuk membuat kernel elips
+kernel = cv2....(cv2...., (5, 5))
 
-# =====================================
+# Tuliskan 'cv2.morphologyEx' dan 'cv2.MORPH_CLOSE' untuk menutup lubang kecil pada objek
+segmented_clean = cv2....(segmented, cv2...., kernel)
+
 # 5. EKSTRAKSI OBJEK
-# =====================================
-# Memotong citra asli menggunakan mask yang sudah dibersihkan
-extracted_img = cv2.bitwise_and(img, img, mask=segmented_clean)
+# Tuliskan 'cv2.bitwise_and' untuk memotong citra asli menggunakan mask yang dibersihkan
+extracted_img = cv2....(img, img, mask=segmented_clean)
 
-
-# =====================================
 # 6. MENYIMPAN HASIL
-# =====================================
-cv2.imwrite(os.path.join(output_dir, "1_citra_grayscale.jpg"), img)
-cv2.imwrite(os.path.join(output_dir, "2_mask_segmentasi.jpg"), segmented_clean)
-cv2.imwrite(os.path.join(output_dir, "3_ekstraksi_objek.jpg"), extracted_img)
+# Tuliskan 'imwrite' untuk menyimpan citra hasil proses ke dalam direktori
+cv2....(os.path.join(output_dir, "1_citra_grayscale.jpg"), img)
+cv2....(os.path.join(output_dir, "2_mask_segmentasi.jpg"), segmented_clean)
+cv2....(os.path.join(output_dir, "3_ekstraksi_objek.jpg"), extracted_img)
 
-# =====================================
 # OUTPUT CONSOLE
-# =====================================
 print("=== ITERATIVE THRESHOLD SELECTION ===")
 print("Proses Global Thresholding Selesai!")
 print(f"Jumlah Iterasi Komputasi : {iteration}")
@@ -281,13 +266,31 @@ function renderThresholdImgCard(title, srcUrl) {
     : `${srcUrl}?t=${t}`;
 
   return `
-    <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm" style="width: fit-content;">
-        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
-        <img src="${urlWithCacheBuster}" class="result-image preview-image img-fluid rounded" 
-             style="max-height: 140px; cursor: pointer; object-fit: contain;"
-             data-bs-toggle="modal" data-bs-target="#thresholdImageModal" 
+    <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm d-flex flex-column align-items-center" style="width: fit-content;">
+        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">
+            ${title}
+        </h6>
+
+        <div class="bg-light rounded border d-flex align-items-center justify-content-center"
+             style="width: 120px; height: 120px; overflow: hidden;">
+            <img src="${urlWithCacheBuster}"
+                 class="result-image preview-image img-fluid"
+                 style="width: 100%; height: 100%; cursor: zoom-in; object-fit: contain; image-rendering: pixelated;"
+                 title="Klik untuk melihat ukuran penuh"
+                 data-bs-toggle="modal"
+                 data-bs-target="#thresholdImageModal"
+                 onclick="openThresholdModal('${urlWithCacheBuster}')">
+        </div>
+
+        <div class="text-muted mt-2"
+             style="font-size: 0.7rem; cursor: pointer;"
+             data-bs-toggle="modal"
+             data-bs-target="#thresholdImageModal"
              onclick="openThresholdModal('${urlWithCacheBuster}')">
-    </div>`;
+            Klik gambar untuk memperbesar
+        </div>
+    </div>
+`;
 }
 
 // 5. Utilitas File Upload & Management

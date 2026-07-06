@@ -1,5 +1,5 @@
 /**
- * Script untuk Live Code Notebook - Region Growing Segmentation (Tanpa Matplotlib)
+ * Script untuk Live Code Notebook - Region Growing Segmentation
  */
 
 let regionCellCount = 0;
@@ -69,25 +69,31 @@ import numpy as np
 import os
 
 # 1. MEMBACA CITRA GRAYSCALE
-# Tuliskan nama file gambar yang diunggah
-img = cv2.imread('_____', cv2.IMREAD_GRAYSCALE)
-if img is None:
-    print("Gambar tidak ditemukan!")
-    exit()
+# Tuliskan nama file gambar yang kamu unggah
+# lalu tuliskan 'cv2.imread' dan 'cv2.IMREAD_GRAYSCALE' untuk membaca sebagai hitam putih
+img = cv2....('...', cv2....)
 
 # 2. MENENTUKAN SEED POINT & THRESHOLD TOLERANSI
-seed = (50, 114)   # (baris, kolom);(y,x)
-threshold = 140
+# Tuliskan angka 50 dan 114 secara berurutan untuk koordinat seed, serta 140 untuk threshold
+seed = (..., ...)   # (baris, kolom);(y,x)
+threshold = ...
 
 # 3. MEMBUAT VISUALISASI TITIK SEED MANUAL MENGGUNAKAN OPENCV
-# Disiapkan lebih dulu agar titik awal (seed) divisualisasikan
-citra_seed = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-cv2.circle(citra_seed, (seed[1], seed[0]), radius=5, color=(0, 0, 255), thickness=-1)
+# Tuliskan 'cv2.cvtColor' dan 'cv2.COLOR_GRAY2BGR' untuk mengubah ke format warna BGR agar bisa digambar lingkaran merah
+citra_seed = cv2....(img, cv2....)
+
+# Tuliskan 'cv2.circle' untuk menggambarkan penanda titik (seed) awal pada citra
+cv2....(citra_seed, (seed[1], seed[0]), radius=5, color=(0, 0, 255), thickness=-1)
 
 # 4. ALGORITMA CORE PROCESS REGION GROWING (MEMBUAT MASK)
 rows, cols = img.shape
-segmented = np.zeros((rows, cols), np.uint8)
-visited = np.zeros((rows, cols), np.bool_)
+
+# Tuliskan 'np.zeros' pada numpy (np) untuk membuat matriks kosong bertipe data np.uint8
+segmented = np....((rows, cols), np.uint8)
+
+# Tuliskan 'np.zeros' pada numpy (np) untuk membuat penanda piksel yang sudah dikunjungi bertipe np.bool_
+visited = np....((rows, cols), np.bool_)
+
 seed_value = int(img[seed])
 queue = [seed]
 
@@ -103,7 +109,7 @@ while len(queue) > 0:
     if abs(int(img[x, y]) - seed_value) <= threshold:
         segmented[x, y] = 255
 
-        # 8-connectivity
+        # 8-connectivity (Mengecek 8 tetangga di sekitarnya)
         for dx in [-1, 0, 1]:
             for dy in [-1, 0, 1]:
                 nx = x + dx
@@ -115,17 +121,21 @@ while len(queue) > 0:
                     queue.append((nx, ny))
 
 # 5. EKSTRAKSI GAMBAR DARI MASK (POST-PROCESSING)
-# Menggunakan bitwise_and untuk mengambil piksel asli berdasarkan area putih pada mask
-kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
-segmented_clean = cv2.morphologyEx(segmented, cv2.MORPH_CLOSE, kernel)
-extracted_img = cv2.bitwise_and(img, img, mask=segmented_clean)
+# Tuliskan 'cv2.getStructuringElement' dan 'cv2.MORPH_ELLIPSE' untuk membuat struktur kernel elips ukuran 9x9
+kernel = cv2....(cv2...., (9, 9))
 
-# 6. MENYIMPAN FISIK MATRIKS CITRA HASIL UNTUK WEB PREVIEW
-# Disimpan secara berurutan: Asli -> Seed -> Mask -> Ekstraksi
-cv2.imwrite(os.path.join(output_dir, "citra_asli_region.jpg"), img)
-cv2.imwrite(os.path.join(output_dir, "visualisasi_seed.jpg"), citra_seed)
-cv2.imwrite(os.path.join(output_dir, "hasil_region_growing.jpg"), segmented)
-cv2.imwrite(os.path.join(output_dir, "hasil_ekstraksi.jpg"), extracted_img)
+# Tuliskan 'cv2.morphologyEx' dan 'cv2.MORPH_CLOSE' untuk membersihkan lubang kecil pada mask hasil segmentasi
+segmented_clean = cv2....(segmented, cv2...., kernel)
+
+# Tuliskan 'cv2.bitwise_and' untuk memotong citra asli berdasarkan area putih pada mask
+extracted_img = cv2....(img, img, mask=segmented_clean)
+
+# 6. MENYIMPAN HASIL
+# Tuliskan 'imwrite' untuk menyimpan keempat citra hasil proses ke dalam direktori
+cv2....(os.path.join(output_dir, "citra_asli_region.jpg"), img)
+cv2....(os.path.join(output_dir, "visualisasi_seed.jpg"), citra_seed)
+cv2....(os.path.join(output_dir, "hasil_region_growing.jpg"), segmented)
+cv2....(os.path.join(output_dir, "hasil_ekstraksi.jpg"), extracted_img)
 
 print("Proses Segmentasi Region Growing Selesai Dijalankan!")
 print(f"Intensitas Nilai Piksel Seed Point: {seed_value}")`;
@@ -217,6 +227,20 @@ function runRegionCell(id) {
         `;
 
         if (data.images && Array.isArray(data.images)) {
+          // --- PROSES SORTING LOGIS DISINI ---
+          // Kita mapping berdasarkan kata kunci nama file agar urutannya konsisten
+          const logicalOrder = ["asli", "seed", "growing", "ekstraksi"];
+
+          data.images.sort((a, b) => {
+            const indexA = logicalOrder.findIndex((key) =>
+              a.title.toLowerCase().includes(key),
+            );
+            const indexB = logicalOrder.findIndex((key) =>
+              b.title.toLowerCase().includes(key),
+            );
+            return indexA - indexB;
+          });
+
           data.images.forEach((img) => {
             let cleanTitle = img.title
               .replace("citra_", "Citra ")
@@ -231,18 +255,22 @@ function runRegionCell(id) {
             outputHTML += renderRegionImgCard(cleanTitle, img.url);
           });
         } else {
-          // Fallback Render Statis
+          // Fallback Render Statis (Juga disesuaikan urutannya)
           outputHTML += renderRegionImgCard(
             "Citra Asli",
             "/static/results/citra_asli_region.jpg",
           );
           outputHTML += renderRegionImgCard(
-            "Letak Seed Point",
+            "Visualisasi Seed",
             "/static/results/visualisasi_seed.jpg",
           );
           outputHTML += renderRegionImgCard(
             "Hasil Region Growing",
             "/static/results/hasil_region_growing.jpg",
+          );
+          outputHTML += renderRegionImgCard(
+            "Hasil Ekstraksi",
+            "/static/results/hasil_ekstraksi.jpg",
           );
         }
 
@@ -263,13 +291,31 @@ function renderRegionImgCard(title, srcUrl) {
     : `${srcUrl}?t=${t}`;
 
   return `
-    <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm" style="width: fit-content;">
-        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
-        <img src="${urlWithCacheBuster}" class="result-image preview-image img-fluid rounded" 
-             style="max-height: 140px; cursor: pointer; object-fit: contain;"
-             data-bs-toggle="modal" data-bs-target="#regionImageModal" 
+    <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm d-flex flex-column align-items-center" style="width: fit-content;">
+        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">
+            ${title}
+        </h6>
+
+        <div class="bg-light rounded border d-flex align-items-center justify-content-center"
+             style="width: 120px; height: 120px; overflow: hidden;">
+            <img src="${urlWithCacheBuster}"
+                 class="result-image preview-image img-fluid"
+                 style="width: 100%; height: 100%; cursor: zoom-in; object-fit: contain; image-rendering: pixelated;"
+                 title="Klik untuk melihat ukuran penuh"
+                 data-bs-toggle="modal"
+                 data-bs-target="#regionImageModal"
+                 onclick="openRegionModal('${urlWithCacheBuster}')">
+        </div>
+
+        <div class="text-muted mt-2"
+             style="font-size: 0.7rem; cursor: pointer;"
+             data-bs-toggle="modal"
+             data-bs-target="#regionImageModal"
              onclick="openRegionModal('${urlWithCacheBuster}')">
-    </div>`;
+            Klik gambar untuk memperbesar
+        </div>
+    </div>
+`;
 }
 
 // 5. Utilitas Sidebar Workspace

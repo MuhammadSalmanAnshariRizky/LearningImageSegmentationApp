@@ -88,7 +88,7 @@ import os
 img = cv2.imread('.....')
 
 # 2. PISAHKAN CHANNEL BGR
-# OpenCV menggunakan urutan: 0 = Biru (Blue), 1 = Hijau (Green), dan 2 = Merah (Red)
+# OpenCV menggunakan indeks: 0 = Biru (Blue), 1 = Hijau (Green), dan 2 = Merah (Red)
 
 B = img[:, :, 0]
 

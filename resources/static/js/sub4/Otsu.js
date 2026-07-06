@@ -69,45 +69,34 @@ function addOtsuCell() {
 import numpy as np
 import os
 
-# ============================================
 # 1. MEMBACA CITRA GRAYSCALE
-# ============================================
-# Tuliskan nama file gambar pada bagian argumen di bawah ini
-img = cv2.imread('....', cv2.IMREAD_GRAYSCALE)
+# Tuliskan nama file gambar yang kamu unggah (misal: 'gambar.jpg')
+# lalu tuliskan 'cv2.imread' dan 'cv2.IMREAD_GRAYSCALE' untuk membaca sebagai hitam putih
+img = cv2....('....', cv2....)
 
-if img is None:
-    print("Gambar tidak ditemukan!")
-    exit()
-
-# ============================================
 # 2. OTSU THRESHOLDING
-# ============================================
-# Menggunakan cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
-threshold_value, binary_image = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+# Tuliskan 'cv2.threshold' untuk fungsi ambang batas.
+# Lalu tuliskan 'cv2.THRESH_BINARY_INV' dan 'cv2.THRESH_OTSU' untuk menghitung T optimal secara otomatis
+threshold_value, binary_image = cv2....(img, 0, 255, cv2.... + cv2....)
 
-# ============================================
 # 3. MEMBERSIHKAN MASK (CLOSING)
-# ============================================
-# Menggunakan kernel elips ukuran 5x5 untuk hasil mask yang lebih halus
-kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-binary_clean = cv2.morphologyEx(binary_image, cv2.MORPH_CLOSE, kernel)
+# Tuliskan 'cv2.getStructuringElement' dan 'cv2.MORPH_ELLIPSE' untuk membuat kernel elips
+kernel = cv2....(cv2...., (5, 5))
 
-# ============================================
+# Tuliskan 'cv2.morphologyEx' dan 'cv2.MORPH_CLOSE' untuk menutup lubang kecil pada objek
+binary_clean = cv2....(binary_image, cv2...., kernel)
+
 # 4. EKSTRAKSI OBJEK
-# ============================================
-# Memotong objek utama dari latar belakang
-extracted_image = cv2.bitwise_and(img, img, mask=binary_clean)
+# Tuliskan 'cv2.bitwise_and' untuk memotong objek utama dari latar belakang
+extracted_image = cv2....(img, img, mask=binary_clean)
 
-# ============================================
 # 5. MENYIMPAN HASIL
-# ============================================
-cv2.imwrite(os.path.join(output_dir, "1_citra_grayscale.jpg"), img)
-cv2.imwrite(os.path.join(output_dir, "2_mask_segmentasi.jpg"), binary_clean)
-cv2.imwrite(os.path.join(output_dir, "3_ekstraksi_objek.jpg"), extracted_image)
+# Tuliskan 'cv2.imwrite' untuk menyimpan ketiga citra hasil proses ke dalam direktori
+cv2....(os.path.join(output_dir, "1_citra_grayscale.jpg"), img)
+cv2....(os.path.join(output_dir, "2_mask_segmentasi.jpg"), binary_clean)
+cv2....(os.path.join(output_dir, "3_ekstraksi_objek.jpg"), extracted_image)
 
-# ============================================
 # OUTPUT CONSOLE
-# ============================================
 print("=== OTSU THRESHOLDING ===")
 print("Proses Otsu Thresholding Selesai!")
 print(f"Nilai Ambang Otomatis Optimal Terkalkulasi (T): {threshold_value:.0f}")`;
@@ -245,13 +234,31 @@ function renderOtsuImgCard(title, srcUrl) {
     : `${srcUrl}?t=${t}`;
 
   return `
-    <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm" style="width: fit-content;">
-        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
-        <img src="${urlWithCacheBuster}" class="result-image preview-image img-fluid rounded" 
-             style="max-height: 140px; cursor: pointer; object-fit: contain;"
-             data-bs-toggle="modal" data-bs-target="#otsuImageModal" 
+    <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm d-flex flex-column align-items-center" style="width: fit-content;">
+        <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">
+            ${title}
+        </h6>
+
+        <div class="bg-light rounded border d-flex align-items-center justify-content-center"
+             style="width: 120px; height: 120px; overflow: hidden;">
+            <img src="${urlWithCacheBuster}"
+                 class="result-image preview-image img-fluid"
+                 style="width: 100%; height: 100%; cursor: zoom-in; object-fit: contain; image-rendering: pixelated;"
+                 title="Klik untuk melihat ukuran penuh"
+                 data-bs-toggle="modal"
+                 data-bs-target="#otsuImageModal"
+                 onclick="openOtsuModal('${urlWithCacheBuster}')">
+        </div>
+
+        <div class="text-muted mt-2"
+             style="font-size: 0.7rem; cursor: pointer;"
+             data-bs-toggle="modal"
+             data-bs-target="#otsuImageModal"
              onclick="openOtsuModal('${urlWithCacheBuster}')">
-    </div>`;
+            Klik gambar untuk memperbesar
+        </div>
+    </div>
+`;
 }
 
 // 5. Utilitas File Upload & Management

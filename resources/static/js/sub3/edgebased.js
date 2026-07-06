@@ -84,62 +84,56 @@ function addEdgeCell() {
 import numpy as np
 import os
 
-# ==========================================
-# 1. MEMBACA CITRA & KONVERSI WARNA
-# ==========================================
-# Tuliskan path file dari gambar yang akan diproses
+# 1. MEMBACA CITRA GRAYSCALE
+# Tuliskan nama file gambar yang kamu upload di bagian upload file
 image_path = '...'
-image = cv2.imread(image_path) 
-image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-# 2. GRAYSCALE
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+# Tuliskan 'imread' dan 'IMREAD_GRAYSCALE' untuk membaca gambar langsung sebagai hitam putih
+image = cv2....(image_path, cv2....) 
 
-# ==========================================
-# 3. EDGE DETECTION (OPERATOR CANNY)
-# ==========================================
-# Menggunakan nilai threshold dari referensi
-edges = cv2.Canny(gray, 65, 100)
+# 2. EDGE DETECTION (OPERATOR CANNY)
+# Tuliskan 'Canny' untuk melakukan deteksi tepi pada citra 
+edges = cv2....(image, 65, 100)
 
-# ==========================================
-# 4. EDGE LINKING (MORPHOLOGICAL CLOSING)
-# ==========================================
-# Menggunakan kernel elips ukuran (5, 5) untuk hasil yang lebih halus
-kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-closed = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel, iterations=1)
+# 3. EDGE LINKING (MORPHOLOGICAL CLOSING)
+# Bentuk kernel yang akan kita gunakan adalah elips, tuliskan 'MORPH_ELLIPSE'
+kernel = cv2.getStructuringElement(cv2...., (5, 5))
 
-# ==========================================
-# 5. MENCARI KONTUR
-# ==========================================
-contours, hierarchy = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+# Lakukan operasi morfologi penutupan (closing), tuliskan 'MORPH_CLOSE'
+closed = cv2.morphologyEx(edges, cv2...., kernel, iterations=1)
 
-# ==========================================
-# 6. REGION EXTRACTION (MASK KONTUR TERBESAR)
-# ==========================================
-mask = np.zeros_like(gray)
+# 4. MENCARI KONTUR
+# Tuliskan 'findContours' untuk mendeteksi batas-batas tepi objek yang sudah menyambung
+contours, hierarchy = cv2....(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+# 5. REGION EXTRACTION (MASK KONTUR TERBESAR)
+# Buat kanvas kosong (hitam) dengan ukuran yang sama dengan citra asli, tuliskan 'zeros_like'
+mask = np....(image)
 
 if len(contours) > 0:
-    # Mengambil kontur dengan area terbesar (objek utama)
-    largest_contour = max(contours, key=cv2.contourArea)
-    cv2.drawContours(mask, [largest_contour], -1, 255, thickness=cv2.FILLED)
+    # Cari objek utama berdasarkan luas area terbesar, tuliskan 'contourArea'
+    largest_contour = max(contours, key=cv2....)
     
-    # Membuat hasil segmentasi akhir
-    segmented = cv2.bitwise_and(image, image, mask=mask)
-    area = cv2.contourArea(largest_contour)
+    # Warnai penuh bagian dalam kontur tersebut, tuliskan 'FILLED'
+    cv2.drawContours(mask, [largest_contour], -1, 255, thickness=cv2....)
+    
+    # Ekstrak objek asli dengan memotongnya menggunakan operasi logika, tuliskan 'bitwise_and'
+    segmented = cv2....(image, image, mask=mask)
+    
+    # Hitung kembali luas objek yang didapatkan, tuliskan 'contourArea'
+    area = cv2....(largest_contour)
     print(f"Luas objek terbesar: {area:.2f} piksel")
 else:
     print("Tidak ada kontur yang ditemukan.")
     segmented = image.copy()
 
-# ==========================================
-# 7. MENYIMPAN HASIL
-# ==========================================
-# Pastikan variabel output_dir sudah didefinisikan sebelumnya di environment kamu
-cv2.imwrite(os.path.join(output_dir, "1_citra_asli.jpg"), image)
-cv2.imwrite(os.path.join(output_dir, "2_edge_detection.jpg"), edges)
-cv2.imwrite(os.path.join(output_dir, "3_edge_linking.jpg"), closed)
-cv2.imwrite(os.path.join(output_dir, "4_region_extraction.jpg"), mask)
-cv2.imwrite(os.path.join(output_dir, "5_segmented_result.jpg"), segmented)
+# 6. MENYIMPAN HASIL
+# Tuliskan 'imwrite' untuk menyimpan kelima citra hasil proses ke dalam direktori
+cv2....(os.path.join(output_dir, "1_citra_asli.jpg"), image)
+cv2....(os.path.join(output_dir, "2_edge_detection.jpg"), edges)
+cv2....(os.path.join(output_dir, "3_edge_linking.jpg"), closed)
+cv2....(os.path.join(output_dir, "4_region_extraction.jpg"), mask)
+cv2....(os.path.join(output_dir, "5_segmented_result.jpg"), segmented)
 
 print("Proses segmentasi berbasis tepi selesai dijalankan!")
 print(f"Jumlah kontur ditemukan secara keseluruhan: {len(contours)}")`;
@@ -276,19 +270,29 @@ function runEdgeCell(id) {
 }
 
 function createEdgeImageCard(title, srcUrl) {
-  // Tambahkan timestmap agar browser tidak load dari cache (mengatasi error 404 cache lama)
+  // Tambahkan timestamp agar browser tidak load dari cache (mengatasi error 404 cache lama)
   const timestamp = new Date().getTime();
   const urlWithCacheBuster = srcUrl.includes("?")
     ? `${srcUrl}&t=${timestamp}`
     : `${srcUrl}?t=${timestamp}`;
 
   return `
-      <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm" style="width: fit-content;">
+      <div class="image-card text-center border p-2 rounded-3 bg-white shadow-sm d-flex flex-column align-items-center" style="width: fit-content;">
           <h6 class="fw-bold text-secondary mb-2" style="font-size:0.85rem;">${title}</h6>
-          <img src="${urlWithCacheBuster}" class="result-image preview-image img-fluid rounded" 
-               style="max-height: 140px; cursor: pointer; object-fit: contain;"
+          
+          <div class="bg-light rounded border d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; overflow: hidden;">
+              <img src="${urlWithCacheBuster}" class="result-image preview-image img-fluid" 
+                   style="width: 100%; height: 100%; cursor: zoom-in; object-fit: contain; image-rendering: pixelated;"
+                   title="Klik untuk melihat ukuran penuh"
+                   data-bs-toggle="modal" data-bs-target="#edgeImageModal" 
+                   onclick="openEdgeModal('${urlWithCacheBuster}')">
+          </div>
+          
+          <div class="text-muted mt-2" style="font-size: 0.7rem; cursor: pointer;" 
                data-bs-toggle="modal" data-bs-target="#edgeImageModal" 
                onclick="openEdgeModal('${urlWithCacheBuster}')">
+              Klik gambar untuk memperbesar
+          </div>
       </div>
     `;
 }
