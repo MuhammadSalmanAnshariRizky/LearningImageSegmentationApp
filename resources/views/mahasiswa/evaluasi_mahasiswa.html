@@ -340,7 +340,54 @@
             </div>
         </div>
     </div>
+    <!-- navigasi -->
+    <div class="d-flex justify-content-between mt-5 mb-5 flex-wrap gap-3">
 
+        <!-- Tombol Materi Sebelumnya -->
+        <a href="{{ url_for('user.kuis5') }}"
+            class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-prev-materi"
+            style="background-color: #1A1A2E; width: 300px; max-width: 100%;">
+
+            <!-- Ikon Panah Kiri -->
+            <div class="bg-white rounded-circle d-flex justify-content-center align-items-center shadow-sm flex-shrink-0"
+                style="width: 40px; height: 40px; color: #1A1A2E;">
+                <i class="fa-solid fa-arrow-left fs-5"></i>
+            </div>
+
+            <!-- Teks -->
+            <div class="text-start ms-3 flex-grow-1">
+                <small class="d-block text-white" style="font-size: 0.75rem; letter-spacing: 0.5px; opacity: 0.8;">
+                    Sebelumnya
+                </small>
+                <span class="fw-bold text-white" style="font-size: 1.05rem;">
+                    Kuis Bab 5
+                </span>
+            </div>
+        </a>
+
+        <!-- Tombol Materi Selanjutnya -->
+        <a href="{{ url_for('user.dashboard') }}"
+            class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi"
+            style="background-color: #1e293b; width: 300px; max-width: 100%;">
+
+            <!-- Teks -->
+            <div class="text-end me-3 flex-grow-1">
+                <small class="d-block text-white" style="font-size: 0.75rem; letter-spacing: 0.5px; opacity: 0.8;">
+                    Kembali ke Halaman Dashboard
+                </small>
+                <span class="fw-bold text-white" style="font-size: 1.05rem;">
+                    <i>Dashhboard</i>
+                </span>
+            </div>
+
+            <!-- Ikon Panah Kanan -->
+            <div class="bg-white rounded-circle d-flex justify-content-center align-items-center shadow-sm flex-shrink-0"
+                style="width: 40px; height: 40px; color: #1e293b;">
+                <i class="fa-solid fa-arrow-right fs-5"></i>
+            </div>
+        </a>
+
+    </div>
     <div class="modal fade" id="detailModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg rounded-4">

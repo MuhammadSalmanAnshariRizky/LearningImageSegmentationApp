@@ -2657,7 +2657,7 @@ def submit_kuis_evaluasi():
     # List untuk menyimpan jawaban sementara sebelum disimpan ke DB
     temp_answers = [] 
 
-    # 🔥 KUNCI PERUBAHAN DI SINI: Looping langsung ke list jawaban (answers) 
+    # KUNCI PERUBAHAN DI SINI: Looping langsung ke list jawaban (answers) 
     # agar urutan acak saat siswa mengerjakan tetap dipertahankan
     for item in answers:
         q_id = str(item.get('id_question'))
@@ -2667,7 +2667,7 @@ def submit_kuis_evaluasi():
         is_correct = False
 
         if not question:
-            continue # Skip jika ID soal tidak ditemukan di DB
+            continue 
 
         if user_ans:
             if question.type == 'mc':
@@ -3326,44 +3326,55 @@ def tambah_kelas():
 @user_bp.route('/gabung-kelas', methods=['POST'])
 def gabung_kelas():
 
-    # USER LOGIN (MAHASISWA)
+    # =========================
+    # USER LOGIN & VALIDASI
+    # =========================
     user_id = session.get('user_id')
+    user_role = session.get('user_role') 
 
-    # VALIDASI LOGIN
     if not user_id:
         return redirect(url_for('user.login'))
 
-    # AMBIL TOKEN
+    # Validasi Role: Pastikan hanya Teacher yang bisa lanjut
+    if user_role != 'Teacher':
+        return "Akses ditolak: Hanya Guru (Teacher) yang dapat bergabung."
+
+    # =========================
+    # AMBIL TOKEN & CARI KELAS
+    # =========================
     token = request.form.get('token')
 
     if not token:
         return "Token kelas wajib diisi"
 
-    # CARI KELAS
     kelas = Class.query.filter_by(token=token).first()
 
     if not kelas:
         return "Token tidak valid"
 
+    # =========================
     # CEK SUDAH JOIN ATAU BELUM
-    exists = StudentClass.query.filter_by(
-        id_student=user_id,
+    # =========================
+    # Menggunakan TeacherClass dan id_teacher
+    exists = TeacherClass.query.filter_by(
+        id_teacher=user_id,
         id_class=kelas.id
     ).first()
 
     if exists:
         return "Kamu sudah bergabung di kelas ini"
 
-    # SIMPAN RELASI
-    join = StudentClass(
-        id_student=user_id,
-        id_class=kelas.id,
-        progress=0
+    # =========================
+    # SIMPAN RELASI KE TEACHERCLASS
+    # =========================
+    join = TeacherClass(
+        id_teacher=user_id,
+        id_class=kelas.id
     )
-
     db.session.add(join)
     db.session.commit()
-
+    
+    # KEMBALI KE user.data_kelas
     return redirect(url_for('user.data_kelas'))
 
 @user_bp.route('/claim_package', methods=['POST'])
@@ -3865,7 +3876,7 @@ def export_semua_nilai():
     except Exception as e:
         import traceback
         return f"<h1>ERROR EXPORT</h1><pre>{traceback.format_exc()}</pre>"
-
+    
 @user_bp.route('/datasoal')
 def data_soal():
 
@@ -3878,10 +3889,14 @@ def data_soal():
         return redirect('/login')
 
     # =========================
-    # AMBIL KELAS MILIK GURU
+    # AMBIL KELAS MILIK GURU (MENDUKUNG MULTI-GURU)
     # =========================
-    classes = Class.query.filter_by(
-        created_by=user_id
+    # Sistem mengecek tabel relasi TeacherClass, 
+    # bukan lagi berpatokan pada created_by
+    classes = db.session.query(Class).join(
+        TeacherClass, Class.id == TeacherClass.id_class
+    ).filter(
+        TeacherClass.id_teacher == user_id
     ).all()
 
     # =========================
@@ -3911,13 +3926,17 @@ def data_soal():
             Question.MC_option,
             Question.tingkat_kesulitan,
             Activity.id_topic,
-            Activity.id_subtopic
+            Activity.id_subtopic,
+            User.name.label('nama_pembuat') # <--- TAMBAHKAN INI
         ).join(
             ActivityQuestion,
             ActivityQuestion.id_question == Question.id
         ).join(
             Activity,
             Activity.id == ActivityQuestion.id_activity
+        ).join(
+            User, # <--- TAMBAHKAN JOIN KE TABEL USER
+            User.id == Question.created_by # Sesuaikan dengan kolom pembuat soal di tabel Question kamu
         ).filter(
             Activity.id_class == c.id
         ).distinct().all()
@@ -3936,14 +3955,10 @@ def data_soal():
             question_image = None
 
             try:
-
                 q_json = json.loads(r.question)
-
                 question_text = q_json.get("text", "")
                 question_image = q_json.get("URL")
-
             except:
-
                 question_text = r.question
                 question_image = None
 
@@ -3970,10 +3985,8 @@ def data_soal():
             mc_options = []
 
             try:
-
                 if r.mc_option:
                     mc_options = json.loads(r.mc_option)
-
             except:
                 mc_options = []
 
@@ -3990,36 +4003,27 @@ def data_soal():
                 "-"
             )
 
-            # -------------------------
+# -------------------------
             # APPEND DATA
             # -------------------------
             soal_list.append({
-
                 "id": r.id,
                 "type": r.type,
-
-                # QUESTION
                 "question": clean_text,
                 "question_image": question_image,
-
-                # OPTION
                 "mc_option": mc_options,
-
-                # META
                 "topic": topic_name,
                 "subtopic": subtopic_name,
-                "level": r.tingkat_kesulitan
-
+                "level": r.tingkat_kesulitan,
+                "pembuat": r.nama_pembuat  # <--- TAMBAHKAN INI AGAR DIBACA OLEH HTML
             })
 
         # =========================
         # GROUP PER CLASS
         # =========================
         data_per_class[c.id] = {
-
             "nama_kelas": c.name,
             "soal": soal_list
-
         }
 
     # =========================
@@ -4212,7 +4216,7 @@ def detail_soal():
 @user_bp.route('/tambahsoal', methods=['GET', 'POST'])
 def tambah_soal():
 
-    from flask import request, redirect, url_for, session
+    from flask import request, redirect, url_for, session, flash
     from sqlalchemy.orm import joinedload
     import json
 
@@ -4225,17 +4229,19 @@ def tambah_soal():
 
     # ================= POST =================
     if request.method == 'POST':
-
         try:
-
             tipe = request.form.get('tipe')
             kesulitan = request.form.get('kesulitan')
             id_activity = request.form.get('id_activity', type=int)
-            pertanyaan = request.form.get('pertanyaan')
+            
+            # AMBIL TEKS DAN URL PERTANYAAN
+            pertanyaan_teks = request.form.get('pertanyaan')
+            url_pertanyaan = request.form.get('url_pertanyaan')
 
             # VALIDASI
-            if not tipe or not pertanyaan or not id_activity:
-                return "Field belum lengkap!"
+            if not tipe or not pertanyaan_teks or not id_activity:
+                flash("Data belum lengkap! Silakan isi semua field wajib.", "error")
+                return redirect(url_for('user.tambah_soal'))
 
             # ================= VALIDASI ACTIVITY =================
             activity = db.session.query(Activity)\
@@ -4248,49 +4254,31 @@ def tambah_soal():
                     TeacherClass.id_teacher == user_id
                 ).first()
 
-            # JIKA ACTIVITY BUKAN MILIK DOSEN
             if not activity:
-                return "❌ Activity tidak valid"
+                flash("Activity tidak valid atau bukan milik Anda.", "error")
+                return redirect(url_for('user.tambah_soal'))
+
+            # FORMAT PERTANYAAN KE JSON
+            # Jika URL kosong/string kosong, set menjadi None (null di JSON)
+            format_pertanyaan = {
+                "text": pertanyaan_teks,
+                "URL": url_pertanyaan if url_pertanyaan.strip() else None
+            }
+            pertanyaan_json = json.dumps(format_pertanyaan)
 
             # ================= MULTIPLE CHOICE =================
             if tipe == 'mc':
-
                 opsi = [
-                    {
-                        "a": {
-                            "teks": request.form.get('opsi_a'),
-                            "url": request.form.get('url_a')
-                        }
-                    },
-                    {
-                        "b": {
-                            "teks": request.form.get('opsi_b'),
-                            "url": request.form.get('url_b')
-                        }
-                    },
-                    {
-                        "c": {
-                            "teks": request.form.get('opsi_c'),
-                            "url": request.form.get('url_c')
-                        }
-                    },
-                    {
-                        "d": {
-                            "teks": request.form.get('opsi_d'),
-                            "url": request.form.get('url_d')
-                        }
-                    },
-                    {
-                        "e": {
-                            "teks": request.form.get('opsi_e'),
-                            "url": request.form.get('url_e')
-                        }
-                    }
+                    {"a": {"teks": request.form.get('opsi_a'), "url": request.form.get('url_a')}},
+                    {"b": {"teks": request.form.get('opsi_b'), "url": request.form.get('url_b')}},
+                    {"c": {"teks": request.form.get('opsi_c'), "url": request.form.get('url_c')}},
+                    {"d": {"teks": request.form.get('opsi_d'), "url": request.form.get('url_d')}},
+                    {"e": {"teks": request.form.get('opsi_e'), "url": request.form.get('url_e')}}
                 ]
 
                 soal = Question(
                     type='mc',
-                    question=pertanyaan,
+                    question=pertanyaan_json, # Gunakan format JSON di sini
                     MC_option=json.dumps(opsi),
                     MC_Answer=request.form.get('jawaban'),
                     tingkat_kesulitan=kesulitan,
@@ -4299,10 +4287,9 @@ def tambah_soal():
 
             # ================= ISIAN =================
             else:
-
                 soal = Question(
                     type='isian',
-                    question=pertanyaan,
+                    question=pertanyaan_json, # Gunakan format JSON di sini
                     SA_Answer=request.form.get('jawaban_isian'),
                     tingkat_kesulitan=kesulitan,
                     created_by=user_id
@@ -4319,20 +4306,17 @@ def tambah_soal():
             )
 
             db.session.add(relasi)
-
-            # COMMIT SEKALI
             db.session.commit()
 
+            flash("Soal berhasil ditambahkan ke aktivitas!", "success")
             return redirect(url_for('user.tambah_soal'))
 
         except Exception as e:
-
             db.session.rollback()
-            return f"Error: {str(e)}"
+            flash(f"Terjadi kesalahan: {str(e)}", "error")
+            return redirect(url_for('user.tambah_soal'))
 
     # ================= GET =================
-
-    # HANYA ACTIVITY MILIK DOSEN
     activities = db.session.query(Activity)\
         .join(
             TeacherClass,
@@ -4362,9 +4346,8 @@ def editsoal(id):
         soal = Question.query.get_or_404(id)
         relasi = ActivityQuestion.query.filter_by(id_question=id).first()
 
-        # ================= POST =================
+        # ================= POST METHOD =================
         if request.method == 'POST':
-
             kesulitan = request.form.get('kesulitan')
             pertanyaan = request.form.get('pertanyaan')
             id_activity = request.form.get('id_activity')
@@ -4372,32 +4355,32 @@ def editsoal(id):
             if not pertanyaan or not id_activity:
                 return "Field belum lengkap!"
 
-            # simpan dalam JSON (FIX UTAMA)
+            # Simpan pertanyaan ke dalam format JSON
             soal.question = json.dumps({
                 "text": pertanyaan,
                 "URL": None
             })
-
             soal.tingkat_kesulitan = kesulitan
 
-            # ================= MC =================
+            # ================= JIKA TIPE PILIHAN GANDA (MC) =================
             if soal.type == 'mc':
+                # PERBAIKAN: Menyesuaikan name di HTML, 'opsi_url_a' bukan 'url_a'
                 opsi = [
-                    {"a": {"teks": request.form.get('opsi_a'), "url": request.form.get('url_a')}},
-                    {"b": {"teks": request.form.get('opsi_b'), "url": request.form.get('url_b')}},
-                    {"c": {"teks": request.form.get('opsi_c'), "url": request.form.get('url_c')}},
-                    {"d": {"teks": request.form.get('opsi_d'), "url": request.form.get('url_d')}},
-                    {"e": {"teks": request.form.get('opsi_e'), "url": request.form.get('url_e')}},
+                    {"a": {"teks": request.form.get('opsi_a'), "url": request.form.get('opsi_url_a')}},
+                    {"b": {"teks": request.form.get('opsi_b'), "url": request.form.get('opsi_url_b')}},
+                    {"c": {"teks": request.form.get('opsi_c'), "url": request.form.get('opsi_url_c')}},
+                    {"d": {"teks": request.form.get('opsi_d'), "url": request.form.get('opsi_url_d')}},
+                    {"e": {"teks": request.form.get('opsi_e'), "url": request.form.get('opsi_url_e')}},
                 ]
 
                 soal.MC_option = json.dumps(opsi)
-                soal.MC_Answer = request.form.get('jawaban')
+                soal.MC_Answer = request.form.get('jawaban')  # Menyimpan kunci jawaban a/b/c/d/e
 
-            # ================= ISIAN =================
+            # ================= JIKA TIPE ISIAN =================
             else:
                 soal.SA_Answer = request.form.get('jawaban_isian')
 
-            # update relasi
+            # Update ID Activity pada tabel relasi
             if relasi:
                 relasi.id_activity = id_activity
 
@@ -4408,22 +4391,22 @@ def editsoal(id):
         db.session.rollback()
         return f"Error: {str(e)}"
 
-    # ================= GET =================
+    # ================= GET METHOD =================
     activities = Activity.query.options(
         joinedload(Activity.topic),
         joinedload(Activity.subtopic)
     ).all()
 
-    # parsing QUESTION (FIX UTAMA)
+    # Parsing JSON Soal (Anti Error)
     try:
         parsed = json.loads(soal.question)
         question_text = parsed.get("text", "")
         question_url = parsed.get("URL", None)
-    except:
+    except Exception:
         question_text = soal.question
         question_url = None
 
-    # parsing opsi MC (ANTI ERROR)
+    # Inisialisasi default data opsi agar tidak kosong di form
     opsi_data = {
         "a": {"teks": "", "url": ""},
         "b": {"teks": "", "url": ""},
@@ -4432,13 +4415,14 @@ def editsoal(id):
         "e": {"teks": "", "url": ""},
     }
 
+    # Parsing JSON Opsi Pilihan Ganda
     if soal.type == 'mc' and soal.MC_option:
         try:
             data = json.loads(soal.MC_option)
             for item in data:
                 for key, val in item.items():
                     opsi_data[key] = val
-        except:
+        except Exception:
             pass
 
     return render_template(
@@ -4973,10 +4957,14 @@ def get_soal_guru(id):
 
 @user_bp.route('/aturaktivitas/<int:id>')
 def atur_aktivitas(id):
+    from flask import session
     import json
     import re
 
-    # 🔹 ambil relasi activity -> question (yang sudah dipilih)
+    # AMBIL USER ID DOSEN YANG SEDANG LOGIN
+    user_id = session.get('user_id')
+
+    # 🔹 ambil relasi activity -> question (soal yang SUDAH masuk aktivitas ini)
     aq = db.session.query(ActivityQuestion.id_question).filter(
         ActivityQuestion.id_activity == id
     ).all()
@@ -4985,7 +4973,6 @@ def atur_aktivitas(id):
 
     # 🔹 ambil soal yang SUDAH TERPILIH
     soal_list = []
-
     if question_ids:
         results = db.session.query(
             Question.id,
@@ -5012,16 +4999,32 @@ def atur_aktivitas(id):
                 "level": r.tingkat_kesulitan
             })
 
-    # ambil SEMUA soal (untuk modal)
+    # 1. Cari tahu aktivitas ini terhubung ke kelas mana
+    aktivitas = db.session.query(Activity).filter_by(id=id).first()
+    id_kelas = aktivitas.id_class if aktivitas else None
+
+    # 2. Ambil semua ID dosen yang tergabung di kelas tersebut
+    guru_dikelas = db.session.query(TeacherClass.id_teacher).filter(
+        TeacherClass.id_class == id_kelas
+    ).all()
+    
+    # Buat menjadi list ID guru, misal: [1, 2, 5]
+    list_id_guru = [guru.id_teacher for guru in guru_dikelas]
+
+    # 3. 🔥 PERBAIKAN: Ambil soal di activity ini yang dibuat oleh dosen-dosen di kelas tersebut
     all_results = db.session.query(
         Question.id,
         Question.type,
         Question.question,
         Question.tingkat_kesulitan
+    ).join(
+        ActivityQuestion, ActivityQuestion.id_question == Question.id
+    ).filter(
+        ActivityQuestion.id_activity == id,
+        Question.created_by.in_(list_id_guru)  # <--- FILTER MENGGUNAKAN IN_()
     ).all()
-
+    
     all_soal = []
-
     for r in all_results:
         try:
             raw = json.loads(r.question).get("text", "")
@@ -5038,7 +5041,7 @@ def atur_aktivitas(id):
             "level": r.tingkat_kesulitan
         })
 
-    # ID yang sudah dipilih
+    # ID yang sudah dipilih (untuk mengatur tombol tambah/hapus di modal)
     selected_ids = [s["id"] for s in soal_list]
 
     # 🔹 statistik
@@ -5050,7 +5053,7 @@ def atur_aktivitas(id):
     return render_template(
         'dosen/kelolaAktivitas/aturaktivitas.html',
         soal_list=soal_list,        # atas (terpilih)
-        all_soal=all_soal,          # modal (semua soal)
+        all_soal=all_soal,          # modal (bank soal khusus milik dosen ini)
         selected_ids=selected_ids,  # penanda tombol
         total=total,
         mudah=mudah,
@@ -5060,29 +5063,33 @@ def atur_aktivitas(id):
     
 @user_bp.route('/simpan_soal', methods=['POST'])
 def simpan_soal():
-    data = request.get_json()
+    try:
+        data = request.get_json()
+        id_activity = data.get('id_activity')
+        soal_ids = data.get('soal_ids', []) # Gunakan default list kosong jika tidak ada soal yang dipilih
 
-    id_activity = data.get('id_activity')
-    soal_ids = data.get('soal_ids')
+        if not id_activity:
+            return {"status": "error", "message": "ID Activity tidak valid"}, 400
 
-    for qid in soal_ids:
+        # 1. HAPUS SEMUA RELASI SOAL PADA AKTIVITAS INI
+        ActivityQuestion.query.filter_by(id_activity=id_activity).delete()
 
-        # cek apakah sudah ada
-        exists = ActivityQuestion.query.filter_by(
-            id_activity=id_activity,
-            id_question=qid
-        ).first()
-
-        if not exists:
+        # 2. MASUKKAN ULANG SOAL-SOAL YANG BARU DIPILIH
+        for qid in soal_ids:
             new_rel = ActivityQuestion(
                 id_activity=id_activity,
                 id_question=qid
             )
             db.session.add(new_rel)
 
-    db.session.commit()
+        # 3. COMMIT PERUBAHAN
+        db.session.commit()
 
-    return {"status": "success"}
+        return {"status": "success"}
+
+    except Exception as e:
+        db.session.rollback() # Batalkan jika ada error
+        return {"status": "error", "message": str(e)}, 500
     
 @user_bp.route('/hapus_semua_soal/<int:id>', methods=['POST'])
 def hapus_semua_soal(id):

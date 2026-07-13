@@ -37,9 +37,9 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="fw-bold">
             {% if nama_kelas %}
-            Data Siswa Kelas {{ nama_kelas }}
+            Data Mahasiswa pada kelas {{ nama_kelas }}
             {% else %}
-            Data Siswa per Kelas
+            Data Mahasiswa per Kelas
             {% endif %}
             <i class="bi bi-info-circle text-muted"></i>
         </h3>
@@ -56,9 +56,9 @@
             <a href="{{ url_for('user.export_siswa', class_id=selected_class) }}" class="btn btn-success">
                 <i class="bi bi-file-earmark-excel"></i>
                 {% if selected_class %}
-                Export Siswa Kelas {{ nama_kelas }}
+                Export Mahasiswa Kelas {{ nama_kelas }}
                 {% else %}
-                Export Semua Siswa
+                Export Semua Mahasiswa
                 {% endif %}
             </a>
 
@@ -69,7 +69,7 @@
     <!-- 🔥 Info awal -->
     {% if not selected_class %}
     <div class="alert alert-info">
-        Silakan pilih kelas terlebih dahulu untuk melihat data siswa.
+        Silakan pilih kelas terlebih dahulu untuk melihat data mahasiswa.
     </div>
     {% endif %}
 
@@ -95,7 +95,7 @@
         <thead class="table-primary text-center">
             <tr>
                 <th>No</th>
-                <th>Nama Siswa</th>
+                <th>Nama Mahasiswa</th>
                 <th>Email</th>
                 <th>Kelas</th>
                 <th>Aksi</th>
@@ -136,7 +136,7 @@
                         <input type="hidden" id="edit_id">
 
                         <div class="mb-3">
-                            <label>Nama Siswa</label>
+                            <label>Nama Mahasiswa</label>
                             <input type="text" id="edit_nama" class="form-control" required>
                         </div>
 
@@ -181,7 +181,7 @@
                     </h4>
 
                     <p class="text-subtle mb-0">
-                        Informasi penggunaan fitur pada halaman data siswa.
+                        Informasi penggunaan fitur pada halaman data mahasiswa.
                     </p>
                 </div>
 
@@ -199,7 +199,7 @@
                     </div>
 
                     <div class="text-subtle">
-                        Gunakan dropdown kelas untuk menampilkan data siswa berdasarkan kelas yang dipilih.
+                        Gunakan dropdown kelas untuk menampilkan data mahasiswa berdasarkan kelas yang dipilih.
                     </div>
                 </div>
 
@@ -210,14 +210,14 @@
                     </div>
 
                     <div class="text-subtle">
-                        Tombol export digunakan untuk mengunduh data siswa dalam format Excel.
+                        Tombol export digunakan untuk mengunduh data mahasiswa dalam format Excel.
                     </div>
                 </div>
 
                 <div class="p-3 rounded-4 bg-light mb-3">
                     <div class="fw-bold text-warning mb-1">
                         <i class="bi bi-pencil-square"></i>
-                        Edit Data Siswa
+                        Edit Data Mahasiswa
                     </div>
 
                     <div class="text-subtle">
@@ -232,7 +232,7 @@
                     </div>
 
                     <div class="text-subtle">
-                        Gunakan fitur pencarian pada tabel untuk menemukan data siswa dengan cepat.
+                        Gunakan fitur pencarian pada tabel untuk menemukan data mahasiswa dengan cepat.
                     </div>
                 </div>
 
@@ -261,7 +261,7 @@
             language: {
                 lengthMenu: "Tampilkan _MENU_ data",
                 search: "Cari:",
-                info: "Menampilkan _START_ - _END_ dari _TOTAL_ siswa",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ mahasiswa",
                 emptyTable: "Belum ada data siswa di kelas ini",
                 paginate: {
                     previous: "Previous",

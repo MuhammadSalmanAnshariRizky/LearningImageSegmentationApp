@@ -99,7 +99,7 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <h3 class="fw-bold d-flex align-items-center gap-2 mb-0">
             <i class="bi bi-graph-up-arrow text-primary"></i>
-            Data Progress Siswa
+            Data Progres Mahasiswa
         </h3>
 
         <div class="d-flex align-items-center gap-3">
@@ -137,7 +137,7 @@
                 <tr>
                     <th>Nama</th>
                     <th width="20%">Kelas</th>
-                    <th width="35%">Progress</th>
+                    <th width="35%">Persentase Selesai</th>
                 </tr>
             </thead>
 
@@ -164,7 +164,9 @@
 
                         <div class="progress progress-click" data-user="{{ d.id }}" style="cursor:pointer;"
                             title="Klik untuk melihat detail">
-                            <div class="progress-bar {{ color }}" data-progress="{{ progress }}">
+                            <div class="progress-bar {{ color }}" role="progressbar"
+                                style="width: {{ progress }}%; min-width: 2rem;" aria-valuenow="{{ progress }}"
+                                aria-valuemin="0" aria-valuemax="100" data-progress="{{ progress }}">
                                 {{ progress }}%
                             </div>
                         </div>
@@ -229,7 +231,7 @@
                     </h4>
 
                     <p class="text-subtle mb-0">
-                        Informasi fitur pada halaman progress pembelajaran siswa.
+                        Informasi fitur pada halaman progress pembelajaran mahasiswa.
                     </p>
                 </div>
 
@@ -247,7 +249,7 @@
                     </div>
 
                     <div class="text-subtle">
-                        Gunakan tab kelas untuk menampilkan progress siswa berdasarkan kelas tertentu.
+                        Gunakan tab kelas untuk menampilkan progress mahasiswa berdasarkan kelas tertentu.
                     </div>
                 </div>
 
@@ -258,7 +260,7 @@
                     </div>
 
                     <div class="text-subtle">
-                        Warna progress menunjukkan tingkat penyelesaian materi oleh siswa.
+                        Warna progress menunjukkan tingkat penyelesaian materi oleh mahasiswa.
                     </div>
                 </div>
 
@@ -269,7 +271,7 @@
                     </div>
 
                     <div class="text-subtle">
-                        Klik pada progress bar untuk melihat detail topik, subtopik, dan waktu pengerjaan siswa.
+                        Klik pada progress bar untuk melihat detail topik, subtopik, dan waktu pengerjaan mahasiswa.
                     </div>
                 </div>
 

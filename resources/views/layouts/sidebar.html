@@ -255,25 +255,25 @@
 
                         {% if (id_class, 4, 14) in aktif_materi %}
                         {% if (3, 13) in completed_materi %}
-                        <a href="/materi4/pengantarthresholdbased" class="nav-link sidebar-sub">
+                        <a href="/materi4/histogram" class="nav-link sidebar-sub">
                             <i
-                                class="bi {% if (4, 14) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-info-circle{% endif %}"></i>
-                            Pengantar Thresholding
+                                class="bi {% if (3, 13) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-play-circle{% endif %}"></i>
+                            Histogram
                         </a>
                         {% endif %}
                         {% endif %}
 
                         {% if (id_class, 4, 15) in aktif_materi %}
                         {% if (4, 14) in completed_materi %}
-                        <a href="/materi4/histogram" class="nav-link sidebar-sub">
+                        <a href="/materi4/pengantarthresholdbased" class="nav-link sidebar-sub">
                             <i
-                                class="bi {% if (4, 15) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-play-circle{% endif %}"></i>
-                            Histogram
+                                class="bi {% if (4, 15) in completed_materi %}bi-check-circle-fill text-success{% else %}bi-info-circle{% endif %}"></i>
+                            Pengantar Thresholding
                         </a>
                         {% else %}
                         <div class="nav-link sidebar-sub text-secondary opacity-50">
                             <i class="bi bi-lock-fill me-2"></i>
-                            Histogram
+                            Pengantar Thresholding
                         </div>
                         {% endif %}
                         {% endif %}
@@ -460,7 +460,7 @@
 
                 <a href="/datasiswa"
                     class="nav-link sidebar-sub {% if request.path == '/datasiswa' %}active{% endif %}">
-                    <i class="bi bi-people me-2"></i> Data Siswa
+                    <i class="bi bi-people me-2"></i> Data Mahasiswa
                 </a>
 
                 <a href="/dataprogress"

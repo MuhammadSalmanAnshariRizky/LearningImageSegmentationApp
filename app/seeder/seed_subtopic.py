@@ -75,8 +75,8 @@ def seed_subtopic_topic3():
 
 def seed_subtopic_topic4():
     subtopics = [
-        "Pengantar Thresholding",
         "Histogram",
+        "Pengantar Thresholding",
         "Metode Thresholding",
         "Rangkuman",
         "Kuis-4"

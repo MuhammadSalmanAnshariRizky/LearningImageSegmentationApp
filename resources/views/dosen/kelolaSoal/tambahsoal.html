@@ -1,5 +1,6 @@
 {% extends "layouts/base.html" %} {% block content %}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
     body {
@@ -42,17 +43,18 @@
         <h4 class="fw-bold text-primary">
             <i class="bi bi-plus-circle"></i> Tambah Soal
         </h4>
+        <a href="{{ url_for('user.data_soal') }}" class="btn btn-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Kembali
+        </a>
     </div>
 
-    <!-- 🔥 PENJELASAN -->
     <div class="info-box mb-4">
         <b>Catatan:</b> Soal akan dimasukkan ke dalam <b>Activity</b>. Topic dan
         Subtopic mengikuti Activity yang dipilih.
     </div>
 
-    <form method="POST">
+    <form method="POST" id="formTambahSoal">
         <div class="row">
-            <!-- TIPE -->
             <div class="col-md-3">
                 <label class="form-label">Tipe Soal</label>
                 <select id="tipeSoal" name="tipe" class="form-select" required>
@@ -62,7 +64,6 @@
                 </select>
             </div>
 
-            <!-- KESULITAN -->
             <div class="col-md-3">
                 <label class="form-label">Tingkat Kesulitan</label>
                 <select name="kesulitan" class="form-select">
@@ -73,7 +74,6 @@
                 </select>
             </div>
 
-            <!-- 🔥 ACTIVITY -->
             <div class="col-md-6">
                 <label class="form-label">Pilih Aktivitas</label>
                 <select name="id_activity" class="form-select" required>
@@ -88,58 +88,57 @@
             </div>
         </div>
 
-        <!-- FORM SOAL -->
         <div id="formSoal" style="display: none">
             <div class="mt-4">
-                <label class="form-label">Teks Pertanyaan</label>
-                <textarea name="pertanyaan" class="form-control" rows="3"></textarea>
+                <label for="pertanyaan" class="form-label">Teks Pertanyaan</label>
+                <textarea id="pertanyaan" name="pertanyaan" class="form-control" rows="3"
+                    placeholder="Masukkan pertanyaan"></textarea>
+
+                <label for="url_pertanyaan" class="form-label mt-3">
+                    URL Gambar Pertanyaan
+                </label>
+                <input type="url" id="url_pertanyaan" name="url_pertanyaan" class="form-control"
+                    placeholder="https://contoh.com/gambar.jpg">
             </div>
 
             <hr class="my-4" />
 
-            <!-- MC -->
             <div id="mcSection" style="display: none">
                 <h5 class="fw-bold mb-3">
                     <i class="bi bi-list-ul"></i> Pilihan Jawaban
                 </h5>
 
                 <div class="row g-3">
-                    <!-- OPSI A -->
                     <div class="col-md-4">
                         <label>Opsi A</label>
                         <input name="opsi_a" class="form-control mb-1" placeholder="Teks" />
                         <input name="url_a" class="form-control" placeholder="URL gambar (opsional)" />
                     </div>
 
-                    <!-- OPSI B -->
                     <div class="col-md-4">
                         <label>Opsi B</label>
                         <input name="opsi_b" class="form-control mb-1" placeholder="Teks" />
                         <input name="url_b" class="form-control" placeholder="URL gambar (opsional)" />
                     </div>
 
-                    <!-- OPSI C -->
                     <div class="col-md-4">
                         <label>Opsi C</label>
                         <input name="opsi_c" class="form-control mb-1" placeholder="Teks" />
                         <input name="url_c" class="form-control" placeholder="URL gambar (opsional)" />
                     </div>
 
-                    <!-- OPSI D -->
                     <div class="col-md-4">
                         <label>Opsi D</label>
                         <input name="opsi_d" class="form-control mb-1" placeholder="Teks" />
                         <input name="url_d" class="form-control" placeholder="URL gambar (opsional)" />
                     </div>
 
-                    <!-- OPSI E -->
                     <div class="col-md-4">
                         <label>Opsi E</label>
                         <input name="opsi_e" class="form-control mb-1" placeholder="Teks" />
                         <input name="url_e" class="form-control" placeholder="URL gambar (opsional)" />
                     </div>
 
-                    <!-- JAWABAN -->
                     <div class="col-md-4">
                         <label>Jawaban Benar</label>
                         <select name="jawaban" class="form-select">
@@ -154,7 +153,6 @@
                 </div>
             </div>
 
-            <!-- ISIAN -->
             <div id="isianSection" style="display: none">
                 <h5 class="fw-bold mb-3">
                     <i class="bi bi-pencil-square"></i> Jawaban Benar
@@ -165,11 +163,21 @@
         </div>
 
         <div class="d-flex justify-content-end mt-4">
-            <button class="btn btn-success">
+            <button type="submit" class="btn btn-success">
                 <i class="bi bi-check-circle"></i> Simpan Soal
             </button>
         </div>
     </form>
+</div>
+
+<div id="flashData" style="display: none;">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <span class="flash-item" data-category="{{ category }}" data-message="{{ message }}"></span>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 </div>
 
 <script>
@@ -177,7 +185,9 @@
     const formSoal = document.getElementById("formSoal");
     const mc = document.getElementById("mcSection");
     const isian = document.getElementById("isianSection");
+    const formTambahSoal = document.getElementById("formTambahSoal");
 
+    // Logika menampilkan form sesuai tipe
     tipe.addEventListener("change", function () {
         formSoal.style.display = "block";
 
@@ -190,6 +200,43 @@
             isian.style.display = "block";
         }
     });
-</script>
 
+    // Logika SweetAlert Konfirmasi Submit
+    formTambahSoal.addEventListener("submit", function (e) {
+        e.preventDefault(); // Hentikan proses submit default sementara
+
+        Swal.fire({
+            title: 'Simpan Soal?',
+            text: "Pastikan data soal sudah benar sebelum disimpan.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#198754', // Warna hijau success Bootstrap
+            cancelButtonColor: '#dc3545',  // Warna merah danger Bootstrap
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Jika user klik 'Ya', submit form secara manual
+                formTambahSoal.submit();
+            }
+        });
+    });
+
+    //  LOGIKA SWEETALERT MEMBACA FLASH MESSAGE DARI HTML
+    document.addEventListener("DOMContentLoaded", function () {
+        const flashItems = document.querySelectorAll(".flash-item");
+
+        flashItems.forEach(function (item) {
+            const category = item.getAttribute("data-category");
+            const message = item.getAttribute("data-message");
+
+            Swal.fire({
+                icon: category === "success" ? "success" : "error",
+                title: category === "success" ? "Berhasil!" : "Gagal!",
+                text: message,
+                confirmButtonColor: "#0d6efd"
+            });
+        });
+    });
+</script>
 {% endblock %}

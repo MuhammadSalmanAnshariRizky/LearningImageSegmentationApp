@@ -181,14 +181,10 @@
 
     <!-- CONTENT -->
     <div class="tab-content">
-
         {% for c in classes %}
         <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="kelas{{ c.id }}">
-
             <div class="table-responsive">
-
                 <table class="table table-bordered table-hover table-soal">
-
                     <thead class="text-center">
                         <tr>
                             <th>No</th>
@@ -197,6 +193,7 @@
                             <th>Topik</th>
                             <th>Sub Topik</th>
                             <th>Kesulitan</th>
+                            <th>Pembuat Soal</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -238,9 +235,10 @@
                                 {% endif %}
                             </td>
 
+                            <td>{{ item.pembuat }}</td>
+
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
-
                                     <a href="#" class="btn btn-icon btn-view btn-detail" data-id="{{ item.id }}"
                                         data-bs-toggle="tooltip" title="Lihat Detail">
                                         <i class="bi bi-eye"></i>
@@ -254,21 +252,15 @@
                                     <a href="/hapussoal/{{ item.id }}" class="btn btn-icon btn-delete" title="Hapus">
                                         <i class="bi bi-trash"></i>
                                     </a>
-
                                 </div>
                             </td>
-
                         </tr>
                         {% endfor %}
                     </tbody>
-
                 </table>
-
             </div>
-
         </div>
         {% endfor %}
-
     </div>
 
 </div>

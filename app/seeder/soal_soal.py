@@ -3221,7 +3221,7 @@ Kode program yang tepat untuk melakukan <i>Edge linking</i> menggunakan Morpholo
     db.session.commit()
 
     print("✅ Kuis 3 berhasil dibuat")
-    
+
 # aktivitas 8
 def aktivitas8():
 
@@ -3236,283 +3236,6 @@ def aktivitas8():
         jumlah_soal=4,
         id_topic=4,
         id_subtopic=14,
-        status='aktif'
-    )
-
-    db.session.add(activity)
-    db.session.commit()
-
-    # =========================
-    # QUESTIONS
-    # =========================
-    questions = [
-
-        # =====================================
-        # SOAL 1
-        # =====================================
-        {
-            "question": {
-                "text": """
-<i>Graylevel Thresholding</i> digunakan untuk memisahkan objek dan latar belakang pada citra berdasarkan nilai intensitas piksel dengan bantuan nilai ambang (<i>threshold</i>)....
-""",
-                "URL": None
-            },
-
-            "options": [
-
-                {
-                    "a": {
-                        "teks": "Mengubah citra menjadi berwarna",
-                        "url": None
-                    }
-                },
-
-                {
-                    "b": {
-                        "teks": "Membandingkan nilai piksel dengan threshold",
-                        "url": None
-                    }
-                },
-
-                {
-                    "c": {
-                        "teks": "Menghilangkan seluruh noise",
-                        "url": None
-                    }
-                },
-
-                {
-                    "d": {
-                        "teks": "Memperbesar ukuran citra",
-                        "url": None
-                    }
-                },
-
-                {
-                    "e": {
-                        "teks": "Mengubah format citra",
-                        "url": None
-                    }
-                }
-
-            ],
-
-            "answer": "b"
-        },
-
-        # =====================================
-        # SOAL 2
-        # =====================================
-        {
-            "question": {
-                "text": """
-Jika suatu piksel memiliki nilai intensitas lebih besar dari nilai threshold <code class="code-python">(T)</code>, maka pada citra biner hasil thresholding piksel tersebut akan bernilai....
-""",
-                "URL": None
-            },
-
-            "options": [
-
-                {
-                    "a": {
-                        "teks": "0 (background)",
-                        "url": None
-                    }
-                },
-
-                {
-                    "b": {
-                        "teks": "1 (objek)",
-                        "url": None
-                    }
-                },
-
-                {
-                    "c": {
-                        "teks": "255 (warna putih)",
-                        "url": None
-                    }
-                },
-
-                {
-                    "d": {
-                        "teks": "Tetap seperti semula",
-                        "url": None
-                    }
-                },
-
-                {
-                    "e": {
-                        "teks": "Tidak diproses",
-                        "url": None
-                    }
-                }
-
-            ],
-
-            "answer": "b"
-        },
-
-        # =====================================
-        # SOAL 3
-        # =====================================
-        {
-            "question": {
-                "text": """
-Metode <i>thresholding</i> sederhana banyak digunakan karena memiliki kelebihan utama yaitu....
-""",
-                "URL": None
-            },
-
-            "options": [
-
-                {
-                    "a": {
-                        "teks": "Hasil selalu sempurna",
-                        "url": None
-                    }
-                },
-
-                {
-                    "b": {
-                        "teks": "Proses sangat kompleks",
-                        "url": None
-                    }
-                },
-
-                {
-                    "c": {
-                        "teks": "Cepat dan ringan secara komputasi",
-                        "url": None
-                    }
-                },
-
-                {
-                    "d": {
-                        "teks": "Hanya untuk citra berwarna",
-                        "url": None
-                    }
-                },
-
-                {
-                    "e": {
-                        "teks": "Membutuhkan data besar",
-                        "url": None
-                    }
-                }
-
-            ],
-
-            "answer": "c"
-        },
-
-        # =====================================
-        # SOAL 4
-        # =====================================
-        {
-            "question": {
-                "text": """
-Jika nilai threshold 
-<code class="code-python">T = 150</code>, 
-maka piksel dengan nilai intensitas kurang dari atau sama dengan 150 akan diklasifikasikan sebagai....
-""",
-                "URL": None
-            },
-
-            "options": [
-
-                {
-                    "a": {
-                        "teks": "Background (0)",
-                        "url": None
-                    }
-                },
-
-                {
-                    "b": {
-                        "teks": "Objek (1)",
-                        "url": None
-                    }
-                },
-
-                {
-                    "c": {
-                        "teks": "Objek (255)",
-                        "url": None
-                    }
-                },
-
-                {
-                    "d": {
-                        "teks": "Tidak berubah",
-                        "url": None
-                    }
-                },
-
-                {
-                    "e": {
-                        "teks": "Noise",
-                        "url": None
-                    }
-                }
-
-            ],
-
-            "answer": "a"
-        }
-
-    ]
-
-    # =========================
-    # INSERT QUESTIONS
-    # =========================
-    for item in questions:
-
-        question = Question(
-            type='mc',
-
-            # question json
-            question=json.dumps(item['question']),
-
-            # options json
-            MC_option=json.dumps(item['options']),
-
-            MC_Answer=item['answer'],
-            tingkat_kesulitan='mudah',
-            created_by=41
-        )
-
-        db.session.add(question)
-        db.session.commit()
-
-        # =========================
-        # RELASI ACTIVITY QUESTION
-        # =========================
-        activity_question = ActivityQuestion(
-            id_activity=activity.id,
-            id_question=question.id
-        )
-
-        db.session.add(activity_question)
-
-    db.session.commit()
-
-    print("✅ Aktivitas 8 berhasil dibuat")
-    
-# aktivitas 9
-def aktivitas9():
-
-    # =========================
-    # CREATE ACTIVITY
-    # =========================
-    activity = Activity(
-        id_class=1,
-        title='Aktivitas 9',
-        type='aktivitas',
-        durasi_pengerjaan=5,
-        jumlah_soal=4,
-        id_topic=4,
-        id_subtopic=15,
         status='aktif'
     )
 
@@ -3776,7 +3499,285 @@ Apabila histogram citra memiliki lebih dari dua puncak, maka pendekatan yang ses
 
     db.session.commit()
 
+    print("✅ Aktivitas 8 berhasil dibuat")
+    
+# aktivitas 9
+def aktivitas9():
+
+    # =========================
+    # CREATE ACTIVITY
+    # =========================
+    activity = Activity(
+        id_class=1,
+        title='Aktivitas 9',
+        type='aktivitas',
+        durasi_pengerjaan=5,
+        jumlah_soal=4,
+        id_topic=4,
+        id_subtopic=15,
+        status='aktif'
+    )
+
+    db.session.add(activity)
+    db.session.commit()
+
+    # =========================
+    # QUESTIONS
+    # =========================
+    questions = [
+
+        # =====================================
+        # SOAL 1
+        # =====================================
+        {
+            "question": {
+                "text": """
+<i>Graylevel Thresholding</i> digunakan untuk memisahkan objek dan latar belakang pada citra berdasarkan nilai intensitas piksel dengan bantuan nilai ambang (<i>threshold</i>)....
+""",
+                "URL": None
+            },
+
+            "options": [
+
+                {
+                    "a": {
+                        "teks": "Mengubah citra menjadi berwarna",
+                        "url": None
+                    }
+                },
+
+                {
+                    "b": {
+                        "teks": "Membandingkan nilai piksel dengan threshold",
+                        "url": None
+                    }
+                },
+
+                {
+                    "c": {
+                        "teks": "Menghilangkan seluruh noise",
+                        "url": None
+                    }
+                },
+
+                {
+                    "d": {
+                        "teks": "Memperbesar ukuran citra",
+                        "url": None
+                    }
+                },
+
+                {
+                    "e": {
+                        "teks": "Mengubah format citra",
+                        "url": None
+                    }
+                }
+
+            ],
+
+            "answer": "b"
+        },
+
+        # =====================================
+        # SOAL 2
+        # =====================================
+        {
+            "question": {
+                "text": """
+Jika suatu piksel memiliki nilai intensitas lebih besar dari nilai threshold <code class="code-python">(T)</code>, maka pada citra biner hasil thresholding piksel tersebut akan bernilai....
+""",
+                "URL": None
+            },
+
+            "options": [
+
+                {
+                    "a": {
+                        "teks": "0 (background)",
+                        "url": None
+                    }
+                },
+
+                {
+                    "b": {
+                        "teks": "1 (objek)",
+                        "url": None
+                    }
+                },
+
+                {
+                    "c": {
+                        "teks": "255 (warna putih)",
+                        "url": None
+                    }
+                },
+
+                {
+                    "d": {
+                        "teks": "Tetap seperti semula",
+                        "url": None
+                    }
+                },
+
+                {
+                    "e": {
+                        "teks": "Tidak diproses",
+                        "url": None
+                    }
+                }
+
+            ],
+
+            "answer": "b"
+        },
+
+        # =====================================
+        # SOAL 3
+        # =====================================
+        {
+            "question": {
+                "text": """
+Metode <i>thresholding</i> sederhana banyak digunakan karena memiliki kelebihan utama yaitu....
+""",
+                "URL": None
+            },
+
+            "options": [
+
+                {
+                    "a": {
+                        "teks": "Hasil selalu sempurna",
+                        "url": None
+                    }
+                },
+
+                {
+                    "b": {
+                        "teks": "Proses sangat kompleks",
+                        "url": None
+                    }
+                },
+
+                {
+                    "c": {
+                        "teks": "Cepat dan ringan secara komputasi",
+                        "url": None
+                    }
+                },
+
+                {
+                    "d": {
+                        "teks": "Hanya untuk citra berwarna",
+                        "url": None
+                    }
+                },
+
+                {
+                    "e": {
+                        "teks": "Membutuhkan data besar",
+                        "url": None
+                    }
+                }
+
+            ],
+
+            "answer": "c"
+        },
+
+        # =====================================
+        # SOAL 4
+        # =====================================
+        {
+            "question": {
+                "text": """
+Jika nilai threshold 
+<code class="code-python">T = 150</code>, 
+maka piksel dengan nilai intensitas kurang dari atau sama dengan 150 akan diklasifikasikan sebagai....
+""",
+                "URL": None
+            },
+
+            "options": [
+
+                {
+                    "a": {
+                        "teks": "Background (0)",
+                        "url": None
+                    }
+                },
+
+                {
+                    "b": {
+                        "teks": "Objek (1)",
+                        "url": None
+                    }
+                },
+
+                {
+                    "c": {
+                        "teks": "Objek (255)",
+                        "url": None
+                    }
+                },
+
+                {
+                    "d": {
+                        "teks": "Tidak berubah",
+                        "url": None
+                    }
+                },
+
+                {
+                    "e": {
+                        "teks": "Noise",
+                        "url": None
+                    }
+                }
+
+            ],
+
+            "answer": "a"
+        }
+
+    ]
+
+    # =========================
+    # INSERT QUESTIONS
+    # =========================
+    for item in questions:
+
+        question = Question(
+            type='mc',
+
+            # question json
+            question=json.dumps(item['question']),
+
+            # options json
+            MC_option=json.dumps(item['options']),
+
+            MC_Answer=item['answer'],
+            tingkat_kesulitan='mudah',
+            created_by=41
+        )
+
+        db.session.add(question)
+        db.session.commit()
+
+        # =========================
+        # RELASI ACTIVITY QUESTION
+        # =========================
+        activity_question = ActivityQuestion(
+            id_activity=activity.id,
+            id_question=question.id
+        )
+
+        db.session.add(activity_question)
+
+    db.session.commit()
+
     print("✅ Aktivitas 9 berhasil dibuat")
+   
     
 # aktivitas 10
 def aktivitas10():
