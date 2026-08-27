@@ -467,71 +467,6 @@ def seed_question():
         {
             "question": {
                 "text": """
-                <p><i>Graylevel Thresholding</i> digunakan untuk memisahkan objek dan latar belakang pada citra berdasarkan nilai intensitas piksel dengan bantuan nilai ambang (<i>threshold</i>).</p>
-                <p>Prinsip utama metode ini adalah…</p>
-                """,
-                "URL": None
-            },
-            "options": [
-                {"a": {"teks": "Mengubah citra menjadi berwarna", "url": None}},
-                {"b": {"teks": "Membandingkan nilai piksel dengan threshold", "url": None}},
-                {"c": {"teks": "Menghilangkan seluruh noise", "url": None}},
-                {"d": {"teks": "Memperbesar ukuran citra", "url": None}},
-                {"e": {"teks": "Mengubah format citra", "url": None}}
-            ],
-            "answer": "b"
-        },
-        {
-            "question": {
-                "text": """
-                <p>Jika suatu piksel memiliki nilai intensitas lebih besar dari threshold \\( T \\), maka pada citra biner hasil thresholding piksel tersebut akan bernilai…</p>
-                """,
-                "URL": None
-            },
-            "options": [
-                {"a": {"teks": "0 (background)", "url": None}},
-                {"b": {"teks": "Tetap seperti semula", "url": None}},
-                {"c": {"teks": "255 (warna putih)", "url": None}},
-                {"d": {"teks": "1 (objek)", "url": None}},
-                {"e": {"teks": "Tidak diproses", "url": None}}
-            ],
-            "answer": "d"
-        },
-        {
-            "question": {
-                "text": """
-                <p>Metode thresholding sederhana banyak digunakan karena memiliki kelebihan utama yaitu…</p>
-                """,
-                "URL": None
-            },
-            "options": [
-                {"a": {"teks": "Hasil selalu sempurna", "url": None}},
-                {"b": {"teks": "Proses sangat kompleks", "url": None}},
-                {"c": {"teks": "Cepat dan ringan secara komputasi", "url": None}},
-                {"d": {"teks": "Hanya untuk citra berwarna", "url": None}},
-                {"e": {"teks": "Membutuhkan data besar", "url": None}}
-            ],
-            "answer": "c"
-        },
-        {
-            "question": {
-                "text": """
-                <p>Jika nilai threshold \\( T = 150 \\), maka piksel dengan nilai intensitas kurang dari atau sama dengan 150 akan diklasifikasikan sebagai…</p>
-                """,
-                "URL": None
-            },
-            "options": [
-                {"a": {"teks": "Background (0)", "url": None}},
-                {"b": {"teks": "Objek (255)", "url": None}},
-                {"c": {"teks": "Objek (1)", "url": None}},
-                {"d": {"teks": "Tidak berubah", "url": None}},
-                {"e": {"teks": "Noise", "url": None}}
-            ],
-            "answer": "a"
-        },
-        {
-            "question": {
-                "text": """
                 <p>Dalam proses segmentasi citra, terdapat metode yang menggunakan satu nilai <i>threshold</i> untuk seluruh piksel pada citra tanpa membedakan posisi atau area tertentu.</p>
                 <p>Metode tersebut dikenal sebagai…</p>
                 """,
@@ -596,6 +531,71 @@ def seed_question():
                 {"e": {"teks": "Smoothing", "url": None}}
             ],
             "answer": "d"
+        },
+                {
+            "question": {
+                "text": """
+                <p><i>Graylevel Thresholding</i> digunakan untuk memisahkan objek dan latar belakang pada citra berdasarkan nilai intensitas piksel dengan bantuan nilai ambang (<i>threshold</i>).</p>
+                <p>Prinsip utama metode ini adalah…</p>
+                """,
+                "URL": None
+            },
+            "options": [
+                {"a": {"teks": "Mengubah citra menjadi berwarna", "url": None}},
+                {"b": {"teks": "Membandingkan nilai piksel dengan threshold", "url": None}},
+                {"c": {"teks": "Menghilangkan seluruh noise", "url": None}},
+                {"d": {"teks": "Memperbesar ukuran citra", "url": None}},
+                {"e": {"teks": "Mengubah format citra", "url": None}}
+            ],
+            "answer": "b"
+        },
+        {
+            "question": {
+                "text": """
+                <p>Jika suatu piksel memiliki nilai intensitas lebih besar dari threshold \\( T \\), maka pada citra biner hasil thresholding piksel tersebut akan bernilai…</p>
+                """,
+                "URL": None
+            },
+            "options": [
+                {"a": {"teks": "0 (background)", "url": None}},
+                {"b": {"teks": "Tetap seperti semula", "url": None}},
+                {"c": {"teks": "255 (warna putih)", "url": None}},
+                {"d": {"teks": "1 (objek)", "url": None}},
+                {"e": {"teks": "Tidak diproses", "url": None}}
+            ],
+            "answer": "d"
+        },
+        {
+            "question": {
+                "text": """
+                <p>Metode thresholding sederhana banyak digunakan karena memiliki kelebihan utama yaitu…</p>
+                """,
+                "URL": None
+            },
+            "options": [
+                {"a": {"teks": "Hasil selalu sempurna", "url": None}},
+                {"b": {"teks": "Proses sangat kompleks", "url": None}},
+                {"c": {"teks": "Cepat dan ringan secara komputasi", "url": None}},
+                {"d": {"teks": "Hanya untuk citra berwarna", "url": None}},
+                {"e": {"teks": "Membutuhkan data besar", "url": None}}
+            ],
+            "answer": "c"
+        },
+        {
+            "question": {
+                "text": """
+                <p>Jika nilai threshold \\( T = 150 \\), maka piksel dengan nilai intensitas kurang dari atau sama dengan 150 akan diklasifikasikan sebagai…</p>
+                """,
+                "URL": None
+            },
+            "options": [
+                {"a": {"teks": "Background (0)", "url": None}},
+                {"b": {"teks": "Objek (255)", "url": None}},
+                {"c": {"teks": "Objek (1)", "url": None}},
+                {"d": {"teks": "Tidak berubah", "url": None}},
+                {"e": {"teks": "Noise", "url": None}}
+            ],
+            "answer": "a"
         },
         {
             "question": {

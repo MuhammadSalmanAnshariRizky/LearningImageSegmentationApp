@@ -65,7 +65,7 @@
       <div class="card-body p-4 p-md-5">
 
         <h3 class="fw-bold mb-4 text-custom-blue">
-          <i class="fa-solid fa-chart-column me-2"></i> 4.2 Peran Histogram dalam Menentukan Nilai Threshold
+          <i class="fa-solid fa-chart-column me-2"></i> 4.1 Peran Histogram dalam Menentukan Nilai Threshold
         </h3>
 
         <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
@@ -105,7 +105,7 @@
             <img src="{{ url_for('static', filename='img/sub4/histogram.png') }}"
               class="img-fluid text-center mt-4 mb-0"
               style="max-width: 60%; height: auto; display: block; margin-left: auto; margin-right: auto;">
-            <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4.3 Jenis-Jenis Histogram</em>
+            <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4.1 Jenis-Jenis Histogram</em>
             </p>
           </div>
 
@@ -139,7 +139,7 @@
           </p>
           <img src="{{ url_for('static', filename='img/sub4/Noise.png') }}" class="img-fluid text-center mt-4 mb-0"
             style="max-width: 60%; height: auto; display: block; margin-left: auto; margin-right: auto;">
-          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4. 4 Contoh citra yang memiliki Noise</em></p>
+          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4.2 Contoh citra yang memiliki Noise</em></p>
           <h5 class="fw-bold text-custom-blue mb-2">2. Pencahayaan (Illumination)</h5>
           <p class="mb-3">
             Pencahayaan yang tidak merata dapat menyebabkan objek yang sama memiliki nilai intensitas yang berbeda pada
@@ -149,7 +149,7 @@
           <img src="{{ url_for('static', filename='img/sub4/Illumination.png') }}"
             class="img-fluid text-center mt-4 mb-0"
             style="max-width: 60%; height: auto; display: block; margin-left: auto; margin-right: auto;">
-          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4. 5 Contoh citra yang mengalami masalah pada
+          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4.3 Contoh citra yang mengalami masalah pada
               pencahayaan (Illumination)</em></p>
 
           <h5 class="fw-bold text-custom-blue mb-2">3. Reflektansi Objek (Reflectance)</h5>
@@ -161,7 +161,7 @@
           <img src="{{ url_for('static', filename='img/sub4/Reflection.png') }}" class="img-fluid text-center mt-4 mb-0"
             style="max-width: 60%; height: auto; display: block; margin-left: auto; margin-right: auto;">
           <p class="mt-0 mb-3 text-muted small text-center ">
-            <em>Gambar 4. 6 Contoh citra yang memiliki reflekstansi objek</em>
+            <em>Gambar 4.4 Contoh citra yang memiliki reflekstansi objek</em>
           </p>
 
           <div class="bg-light p-4 rounded border mt-4">
@@ -170,10 +170,7 @@
             <p class="mb-0">
               Berdasarkan analisis histogram, nilai threshold idealnya dapat dipilih pada daerah lembah
               (<em>valley</em>) yang mampu memisahkan distribusi intensitas objek dan latar belakang secara
-              kontras. Namun, karena citra nyata sering kali tidak ideal akibat faktor di atas, penentuan
-              threshold memerlukan pendekatan yang lebih sistematis. Untuk mengatasi permasalahan
-              tersebut, sub-bab berikutnya akan mempelajari berbagai perkembangan metode komputasi thresholding
-              adaptif.
+              kontras.
             </p>
           </div>
 
@@ -276,24 +273,22 @@
       </div>
     </a>
     <!-- Tombol Materi Selanjutnya -->
-    <a href="{{ url_for('user.pengantarthresholdbased') }}"
+    <a href="{{ url_for('user.pengantarthresholdbased') }}" id="btnNextMateri"
       class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-prev-materi"
       style="background-color: #1e293b; width: 400px; max-width: 100%;">
-
-      <!-- Ikon Panah Kiri -->
-      <div class="bg-white rounded-circle d-flex justify-content-center align-items-center shadow-sm flex-shrink-0"
-        style="width: 40px; height: 40px; color: #1e293b;">
-        <i class="fa-solid fa-arrow-left fs-5"></i>
-      </div>
 
       <!-- Teks -->
       <div class="text-start ms-3 flex-grow-1">
         <small class="d-block text-white" style="font-size: 0.75rem; letter-spacing: 0.5px; opacity: 0.8;">
-          Materi Sebelumnya
+          Materi Selanjutnya
         </small>
         <span class="fw-bold text-white" style="font-size: 1.05rem;">
           Pengantar <i>Threshold-Based</i>
         </span>
+      </div>
+      <div class="bg-white rounded-circle d-flex justify-content-center align-items-center shadow-sm flex-shrink-0"
+        style="width: 40px; height: 40px; color: #1e293b;">
+        <i class="fa-solid fa-arrow-right fs-5"></i>
       </div>
     </a>
 

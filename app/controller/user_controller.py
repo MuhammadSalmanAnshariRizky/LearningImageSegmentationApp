@@ -311,6 +311,9 @@ def register():
         id_other = request.form.get('id_other')
         type_id_other = request.form.get('type_id_other')
         class_code = request.form.get('class_code')
+        
+        # Ambil token guru dari form request
+        teacher_token = request.form.get('teacher_token') 
 
         # 2. Siapkan data yang akan "dititipkan" jika terjadi error
         old_data = request.form.to_dict()
@@ -324,6 +327,21 @@ def register():
                 status='error',
                 message='Semua field wajib diisi!'
             ))
+
+        # ==========================================
+        #  VALIDASI KHUSUS: TOKEN REGISTRASI GURU
+        # ==========================================
+        if role == 'Teacher':
+            # Definisikan token rahasia sistem di sini (bisa juga diambil dari env atau app.config)
+            TOKEN_GURU_SISTEM = "RAHASIA_DOSEN_2026" 
+            
+            if not teacher_token or teacher_token != TOKEN_GURU_SISTEM:
+                session['old_form'] = old_data 
+                return redirect(url_for(
+                    'user.register',
+                    status='error',
+                    message='Token registrasi Guru tidak valid atau salah!'
+                ))
 
         # VALIDASI 2: Password minimal 8 karakter
         if len(password) < 8:
@@ -418,8 +436,6 @@ def register():
                 message='Terjadi kesalahan sistem saat registrasi!'
             ))
 
-    # Untuk request GET (Saat user pertama kali buka halaman)
-    # Tidak akan ada pesan error yang muncul karena kode post dan validasi dilewati
     return render_template('register.html', old=old)
 
 @user_bp.route('/login', methods=['GET', 'POST'])

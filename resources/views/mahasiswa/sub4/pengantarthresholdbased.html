@@ -23,7 +23,7 @@
       <div class="card-body p-4 p-md-5">
 
         <h3 class="fw-bold mb-4 text-custom-blue">
-          <i class="fa-solid fa-circle-half-stroke me-2"></i> 4.1 Pengantar Threshold-Based Segmentation
+          <i class="fa-solid fa-circle-half-stroke me-2"></i> 4.2 Pengantar Threshold-Based Segmentation
         </h3>
 
         <div class="text-dark" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
@@ -81,7 +81,7 @@
 
           <img src="{{ url_for('static', filename='img/sub4/f(i,j).png') }}" class="img-fluid text-center mb-0"
             style="max-width: 40%; height: auto; display: block; margin-left: auto; margin-right: auto;">
-          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4.1 citra awal untuk thresholding sederhana</em>
+          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4.5 citra awal untuk thresholding sederhana</em>
           </p>
 
 
@@ -101,7 +101,7 @@
 
           <img src="{{ url_for('static', filename='img/sub4/g(i,j).png') }}" class="img-fluid text-center mb-0"
             style="max-width: 40%; height: auto; display: block; margin-left: auto; margin-right: auto;">
-          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4.2 hasil dari penerapan algoritma
+          <p class="mt-0 mb-3 text-muted small text-center "><em>Gambar 4.6 hasil dari penerapan algoritma
               thresholding</em>
           </p>
         </div>
@@ -205,7 +205,7 @@
     </a>
 
     <!-- Tombol Materi Selanjutnya -->
-    <a href="{{ url_for('user.metodethresholding') }}"
+    <a href="{{ url_for('user.metodethresholding') }}" id="btnNextMateri"
       class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi {% if not is_completed %}navigasi-disabled-link{% endif %}"
       style="background-color: {% if is_completed %}#1e293b{% else %}#94a3b8{% endif %}; width: 400px; max-width: 100%;">
 

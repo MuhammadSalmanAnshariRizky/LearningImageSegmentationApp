@@ -75,7 +75,7 @@ img = cv2....('...', cv2....)
 
 # 2. MENENTUKAN SEED POINT & THRESHOLD TOLERANSI
 # Tuliskan angka 50 dan 114 secara berurutan untuk koordinat seed, serta 140 untuk threshold
-seed = (..., ...)   # (baris, kolom);(y,x)
+seed = (..., ...)   # (baris, kolom);
 threshold = ...
 
 # 3. MEMBUAT VISUALISASI TITIK SEED MANUAL MENGGUNAKAN OPENCV

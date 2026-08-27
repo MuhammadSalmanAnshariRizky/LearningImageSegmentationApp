@@ -523,7 +523,7 @@
     </a>
 
     <!-- Tombol Materi Selanjutnya -->
-    <a href="{{ url_for('user.histogram') }}"
+    <a href="{{ url_for('user.histogram') }}" 
       class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi {% if not result or result.result_status != 'lulus' %}navigasi-disabled-link{% endif %}"
       style="background-color: {% if result and result.result_status == 'lulus' %}#1e293b{% else %}#94A3B8{% endif %}; width: 450px; max-width: 100%;">
 

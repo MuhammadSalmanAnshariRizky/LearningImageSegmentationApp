@@ -496,6 +496,21 @@
                     </div>
                 </div>
 
+                <!-- INPUT BARU: TOKEN REGISTRASI GURU -->
+                <div class="form-group" id="teacherTokenContainer" style="display: none;">
+                    <label class="form-label">Token Registrasi Guru</label>
+                    <div class="input-wrapper">
+                        <div class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+                            </svg>
+                        </div>
+                        <input type="text" name="teacher_token" id="teacher_token" class="form-input"
+                            placeholder="Masukkan token khusus guru" value="{{ old.teacher_token if old }}">
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label class="form-label">Password</label>
                     <div class="input-wrapper">
@@ -581,17 +596,38 @@
         }
     </script>
     <script>
+        // UPDATE JAVASCRIPT LOGIC
         function toggleClassCode(role) {
-            const container = document.getElementById('classCodeContainer');
-            const input = document.getElementById('class_code');
+            const classContainer = document.getElementById('classCodeContainer');
+            const classInput = document.getElementById('class_code');
+            const tokenContainer = document.getElementById('teacherTokenContainer');
+            const tokenInput = document.getElementById('teacher_token');
 
             if (role === 'Student') {
-                container.style.display = 'block';
-                input.setAttribute('required', 'required');
+                // Tampilkan kode kelas, sembunyikan token guru
+                classContainer.style.display = 'block';
+                classInput.setAttribute('required', 'required');
+                
+                tokenContainer.style.display = 'none';
+                tokenInput.removeAttribute('required');
+                tokenInput.value = '';
+            } else if (role === 'Teacher') {
+                // Tampilkan token guru, sembunyikan kode kelas
+                tokenContainer.style.display = 'block';
+                tokenInput.setAttribute('required', 'required');
+                
+                classContainer.style.display = 'none';
+                classInput.removeAttribute('required');
+                classInput.value = '';
             } else {
-                container.style.display = 'none';
-                input.removeAttribute('required');
-                input.value = '';
+                // Sembunyikan dua-duanya jika belum pilih role
+                classContainer.style.display = 'none';
+                classInput.removeAttribute('required');
+                classInput.value = '';
+                
+                tokenContainer.style.display = 'none';
+                tokenInput.removeAttribute('required');
+                tokenInput.value = '';
             }
         }
 

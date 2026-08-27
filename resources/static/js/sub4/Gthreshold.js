@@ -2,69 +2,69 @@
  * Script untuk Live Code Notebook - Global Thresholding (Iterative Selection) - TANPA MATPLOTLIB
  */
 
-let thresholdCellCount = 0;
-let thresholdEditors = {};
-let thresholdImagePath = "";
+let globalThresholdCellCount = 0;
+let globalThresholdEditors = {};
+let globalThresholdImagePath = "";
 
 // 1. Inisiasi Observer
 document.addEventListener("DOMContentLoaded", function () {
-  loadThresholdState();
+  loadGlobalThresholdState();
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         setTimeout(() => {
-          for (const id in thresholdEditors) {
-            if (thresholdEditors[id]) thresholdEditors[id].refresh();
+          for (const id in globalThresholdEditors) {
+            if (globalThresholdEditors[id]) globalThresholdEditors[id].refresh();
           }
         }, 50);
       }
     });
   });
-  const notebook = document.getElementById("thresholdNotebook");
+  const notebook = document.getElementById("globalThresholdNotebook");
   if (notebook) observer.observe(notebook);
 });
 
 // 2. Local Storage Management
-function saveThresholdState() {
+function saveGlobalThresholdState() {
   const cellsData = [];
-  for (const id in thresholdEditors) {
+  for (const id in globalThresholdEditors) {
     cellsData.push({
       id: id,
-      code: thresholdEditors[id].getValue(),
-      output: document.getElementById(`threshold-output-${id}`).innerHTML,
+      code: globalThresholdEditors[id].getValue(),
+      output: document.getElementById(`globalthreshold-output-${id}`).innerHTML,
     });
   }
-  localStorage.setItem("notebookCells_Threshold", JSON.stringify(cellsData));
-  localStorage.setItem("currentImagePath_Threshold", thresholdImagePath);
-  const fileListElem = document.getElementById("thresholdFileList");
+  localStorage.setItem("notebookCells_GlobalThreshold", JSON.stringify(cellsData));
+  localStorage.setItem("currentImagePath_GlobalThreshold", globalThresholdImagePath);
+  const fileListElem = document.getElementById("globalThresholdFileList");
   if (fileListElem)
-    localStorage.setItem("currentImageName_Threshold", fileListElem.innerHTML);
-  localStorage.setItem("cellCount_Threshold", thresholdCellCount);
+    localStorage.setItem("currentImageName_GlobalThreshold", fileListElem.innerHTML);
+  localStorage.setItem("cellCount_GlobalThreshold", globalThresholdCellCount);
 }
 
-function loadThresholdState() {
+function loadGlobalThresholdState() {
   const savedCells = JSON.parse(
-    localStorage.getItem("notebookCells_Threshold"),
+    localStorage.getItem("notebookCells_GlobalThreshold"),
   );
-  const savedPath = localStorage.getItem("currentImagePath_Threshold");
-  const savedImageUI = localStorage.getItem("currentImageName_Threshold");
-  const savedCellCount = localStorage.getItem("cellCount_Threshold");
+  const savedPath = localStorage.getItem("currentImagePath_GlobalThreshold");
+  const savedImageUI = localStorage.getItem("currentImageName_GlobalThreshold");
+  const savedCellCount = localStorage.getItem("cellCount_GlobalThreshold");
 
   if (savedPath && savedImageUI) {
-    thresholdImagePath = savedPath;
-    document.getElementById("thresholdFileList").innerHTML = savedImageUI;
+    globalThresholdImagePath = savedPath;
+    document.getElementById("globalThresholdFileList").innerHTML = savedImageUI;
   }
-  if (savedCellCount) thresholdCellCount = parseInt(savedCellCount);
+  if (savedCellCount) globalThresholdCellCount = parseInt(savedCellCount);
   if (savedCells && savedCells.length > 0) {
     savedCells.forEach((cellData) =>
-      createThresholdCellDOM(cellData.id, cellData.code, cellData.output),
+      createGlobalThresholdCellDOM(cellData.id, cellData.code, cellData.output),
     );
   }
 }
 
 // 3. Tambah Lembar Kerja Cell
-function addThresholdCell() {
-  thresholdCellCount++;
+function addGlobalThresholdCell() {
+  globalThresholdCellCount++;
 
   // KODE PYTHON TANPA MATPLOTLIB
   const defaultCode = `import cv2
@@ -73,7 +73,7 @@ import os
 
 # 1. MEMBACA CITRA GRAYSCALE
 # Tuliskan nama file gambar yang kamu unggah (misal: 'gambar.jpg') 
-# lalu tuliskan 'cv2.imread' dan ' cv2.IMREAD_GRAYSCALE' untuk membaca sebagai hitam putih
+# lalu tuliskan 'cv2.imread' dan ' cv2.IMREAD_GRAYSCALE' untuk membaca sebagai citra grayscale
 img = cv2....('....', cv2....)
 
 # 2. ITERATIVE THRESHOLD SELECTION
@@ -104,11 +104,11 @@ while True:
     
     T = T_new
 
-iterative_threshold = T_new
+global_threshold_val = T_new
 
 # 3. HASIL SEGMENTASI (THRESHOLDING)
 # Tuliskan 'cv2.threshold' dan 'cv2.THRESH_BINARY_INV' agar objek utama menjadi area putih (255)
-_, segmented = cv2....(img, iterative_threshold, 255, cv2....)
+_, segmented = cv2....(img, global_threshold_val, 255, cv2....)
 
 # 4. MEMBERSIHKAN MASK (CLOSING)
 # Tuliskan 'cv2.getStructuringElement' dan 'cv2.MORPH_ELLIPSE' untuk membuat kernel elips
@@ -131,40 +131,40 @@ cv2....(os.path.join(output_dir, "3_ekstraksi_objek.jpg"), extracted_img)
 print("=== ITERATIVE THRESHOLD SELECTION ===")
 print("Proses Global Thresholding Selesai!")
 print(f"Jumlah Iterasi Komputasi : {iteration}")
-print(f"Nilai Ambang Batas Otomatis (T) : {iterative_threshold:.2f}")`;
+print(f"Nilai Ambang Batas Otomatis (T) : {global_threshold_val:.2f}")`;
 
   const defaultOutput = `<span class="text-success font-monospace">> Output akan muncul di sini...</span>`;
 
-  createThresholdCellDOM(thresholdCellCount, defaultCode, defaultOutput);
-  saveThresholdState();
+  createGlobalThresholdCellDOM(globalThresholdCellCount, defaultCode, defaultOutput);
+  saveGlobalThresholdState();
 }
 
-function createThresholdCellDOM(id, codeText, outputHTML) {
-  const container = document.getElementById("thresholdNotebook");
+function createGlobalThresholdCellDOM(id, codeText, outputHTML) {
+  const container = document.getElementById("globalThresholdNotebook");
   if (!container) return;
 
   const cell = document.createElement("div");
   cell.className = "cell";
-  cell.id = "threshold-cell-" + id;
+  cell.id = "globalthreshold-cell-" + id;
   cell.innerHTML = `
         <div class="d-flex justify-content-between align-items-center mb-2">
             <span class="text-muted small fw-bold">In [${id}]:</span>
             <div class="cell-actions">
-                <button class="btn-icon run" onclick="runThresholdCell(${id})" title="Run">
+                <button class="btn-icon run" onclick="runGlobalThresholdCell(${id})" title="Run">
                     <i class="fa-solid fa-play"></i>
                 </button>
-                <button class="btn-icon delete" onclick="deleteThresholdCell(${id})" title="Hapus">
+                <button class="btn-icon delete" onclick="deleteGlobalThresholdCell(${id})" title="Hapus">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </div>
         </div>
-        <textarea id="threshold-editor-${id}"></textarea>
-        <div id="threshold-output-${id}" class="output-box">${outputHTML}</div>
+        <textarea id="globalthreshold-editor-${id}"></textarea>
+        <div id="globalthreshold-output-${id}" class="output-box">${outputHTML}</div>
     `;
   container.appendChild(cell);
 
   const editor = CodeMirror.fromTextArea(
-    document.getElementById(`threshold-editor-${id}`),
+    document.getElementById(`globalthreshold-editor-${id}`),
     {
       mode: "python",
       theme: "dracula",
@@ -181,23 +181,23 @@ function createThresholdCellDOM(id, codeText, outputHTML) {
 
   editor.on("change", () => {
     editor.setSize(null, "auto");
-    saveThresholdState();
+    saveGlobalThresholdState();
   });
-  thresholdEditors[id] = editor;
+  globalThresholdEditors[id] = editor;
 }
 
 // 4. Eksekusi Kompilasi Matriks
-function runThresholdCell(id) {
-  if (!thresholdEditors[id]) return;
+function runGlobalThresholdCell(id) {
+  if (!globalThresholdEditors[id]) return;
 
-  const code = thresholdEditors[id].getValue();
-  const outputBox = document.getElementById(`threshold-output-${id}`);
+  const code = globalThresholdEditors[id].getValue();
+  const outputBox = document.getElementById(`globalthreshold-output-${id}`);
   outputBox.innerHTML = `<span class="text-warning font-monospace"><i class="fa-solid fa-spinner fa-spin me-2"></i>⏳ Menghitung iterasi threshold...</span>`;
 
   fetch("/run-code", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ code: code, image_path: thresholdImagePath }),
+    body: JSON.stringify({ code: code, image_path: globalThresholdImagePath }),
   })
     .then(async (res) => {
       const text = await res.text();
@@ -234,16 +234,16 @@ function runThresholdCell(id) {
                 .replace(".png", "");
 
               cleanTitle = cleanTitle.replace(/\b\w/g, (c) => c.toUpperCase());
-              outputHTML += renderThresholdImgCard(cleanTitle, img.url);
+              outputHTML += renderGlobalThresholdImgCard(cleanTitle, img.url);
             }
           });
         } else {
           // Fallback tanpa memanggil file histogram
-          outputHTML += renderThresholdImgCard(
+          outputHTML += renderGlobalThresholdImgCard(
             "Citra Grayscale",
             "/static/results/citra_grayscale.jpg",
           );
-          outputHTML += renderThresholdImgCard(
+          outputHTML += renderGlobalThresholdImgCard(
             "Hasil Segmentasi",
             "/static/results/hasil_segmentasi.jpg",
           );
@@ -252,14 +252,14 @@ function runThresholdCell(id) {
         outputHTML += `</div>`;
         outputBox.innerHTML = outputHTML;
       }
-      saveThresholdState();
+      saveGlobalThresholdState();
     })
     .catch((err) => {
       outputBox.innerHTML = `<div class="text-danger font-monospace"><strong>🚨 Gagal terhubung ke server!</strong><br>${err.message}</div>`;
     });
 }
 
-function renderThresholdImgCard(title, srcUrl) {
+function renderGlobalThresholdImgCard(title, srcUrl) {
   const t = Date.now();
   const urlWithCacheBuster = srcUrl.includes("?")
     ? `${srcUrl}&t=${t}`
@@ -278,15 +278,15 @@ function renderThresholdImgCard(title, srcUrl) {
                  style="width: 100%; height: 100%; cursor: zoom-in; object-fit: contain; image-rendering: pixelated;"
                  title="Klik untuk melihat ukuran penuh"
                  data-bs-toggle="modal"
-                 data-bs-target="#thresholdImageModal"
-                 onclick="openThresholdModal('${urlWithCacheBuster}')">
+                 data-bs-target="#globalThresholdImageModal"
+                 onclick="openGlobalThresholdModal('${urlWithCacheBuster}')">
         </div>
 
         <div class="text-muted mt-2"
              style="font-size: 0.7rem; cursor: pointer;"
              data-bs-toggle="modal"
-             data-bs-target="#thresholdImageModal"
-             onclick="openThresholdModal('${urlWithCacheBuster}')">
+             data-bs-target="#globalThresholdImageModal"
+             onclick="openGlobalThresholdModal('${urlWithCacheBuster}')">
             Klik gambar untuk memperbesar
         </div>
     </div>
@@ -294,28 +294,28 @@ function renderThresholdImgCard(title, srcUrl) {
 }
 
 // 5. Utilitas File Upload & Management
-function openThresholdModal(src) {
-  document.getElementById("thresholdModalImage").src = src;
+function openGlobalThresholdModal(src) {
+  document.getElementById("globalThresholdModalImage").src = src;
 }
 
-function deleteThresholdCell(id) {
-  document.getElementById("threshold-cell-" + id).remove();
-  delete thresholdEditors[id];
-  saveThresholdState();
+function deleteGlobalThresholdCell(id) {
+  document.getElementById("globalthreshold-cell-" + id).remove();
+  delete globalThresholdEditors[id];
+  saveGlobalThresholdState();
 }
 
-function triggerThresholdUpload() {
-  document.getElementById("thresholdFileInput").click();
+function triggerGlobalThresholdUpload2() {
+  document.getElementById("globalThresholdFileInput").click();
 }
 
-function handleThresholdUpload(event) {
+function handleGlobalThresholdUpload(event) {
   const originalFile = event.target.files[0];
   if (!originalFile) return;
 
   const extension = originalFile.name.substring(
     originalFile.name.lastIndexOf("."),
   );
-  const newFileName = "citra_threshold" + extension;
+  const newFileName = "citra_globalthreshold" + extension;
 
   const reader = new FileReader();
   reader.onload = function (e) {
@@ -324,7 +324,7 @@ function handleThresholdUpload(event) {
 
     formData.append("image", originalFile, newFileName);
 
-    document.getElementById("thresholdFileList").innerHTML = `
+    document.getElementById("globalThresholdFileList").innerHTML = `
         <div class="text-center text-muted mt-3 small">
             <i class="fa-solid fa-spinner fa-spin me-2"></i>Mengunggah...
         </div>
@@ -333,9 +333,9 @@ function handleThresholdUpload(event) {
     fetch("/upload-image", { method: "POST", body: formData })
       .then((res) => res.json())
       .then((data) => {
-        thresholdImagePath = data.path;
+        globalThresholdImagePath = data.path;
 
-        document.getElementById("thresholdFileList").innerHTML = `
+        document.getElementById("globalThresholdFileList").innerHTML = `
         <div class="image-preview-card mt-3">
             <div class="img-wrapper text-center">
                 <img src="${imageSrc}" class="preview-img img-fluid rounded border border-secondary" style="max-height: 120px; object-fit: cover;" alt="Preview File">
@@ -346,10 +346,10 @@ function handleThresholdUpload(event) {
             </div>
         </div>
         `;
-        saveThresholdState();
+        saveGlobalThresholdState();
       })
       .catch((err) => {
-        document.getElementById("thresholdFileList").innerHTML = `
+        document.getElementById("globalThresholdFileList").innerHTML = `
             <div class="text-danger mt-3 small text-center">
                 Gagal mengunggah gambar.
             </div>

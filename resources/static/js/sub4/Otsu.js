@@ -71,7 +71,7 @@ import os
 
 # 1. MEMBACA CITRA GRAYSCALE
 # Tuliskan nama file gambar yang kamu unggah (misal: 'gambar.jpg')
-# lalu tuliskan 'cv2.imread' dan 'cv2.IMREAD_GRAYSCALE' untuk membaca sebagai hitam putih
+# lalu tuliskan 'cv2.imread' dan 'cv2.IMREAD_GRAYSCALE' untuk membaca sebagai citra grayscale
 img = cv2....('....', cv2....)
 
 # 2. OTSU THRESHOLDING

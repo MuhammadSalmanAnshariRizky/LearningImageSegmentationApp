@@ -504,7 +504,32 @@ plt.show()</pre>
   <div class="page-section">
     <div class="card border shadow-sm rounded-4 mb-4">
       <div class="card-body p-4 p-md-5">
+        <div class="card border-0 border-start border-4 border-primary shadow-sm bg-light p-3 mb-4 rounded-end">
+          <p class="mb-0 text-muted" style="line-height: 1.7;">
+            Pada sesi praktikum ini, kita akan mempelajari proses segmentasi citra menggunakan
+            <b>metode Region Growing</b>. Metode ini bekerja dengan memilih sebuah titik awal
+            (<i>seed point</i>) kemudian menggabungkan piksel-piksel di sekitarnya yang memiliki
+            karakteristik intensitas serupa hingga terbentuk suatu wilayah (<i>region</i>) yang
+            merepresentasikan objek.
+            <br><br>
 
+            <b>Studi Kasus:</b> Citra yang digunakan merupakan foto ikan gabus/haruan
+            (<code>haruan_10.png</code>). Tujuan praktikum ini adalah memisahkan objek ikan dari
+            latar belakang dengan memanfaatkan titik benih (<i>seed point</i>) sebagai awal proses
+            segmentasi. Mahasiswa akan mengamati bagaimana perubahan koordinat <i>seed point</i>
+            dan nilai <i>threshold</i> memengaruhi luas wilayah yang tumbuh serta kualitas hasil
+            segmentasi yang dihasilkan.
+            <br><br>
+
+            <small class="text-primary fw-bold">
+              <i class="fa-solid fa-circle-info me-1"></i>
+              Catatan: Citra yang digunakan berupa foto ikan gabus/haruan berukuran
+              <b>256 × 256 piksel</b> dengan format <i>grayscale</i>. Pada hasil praktikum,
+              akan ditampilkan citra asli yang menunjukkan posisi <i>seed point</i> serta hasil
+              segmentasi <i>Region Growing</i> untuk memudahkan proses analisis.
+            </small>
+          </p>
+        </div>
         <div class="mb-4 p-4 rounded bg-warning-subtle border border-warning shadow-sm">
           <div class="d-flex align-items-center mb-3">
             <i class="fa-solid fa-list-check me-2 text-dark"></i>
@@ -516,14 +541,16 @@ plt.show()</pre>
           <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
             <li class="mb-2">
               Download gambar uji coba bernama <code>haruan_10.png</code> melalui tautan berikut:
-              <a href="https://drive.google.com/file/d/1XnRwoF7n_jbXtVI5-rYlbo4HM3UNbgtS/view?usp=sharing"
-                class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
+              <a href="https://drive.google.com/uc?export=download&id=1WG7mwSD5j9GjJLObj6ZEh8aaRLTJluBB"
+                class="badge text-bg-primary text-decoration-none ms-1" download>
                 <i class="fa-solid fa-download me-1"></i>Download
               </a>
+
             </li>
             <li class="mb-2">
-              Upload file <code>haruan_10.png</code> tersebut ke area <strong>File Workspace</strong> (dengan cara
-              ditarik/<em>drag</em> atau diklik).
+              Upload file <code>haruan_10.png</code> tersebut ke area <strong>File Workspace</strong>. <strong>Catatan:</strong>
+              Setelah berhasil di-upload, nama gambar di dalam sistem akan otomatis berubah menjadi
+              <code>citra_input.png</code>.
             </li>
             <li class="mb-2">
               Pastikan <em>preview</em> gambar sudah muncul dengan benar pada daftar file di sebelah kiri layar.
@@ -542,7 +569,8 @@ plt.show()</pre>
                   class="fa-solid fa-play"></i></button> di pojok kanan atas editor.
             </li>
             <li>
-              Amati hasil eksekusi algoritma dan periksa 2 buah output gambar (Citra Asli dengan titik benih merah dan
+              Amati hasil eksekusi algoritma dan periksa 3 buah output gambar (Citra asli, Citra Asli dengan titik benih
+              merah dan
               Hasil Segmentasi Region Growing) yang muncul di bagian bawah.
             </li>
           </ol>
@@ -716,7 +744,7 @@ plt.show()</pre>
     </a>
 
     <!-- Tombol Materi Selanjutnya -->
-    <a href="{{ url_for('user.splitandmerge') }}"
+    <a href="{{ url_for('user.splitandmerge') }}" id="btnNextMateri"
       class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi {% if not is_completed %}navigasi-disabled-link{% endif %}"
       style="background-color: {% if is_completed %}#1e293b{% else %}#94a3b8{% endif %}; width: 400px; max-width: 100%;">
 

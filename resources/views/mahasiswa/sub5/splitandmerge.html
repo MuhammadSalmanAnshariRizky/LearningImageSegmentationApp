@@ -575,7 +575,33 @@ plt.show()</pre>
   <div class="page-section">
     <div class="card border shadow-sm rounded-4 mb-4">
       <div class="card-body p-4 p-md-5">
+        <div class="card border-0 border-start border-4 border-primary shadow-sm bg-light p-3 mb-4 rounded-end">
+          <p class="mb-0 text-muted" style="line-height: 1.7;">
+            Pada sesi praktikum ini, kita akan mempelajari proses segmentasi citra menggunakan
+            <b>metode Region Splitting and Merging</b>. Metode ini bekerja dengan membagi citra
+            menjadi beberapa wilayah berdasarkan tingkat keseragaman intensitas piksel
+            (<i>splitting</i>), kemudian menggabungkan wilayah-wilayah yang bertetangga dan memiliki
+            karakteristik serupa (<i>merging</i>) sehingga diperoleh hasil segmentasi yang lebih
+            representatif.
+            <br><br>
 
+            <b>Studi Kasus:</b> Citra yang digunakan merupakan foto ikan gabus/haruan
+            (<code>haruan_25.png</code>). Tujuan praktikum ini adalah memisahkan objek ikan dari
+            latar belakang melalui proses pembagian dan penggabungan wilayah citra. Mahasiswa akan
+            mengamati bagaimana perubahan nilai <code>STD_THRESHOLD</code>,
+            <code>MERGE_THRESHOLD</code>, dan <code>MIN_SIZE</code> memengaruhi jumlah region yang
+            terbentuk, proses penggabungan antarregion, serta kualitas hasil segmentasi akhir.
+            <br><br>
+
+            <small class="text-primary fw-bold">
+              <i class="fa-solid fa-circle-info me-1"></i>
+              Catatan: Citra yang digunakan berupa foto ikan gabus/haruan berukuran
+              <b>256 × 256 piksel</b> dengan format <i>grayscale</i>. Hasil praktikum akan
+              menampilkan tiga visualisasi, yaitu citra asli, peta label region, dan hasil akhir
+              segmentasi untuk memudahkan analisis proses <i>Region Splitting and Merging</i>.
+            </small>
+          </p>
+        </div>
         <div class="mb-4 p-4 rounded bg-warning-subtle border border-warning shadow-sm">
           <div class="d-flex align-items-center mb-3">
             <i class="fa-solid fa-list-check me-2 text-dark"></i>
@@ -587,8 +613,8 @@ plt.show()</pre>
           <ol class="mb-0 ps-3 text-dark" style="line-height: 2.1;">
             <li class="mb-2">
               Download gambar uji coba bernama <code>haruan_25.png</code> melalui tautan berikut:
-              <a href="https://drive.google.com/file/d/1gFw41eIUdPaqBPsFwAi4AKYkVN7PExVP/view?usp=sharing"
-                class="badge text-bg-primary text-decoration-none ms-1" target="_blank">
+              <a href="https://drive.google.com/uc?export=download&id=1aOmmWHeQXjweKEsuluiCWuG1g5nrO__o"
+                class="badge text-bg-primary text-decoration-none ms-1" download>
                 <i class="fa-solid fa-download me-1"></i>Download
               </a>
             </li>
@@ -757,9 +783,6 @@ plt.show()</pre>
       <li class="page-item active">
         <a class="page-link" onclick="goPage(3)">4</a>
       </li>
-      <li class="page-item active">
-        <a class="page-link" onclick="goPage(4)">5</a>
-      </li>
 
       <li class="page-item" id="nextPageItem">
         <a class="page-link" href="#" onclick="nextPage()">Selanjutnya</a>
@@ -791,7 +814,7 @@ plt.show()</pre>
     </a>
 
     <!-- Tombol Materi Selanjutnya -->
-    <a href="{{ url_for('user.rangkuman5') }}"
+    <a href="{{ url_for('user.rangkuman5') }}" id="btnNextMateri"
       class="btn rounded-pill px-4 py-2 shadow-sm border-0 d-flex align-items-center text-decoration-none btn-next-materi {% if not is_completed %}navigasi-disabled-link{% endif %}"
       style="background-color: {% if is_completed %}#1e293b{% else %}#94a3b8{% endif %}; width: 400px; max-width: 100%;">
 

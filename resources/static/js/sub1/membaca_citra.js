@@ -6,9 +6,6 @@ let currentImagePath = "";
 document.addEventListener("DOMContentLoaded", function () {
   loadState();
 
-  // ==========================================
-  // ✨ OBAT ANTI-HANCUR (INTERSECTION OBSERVER)
-  // ==========================================
   // Deteksi jika area editor masuk ke dalam layar / menjadi terlihat
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -129,7 +126,7 @@ function createCellDOM(id, codeText, outputHTML) {
   editor.setValue(codeText);
   editor.setSize("100%", "auto");
 
-  // ✨ TAMBAHAN OBAT: Pastikan cell baru langsung direfresh jika ditambahkan saat layar aktif
+  // Pastikan cell baru langsung direfresh jika ditambahkan saat layar aktif
   setTimeout(() => {
     editor.refresh();
   }, 10);
@@ -233,7 +230,7 @@ function handleUpload(event) {
 
     const formData = new FormData();
 
-    // ✨ TRIK AMPUH: Langsung paksa nama barunya di sini
+    //TRIK AMPUH: Langsung paksa nama barunya di sini
     // Parameter ke-3 secara otomatis akan menimpa nama file asli saat dikirim ke Flask
     formData.append("image", originalFile, newFileName);
 
@@ -253,7 +250,7 @@ function handleUpload(event) {
         currentImagePath = data.path;
 
         // Render UI Preview Gambar
-        // ✨ PERUBAHAN: Sekarang UI akan menampilkan newFileName (citra_grayscale)
+        //PERUBAHAN: Sekarang UI akan menampilkan newFileName (citra_grayscale)
         document.getElementById("fileList").innerHTML = `
                 <div class="image-preview-card mt-3">
                     <div class="img-wrapper">
